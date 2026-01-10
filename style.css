@@ -1,48 +1,59 @@
-/* Базовые ссылки меню */
-nav ul li a {
-  text-decoration: none;
-  color: #fff;
-  font-weight: 800;
-  font-size: 18px;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  font-family: 'Poppins', 'Montserrat', sans-serif;
-  display: inline-block;
-  transition: all 0.4s ease;
-  position: relative;
-  padding: 5px 0;
+/* Стили для шапки */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 60px;
+  background: transparent;
+  position: fixed;
+  width: 100%;
+  z-index: 1000;
+  transition: background 0.3s ease, padding 0.3s ease;
 }
 
-/* Подчеркивание по умолчанию */
+header.scrolled {
+  background: rgba(0, 0, 0, 0.85);
+  padding: 10px 60px;
+}
+
+/* Меню */
+nav ul {
+  display: flex;
+  gap: 40px;
+  list-style: none;
+}
+
+nav ul li a {
+  text-decoration: none;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: #fff;
+  font-size: 16px;
+  position: relative;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+/* Линия под текстом */
 nav ul li a::after {
   content: '';
   position: absolute;
-  left: 50%;
   bottom: -5px;
-  transform: translateX(-50%);
-  width: 0;
+  left: 0;
+  width: 0%;
   height: 2px;
   background: linear-gradient(90deg, #fff, #aaa);
-  transition: width 0.4s ease;
-}
-
-/* Текст для анимации */
-nav ul li a span {
-  display: inline-block;
-  transition: transform 0.4s ease, font-weight 0.3s ease, color 0.4s ease;
-  transform-origin: bottom center;
+  transition: width 0.3s ease;
 }
 
 /* Hover эффект */
-nav ul li a:hover span {
-  transform: scaleY(1.5) translateY(-2px); /* вертикальное растяжение и легкий подъем */
-  font-weight: 900;
-  color: #fff; /* можно добавить мягкий градиент позже */
+nav ul li a:hover {
+  transform: translateY(-3px); /* лёгкий подъем */
 }
 
-/* Подчеркивание при наведении */
 nav ul li a:hover::after {
-  width: 100%;
+  width: 100%; /* линия появляется */
 }
 
 
