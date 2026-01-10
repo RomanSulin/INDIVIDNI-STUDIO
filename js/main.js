@@ -171,100 +171,47 @@ if (v && btn) {
   });
 }
 
-// ===== HERO reveal: drag clapper =====
+// ===== HERO reveal: SCROLL (no dragging) =====
 (() => {
+  const section = document.getElementById('heroCold');
   const stage = document.getElementById('heroStage');
-  const handle = document.getElementById('clapHandle');
-  if (!stage || !handle) return;
-
-  let dragging = false;
-  let startX = 0;
-  let startHandleX = 0;
-  let handleX = 0;
-
-  const bounds = { min: 0, max: 0 };
+  if (!section || !stage) return;
 
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const easeInOutCubic = (t) => (t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2);
 
-  const measure = () => {
-    const stageRect = stage.getBoundingClientRect();
-    const handleRect = handle.getBoundingClientRect();
+  let raf = 0;
 
-    // границы движения внутри stage
-    const pad = Math.min(40, stageRect.width * 0.06);
-    bounds.min = 0; // в px относительно стартовой позиции
-    bounds.max = Math.max(0, stageRect.width - handleRect.width - pad * 2);
+  const update = () => {
+    raf = 0;
 
-    // если экран стал меньше — поджимаем позицию
-    handleX = clamp(handleX, bounds.min, bounds.max);
-    apply(handleX, false);
-  };
+    const rect = section.getBoundingClientRect();
+    const vh = window.innerHeight;
 
-  const apply = (x, live) => {
-    handleX = clamp(x, bounds.min, bounds.max);
+    // мы сделали секцию ~180vh, поэтому прогресс идёт по “лишней” высоте
+    const total = Math.max(1, rect.height - vh);
+    const scrolled = clamp(-rect.top, 0, total);
+    const p = scrolled / total;          // 0..1
+    const e = easeInOutCubic(p);
 
-    const denom = Math.max(1, (bounds.max - bounds.min));
-    const p = (handleX - bounds.min) / denom; // 0..1
-
-    const pct = Math.round(p * 100);
-    stage.style.setProperty('--handleX', `${handleX}px`);
+    const pct = Math.round(e * 100);
     stage.style.setProperty('--reveal', `${pct}%`);
-    stage.style.setProperty('--clapAngle', `${(-55 * p).toFixed(2)}deg`);
+    stage.style.setProperty('--clapAngle', `${(-70 * e).toFixed(2)}deg`);
 
-    handle.setAttribute('aria-valuenow', String(pct));
-
-    if (live) stage.classList.add('is-live');
-    if (!live && pct === 0) stage.classList.remove('is-live');
+    // “live mode” включаем, когда человек начал скроллить сцену
+    if (p > 0.03) stage.classList.add('is-live');
+    else stage.classList.remove('is-live');
   };
 
-  const onDown = (e) => {
-    dragging = true;
-    stage.dataset.dragging = 'true';
-    stage.classList.add('is-live');
-
-    startX = e.clientX;
-    startHandleX = handleX;
-
-    handle.setPointerCapture?.(e.pointerId);
+  const onScroll = () => {
+    if (raf) return;
+    raf = requestAnimationFrame(update);
   };
 
-  const onMove = (e) => {
-    if (!dragging) return;
-    const dx = e.clientX - startX;
-    apply(startHandleX + dx, true);
-  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
 
-  const onUp = () => {
-    if (!dragging) return;
-    dragging = false;
-    stage.dataset.dragging = 'false';
-
-    // снап (чтобы ощущалось “дошёл — открыл”)
-    const denom = Math.max(1, (bounds.max - bounds.min));
-    const p = (handleX - bounds.min) / denom;
-
-    const target = p > 0.55 ? bounds.max : bounds.min;
-    apply(target, true);
-
-    // если закрыли — гасим live чуть позже
-    if (target === bounds.min) {
-      setTimeout(() => stage.classList.remove('is-live'), 450);
-    }
-  };
-
-  handle.addEventListener('pointerdown', onDown);
-  handle.addEventListener('pointermove', onMove);
-  handle.addEventListener('pointerup', onUp);
-  handle.addEventListener('pointercancel', onUp);
-
-  // клавиатура (на всякий)
-  handle.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight') { e.preventDefault(); apply(handleX + 30, true); }
-    if (e.key === 'ArrowLeft')  { e.preventDefault(); apply(handleX - 30, true); }
-    if (e.key === 'Enter')      { e.preventDefault(); apply(handleX > bounds.max * 0.4 ? bounds.min : bounds.max, true); }
-  });
-
-  window.addEventListener('resize', measure, { passive: true });
-  measure();
+  // старт
+  update();
 })();
 
