@@ -171,28 +171,51 @@ if (v && btn) {
   });
 }
 
-// ===== HERO reveal: hover spotlight + clapper tap =====
+// ===== HERO: hover spotlight + clapper scroll-open + ambient glow =====
 (() => {
+  const section = document.getElementById('heroSection');
   const stage = document.getElementById('heroStage');
-  const logo = document.getElementById('heroLogo');
-  const clap = document.getElementById('clapButton');
-  if (!stage || !logo) return;
+  const logo  = document.getElementById('heroLogo');
+  const clap  = document.getElementById('clapButton');
 
-  // плавное следование “света”
+  if (!section || !stage || !logo) return;
+
+  // ---------- Ambient glow everywhere ----------
+  let amx = window.innerWidth * 0.5;
+  let amy = window.innerHeight * 0.45;
+  let atx = amx, aty = amy;
+  let araf = 0;
+
+  const lerp = (a, b, t) => a + (b - a) * t;
+
+  const ambientTick = () => {
+    amx = lerp(amx, atx, 0.14);
+    amy = lerp(amy, aty, 0.14);
+    document.documentElement.style.setProperty('--mx', `${amx.toFixed(1)}px`);
+    document.documentElement.style.setProperty('--my', `${amy.toFixed(1)}px`);
+    araf = requestAnimationFrame(ambientTick);
+  };
+
+  window.addEventListener('pointermove', (e) => {
+    atx = e.clientX;
+    aty = e.clientY;
+    if (!araf) ambientTick();
+  }, { passive: true });
+
+  // ---------- Spotlight reveal on logo (works even if something overlaps) ----------
+  let hoverActive = false;
+
   let tx = 50, ty = 50;
   let cx = 50, cy = 50;
   let raf = 0;
 
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-  const lerp = (a, b, t) => a + (b - a) * t;
 
   const tick = () => {
     cx = lerp(cx, tx, 0.18);
     cy = lerp(cy, ty, 0.18);
-
     stage.style.setProperty('--reveal-x', `${cx.toFixed(2)}%`);
     stage.style.setProperty('--reveal-y', `${cy.toFixed(2)}%`);
-
     raf = requestAnimationFrame(tick);
   };
 
@@ -204,29 +227,80 @@ if (v && btn) {
     ty = clamp(y, 0, 100);
   };
 
+  // включаем режим только когда вошли в лого
   logo.addEventListener('pointerenter', (e) => {
+    hoverActive = true;
     stage.classList.add('is-hover');
-    stage.classList.add('hint-off');
+    document.body.classList.add('glow-boost');
     setTargetFromEvent(e.clientX, e.clientY);
     if (!raf) tick();
   });
 
-  logo.addEventListener('pointermove', (e) => {
+  logo.addEventListener('pointerleave', () => {
+    hoverActive = false;
+    stage.classList.remove('is-hover');
+    document.body.classList.remove('glow-boost');
+  });
+
+  // движения мыши слушаем по всей секции, чтобы перекрытия не ломали эффект
+  section.addEventListener('pointermove', (e) => {
+    if (!hoverActive) return;
     setTargetFromEvent(e.clientX, e.clientY);
   });
 
-  logo.addEventListener('pointerleave', () => {
-    stage.classList.remove('is-hover');
-    // не останавливаем raf (пусть остаётся мягкое движение), но можно остановить:
-    // cancelAnimationFrame(raf); raf = 0;
-  });
+  // ---------- Clapper opens when you scroll down to it ----------
+  let pinned = false;
 
-  // хлопушка: клик/тап
+  const setClapAngle = (deg) => {
+    if (!clap) return;
+    clap.style.setProperty('--clapAngle', `${deg.toFixed(2)}deg`);
+  };
+
+  const updateClapFromScroll = () => {
+    if (!clap || pinned) return;
+
+    const r = clap.getBoundingClientRect();
+    const vh = window.innerHeight;
+
+    // когда верх хлопушки около низа экрана -> начинаем открывать
+    const startY = vh * 0.90;
+    const endY   = vh * 0.55;
+
+    const t = clamp((startY - r.top) / (startY - endY), 0, 1);
+    const angle = -72 * t;
+
+    setClapAngle(angle);
+
+    // когда почти открыта — считаем “open”
+    if (t > 0.75) stage.classList.add('is-open');
+    else stage.classList.remove('is-open');
+  };
+
+  let sraf = 0;
+  const onScroll = () => {
+    if (sraf) return;
+    sraf = requestAnimationFrame(() => {
+      sraf = 0;
+      updateClapFromScroll();
+    });
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
+  updateClapFromScroll();
+
+  // Клик = “зафиксировать открытой / закрытой”
   if (clap) {
     clap.addEventListener('click', () => {
-      const open = clap.classList.toggle('is-open');
-      stage.classList.toggle('is-open', open);
-      stage.classList.add('hint-off');
+      pinned = !pinned;
+      clap.classList.add('touched');
+
+      if (pinned) {
+        setClapAngle(-72);
+        stage.classList.add('is-open');
+      } else {
+        updateClapFromScroll();
+      }
     });
   }
 })();
