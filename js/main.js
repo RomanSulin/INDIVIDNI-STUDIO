@@ -58,7 +58,7 @@ if (revealItems.length && 'IntersectionObserver' in window) {
   revealItems.forEach((el) => el.classList.add('is-visible'));
 }
 
-// ===== Custom cursor (ONLY on mouse devices)
+// ===== Custom cursor (spotlight) ONLY on mouse devices
 const cursor = document.getElementById('custom-cursor');
 const canUseCustomCursor =
   cursor && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
@@ -66,20 +66,48 @@ const canUseCustomCursor =
 if (canUseCustomCursor) {
   document.body.classList.add('cursor-on');
 
-  document.addEventListener(
-    'mousemove',
-    (e) => {
-      cursor.style.top = e.clientY + 'px';
-      cursor.style.left = e.clientX + 'px';
-    },
-    { passive: true }
-  );
+  let prevX = null;
+  let prevY = null;
 
+  // лёгкое сглаживание позиции
+  let cx = 0, cy = 0;
+  let tx = 0, ty = 0;
+
+  const tick = () => {
+    cx += (tx - cx) * 0.22;
+    cy += (ty - cy) * 0.22;
+    cursor.style.top = cy + 'px';
+    cursor.style.left = cx + 'px';
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+
+  document.addEventListener('mousemove', (e) => {
+    tx = e.clientX;
+    ty = e.clientY;
+
+    if (prevX !== null && prevY !== null) {
+      const dx = e.clientX - prevX;
+      const dy = e.clientY - prevY;
+
+      // если мышь реально двигается — поворачиваем луч
+      if (Math.abs(dx) + Math.abs(dy) > 1) {
+        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+        cursor.style.setProperty('--angle', angle + 'deg');
+      }
+    }
+
+    prevX = e.clientX;
+    prevY = e.clientY;
+  }, { passive: true });
+
+  // усиление при наведении на кликабельное
   document.querySelectorAll('a, button, .btn').forEach((el) => {
     el.addEventListener('mouseenter', () => document.body.classList.add('hovered'));
     el.addEventListener('mouseleave', () => document.body.classList.remove('hovered'));
   });
 }
+
 
 // ===== Footer year
 const yearEl = document.getElementById('year');
