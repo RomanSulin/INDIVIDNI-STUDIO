@@ -1,13 +1,13 @@
 const cursor = document.getElementById('custom-cursor');
 
 // Двигаем курсор за мышью
-document.addEventListener('mousemove', (e) => {
+document.addEventListener('mousemove', e => {
   cursor.style.top = e.clientY + 'px';
   cursor.style.left = e.clientX + 'px';
 });
 
-// Включение “записи” при наведении на интерактивные элементы
-const hoverElements = document.querySelectorAll('a, button'); // меню, кнопки и т.д.
+// Включение эффекта при наведении на интерактивные элементы
+const hoverElements = document.querySelectorAll('a, button');
 
 hoverElements.forEach(el => {
   el.addEventListener('mouseenter', () => {
