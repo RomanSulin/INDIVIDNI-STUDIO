@@ -622,3 +622,153 @@ body.hovered #custom-cursor .core{ opacity: 1; }
   animation: jelly 420ms cubic-bezier(.2,.9,.2,1);
 }
 
+/* ===== TRASHY BLOB SOUND BUTTON ===== */
+.sound-blob{
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 12px 16px;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 245, 225, 0.96);
+  cursor: pointer;
+
+  /* неровная форма */
+  border-radius: 34% 66% 44% 56% / 55% 38% 62% 45%;
+  transform-origin: 50% 50%;
+
+  /* "жидкая" тень */
+  filter: drop-shadow(0 16px 40px rgba(0,0,0,0.45));
+  transition: transform .18s ease;
+  user-select: none;
+  overflow: visible;
+}
+
+.sound-blob:hover{ transform: translateY(-2px); }
+.sound-blob:active{ transform: translateY(0px) scale(0.98); }
+
+.sound-blob__bg{
+  position:absolute;
+  inset:-2px;
+  z-index:0;
+  border-radius: inherit;
+
+  /* тёплый кино-градиент */
+  background:
+    radial-gradient(120px 90px at 30% 30%, rgba(255, 220, 155, 0.45), transparent 60%),
+    radial-gradient(140px 110px at 75% 70%, rgba(255, 150, 80, 0.25), transparent 62%),
+    linear-gradient(135deg, rgba(0,0,0,0.55), rgba(0,0,0,0.18));
+
+  border: 1px solid rgba(255, 220, 160, 0.22);
+  backdrop-filter: blur(10px);
+
+  /* “жидкое” движение */
+  animation: blobFloat 3.2s ease-in-out infinite;
+}
+
+.sound-blob__shine{
+  position:absolute;
+  inset:-35%;
+  z-index:0;
+  border-radius: inherit;
+  background: conic-gradient(
+    from 30deg,
+    rgba(255, 236, 200, 0.00),
+    rgba(255, 236, 200, 0.22),
+    rgba(255, 170, 80, 0.10),
+    rgba(255, 236, 200, 0.00)
+  );
+  opacity: 0.55;
+  mix-blend-mode: screen;
+  filter: blur(14px);
+  animation: shineSpin 2.4s linear infinite;
+}
+
+.sound-blob__dot{
+  width: 11px;
+  height: 11px;
+  border-radius: 999px;
+  background: rgba(255, 230, 170, 0.92);
+  box-shadow:
+    0 0 14px rgba(255, 190, 110, 0.55),
+    0 0 40px rgba(255, 140, 60, 0.18);
+  z-index:1;
+  flex: 0 0 auto;
+}
+
+.sound-blob__text{
+  z-index: 1;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+/* OFF → выглядит “грязнее/уличнее” */
+.sound-blob.is-off .sound-blob__bg{
+  border-color: rgba(255,255,255,0.14);
+  background:
+    radial-gradient(110px 90px at 25% 30%, rgba(255, 255, 255, 0.10), transparent 60%),
+    radial-gradient(140px 120px at 70% 70%, rgba(255, 160, 70, 0.10), transparent 62%),
+    linear-gradient(135deg, rgba(0,0,0,0.62), rgba(0,0,0,0.20));
+}
+
+.sound-blob.is-off .sound-blob__dot{
+  background: rgba(255, 236, 200, 0.70);
+  box-shadow: 0 0 10px rgba(255, 200, 120, 0.25);
+}
+
+.sound-blob.is-off .sound-blob__shine{ opacity: 0.35; }
+
+/* ON → ярче, “ламповее”, активнее живёт */
+.sound-blob.is-on{
+  border-radius: 58% 42% 64% 36% / 52% 65% 35% 48%;
+}
+.sound-blob.is-on .sound-blob__bg{
+  border-color: rgba(255, 200, 120, 0.42);
+  animation: blobFloat 2.1s ease-in-out infinite;
+}
+.sound-blob.is-on .sound-blob__shine{
+  opacity: 0.75;
+  animation: shineSpin 1.35s linear infinite;
+}
+.sound-blob.is-on .sound-blob__dot{
+  background: rgba(255, 160, 80, 0.98);
+}
+
+/* Сильная “желе” деформация при клике */
+@keyframes blobJelly {
+  0%   { transform: scale(1) rotate(0deg); border-radius: 34% 66% 44% 56% / 55% 38% 62% 45%; }
+  25%  { transform: scaleX(1.22) scaleY(0.78) rotate(-6deg); border-radius: 70% 30% 52% 48% / 44% 66% 34% 56%; }
+  55%  { transform: scaleX(0.82) scaleY(1.25) rotate(7deg); border-radius: 28% 72% 40% 60% / 70% 40% 60% 30%; }
+  80%  { transform: scaleX(1.10) scaleY(0.92) rotate(-3deg); border-radius: 60% 40% 68% 32% / 46% 58% 42% 54%; }
+  100% { transform: scale(1) rotate(0deg); border-radius: 34% 66% 44% 56% / 55% 38% 62% 45%; }
+}
+
+.sound-blob.jelly { animation: blobJelly 520ms cubic-bezier(.2,1,.2,1); }
+
+@keyframes blobFloat{
+  0%,100% { transform: translateY(0px) rotate(0deg); }
+  50%     { transform: translateY(-2px) rotate(0.6deg); }
+}
+
+@keyframes shineSpin{
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* accessibility */
+.sound-blob:focus-visible{
+  outline: 2px solid rgba(255, 236, 200, 0.85);
+  outline-offset: 4px;
+}
+
+/* если reduce motion — без треша */
+@media (prefers-reduced-motion: reduce){
+  .sound-blob__bg, .sound-blob__shine{ animation: none !important; }
+  .sound-blob.jelly{ animation: none !important; }
+}
+
+
