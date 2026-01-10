@@ -14,20 +14,13 @@
 </head>
 
 <body>
-  <!-- Кастомный курсор (появится только на ПК, если JS работает) -->
+
+  <!-- Кастомный курсор (луч света) -->
   <div id="custom-cursor" aria-hidden="true">
-    <svg width="60" height="40" viewBox="0 0 120 80" role="presentation" focusable="false">
-      <rect x="5" y="15" width="90" height="50" rx="15" ry="15" fill="#111" stroke="#fff" stroke-width="2" />
-      <circle cx="70" cy="40" r="12" fill="#333" stroke="#fff" stroke-width="2" />
-      <g id="aperture" transform="translate(70,40) scale(0)">
-        <polygon points="0,-8 2,-2 -2,-2" fill="#111" />
-        <polygon points="0,8 2,2 -2,2" fill="#111" />
-        <polygon points="-8,0 -2,-2 -2,2" fill="#111" />
-        <polygon points="8,0 2,-2 2,2" fill="#111" />
-      </g>
-      <circle id="record-light" cx="15" cy="25" r="5" fill="#ff0000" opacity="0" />
-    </svg>
+    <div class="beam"></div>
+    <div class="core"></div>
   </div>
+
 
   <!-- Шапка (фиксированная) -->
   <header class="site-header" id="header">
