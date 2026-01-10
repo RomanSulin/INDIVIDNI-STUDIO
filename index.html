@@ -101,22 +101,43 @@
     </section>
 
     <!-- SHOWREEL -->
-    <section id="showreel" class="section dark">
-      <div class="container reveal">
+<section id="showreel" class="section dark">
+  <div class="container reveal">
+    <div class="showreel-head">
+      <div>
         <h2>Шоу-рил</h2>
-        <p class="muted">Заменишь <code>VIDEO_ID</code> на id ролика YouTube/Vimeo — и всё заработает.</p>
-
-        <div class="video-embed" role="group" aria-label="Видео">
-          <iframe
-            src="https://www.youtube.com/embed/VIDEO_ID"
-            title="Showreel"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen
-          ></iframe>
-        </div>
+        <p class="muted">Видео играет автоматически (без звука). Звук включается кнопкой.</p>
       </div>
-    </section>
+
+      <button class="sound-btn" type="button" id="soundToggle" aria-pressed="false">
+        <span class="sound-btn__dot" aria-hidden="true"></span>
+        <span class="sound-btn__text">Вкл звук</span>
+      </button>
+    </div>
+
+    <div class="showreel-window">
+      <div class="showreel-sticker">RAW · STREET CUT</div>
+
+      <video
+        id="showreelVideo"
+        class="showreel-video"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="metadata"
+        poster="assets/showreel-poster.jpg"
+      >
+        <source src="assets/showreel.webm" type="video/webm">
+        <source src="assets/showreel.mp4" type="video/mp4">
+      </video>
+
+      <div class="grain" aria-hidden="true"></div>
+      <div class="scanlines" aria-hidden="true"></div>
+    </div>
+  </div>
+</section>
+
 
     <!-- SERVICES -->
     <section id="services" class="section">
