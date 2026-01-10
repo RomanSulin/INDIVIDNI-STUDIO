@@ -135,3 +135,39 @@ if (canUseCustomCursor) {
 // ===== Footer year
 const yearEl = document.getElementById('year');
 if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+
+// ===== Showreel sound toggle (jelly button)
+const v = document.getElementById('showreelVideo');
+const btn = document.getElementById('soundToggle');
+
+if (v && btn) {
+  const textEl = btn.querySelector('.sound-btn__text');
+
+  const setUI = (isOn) => {
+    btn.classList.toggle('is-on', isOn);
+    btn.setAttribute('aria-pressed', String(isOn));
+    if (textEl) textEl.textContent = isOn ? 'Выкл звук' : 'Вкл звук';
+
+    // перезапуск анимации "желе"
+    btn.classList.remove('jelly');
+    void btn.offsetWidth; // reflow
+    btn.classList.add('jelly');
+  };
+
+  // старт: autoplay почти всегда в muted (так и надо)
+  setUI(!v.muted);
+
+  btn.addEventListener('click', async () => {
+    const isTurningOn = v.muted;   // если было muted — включаем звук
+    v.muted = !isTurningOn;
+
+    // некоторые браузеры требуют play() после клика
+    if (isTurningOn) {
+      try { await v.play(); } catch (e) {}
+    }
+
+    setUI(isTurningOn);
+  });
+}
+
