@@ -1040,3 +1040,242 @@ body.hovered #custom-cursor .core{ opacity: 1; }
   .note.night{ width: 420px; }
   .clap{ width: min(560px, 92vw); right: -26px; bottom: -22px; }
 }
+
+
+/* ===== Ambient glow everywhere ===== */
+#ambientGlow{
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: .22;
+  mix-blend-mode: screen;
+  background: radial-gradient(800px 800px at var(--mx, 50vw) var(--my, 45vh),
+    rgba(255, 200, 120, 0.12),
+    rgba(255, 170, 90, 0.06) 35%,
+    rgba(0,0,0,0) 65%);
+  transition: opacity .25s ease;
+}
+
+body.glow-boost #ambientGlow{
+  opacity: .40;
+}
+
+/* ===== HERO: no frame + less top gap ===== */
+.hero.hero-cold{
+  position: relative;
+  min-height: 100svh;
+  padding-top: calc(var(--header-h, 76px) + 4px);
+  padding-bottom: 180px;   /* место под хлопушку между блоками */
+  background: #050505 !important;
+  background-image: none !important;
+  overflow: hidden;
+}
+
+/* сцена ближе к меню и больше */
+.hero-stage{
+  --reveal-x: 50%;
+  --reveal-y: 50%;
+  --reveal-r: 0px;
+
+  width: min(2000px, 98vw);
+  height: min(980px, 82vh);
+  position: relative;
+
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+
+  margin: 0 auto;
+  transform: translateY(-18px);
+}
+
+/* ЛОГО — оставляем крупным */
+.hero-logo{
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: auto;
+}
+
+.logo-layer{
+  position:absolute;
+  width: min(2100px, 100vw);
+  height:auto;
+  pointer-events:none;
+}
+
+.logo-layer.base{
+  opacity: .92;
+  filter: drop-shadow(0 30px 90px rgba(0,0,0,0.75));
+}
+
+.logo-layer.reveal{
+  opacity: 0.98;
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 80px rgba(255,160,70,0.10)) saturate(1.05) contrast(1.06);
+
+  -webkit-mask-image: radial-gradient(circle var(--reveal-r) at var(--reveal-x) var(--reveal-y),
+    rgba(0,0,0,1) 0%,
+    rgba(0,0,0,0) 70%);
+  mask-image: radial-gradient(circle var(--reveal-r) at var(--reveal-x) var(--reveal-y),
+    rgba(0,0,0,1) 0%,
+    rgba(0,0,0,0) 70%);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+
+  clip-path: circle(var(--reveal-r) at var(--reveal-x) var(--reveal-y));
+  transition: -webkit-mask-image .12s linear, mask-image .12s linear, clip-path .12s linear;
+}
+
+.reveal-glow{
+  position:absolute;
+  width: 760px;
+  height: 760px;
+  left: var(--reveal-x);
+  top: var(--reveal-y);
+  transform: translate(-50%, -50%);
+  pointer-events:none;
+  opacity: 0;
+  background: radial-gradient(circle at 50% 50%,
+    rgba(255, 200, 120, 0.18),
+    rgba(255, 170, 90, 0.08) 35%,
+    rgba(0,0,0,0) 70%);
+  filter: blur(12px);
+  transition: opacity .25s ease;
+}
+
+.hero-stage.is-hover .reveal-glow{ opacity: 1; }
+.hero-stage.is-hover{ --reveal-r: 380px; }
+.hero-stage.is-hover.is-open{ --reveal-r: 480px; }
+
+/* HUD — чуть крупнее и живой */
+.hero-hud{
+  position:absolute;
+  inset: 12px;
+  pointer-events:none;
+}
+.hero-hud .hud{
+  position:absolute;
+  height: 86px;
+  width: auto;
+  opacity: .9;
+  filter: drop-shadow(0 12px 30px rgba(0,0,0,0.65));
+}
+.hero-hud .rec{ left: 12px; top: 10px; height: 80px; }
+.hero-hud .fps{ right: 12px; top: 10px; height: 80px; opacity: .75; }
+.hero-hud .iso{ left: 12px; bottom: 10px; height: 82px; opacity: .45; }
+.hero-hud .tc{ right: 12px; bottom: 10px; height: 92px; opacity: .95; }
+
+@keyframes recBlink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: .25; }
+}
+.hero-stage.is-hover .hero-hud .rec{
+  animation: recBlink 1s steps(1,end) infinite;
+}
+
+/* NOTES / TAPE — как у тебя было: большие и раскиданы */
+.hero-notes{ position:absolute; inset:0; pointer-events:none; }
+.hero-notes .note{ position:absolute; filter: drop-shadow(0 24px 60px rgba(0,0,0,0.70)); opacity: .92; }
+
+.note.tape1{ left: 8%; top: 16%; width: 650px; transform: rotate(-24deg); }
+.note.tape2{ right: 6%; bottom: 18%; width: 760px; transform: rotate(18deg); }
+.note.keep{ left: 6%; top: 56%; width: 520px; transform: rotate(-10deg); }
+.note.night{ right: 6%; top: 40%; width: 620px; transform: rotate(7deg); }
+
+/* hint */
+.hero-hint{
+  position:absolute;
+  left: 50%;
+  bottom: 36px;
+  transform: translateX(-50%);
+  text-align:center;
+  pointer-events:none;
+  opacity: .9;
+}
+.hero-hint span{
+  display:block;
+  font-weight: 900;
+  letter-spacing: .22em;
+  font-size: 12px;
+  color: rgba(255,236,200,0.92);
+}
+.hero-hint small{
+  display:block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.62);
+}
+.hero-stage.is-hover .hero-hint{ opacity: 0.25; }
+
+/* ===== CLAPPER: smaller (÷1.5) + between blocks ===== */
+.clap.dock{
+  --clapAngle: 0deg;
+
+  position: absolute;
+  left: 50%;
+  bottom: -105px;                /* уходит между блоками */
+  transform: translateX(-50%);
+
+  width: clamp(380px, 30vw, 650px);  /* было больше — уменьшили ~в 1.5 раза */
+  aspect-ratio: 1.18 / 1;
+
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  user-select: none;
+
+  z-index: 10;
+  filter: drop-shadow(0 26px 80px rgba(0,0,0,0.75));
+}
+
+.clap.dock img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit: contain;
+  pointer-events:none;
+}
+
+.clap.dock .clap-top{
+  transform-origin: 22% 72%;
+  transform: rotate(var(--clapAngle));
+  transition: transform .18s linear;
+}
+
+.clap-hint{
+  position:absolute;
+  left: 18%;
+  top: 12%;
+  transform: rotate(-10deg);
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(0,0,0,0.35);
+  color: rgba(255,236,200,0.92);
+  font-weight: 800;
+  letter-spacing: .18em;
+  font-size: 12px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 18px 50px rgba(0,0,0,0.55);
+}
+
+@keyframes hintPulse{
+  0%,100%{ transform: rotate(-10deg) translateY(0px); opacity: .85; }
+  50%{ transform: rotate(-10deg) translateY(-5px); opacity: 1; }
+}
+.clap.dock .clap-hint{ animation: hintPulse 1.2s ease-in-out infinite; }
+.clap.dock.touched .clap-hint{ animation: none; opacity: .65; }
+
+@media (max-width: 820px){
+  .hero-stage{ height: min(920px, 82vh); }
+  .clap.dock{ bottom: -95px; width: min(560px, 92vw); }
+  .note.tape1, .note.tape2{ width: 420px; }
+  .note.keep{ width: 360px; }
+  .note.night{ width: 420px; }
+}
