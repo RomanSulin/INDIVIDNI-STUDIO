@@ -57,7 +57,7 @@ nav ul li a:hover::after {
 }
 
 
-body {
+body, a, button {
   cursor: none; /* скрываем стандартный курсор */
 }
 
@@ -68,20 +68,12 @@ body {
   pointer-events: none;
   transform: translate(-50%, -50%);
   z-index: 10000;
-  transition: transform 0.05s linear;
 }
 
-/* Анимация объектива при hover */
-#lens {
-  transition: transform 0.3s ease;
+#lens, #record-light {
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-/* Анимация лампочки */
-#record-light {
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-/* Hover активное состояние */
 body.hovered #lens {
   transform: translateX(5px) scale(1.2); /* объектив выезжает */
 }
