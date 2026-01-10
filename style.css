@@ -1,3 +1,42 @@
+/* Основной стиль кнопки */
+.btn-contact {
+  padding: 12px 30px;
+  background: #111; /* темная кнопка */
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 50px; /* скругление, "бочка" */
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  text-transform: uppercase; /* заглавные буквы */
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  display: inline-block;
+  transform-origin: center center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Эффект при наведении */
+.btn-contact:hover {
+  color: #fff;
+  border-color: #fff;
+  font-family: 'Arial', sans-serif; /* меняем на классический */
+  font-size: 20px; /* увеличиваем размер */
+  transform: scaleY(1.4); /* растягиваем вертикально */
+}
+
+/* Плавный переход для текста */
+.btn-contact span {
+  display: inline-block;
+  transition: transform 0.4s ease;
+}
+
+.btn-contact:hover span {
+  transform: scaleY(1.4); /* растягиваем текст */
+}
+
 
 * {
   margin: 0;
