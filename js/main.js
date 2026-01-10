@@ -173,7 +173,7 @@ if (v && btn) {
 
 // ===== HERO reveal: SCROLL (no dragging) =====
 (() => {
-  const section = document.getElementById('heroCold');
+  const section = document.querySelector('.hero-cold');   // <-- важно!
   const stage = document.getElementById('heroStage');
   if (!section || !stage) return;
 
@@ -188,17 +188,15 @@ if (v && btn) {
     const rect = section.getBoundingClientRect();
     const vh = window.innerHeight;
 
-    // мы сделали секцию ~180vh, поэтому прогресс идёт по “лишней” высоте
     const total = Math.max(1, rect.height - vh);
     const scrolled = clamp(-rect.top, 0, total);
-    const p = scrolled / total;          // 0..1
+    const p = scrolled / total;
     const e = easeInOutCubic(p);
 
     const pct = Math.round(e * 100);
     stage.style.setProperty('--reveal', `${pct}%`);
     stage.style.setProperty('--clapAngle', `${(-70 * e).toFixed(2)}deg`);
 
-    // “live mode” включаем, когда человек начал скроллить сцену
     if (p > 0.03) stage.classList.add('is-live');
     else stage.classList.remove('is-live');
   };
@@ -211,7 +209,6 @@ if (v && btn) {
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onScroll, { passive: true });
 
-  // старт
   update();
 })();
 
