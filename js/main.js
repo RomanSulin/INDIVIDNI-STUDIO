@@ -1,3 +1,4 @@
+document.documentElement.classList.add('js');
 // ===== Header on scroll
 const header = document.getElementById('header');
 const onScroll = () => {
