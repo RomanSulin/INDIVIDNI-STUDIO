@@ -48,58 +48,53 @@
 
   <main>
     <!-- HERO -->
-<section id="home" class="hero hero-cold">
-  <div class="hero-stage" id="heroStage">
+<section id="home" class="hero hero-cold" id="heroCold">
+  <div class="hero-sticky">
+    <div class="hero-stage" id="heroStage">
 
-    <!-- ЛОГО: 3 слоя -->
-    <div class="hero-logo">
-      <img class="logo-layer base" src="assets/hero/INDIVIDNI_3.png" alt="INDIVIDNI">
-      <img class="logo-layer tech" src="assets/hero/INDIVIDNI_5.png" alt="" aria-hidden="true">
-      <img class="logo-layer reveal" src="assets/hero/INDIVIDNI_2.png" alt="" aria-hidden="true">
+      <!-- ЛОГО: 2 слоя -->
+      <div class="hero-logo">
+        <img class="logo-layer base" src="assets/hero/INDIVIDNI_3.png" alt="INDIVIDNI">
+        <img class="logo-layer reveal" src="assets/hero/INDIVIDNI_2.png" alt="" aria-hidden="true">
 
-      <!-- Скан-полоса (визуальный “проявлятор”) -->
-      <div class="hero-scan" aria-hidden="true"></div>
+        <!-- Скан-полоса (чуть киношности) -->
+        <div class="hero-scan" aria-hidden="true"></div>
+      </div>
+
+      <!-- HUD -->
+      <div class="hero-hud" aria-hidden="true">
+        <img class="hud rec" src="assets/hero/rec_1.png" alt="">
+        <img class="hud fps" src="assets/hero/FPS_1.png" alt="">
+        <img class="hud iso" src="assets/hero/ISO.png" alt="">
+        <img class="hud tc" src="assets/hero/TIME_CODE_1.png" alt="">
+      </div>
+
+      <!-- НАКЛЕЙКИ / СКОТЧ -->
+      <div class="hero-notes" aria-hidden="true">
+        <img class="note tape1" src="assets/hero/Tip_1.png" alt="">
+        <img class="note tape2" src="assets/hero/Tip_2.png" alt="">
+
+        <!-- ВНИМАНИЕ: у тебя файл с пробелом "KEEP RAW.png" -->
+        <img class="note keep" src="assets/hero/KEEP%20RAW.png" alt="">
+        <img class="note night" src="assets/hero/NIGHT_TAKE.png" alt="">
+      </div>
+
+      <!-- Подсказка (теперь скролл, а не drag) -->
+      <div class="scroll-hint" aria-hidden="true">
+        <span class="scroll-hint__label">SCROLL</span>
+        <span class="scroll-hint__sub">to reveal</span>
+      </div>
+
+      <!-- Хлопушка (теперь декоративно “открывается” от скролла) -->
+      <div class="clap" aria-hidden="true">
+        <img class="clap-base" src="assets/hero/clapperboard_1.png" alt="">
+        <img class="clap-top" src="assets/hero/clapperboard_2.png" alt="">
+      </div>
+
     </div>
-
-    <!-- HUD -->
-    <div class="hero-hud" aria-hidden="true">
-      <img class="hud rec" src="assets/hero/rec_1.png" alt="">
-      <img class="hud fps" src="assets/hero/FPS_1.png" alt="">
-      <img class="hud iso" src="assets/hero/ISO.png" alt="">
-      <img class="hud tc" src="assets/hero/TIME_CODE_1.png" alt="">
-    </div>
-
-    <!-- НАКЛЕЙКИ / СКОТЧ -->
-    <div class="hero-notes" aria-hidden="true">
-      <img class="note drag" src="assets/hero/DRAG_TO_REVEAL.png" alt="">
-      <img class="note tape1" src="assets/hero/Tip_1.png" alt="">
-      <img class="note tape2" src="assets/hero/Tip_2.png" alt="">
-
-      <!-- если переименовал -> KEEP_RAW.png -->
-      <img class="note keep" src="assets/hero/KEEP_RAW.png" alt="">
-      <!-- если НЕ переименовывал, используй вот так: -->
-      <!-- <img class="note keep" src="assets/hero/KEEP%20RAW.png" alt=""> -->
-
-      <img class="note night" src="assets/hero/NIGHT_TAKE.png" alt="">
-    </div>
-
-    <!-- “Хэндл” — хлопушка (таскается вправо/влево) -->
-    <div
-      class="clap"
-      id="clapHandle"
-      role="slider"
-      aria-label="Reveal"
-      aria-valuemin="0"
-      aria-valuemax="100"
-      aria-valuenow="0"
-      tabindex="0"
-    >
-      <img class="clap-base" src="assets/hero/clapperboard_1.png" alt="" aria-hidden="true">
-      <img class="clap-top" src="assets/hero/clapperboard_2.png" alt="" aria-hidden="true">
-    </div>
-
   </div>
 </section>
+
 
 
     <!-- STUDIO -->
