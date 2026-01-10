@@ -69,15 +69,38 @@ if (canUseCustomCursor) {
   let prevX = null;
   let prevY = null;
 
-  // лёгкое сглаживание позиции
+  // позиция курсора (сглаживание)
   let cx = 0, cy = 0;
   let tx = 0, ty = 0;
 
+  // угол луча (сглаживание + правильный переход через -180/180)
+  let currentAngle = 0; // фактический угол (в градусах)
+  let targetAngle = 0;  // куда хотим повернуться
+
+  const normalize180 = (a) => {
+    // приводит угол к диапазону [-180, 180)
+    a = ((a + 180) % 360 + 360) % 360 - 180;
+    return a;
+  };
+
+  const shortestAngleDelta = (from, to) => {
+    // возвращает разницу по кратчайшему пути
+    const delta = normalize180(to - from);
+    return delta;
+  };
+
   const tick = () => {
+    // плавно двигаем позицию
     cx += (tx - cx) * 0.22;
     cy += (ty - cy) * 0.22;
     cursor.style.top = cy + 'px';
     cursor.style.left = cx + 'px';
+
+    // плавно поворачиваем луч по кратчайшему пути
+    const d = shortestAngleDelta(currentAngle, targetAngle);
+    currentAngle = normalize180(currentAngle + d * 0.18); // 0.18 = скорость поворота
+    cursor.style.setProperty('--angle', currentAngle + 'deg');
+
     requestAnimationFrame(tick);
   };
   requestAnimationFrame(tick);
@@ -90,10 +113,9 @@ if (canUseCustomCursor) {
       const dx = e.clientX - prevX;
       const dy = e.clientY - prevY;
 
-      // если мышь реально двигается — поворачиваем луч
+      // если мышь реально двигается — обновляем целевой угол
       if (Math.abs(dx) + Math.abs(dy) > 1) {
-        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-        cursor.style.setProperty('--angle', angle + 'deg');
+        targetAngle = Math.atan2(dy, dx) * 180 / Math.PI;
       }
     }
 
@@ -107,6 +129,7 @@ if (canUseCustomCursor) {
     el.addEventListener('mouseleave', () => document.body.classList.remove('hovered'));
   });
 }
+
 
 
 // ===== Footer year
