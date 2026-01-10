@@ -98,7 +98,7 @@ if (canUseCustomCursor) {
 
     // плавно поворачиваем луч по кратчайшему пути
     const d = shortestAngleDelta(currentAngle, targetAngle);
-    currentAngle = normalize180(currentAngle + d * 0.18); // 0.18 = скорость поворота
+    currentAngle = normalize180(currentAngle + d * 0.12); // 0.18 = скорость поворота
     cursor.style.setProperty('--angle', currentAngle + 'deg');
 
     requestAnimationFrame(tick);
