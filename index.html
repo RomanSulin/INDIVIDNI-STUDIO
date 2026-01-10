@@ -1,3 +1,157 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Individni Videoproduction</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* Сброс базовых стилей */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: #fff;
+      color: #111;
+    }
+
+    /* Шапка */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 60px;
+      background: rgba(0,0,0,0.0); /* прозрачная изначально */
+      transition: background 0.3s ease, padding 0.3s ease;
+      z-index: 1000;
+    }
+
+    header.scrolled {
+      background: rgba(0,0,0,0.85); /* фон при скролле */
+      padding: 10px 60px;
+    }
+
+    /* Логотип */
+    .logo {
+      font-weight: 600;
+      font-size: 24px;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: pointer;
+    }
+
+    /* Меню */
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 40px;
+    }
+
+    nav ul li {
+      position: relative;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      color: #00bcd4; /* акцентный цвет */
+    }
+
+    nav ul li a::after {
+      content: '';
+      display: block;
+      height: 2px;
+      width: 0;
+      background: #00bcd4;
+      transition: width 0.3s;
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+    }
+
+    nav ul li a:hover::after {
+      width: 100%;
+    }
+
+    /* Кнопка контакта */
+    .btn-contact {
+      padding: 10px 20px;
+      background: #00bcd4;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-contact:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 15px rgba(0,188,212,0.4);
+    }
+
+    /* Контент под шапкой */
+    main {
+      margin-top: 100px;
+      padding: 60px;
+    }
+  </style>
+</head>
+<body>
+
+  <header id="header">
+    <div class="logo">Individni</div>
+    <nav>
+      <ul>
+        <li><a href="#">Главная</a></li>
+        <li><a href="#">Студия</a></li>
+        <li><a href="#">Работы</a></li>
+        <li><a href="#">Услуги</a></li>
+        <li><a href="#">Контакты</a></li>
+      </ul>
+    </nav>
+    <button class="btn-contact">Связаться</button>
+  </header>
+
+  <main>
+    <h1>Добро пожаловать на Individni Videoproduction</h1>
+    <p>Здесь будет ваш премиальный контент...</p>
+    <div style="height:2000px;"></div>
+  </main>
+
+  <script>
+    // Скрипт для изменения фона шапки при скролле
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', () => {
+      if(window.scrollY > 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+  </script>
+
+</body>
+</html>
+
+
+
+
+
 
 <!DOCTYPE html>
 <html lang="en">
