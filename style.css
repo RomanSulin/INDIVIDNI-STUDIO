@@ -395,12 +395,12 @@ a:focus-visible, button:focus-visible{
 
 
 
-/* ===== Spotlight cursor (beam of light) ===== */
+/* ===== Spotlight cursor (warm cinematic beam) ===== */
 #custom-cursor{
-  display:none;               /* включится только когда JS добавит cursor-on */
+  display:none;
   position:fixed;
   top:0; left:0;
-  width:18px; height:18px;    /* размер "лампы" */
+  width:18px; height:18px;
   pointer-events:none;
   transform:translate(-50%, -50%);
   z-index:10000;
@@ -409,20 +409,20 @@ a:focus-visible, button:focus-visible{
 
 body.cursor-on #custom-cursor{ display:block; }
 
-/* сам "источник" света */
+/* источник света (тёплый) */
 #custom-cursor .core{
   position:absolute;
   inset:0;
   border-radius:999px;
-  background: rgba(255,255,255,0.95);
+  background: rgba(255, 236, 200, 0.95);
   box-shadow:
-    0 0 10px rgba(255,255,255,0.55),
-    0 0 30px rgba(255,255,255,0.20),
-    0 0 70px rgba(255,255,255,0.12);
-  opacity: 0.85;
+    0 0 10px rgba(255, 220, 160, 0.55),
+    0 0 30px rgba(255, 200, 120, 0.22),
+    0 0 80px rgba(255, 170, 80, 0.14);
+  opacity: 0.9;
 }
 
-/* конус света */
+/* конус света (тёплый) */
 #custom-cursor .beam{
   position:absolute;
   left:0;
@@ -433,23 +433,22 @@ body.cursor-on #custom-cursor{ display:block; }
   transform: translateY(-50%) rotate(var(--angle));
   clip-path: polygon(0 50%, 100% 0, 100% 100%);
 
-  /* сам свет: от яркого у источника к прозрачному */
   background:
     radial-gradient(closest-side at 0% 50%,
-      rgba(255,255,255,0.28),
-      rgba(255,255,255,0.14) 35%,
-      rgba(255,255,255,0.06) 60%,
-      rgba(255,255,255,0.00) 100%),
+      rgba(255, 214, 140, 0.30),
+      rgba(255, 194, 110, 0.16) 35%,
+      rgba(255, 170, 80, 0.07) 60%,
+      rgba(255, 160, 70, 0.00) 100%),
     linear-gradient(90deg,
-      rgba(255,255,255,0.18),
-      rgba(255,255,255,0.00) 70%);
+      rgba(255, 200, 120, 0.18),
+      rgba(255, 170, 80, 0.00) 70%);
 
   filter: blur(2px);
-  opacity: 0.65;
-  mix-blend-mode: screen; /* красиво на тёмном фоне */
+  opacity: 0.70;
+  mix-blend-mode: screen;
 }
 
-/* чуть усиливаем эффект при наведении на кликабельное */
+/* усиление при наведении */
 body.hovered #custom-cursor .beam{ opacity: 0.85; filter: blur(1.5px); }
 body.hovered #custom-cursor .core{ opacity: 1; }
 
@@ -457,6 +456,7 @@ body.hovered #custom-cursor .core{ opacity: 1; }
 @media (hover:none), (pointer:coarse){
   #custom-cursor{ display:none !important; }
 }
+
 
   .reveal{opacity:1;transform:none;transition:none;}
 }
