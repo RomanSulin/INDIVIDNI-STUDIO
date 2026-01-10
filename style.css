@@ -771,4 +771,208 @@ body.hovered #custom-cursor .core{ opacity: 1; }
   .sound-blob.jelly{ animation: none !important; }
 }
 
+/* ===== HERO: Cold open / Reveal ===== */
+.hero-cold{
+  padding-top: calc(var(--header-h) + 10px);
+  min-height: calc(100svh - var(--header-h));
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(1200px 600px at 50% 40%, rgba(255,255,255,0.04), transparent 60%);
+}
+
+.hero-stage{
+  --reveal: 0%;
+  --handleX: 0px;
+  --clapAngle: 0deg;
+
+  width: min(1200px, 96vw);
+  height: min(620px, 72vh);
+  position: relative;
+  border-radius: 26px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.0));
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.hero-stage::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(800px 400px at 50% 35%, rgba(255,180,90,0.07), transparent 60%),
+    radial-gradient(900px 500px at 50% 65%, rgba(255,255,255,0.03), transparent 65%);
+  opacity: .9;
+}
+
+.hero-logo{
+  position:absolute;
+  inset: 0;
+  display:grid;
+  place-items:center;
+  padding: 40px 20px 100px;
+}
+
+.logo-layer{
+  position:absolute;
+  width: min(1100px, 94vw);
+  height: auto;
+  max-width: 100%;
+  display:block;
+  pointer-events:none;
+}
+
+.logo-layer.base{
+  opacity: .85;
+  filter: drop-shadow(0 24px 70px rgba(0,0,0,0.65));
+}
+
+.logo-layer.tech{
+  opacity: .0;
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 40px rgba(255,255,255,0.08));
+  transition: opacity .35s ease;
+}
+
+.logo-layer.reveal{
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 50px rgba(255,160,70,0.08));
+  clip-path: inset(0 calc(100% - var(--reveal)) 0 0);
+  transition: clip-path .65s cubic-bezier(.2,.9,.2,1);
+}
+
+.hero-stage[data-dragging="true"] .logo-layer.reveal{
+  transition: none;
+}
+
+/* scan line */
+.hero-scan{
+  position:absolute;
+  top: 10%;
+  bottom: 14%;
+  width: 120px;
+  left: var(--reveal);
+  transform: translateX(-50%);
+  pointer-events:none;
+  opacity: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 200, 120, 0.20), transparent 60%);
+  filter: blur(6px);
+  transition: opacity .25s ease;
+}
+.hero-stage.is-live .hero-scan{ opacity: .9; }
+
+/* HUD positions */
+.hero-hud{
+  position:absolute;
+  inset: 18px;
+  pointer-events:none;
+}
+.hero-hud .hud{
+  position:absolute;
+  height: 56px;
+  width: auto;
+  opacity: .92;
+  filter: drop-shadow(0 10px 24px rgba(0,0,0,0.55));
+}
+.hero-hud .rec{ left: 10px; top: 8px; height: 52px; }
+.hero-hud .fps{ right: 10px; top: 8px; height: 52px; }
+.hero-hud .iso{ left: 10px; bottom: 10px; height: 56px; opacity: .55; }
+.hero-hud .tc{ right: 10px; bottom: 10px; height: 60px; opacity: .9; }
+
+/* notes / tape */
+.hero-notes{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+.hero-notes .note{
+  position:absolute;
+  width: auto;
+  height: auto;
+  filter: drop-shadow(0 18px 40px rgba(0,0,0,0.55));
+}
+
+.note.drag{
+  left: 50%;
+  bottom: 110px;
+  transform: translateX(-50%) rotate(-1deg);
+  height: 54px;
+  opacity: .9;
+}
+.note.tape1{
+  left: 50%;
+  bottom: 148px;
+  transform: translateX(-200px) rotate(-12deg);
+  height: 70px;
+  opacity: .85;
+}
+.note.tape2{
+  left: 50%;
+  bottom: 140px;
+  transform: translateX(170px) rotate(10deg);
+  height: 72px;
+  opacity: .85;
+}
+
+.note.keep{
+  left: 6%;
+  top: 48%;
+  transform: rotate(-8deg);
+  height: 44px;
+  opacity: .85;
+}
+.note.night{
+  right: 6%;
+  top: 40%;
+  transform: rotate(6deg);
+  height: 54px;
+  opacity: .85;
+}
+
+/* clap handle */
+.clap{
+  position:absolute;
+  left: 6%;
+  bottom: 26px;
+  transform: translateX(var(--handleX)) rotate(-1deg);
+  width: 280px;
+  height: 200px;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  z-index: 5;
+}
+.clap:active{ cursor: grabbing; }
+
+.clap img{
+  position:absolute;
+  left:0; top:0;
+  width:100%;
+  height:100%;
+  object-fit: contain;
+  pointer-events:none;
+}
+
+.clap-top{
+  transform-origin: 22% 72%;
+  transform: rotate(var(--clapAngle));
+  transition: transform .35s cubic-bezier(.2,.9,.2,1);
+}
+
+.hero-stage[data-dragging="true"] .clap-top{
+  transition: none;
+}
+
+/* tech layer appears while interacting */
+.hero-stage.is-live .logo-layer.tech{ opacity: .65; }
+
+/* mobile sizing */
+@media (max-width: 720px){
+  .hero-stage{ height: min(560px, 78vh); }
+  .clap{ width: 240px; height: 180px; }
+  .note.drag{ height: 46px; bottom: 104px; }
+}
 
