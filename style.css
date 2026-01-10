@@ -57,12 +57,10 @@ nav ul li a:hover::after {
 }
 
 
-/* Скрываем стандартный курсор */
 body, a, button {
-  cursor: none;
+  cursor: none; /* скрываем стандартный курсор */
 }
 
-/* Курсор */
 #custom-cursor {
   position: fixed;
   top: 0;
@@ -70,20 +68,23 @@ body, a, button {
   pointer-events: none;
   transform: translate(-50%, -50%);
   z-index: 10000;
+  transition: transform 0.05s linear;
 }
 
-/* Объектив и лампочка */
-#lens, #lens-glass, #record-light {
-  transition: transform 0.3s ease, opacity 0.3s ease;
+/* Диафрагма */
+#aperture {
+  transform-origin: center center;
+  transition: transform 0.3s ease;
 }
 
-/* Hover состояние */
-body.hovered #lens {
-  transform: translateX(5px) scale(1.2); /* объектив выезжает */
+/* Красная лампочка */
+#record-light {
+  transition: opacity 0.3s ease;
 }
 
-body.hovered #lens-glass {
-  transform: translateX(5px) scale(1.2); /* стекло объектива движется вместе */
+/* Hover на интерактивные элементы */
+body.hovered #aperture {
+  transform: translate(70px,40px) scale(1); /* диафрагма “открывается” */
 }
 
 body.hovered #record-light {
