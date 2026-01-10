@@ -379,13 +379,10 @@ a:focus-visible, button:focus-visible{
 }
 
 /* Reveal */
-/* Reveal (без JS всё видно) */
-.reveal{
-  opacity: 1;
-  transform: none;
-}
+/* Reveal: без JS всё видно */
+.reveal { opacity: 1; transform: none; }
 
-/* Если JS включился — тогда прячем и плавно показываем */
+/* Анимация только когда JS загрузился */
 .js .reveal{
   opacity: 0;
   transform: translateY(14px);
@@ -395,6 +392,7 @@ a:focus-visible, button:focus-visible{
   opacity: 1;
   transform: none;
 }
+
 
 
 /* Custom cursor */
