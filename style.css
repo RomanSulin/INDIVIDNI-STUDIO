@@ -57,10 +57,12 @@ nav ul li a:hover::after {
 }
 
 
+/* Скрываем стандартный курсор */
 body, a, button {
-  cursor: none; /* скрываем стандартный курсор */
+  cursor: none;
 }
 
+/* Курсор */
 #custom-cursor {
   position: fixed;
   top: 0;
@@ -70,12 +72,18 @@ body, a, button {
   z-index: 10000;
 }
 
-#lens, #record-light {
+/* Объектив и лампочка */
+#lens, #lens-glass, #record-light {
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
+/* Hover состояние */
 body.hovered #lens {
   transform: translateX(5px) scale(1.2); /* объектив выезжает */
+}
+
+body.hovered #lens-glass {
+  transform: translateX(5px) scale(1.2); /* стекло объектива движется вместе */
 }
 
 body.hovered #record-light {
