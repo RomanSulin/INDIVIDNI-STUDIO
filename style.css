@@ -395,32 +395,68 @@ a:focus-visible, button:focus-visible{
 
 
 
-/* Custom cursor */
+/* ===== Spotlight cursor (beam of light) ===== */
 #custom-cursor{
-  display:none; /* включится только когда JS добавит cursor-on */
+  display:none;               /* включится только когда JS добавит cursor-on */
   position:fixed;
-  top:0;left:0;
+  top:0; left:0;
+  width:18px; height:18px;    /* размер "лампы" */
   pointer-events:none;
   transform:translate(-50%, -50%);
   z-index:10000;
+  --angle: 0deg;
 }
-body.cursor-on #custom-cursor{display:block;}
 
-#aperture{
-  transform-origin:center center;
-  transition:transform .25s ease;
-}
-#record-light{
-  transition:opacity .25s ease, transform .25s ease;
-}
-body.hovered #aperture{transform:translate(70px, 40px) scale(1);}
-body.hovered #record-light{opacity:1;transform:scale(1.3);}
+body.cursor-on #custom-cursor{ display:block; }
 
+/* сам "источник" света */
+#custom-cursor .core{
+  position:absolute;
+  inset:0;
+  border-radius:999px;
+  background: rgba(255,255,255,0.95);
+  box-shadow:
+    0 0 10px rgba(255,255,255,0.55),
+    0 0 30px rgba(255,255,255,0.20),
+    0 0 70px rgba(255,255,255,0.12);
+  opacity: 0.85;
+}
+
+/* конус света */
+#custom-cursor .beam{
+  position:absolute;
+  left:0;
+  top:50%;
+  width:520px;
+  height:320px;
+  transform-origin: 0% 50%;
+  transform: translateY(-50%) rotate(var(--angle));
+  clip-path: polygon(0 50%, 100% 0, 100% 100%);
+
+  /* сам свет: от яркого у источника к прозрачному */
+  background:
+    radial-gradient(closest-side at 0% 50%,
+      rgba(255,255,255,0.28),
+      rgba(255,255,255,0.14) 35%,
+      rgba(255,255,255,0.06) 60%,
+      rgba(255,255,255,0.00) 100%),
+    linear-gradient(90deg,
+      rgba(255,255,255,0.18),
+      rgba(255,255,255,0.00) 70%);
+
+  filter: blur(2px);
+  opacity: 0.65;
+  mix-blend-mode: screen; /* красиво на тёмном фоне */
+}
+
+/* чуть усиливаем эффект при наведении на кликабельное */
+body.hovered #custom-cursor .beam{ opacity: 0.85; filter: blur(1.5px); }
+body.hovered #custom-cursor .core{ opacity: 1; }
+
+/* на мобилках выключаем */
 @media (hover:none), (pointer:coarse){
-  body, a, button { cursor:auto; }
   #custom-cursor{ display:none !important; }
 }
-@media (prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto;}
+
   .reveal{opacity:1;transform:none;transition:none;}
 }
