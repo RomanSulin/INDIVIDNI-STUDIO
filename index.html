@@ -48,10 +48,15 @@
 
   <main>
     <!-- HERO -->
-<section id="home" class="hero hero-cold">
+<section id="home" class="hero hero-cold" id="heroSection">
+
+  <!-- Глобальный мягкий свет по всему сайту -->
+  <div id="ambientGlow" aria-hidden="true"></div>
+
+  <!-- СЦЕНА -->
   <div class="hero-stage" id="heroStage">
 
-    <!-- ЛОГО: 2 слоя (base + reveal) -->
+    <!-- ЛОГО -->
     <div class="hero-logo" id="heroLogo">
       <img class="logo-layer base" src="assets/hero/INDIVIDNI_3.png" alt="INDIVIDNI">
       <img class="logo-layer reveal" src="assets/hero/INDIVIDNI_2.png" alt="" aria-hidden="true">
@@ -66,7 +71,7 @@
       <img class="hud tc" src="assets/hero/TIME_CODE_1.png" alt="">
     </div>
 
-    <!-- НАКЛЕЙКИ / СКОТЧ -->
+    <!-- NOTES / TAPE -->
     <div class="hero-notes" aria-hidden="true">
       <img class="note tape1" src="assets/hero/Tip_1.png" alt="">
       <img class="note tape2" src="assets/hero/Tip_2.png" alt="">
@@ -74,21 +79,23 @@
       <img class="note night" src="assets/hero/NIGHT_TAKE.png" alt="">
     </div>
 
-    <!-- ХЛОПУШКА (клик/тап) -->
-    <button class="clap" id="clapButton" type="button" aria-label="Clapperboard">
-      <img class="clap-base" src="assets/hero/clapperboard_1.png" alt="" aria-hidden="true">
-      <img class="clap-top" src="assets/hero/clapperboard_2.png" alt="" aria-hidden="true">
-      <span class="clap-hint" aria-hidden="true">TAP</span>
-    </button>
-
-    <!-- маленький триггер (не скролл) -->
+    <!-- маленький триггер -->
     <div class="hero-hint" aria-hidden="true">
       <span>MOVE LIGHT</span>
       <small>hover the logo</small>
     </div>
 
   </div>
+
+  <!-- ХЛОПУШКА ВНЕ СЦЕНЫ: между hero и следующим блоком -->
+  <button class="clap dock" id="clapButton" type="button" aria-label="Clapperboard">
+    <img class="clap-base" src="assets/hero/clapperboard_1.png" alt="" aria-hidden="true">
+    <img class="clap-top" src="assets/hero/clapperboard_2.png" alt="" aria-hidden="true">
+    <span class="clap-hint" aria-hidden="true">TAP</span>
+  </button>
+
 </section>
+
 
 
 
