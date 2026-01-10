@@ -1,28 +1,48 @@
-/* Ссылки меню */
+/* Базовые ссылки меню */
 nav ul li a {
   text-decoration: none;
   color: #fff;
-  font-weight: 600;
-  font-size: 16px;
+  font-weight: 800;
+  font-size: 18px;
   text-transform: uppercase;
-  letter-spacing: 2px;
-  font-family: 'Montserrat', sans-serif; /* дизайнерский шрифт "бочка" */
-  transition: all 0.4s ease;
+  letter-spacing: 3px;
+  font-family: 'Poppins', 'Montserrat', sans-serif;
   display: inline-block;
+  transition: all 0.4s ease;
+  position: relative;
+  padding: 5px 0;
 }
 
-/* Для анимации текста оборачиваем в span */
+/* Подчеркивание по умолчанию */
+nav ul li a::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #fff, #aaa);
+  transition: width 0.4s ease;
+}
+
+/* Текст для анимации */
 nav ul li a span {
   display: inline-block;
-  transition: transform 0.4s ease, font-family 0.4s ease, font-size 0.4s ease;
+  transition: transform 0.4s ease, font-weight 0.3s ease, color 0.4s ease;
+  transform-origin: bottom center;
 }
 
 /* Hover эффект */
 nav ul li a:hover span {
-  transform: scaleY(1.6); /* растягиваем вертикально */
-  font-family: 'Arial', sans-serif; /* классический шрифт */
-  font-size: 20px; /* увеличиваем текст */
-  color: #fff; /* оставляем белым, без бирюзового */
+  transform: scaleY(1.5) translateY(-2px); /* вертикальное растяжение и легкий подъем */
+  font-weight: 900;
+  color: #fff; /* можно добавить мягкий градиент позже */
+}
+
+/* Подчеркивание при наведении */
+nav ul li a:hover::after {
+  width: 100%;
 }
 
 
