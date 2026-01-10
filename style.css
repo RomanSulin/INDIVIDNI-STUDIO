@@ -57,6 +57,41 @@ nav ul li a:hover::after {
 }
 
 
+body {
+  cursor: none; /* скрываем стандартный курсор */
+}
+
+#custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 10000;
+  transition: transform 0.05s linear;
+}
+
+/* Анимация объектива при hover */
+#lens {
+  transition: transform 0.3s ease;
+}
+
+/* Анимация лампочки */
+#record-light {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Hover активное состояние */
+body.hovered #lens {
+  transform: translateX(5px) scale(1.2); /* объектив выезжает */
+}
+
+body.hovered #record-light {
+  opacity: 1; /* лампочка загорается */
+  transform: scale(1.3);
+}
+
+
 
 
 
