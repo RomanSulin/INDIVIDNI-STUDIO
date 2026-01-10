@@ -771,6 +771,13 @@ body.hovered #custom-cursor .core{ opacity: 1; }
   .sound-blob.jelly{ animation: none !important; }
 }
 
+/* ===== Убираем фон ===== */
+.hero.hero-cold{
+  background: #050505 !important;
+  background-image: none !important;
+}
+
+
 /* ===== HERO: Cold open / Reveal (SCROLL) ===== */
 .hero-cold{
   /* делаем “сцену” длиннее, чтобы было что скроллить */
