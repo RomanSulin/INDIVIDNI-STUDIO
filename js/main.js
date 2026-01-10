@@ -171,44 +171,62 @@ if (v && btn) {
   });
 }
 
-// ===== HERO reveal: SCROLL (no dragging) =====
+// ===== HERO reveal: hover spotlight + clapper tap =====
 (() => {
-  const section = document.querySelector('.hero-cold');   // <-- важно!
   const stage = document.getElementById('heroStage');
-  if (!section || !stage) return;
+  const logo = document.getElementById('heroLogo');
+  const clap = document.getElementById('clapButton');
+  if (!stage || !logo) return;
 
-  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-  const easeInOutCubic = (t) => (t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2);
-
+  // плавное следование “света”
+  let tx = 50, ty = 50;
+  let cx = 50, cy = 50;
   let raf = 0;
 
-  const update = () => {
-    raf = 0;
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const lerp = (a, b, t) => a + (b - a) * t;
 
-    const rect = section.getBoundingClientRect();
-    const vh = window.innerHeight;
+  const tick = () => {
+    cx = lerp(cx, tx, 0.18);
+    cy = lerp(cy, ty, 0.18);
 
-    const total = Math.max(1, rect.height - vh);
-    const scrolled = clamp(-rect.top, 0, total);
-    const p = scrolled / total;
-    const e = easeInOutCubic(p);
+    stage.style.setProperty('--reveal-x', `${cx.toFixed(2)}%`);
+    stage.style.setProperty('--reveal-y', `${cy.toFixed(2)}%`);
 
-    const pct = Math.round(e * 100);
-    stage.style.setProperty('--reveal', `${pct}%`);
-    stage.style.setProperty('--clapAngle', `${(-70 * e).toFixed(2)}deg`);
-
-    if (p > 0.03) stage.classList.add('is-live');
-    else stage.classList.remove('is-live');
+    raf = requestAnimationFrame(tick);
   };
 
-  const onScroll = () => {
-    if (raf) return;
-    raf = requestAnimationFrame(update);
+  const setTargetFromEvent = (clientX, clientY) => {
+    const r = logo.getBoundingClientRect();
+    const x = ((clientX - r.left) / r.width) * 100;
+    const y = ((clientY - r.top) / r.height) * 100;
+    tx = clamp(x, 0, 100);
+    ty = clamp(y, 0, 100);
   };
 
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll, { passive: true });
+  logo.addEventListener('pointerenter', (e) => {
+    stage.classList.add('is-hover');
+    stage.classList.add('hint-off');
+    setTargetFromEvent(e.clientX, e.clientY);
+    if (!raf) tick();
+  });
 
-  update();
+  logo.addEventListener('pointermove', (e) => {
+    setTargetFromEvent(e.clientX, e.clientY);
+  });
+
+  logo.addEventListener('pointerleave', () => {
+    stage.classList.remove('is-hover');
+    // не останавливаем raf (пусть остаётся мягкое движение), но можно остановить:
+    // cancelAnimationFrame(raf); raf = 0;
+  });
+
+  // хлопушка: клик/тап
+  if (clap) {
+    clap.addEventListener('click', () => {
+      const open = clap.classList.toggle('is-open');
+      stage.classList.toggle('is-open', open);
+      stage.classList.add('hint-off');
+    });
+  }
 })();
-
