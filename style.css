@@ -1,3 +1,5 @@
+/* FIX: чтобы hero не перекрывал весь сайт */
+header.hero { position: relative; }
 :root {
   --bg: #0b0b0b;
   --bg-2: #111111;
