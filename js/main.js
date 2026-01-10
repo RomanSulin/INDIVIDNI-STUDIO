@@ -171,23 +171,23 @@ if (v && btn) {
   });
 }
 
-// ===== HERO: hover spotlight (anti-overlap) + clapper scroll-open (delayed) + ambient glow =====
+// ===== HERO: spotlight reveal (robust) + clapper scroll-open (delayed) + ambient glow =====
 (() => {
-  const section = document.getElementById('heroSection');
+  const section = document.querySelector('.hero.hero-cold[data-hero="true"]');
   const stage   = document.getElementById('heroStage');
   const logo    = document.getElementById('heroLogo');
   const clap    = document.getElementById('clapButton');
 
   if (!section || !stage || !logo) return;
 
+  const lerp  = (a, b, t) => a + (b - a) * t;
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
   // ---------- Ambient glow everywhere ----------
   let amx = window.innerWidth * 0.5;
   let amy = window.innerHeight * 0.45;
   let atx = amx, aty = amy;
   let araf = 0;
-
-  const lerp = (a, b, t) => a + (b - a) * t;
-  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
   const ambientTick = () => {
     amx = lerp(amx, atx, 0.14);
@@ -203,9 +203,7 @@ if (v && btn) {
     if (!araf) ambientTick();
   }, { passive: true });
 
-  // ---------- Spotlight reveal: анти-перекрытие ----------
-  // Вместо pointerenter/leave (которые ломаются если что-то перекрывает),
-  // мы вычисляем "находимся ли мы над лого" по координатам.
+  // ---------- Spotlight reveal on logo (НЕ ломается от перекрытий) ----------
   let hoverActive = false;
 
   let tx = 50, ty = 50;
@@ -220,20 +218,20 @@ if (v && btn) {
     raf = requestAnimationFrame(tick);
   };
 
-  const setTargetFromPoint = (clientX, clientY) => {
+  const pointInsideLogo = (x, y) => {
     const r = logo.getBoundingClientRect();
-    const x = ((clientX - r.left) / r.width) * 100;
-    const y = ((clientY - r.top) / r.height) * 100;
-    tx = clamp(x, 0, 100);
-    ty = clamp(y, 0, 100);
+    return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
   };
 
-  const pointInsideLogo = (clientX, clientY) => {
+  const setTargetFromPoint = (x, y) => {
     const r = logo.getBoundingClientRect();
-    return clientX >= r.left && clientX <= r.right && clientY >= r.top && clientY <= r.bottom;
+    const px = ((x - r.left) / r.width) * 100;
+    const py = ((y - r.top) / r.height) * 100;
+    tx = clamp(px, 0, 100);
+    ty = clamp(py, 0, 100);
   };
 
-  section.addEventListener('pointermove', (e) => {
+  window.addEventListener('pointermove', (e) => {
     const inside = pointInsideLogo(e.clientX, e.clientY);
 
     if (inside && !hoverActive) {
@@ -241,7 +239,9 @@ if (v && btn) {
       stage.classList.add('is-hover');
       document.body.classList.add('glow-boost');
       if (!raf) tick();
-    } else if (!inside && hoverActive) {
+    }
+
+    if (!inside && hoverActive) {
       hoverActive = false;
       stage.classList.remove('is-hover');
       document.body.classList.remove('glow-boost');
@@ -250,7 +250,7 @@ if (v && btn) {
     if (hoverActive) setTargetFromPoint(e.clientX, e.clientY);
   }, { passive: true });
 
-  // ---------- Clapper opens when you scroll down to it (NOT from start) ----------
+  // ---------- Clapper: opens when you scroll TO IT (not from start) ----------
   let pinned = false;
 
   const setClapAngle = (deg) => {
@@ -261,20 +261,23 @@ if (v && btn) {
   const updateClapFromScroll = () => {
     if (!clap || pinned) return;
 
+    // Чтобы она НЕ была раскрыта на самом верху страницы:
+    if (window.scrollY < 30) {
+      setClapAngle(0);
+      stage.classList.remove('is-open');
+      return;
+    }
+
     const r  = clap.getBoundingClientRect();
     const vh = window.innerHeight;
 
-    // Старт: когда верх хлопушки ещё ниже экрана (или прямо у низа)
-    // Финиш: когда она поднялась до ~65% высоты экрана
-    const start = vh * 1.02;   // чуть ниже края — чтобы не открывалась “сразу”
-    const end   = vh * 0.65;
+    // старт: когда верх хлопушки ещё почти у нижнего края
+    const start = vh * 0.92;
+    const end   = vh * 0.55;
 
     const t = clamp((start - r.top) / (start - end), 0, 1);
-    const angle = -72 * t;
+    setClapAngle(-72 * t);
 
-    setClapAngle(angle);
-
-    // когда почти открыта — считаем “open” (это влияет на размер света, если хочешь)
     if (t > 0.78) stage.classList.add('is-open');
     else stage.classList.remove('is-open');
   };
@@ -291,11 +294,10 @@ if (v && btn) {
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onScroll, { passive: true });
 
-  // ключ: сразу выставим в закрытое (0deg), и только потом скролл начнёт менять
+  // старт: закрыта
   setClapAngle(0);
   updateClapFromScroll();
 
-  // Клик = “зафиксировать” открытой/закрытой
   if (clap) {
     clap.addEventListener('click', () => {
       pinned = !pinned;
@@ -308,6 +310,7 @@ if (v && btn) {
     });
   }
 })();
+
 
 
   // ---------- Spotlight reveal on logo (works even if something overlaps) ----------
