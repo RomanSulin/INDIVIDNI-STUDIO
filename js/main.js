@@ -137,32 +137,32 @@ const yearEl = document.getElementById('year');
 if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
 
-// ===== Showreel sound toggle (jelly button)
+// ===== Showreel sound toggle (TRASH BLOB)
 const v = document.getElementById('showreelVideo');
 const btn = document.getElementById('soundToggle');
 
 if (v && btn) {
-  const textEl = btn.querySelector('.sound-btn__text');
+  const textEl = btn.querySelector('.sound-blob__text');
 
   const setUI = (isOn) => {
     btn.classList.toggle('is-on', isOn);
+    btn.classList.toggle('is-off', !isOn);
     btn.setAttribute('aria-pressed', String(isOn));
     if (textEl) textEl.textContent = isOn ? 'Выкл звук' : 'Вкл звук';
 
-    // перезапуск анимации "желе"
+    // перезапуск "желе" анимации
     btn.classList.remove('jelly');
-    void btn.offsetWidth; // reflow
+    void btn.offsetWidth;
     btn.classList.add('jelly');
   };
 
-  // старт: autoplay почти всегда в muted (так и надо)
+  // старт: autoplay почти всегда muted
   setUI(!v.muted);
 
   btn.addEventListener('click', async () => {
-    const isTurningOn = v.muted;   // если было muted — включаем звук
+    const isTurningOn = v.muted;
     v.muted = !isTurningOn;
 
-    // некоторые браузеры требуют play() после клика
     if (isTurningOn) {
       try { await v.play(); } catch (e) {}
     }
@@ -170,4 +170,5 @@ if (v && btn) {
     setUI(isTurningOn);
   });
 }
+
 
