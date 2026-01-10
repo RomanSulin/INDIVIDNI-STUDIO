@@ -12,10 +12,24 @@
 
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
+  <!-- Кастомный курсор (появится только на ПК, если JS работает) -->
+  <div id="custom-cursor" aria-hidden="true">
+    <svg width="60" height="40" viewBox="0 0 120 80" role="presentation" focusable="false">
+      <rect x="5" y="15" width="90" height="50" rx="15" ry="15" fill="#111" stroke="#fff" stroke-width="2" />
+      <circle cx="70" cy="40" r="12" fill="#333" stroke="#fff" stroke-width="2" />
+      <g id="aperture" transform="translate(70,40) scale(0)">
+        <polygon points="0,-8 2,-2 -2,-2" fill="#111" />
+        <polygon points="0,8 2,2 -2,2" fill="#111" />
+        <polygon points="-8,0 -2,-2 -2,2" fill="#111" />
+        <polygon points="8,0 2,-2 2,2" fill="#111" />
+      </g>
+      <circle id="record-light" cx="15" cy="25" r="5" fill="#ff0000" opacity="0" />
+    </svg>
+  </div>
 
-
-  <!-- Шапка -->
+  <!-- Шапка (фиксированная) -->
   <header class="site-header" id="header">
     <a class="logo" href="#home" aria-label="INDIVIDNI — на главную">INDIVIDNI</a>
 
@@ -29,7 +43,7 @@
 
       <ul class="nav-list" id="nav-list">
         <li><a href="#studio">Студия</a></li>
-        <li><a href="#showreel">Шоу‑рил</a></li>
+        <li><a href="#showreel">Шоу-рил</a></li>
         <li><a href="#services">Услуги</a></li>
         <li><a href="#works">Работы</a></li>
         <li><a href="#contacts">Контакты</a></li>
@@ -43,32 +57,36 @@
     <!-- HERO -->
     <section id="home" class="hero">
       <div class="overlay" aria-hidden="true"></div>
+
       <div class="container hero-content">
         <p class="kicker">Cinematic video production</p>
         <h1>INDIVIDNI STUDIO</h1>
-        <p class="lead">Снимаем рекламные ролики, бренд‑фильмы и контент для соцсетей — премиально, быстро, под задачу.</p>
+        <p class="lead">Реклама, бренд-фильмы и контент для соцсетей — премиально, быстро, под задачу.</p>
 
         <div class="hero-actions">
-          <a href="#showreel" class="btn btn--outline">Смотреть шоу‑рил</a>
+          <a href="#showreel" class="btn btn--outline">Смотреть шоу-рил</a>
           <a href="#contacts" class="btn btn--primary">Получить смету</a>
         </div>
 
         <div class="hero-badges" aria-label="Преимущества">
           <span>Сценарий → съёмка → монтаж</span>
-          <span>Multi‑cam</span>
+          <span>Multi-cam</span>
           <span>Сроки 3–7 дней</span>
         </div>
       </div>
     </section>
 
-    <!-- ABOUT -->
+    <!-- STUDIO -->
     <section id="studio" class="section">
       <div class="container grid-2 reveal">
         <div>
           <h2>Студия</h2>
-          <p class="muted">INDIVIDNI — небольшой гибкий продакшн: быстро включаемся в задачу, делаем аккуратный свет, звук и монтаж. На выходе — картинка и ощущение «дорого».</p>
+          <p class="muted">
+            INDIVIDNI — гибкий продакшн: быстро включаемся в задачу, делаем аккуратный свет, звук и монтаж.
+            На выходе — картинка и ощущение «дорого».
+          </p>
           <ul class="list">
-            <li>Пре‑продакшн: идея, референсы, раскадровка</li>
+            <li>Пре-продакшн: идея, референсы, раскадровка</li>
             <li>Съёмка: свет, звук, команда</li>
             <li>Пост: монтаж, цвет, титры, адаптации под соцсети</li>
           </ul>
@@ -79,12 +97,12 @@
           <div class="chips">
             <span>Reels / Shorts</span>
             <span>Интервью</span>
-            <span>Рекламные ролики</span>
-            <span>Бренд‑фильмы</span>
-            <span>Подкасты</span>
-            <span>События</span>
+            <span>Реклама</span>
+            <span>Бренд-фильм</span>
+            <span>Подкаст</span>
+            <span>Событие</span>
           </div>
-          <p class="note">Потом подставим реальные кейсы и цифры (город, опыт, клиенты).</p>
+          <p class="note">Потом подставим реальные кейсы, клиентов и цифры.</p>
         </div>
       </div>
     </section>
@@ -92,8 +110,8 @@
     <!-- SHOWREEL -->
     <section id="showreel" class="section dark">
       <div class="container reveal">
-        <h2>Шоу‑рил</h2>
-        <p class="muted">Вставь сюда YouTube/Vimeo. Я оставил готовый адаптивный контейнер — просто замени <code>VIDEO_ID</code> в <code>src</code>.</p>
+        <h2>Шоу-рил</h2>
+        <p class="muted">Заменишь <code>VIDEO_ID</code> на id ролика YouTube/Vimeo — и всё заработает.</p>
 
         <div class="video-embed" role="group" aria-label="Видео">
           <iframe
@@ -111,24 +129,25 @@
     <section id="services" class="section">
       <div class="container reveal">
         <h2>Услуги</h2>
+
         <div class="grid">
           <article class="card">
-            <h3>Реклама и бренд‑видео</h3>
+            <h3>Реклама и бренд-видео</h3>
             <p class="muted">Ролики под кампанию, сайт, презентации и digital.</p>
           </article>
 
           <article class="card">
             <h3>Контент для соцсетей</h3>
-            <p class="muted">Серии Reels/Shorts: быстро, регулярно, единый стиль.</p>
+            <p class="muted">Пакеты Reels/Shorts: быстро, регулярно, единый стиль.</p>
           </article>
 
           <article class="card">
             <h3>Интервью и подкасты</h3>
-            <p class="muted">Свет, звук, 1–3 камеры, стабильно «телевизионно».</p>
+            <p class="muted">Свет, звук, 1–3 камеры, «телевизионный» уровень.</p>
           </article>
 
           <article class="card">
-            <h3>YouTube‑продакшн</h3>
+            <h3>YouTube-продакшн</h3>
             <p class="muted">Съёмка и монтаж выпусков под формат канала.</p>
           </article>
         </div>
@@ -139,7 +158,7 @@
     <section id="works" class="section dark">
       <div class="container reveal">
         <h2>Работы</h2>
-        <p class="muted">Сюда потом добавим реальные обложки/кадры и ссылки на кейсы.</p>
+        <p class="muted">Тут будут обложки/кадры. Пока — красивые заглушки.</p>
 
         <div class="works">
           <a class="work" href="#" aria-label="Проект 1">
@@ -174,14 +193,14 @@
       <div class="container grid-2 reveal">
         <div>
           <h2>Контакты</h2>
-          <p class="muted">Напиши, что нужно: ниша, референсы, сроки, бюджет. Мы предложим формат и смету.</p>
+          <p class="muted">Напиши: ниша, референсы, сроки, бюджет — предложим формат и смету.</p>
 
           <div class="contact-actions">
             <a class="btn btn--primary" href="https://t.me/" target="_blank" rel="noreferrer">Telegram</a>
             <a class="btn btn--outline" href="mailto:hello@individni.studio">Email</a>
           </div>
 
-          <p class="note">Если хочешь — добавим форму (без бэкенда можно через Formspree/Google Forms).</p>
+          <p class="note">Позже добавим форму заявки (без бэкенда — через Formspree).</p>
         </div>
 
         <div class="panel">
@@ -203,23 +222,7 @@
       <p class="muted">Made for GitHub Pages</p>
     </div>
   </footer>
-  
-  <!-- Кастомный курсор (на телефонах скрывается автоматически через CSS) -->
-  <div id="custom-cursor" aria-hidden="true">
-    <svg width="60" height="40" viewBox="0 0 120 80" role="presentation" focusable="false">
-      <rect x="5" y="15" width="90" height="50" rx="15" ry="15" fill="#111" stroke="#fff" stroke-width="2" />
-      <circle cx="70" cy="40" r="12" fill="#333" stroke="#fff" stroke-width="2" />
 
-      <g id="aperture" transform="translate(70,40) scale(0)">
-        <polygon points="0,-8 2,-2 -2,-2" fill="#111" />
-        <polygon points="0,8 2,2 -2,2" fill="#111" />
-        <polygon points="-8,0 -2,-2 -2,2" fill="#111" />
-        <polygon points="8,0 2,-2 2,2" fill="#111" />
-      </g>
-
-      <circle id="record-light" cx="15" cy="25" r="5" fill="#ff0000" opacity="0" />
-    </svg>
-  </div>
-  <script src="main.js"></script>
+  <script src="main.js" defer></script>
 </body>
 </html>
