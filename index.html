@@ -48,26 +48,59 @@
 
   <main>
     <!-- HERO -->
-    <section id="home" class="hero">
-      <div class="overlay" aria-hidden="true"></div>
+<section id="home" class="hero hero-cold">
+  <div class="hero-stage" id="heroStage">
 
-      <div class="container hero-content">
-        <p class="kicker">Cinematic video production</p>
-        <h1>INDIVIDNI STUDIO</h1>
-        <p class="lead">Реклама, бренд-фильмы и контент для соцсетей — премиально, быстро, под задачу.</p>
+    <!-- ЛОГО: 3 слоя -->
+    <div class="hero-logo">
+      <img class="logo-layer base" src="assets/hero/INDIVIDNI_3.png" alt="INDIVIDNI">
+      <img class="logo-layer tech" src="assets/hero/INDIVIDNI_5.png" alt="" aria-hidden="true">
+      <img class="logo-layer reveal" src="assets/hero/INDIVIDNI_2.png" alt="" aria-hidden="true">
 
-        <div class="hero-actions">
-          <a href="#showreel" class="btn btn--outline">Смотреть шоу-рил</a>
-          <a href="#contacts" class="btn btn--primary">Получить смету</a>
-        </div>
+      <!-- Скан-полоса (визуальный “проявлятор”) -->
+      <div class="hero-scan" aria-hidden="true"></div>
+    </div>
 
-        <div class="hero-badges" aria-label="Преимущества">
-          <span>Сценарий → съёмка → монтаж</span>
-          <span>Multi-cam</span>
-          <span>Сроки 3–7 дней</span>
-        </div>
-      </div>
-    </section>
+    <!-- HUD -->
+    <div class="hero-hud" aria-hidden="true">
+      <img class="hud rec" src="assets/hero/rec_1.png" alt="">
+      <img class="hud fps" src="assets/hero/FPS_1.png" alt="">
+      <img class="hud iso" src="assets/hero/ISO.png" alt="">
+      <img class="hud tc" src="assets/hero/TIME_CODE_1.png" alt="">
+    </div>
+
+    <!-- НАКЛЕЙКИ / СКОТЧ -->
+    <div class="hero-notes" aria-hidden="true">
+      <img class="note drag" src="assets/hero/DRAG_TO_REVEAL.png" alt="">
+      <img class="note tape1" src="assets/hero/Tip_1.png" alt="">
+      <img class="note tape2" src="assets/hero/Tip_2.png" alt="">
+
+      <!-- если переименовал -> KEEP_RAW.png -->
+      <img class="note keep" src="assets/hero/KEEP_RAW.png" alt="">
+      <!-- если НЕ переименовывал, используй вот так: -->
+      <!-- <img class="note keep" src="assets/hero/KEEP%20RAW.png" alt=""> -->
+
+      <img class="note night" src="assets/hero/NIGHT_TAKE.png" alt="">
+    </div>
+
+    <!-- “Хэндл” — хлопушка (таскается вправо/влево) -->
+    <div
+      class="clap"
+      id="clapHandle"
+      role="slider"
+      aria-label="Reveal"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      aria-valuenow="0"
+      tabindex="0"
+    >
+      <img class="clap-base" src="assets/hero/clapperboard_1.png" alt="" aria-hidden="true">
+      <img class="clap-top" src="assets/hero/clapperboard_2.png" alt="" aria-hidden="true">
+    </div>
+
+  </div>
+</section>
+
 
     <!-- STUDIO -->
     <section id="studio" class="section">
