@@ -739,7 +739,7 @@ body.hovered #custom-cursor .core{ opacity: 1; }
 .between-rig .clap.dock{
   top: auto !important;       /* убираем любые старые top */
   bottom: -400px !important;   /* опускаем ниже */
-  right: -5vw !important;      /* вправо, но в пределах экрана */
+  right: clamp(24px, 7vw, 140px) !important;      /* вправо, но в пределах экрана */
   width: clamp(210px, 14vw, 340px) !important; /* меньше */
 }
 
