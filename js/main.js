@@ -80,7 +80,7 @@ const yearEl = document.getElementById('year');
 if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
 /* =========================
-   Ambient glow everywhere (runs only when needed)
+   Ambient glow everywhere (smooth follow)
 ========================= */
 (() => {
   let mx = window.innerWidth * 0.5;
@@ -93,12 +93,9 @@ if (yearEl) yearEl.textContent = String(new Date().getFullYear());
   const tick = () => {
     mx = lerp(mx, tx, 0.14);
     my = lerp(my, ty, 0.14);
-
     document.documentElement.style.setProperty('--mx', `${mx.toFixed(1)}px`);
     document.documentElement.style.setProperty('--my', `${my.toFixed(1)}px`);
-
-    const moving = (Math.abs(mx - tx) + Math.abs(my - ty)) > 0.6;
-    raf = moving ? requestAnimationFrame(tick) : 0;
+    raf = requestAnimationFrame(tick);
   };
 
   window.addEventListener('pointermove', (e) => {
@@ -106,17 +103,10 @@ if (yearEl) yearEl.textContent = String(new Date().getFullYear());
     ty = e.clientY;
     if (!raf) raf = requestAnimationFrame(tick);
   }, { passive: true });
-
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden && raf) {
-      cancelAnimationFrame(raf);
-      raf = 0;
-    }
-  });
 })();
 
 /* =========================
-   Custom cursor beam (only mouse devices) — runs only when needed
+   Custom cursor beam (only mouse devices)
 ========================= */
 const cursor = document.getElementById('custom-cursor');
 const canUseCustomCursor =
@@ -127,16 +117,16 @@ if (canUseCustomCursor) {
 
   let prevX = null, prevY = null;
 
+  // smooth position
   let cx = 0, cy = 0;
   let tx = 0, ty = 0;
 
+  // smooth angle with shortest path
   let currentAngle = 0;
   let targetAngle = 0;
 
   const normalize180 = (a) => (((a + 180) % 360 + 360) % 360) - 180;
   const shortestDelta = (from, to) => normalize180(to - from);
-
-  let raf = 0;
 
   const tick = () => {
     cx += (tx - cx) * 0.22;
@@ -148,18 +138,13 @@ if (canUseCustomCursor) {
     currentAngle = normalize180(currentAngle + d * 0.12);
     cursor.style.setProperty('--angle', currentAngle + 'deg');
 
-    const moving =
-      (Math.abs(tx - cx) + Math.abs(ty - cy) > 0.35) ||
-      (Math.abs(d) > 0.25);
-
-    raf = moving ? requestAnimationFrame(tick) : 0;
+    requestAnimationFrame(tick);
   };
+  requestAnimationFrame(tick);
 
   document.addEventListener('mousemove', (e) => {
     tx = e.clientX;
     ty = e.clientY;
-
-    if (!raf) raf = requestAnimationFrame(tick);
 
     if (prevX !== null && prevY !== null) {
       const dx = e.clientX - prevX;
@@ -172,13 +157,7 @@ if (canUseCustomCursor) {
     prevY = e.clientY;
   }, { passive: true });
 
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden && raf) {
-      cancelAnimationFrame(raf);
-      raf = 0;
-    }
-  });
-
+  // boost on hover interactives
   document.querySelectorAll('a, button, .btn').forEach((el) => {
     el.addEventListener('mouseenter', () => document.body.classList.add('hovered'));
     el.addEventListener('mouseleave', () => document.body.classList.remove('hovered'));
@@ -235,18 +214,12 @@ if (v && soundBtn) {
   let rAF = 0;
 
   const tick = () => {
-  if (!hoverActive) { rAF = 0; return; }
-
-  cx = lerp(cx, tx, 0.18);
-  cy = lerp(cy, ty, 0.18);
-
-  stage.style.setProperty('--reveal-x', `${cx.toFixed(2)}%`);
-  stage.style.setProperty('--reveal-y', `${cy.toFixed(2)}%`);
-
-  const moving = (Math.abs(cx - tx) + Math.abs(cy - ty)) > 0.06;
-  rAF = moving ? requestAnimationFrame(tick) : 0;
-};
-
+    cx = lerp(cx, tx, 0.18);
+    cy = lerp(cy, ty, 0.18);
+    stage.style.setProperty('--reveal-x', `${cx.toFixed(2)}%`);
+    stage.style.setProperty('--reveal-y', `${cy.toFixed(2)}%`);
+    rAF = requestAnimationFrame(tick);
+  };
 
   const insideLogo = (x, y) => {
     const r = logo.getBoundingClientRect();
@@ -281,10 +254,8 @@ if (v && soundBtn) {
       document.body.classList.remove('glow-boost');
     }
 
-    if (hoverActive) {
-  setTargetFromPoint(e.clientX, e.clientY);
-  if (!rAF) rAF = requestAnimationFrame(tick);
-}, { passive: true });
+    if (hoverActive) setTargetFromPoint(e.clientX, e.clientY);
+  }, { passive: true });
 })();
 
 /* ==========================
