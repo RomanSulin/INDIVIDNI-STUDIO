@@ -782,8 +782,8 @@ body.hovered #custom-cursor .core{ opacity: 1; }
 /* позиция хлопушки */
 .between-rig .clap.dock{
   top: auto !important;       /* убираем любые старые top */
-  bottom: -500px !important;   /* опускаем ниже */
-  right: calc(clamp(24px, 7vw, 140px) + 100px) !important;      /* вправо, но в пределах экрана */
+  bottom: -600px !important;   /* опускаем ниже */
+  right: calc(clamp(24px, 7vw, 140px) + 300px) !important;      /* вправо, но в пределах экрана */
   width: clamp(210px, 14vw, 340px) !important; /* меньше */
 }
 
