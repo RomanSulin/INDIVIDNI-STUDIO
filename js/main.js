@@ -281,8 +281,10 @@ if (v && soundBtn) {
       document.body.classList.remove('glow-boost');
     }
 
-    if (hoverActive) setTargetFromPoint(e.clientX, e.clientY);
-  }, { passive: true });
+    if (hoverActive) {
+  setTargetFromPoint(e.clientX, e.clientY);
+  if (!rAF) rAF = requestAnimationFrame(tick);
+}, { passive: true });
 })();
 
 /* ==========================
