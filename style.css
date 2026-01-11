@@ -1259,3 +1259,80 @@ body.hovered #custom-cursor .core{ opacity: 1; }
   margin: 0;
 }
 
+/* =========================
+   Title Lamp Flicker
+========================= */
+
+#deckTitleLamp{
+  opacity: .18; /* почти в темноте */
+  filter:
+    brightness(.55)
+    contrast(1.08)
+    saturate(.92)
+    drop-shadow(0 0 0 rgba(0,0,0,0));
+  transition: opacity .35s ease, filter .35s ease;
+  will-change: opacity, filter;
+}
+
+/* мягкая “аура” позади — включается только когда лампа зажглась */
+.deck-title-imgwrap{
+  position: relative;
+}
+.deck-title-imgwrap::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width: min(980px, 92vw);
+  height: 120%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle at 50% 55%,
+    rgba(255, 200, 120, .22),
+    rgba(255, 160, 70, .10) 40%,
+    rgba(0,0,0,0) 72%);
+  filter: blur(18px);
+  opacity: 0;
+  transition: opacity .35s ease;
+  pointer-events:none;
+  z-index: 0;
+}
+
+/* чтобы картинка была над аурой */
+.deck-title-img{
+  position: relative;
+  z-index: 1;
+}
+
+#deckTitleLamp.lamp-lit{
+  opacity: 1;
+  filter:
+    brightness(1.08)
+    contrast(1.06)
+    saturate(1.03)
+    drop-shadow(0 0 22px rgba(255, 210, 140, .30))
+    drop-shadow(0 0 70px rgba(255, 170, 80, .18));
+  animation: lampFlicker 1.25s ease-out 1 forwards;
+}
+
+/* включаем “ауру” только когда зажглась */
+.deck-title-imgwrap.lamp-lit::after{
+  opacity: 1;
+}
+
+@keyframes lampFlicker{
+  0%   { opacity:.10; filter: brightness(.35) contrast(1.10) saturate(.85); }
+  10%  { opacity:.95; filter: brightness(1.18) contrast(1.05) saturate(1.05); }
+  14%  { opacity:.22; filter: brightness(.55) contrast(1.10) saturate(.90); }
+  22%  { opacity:1;   filter: brightness(1.12) contrast(1.06) saturate(1.03); }
+  26%  { opacity:.40; filter: brightness(.70) contrast(1.10) saturate(.95); }
+  34%  { opacity:1;   filter: brightness(1.10) contrast(1.06) saturate(1.03); }
+  38%  { opacity:.62; filter: brightness(.78) contrast(1.08) saturate(.98); }
+  46%  { opacity:1;   filter: brightness(1.09) contrast(1.06) saturate(1.03); }
+  60%  { opacity:.92; filter: brightness(1.03) contrast(1.06) saturate(1.02); }
+  100% { opacity:1;   filter: brightness(1.08) contrast(1.06) saturate(1.03); }
+}
+
+@media (prefers-reduced-motion: reduce){
+  #deckTitleLamp{ opacity: 1; filter: none; animation: none; }
+  .deck-title-imgwrap::after{ opacity: 1; }
+}
