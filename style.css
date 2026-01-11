@@ -1336,3 +1336,21 @@ body.hovered #custom-cursor .core{ opacity: 1; }
   #deckTitleLamp{ opacity: 1; filter: none; animation: none; }
   .deck-title-imgwrap::after{ opacity: 1; }
 }
+
+/* === Deck should overlap ABOVE the next section (showreel) === */
+#services-deck{
+  position: relative;
+  z-index: 60 !important;
+  overflow: visible !important;
+}
+
+#services-deck .container,
+#services-deck .service-deck{
+  overflow: visible !important;
+}
+
+/* showreel ниже по слоям, чтобы не перекрывал карточки */
+#showreel{
+  position: relative;
+  z-index: 1 !important;
+}
