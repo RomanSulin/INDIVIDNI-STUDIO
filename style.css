@@ -756,3 +756,41 @@ body.hovered #custom-cursor .core{ opacity: 1; }
   transform: translate3d(0, 0, 0) rotate(var(--clapAngle)) !important;
   will-change: transform;
 }
+
+/* === CLAPPER LAYERING: top behind base + hide corner === */
+
+.between-rig #clapButton{
+  position: absolute; /* у тебя уже есть, на всякий */
+  overflow: visible;  /* кнопку не режем, режем базу маской */
+}
+
+/* порядок слоёв */
+.between-rig #clapButton .clap-top{
+  z-index: 1 !important; /* ВЕРХНЯЯ ПЛАНКА СЗАДИ */
+}
+
+.between-rig #clapButton .clap-base{
+  z-index: 3 !important; /* БАЗА СПЕРЕДИ */
+}
+
+/* делаем базу “маской” — она будет прятать угол планки */
+.between-rig #clapButton .clap-base{
+  position: relative !important;
+  display: block;
+}
+
+/* полоса-маска сверху базы (прячет то, что "лезет") */
+.between-rig #clapButton .clap-base::after{
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  width: 100%;
+  height: 22%;               /* сколько прятать сверху (подгони) */
+  background: rgba(0,0,0,0.98); /* фон почти чёрный, как у базы */
+  pointer-events: none;
+  z-index: 10;
+  filter: blur(0.2px);
+}
+
