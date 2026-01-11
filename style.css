@@ -1432,3 +1432,95 @@ body.glow-boost #ambientGlow{
   transform: rotate(var(--clapAngle, 0deg)) !important;
   transition: transform .18s linear;
 }
+
+/* =========================
+   FIX PACK: вернуть всё на место
+   (вставить в самый КОНЕЦ style.css)
+========================= */
+
+/* герой — без неожиданного смещения */
+.hero.hero-cold{
+  background: #050505 !important;
+  background-image: none !important;
+  overflow: hidden;
+}
+
+/* сцена всегда по центру */
+.hero-stage{
+  margin: 0 auto !important;
+  transform: none !important;
+  left: auto !important;
+  right: auto !important;
+}
+
+/* лого всегда строго по центру экрана */
+.hero-logo{
+  position: absolute !important;
+  inset: 0 !important;
+  display: grid !important;
+  place-items: center !important;
+  transform: none !important;
+  z-index: 5 !important;
+}
+
+/* сами картинки лого фиксируем по центру (на случай конфликтов) */
+.hero-logo .logo-layer{
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+/* notes не должны перекрывать лого по смыслу */
+.hero-notes{ z-index: 3 !important; pointer-events: none !important; }
+.hero-hud{ z-index: 6 !important; pointer-events: none !important; }
+
+/* Межблок между секциями — в потоке, чтобы ничего не улетало */
+.between-rig{
+  position: relative !important;
+  display: flex !important;
+  align-items: flex-end !important;
+  justify-content: space-between !important;
+  gap: 28px !important;
+
+  padding: 0 6vw 24px !important;
+  margin-top: 20px !important;
+
+  height: 300px !important;
+  z-index: 8 !important;
+}
+
+.between-left{
+  flex: 1 !important;
+  height: 240px !important;
+  pointer-events: none !important;
+}
+
+/* Хлопушка: запрещаем старые absolute-правила улетать в угол */
+.between-rig .clap.dock{
+  position: relative !important;
+  left: auto !important;
+  right: auto !important;
+  top: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+
+  width: clamp(320px, 22vw, 520px) !important;
+  aspect-ratio: 1.18 / 1 !important;
+
+  border: 0 !important;
+  background: transparent !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  user-select: none !important;
+
+  filter: drop-shadow(0 26px 80px rgba(0,0,0,0.75)) !important;
+}
+
+/* ВАЖНО: хлопушка управляется ТОЛЬКО переменной --clapAngle */
+.between-rig .clap.dock .clap-top{
+  transform-origin: 22% 72% !important;
+  transform: rotate(var(--clapAngle, 0deg)) !important;
+  transition: transform .18s linear !important;
+}
+
