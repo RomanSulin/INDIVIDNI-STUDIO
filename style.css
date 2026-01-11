@@ -411,13 +411,7 @@ body.hovered #custom-cursor .core{ opacity: 1; }
   transform: rotate(7deg);
   opacity: .50;
 }
-.note.drag{
-  left: 50%;
-  bottom: 12vh;
-  width: clamp(220px, 20vw, 420px);
-  transform: translateX(-50%) rotate(-2deg);
-  opacity: .55;
-}
+
 .note.cine{
   left: 50%;
   top: 8vh;
@@ -474,7 +468,6 @@ body.hovered #custom-cursor .core{ opacity: 1; }
   .hero-stage{ height: min(900px, 82vh); }
   .hero-hud .fps, .hero-hud .iso{ display:none; }
   .note.tape1, .note.tape2{ opacity:.45; }
-  .note.drag{ display:none; }
 }
 
 /* =========================
