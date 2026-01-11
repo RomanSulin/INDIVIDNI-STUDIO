@@ -197,19 +197,17 @@ if (v && soundBtn) {
   });
 }
 
-/* =========================
-   HERO: hover reveal + clapper opens on scroll-to-it
-========================= */
+/* ==========================
+   HERO: hover reveal (ТОЛЬКО логотип)
+========================== */
 (() => {
   const stage = document.getElementById('heroStage');
   const logo  = document.getElementById('heroLogo');
-  const clap  = document.getElementById('clapButton');
   if (!stage || !logo) return;
 
   const lerp  = (a, b, t) => a + (b - a) * t;
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
-  // reveal follow
   let hoverActive = false;
   let tx = 50, ty = 50;
   let cx = 50, cy = 50;
@@ -235,8 +233,11 @@ if (v && soundBtn) {
     tx = clamp(px, 0, 100);
     ty = clamp(py, 0, 100);
   };
-
-  // pointermove on window = НЕ ломается, даже если сверху есть другой объект
+   
+  // стартовое значение (чтобы было красиво сразу)
+  stage.style.setProperty('--reveal-x', `50%`);
+  stage.style.setProperty('--reveal-y', `50%`);
+   
   window.addEventListener('pointermove', (e) => {
     const inside = insideLogo(e.clientX, e.clientY);
 
@@ -255,50 +256,69 @@ if (v && soundBtn) {
 
     if (hoverActive) setTargetFromPoint(e.clientX, e.clientY);
   }, { passive: true });
+})();
 
-  // clapper open on scroll-to-it (not from page top)
+/* ==========================
+   CLAPPER: открывается, когда доскроллил
+========================== */
+(() => {
+  const clap = document.getElementById('clapButton');
+  const rig  = document.querySelector('.between-rig');
+  if (!clap || !rig) return;
+
+  const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+  const setAngle = (deg) => clap.style.setProperty('--clapAngle', `${deg.toFixed(2)}deg`);
+
+  // всегда закрыта при загрузке
+  setAngle(0);
+
   let pinned = false;
+  let armed = false;
 
-  const setClapAngle = (deg) => {
-    if (!clap) return;
-    clap.style.setProperty('--clapAngle', `${deg.toFixed(2)}deg`);
-  };
+  // активируем только когда блок виден
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some(e => e.isIntersecting)) {
+        armed = true;
+        io.disconnect();
+        update();
+      }
+    }, { threshold: 0.2 });
+    io.observe(rig);
+  } else {
+    armed = true;
+  }
 
-  const updateClapFromScroll = () => {
-    if (!clap || pinned) return;
+  const update = () => {
+    if (!armed || pinned) return;
+    if (window.scrollY < 40) { setAngle(0); return; }
 
-    const r  = clap.getBoundingClientRect();
+    const r = rig.getBoundingClientRect();
     const vh = window.innerHeight;
 
-    // start: when clapper top is near bottom of viewport
     const start = vh * 0.92;
-    const end   = vh * 0.55;
+    const end   = vh * 0.58;
 
     const t = clamp((start - r.top) / (start - end), 0, 1);
-    setClapAngle(-72 * t);
+    setAngle(-72 * t);
   };
 
-  let sRAF = 0;
-  const onScroll = () => {
-    if (sRAF) return;
-    sRAF = requestAnimationFrame(() => {
-      sRAF = 0;
-      updateClapFromScroll();
+  let raf = 0;
+  const schedule = () => {
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      raf = 0;
+      update();
     });
   };
 
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll, { passive: true });
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule, { passive: true });
 
-  // start closed
-  setClapAngle(0);
-  updateClapFromScroll();
+  clap.addEventListener('click', () => {
+    pinned = !pinned;
+    if (pinned) setAngle(-72);
+    else update();
+  });
 
-  if (clap) {
-    clap.addEventListener('click', () => {
-      pinned = !pinned;
-      if (pinned) setClapAngle(-72);
-      else updateClapFromScroll();
-    });
-  }
 })();
