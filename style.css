@@ -523,8 +523,10 @@ body.hovered #custom-cursor .core{ opacity: 1; }
 /* ===== CLEAN BETWEEN RIG + CLAPPER POSITION ===== */
 .between-rig{
   position: relative;
-  height: 420px;          /* больше пространства между блоками */
-  margin-top: 120px;      /* чтобы НЕ была в первом экране */
+  height: 420px;
+  margin-top: 120px;
+  z-index: 20;
+  overflow: visible;
 }
 
 .between-left{
