@@ -80,7 +80,7 @@ const yearEl = document.getElementById('year');
 if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
 /* =========================
-   Ambient glow everywhere (smooth follow)
+   Ambient glow everywhere (runs only when needed)
 ========================= */
 (() => {
   let mx = window.innerWidth * 0.5;
@@ -93,9 +93,12 @@ if (yearEl) yearEl.textContent = String(new Date().getFullYear());
   const tick = () => {
     mx = lerp(mx, tx, 0.14);
     my = lerp(my, ty, 0.14);
+
     document.documentElement.style.setProperty('--mx', `${mx.toFixed(1)}px`);
     document.documentElement.style.setProperty('--my', `${my.toFixed(1)}px`);
-    raf = requestAnimationFrame(tick);
+
+    const moving = (Math.abs(mx - tx) + Math.abs(my - ty)) > 0.6;
+    raf = moving ? requestAnimationFrame(tick) : 0;
   };
 
   window.addEventListener('pointermove', (e) => {
@@ -103,6 +106,13 @@ if (yearEl) yearEl.textContent = String(new Date().getFullYear());
     ty = e.clientY;
     if (!raf) raf = requestAnimationFrame(tick);
   }, { passive: true });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && raf) {
+      cancelAnimationFrame(raf);
+      raf = 0;
+    }
+  });
 })();
 
 /* =========================
