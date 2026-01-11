@@ -357,6 +357,16 @@ body.hovered #custom-cursor .core{ opacity: 1; }
     rgba(0,0,0,0) 70%);
   mix-blend-mode: screen;
   filter: blur(2px);
+
+     /* мягко гасим свечение к краям, чтобы не было резкого “среза” */
+  -webkit-mask-image: radial-gradient(ellipse at 50% 50%,
+    rgba(0,0,0,1) 0%,
+    rgba(0,0,0,1) 72%,
+    rgba(0,0,0,0) 100%);
+  mask-image: radial-gradient(ellipse at 50% 50%,
+    rgba(0,0,0,1) 0%,
+    rgba(0,0,0,1) 72%,
+    rgba(0,0,0,0) 100%);
 }
 .hero-stage.is-hover{ --reveal-r: 280px; }
 .hero-stage.is-hover .reveal-glow{ opacity: 1; }
