@@ -371,3 +371,33 @@ if (v && soundBtn) {
   });
 })();
 
+/* =========================
+   Title Lamp: flicker when centered
+========================= */
+(() => {
+  const lamp = document.getElementById('deckTitleLamp');
+  if (!lamp) return;
+
+  const wrap = lamp.closest('.deck-title-imgwrap');
+
+  let fired = false;
+
+  const obs = new IntersectionObserver((entries) => {
+    const e = entries[0];
+    if (!e) return;
+
+    if (e.isIntersecting && !fired) {
+      fired = true;
+      lamp.classList.add('lamp-lit');
+      if (wrap) wrap.classList.add('lamp-lit');
+      obs.disconnect(); // один раз: загорелась и всё
+    }
+  }, {
+    root: null,
+    threshold: 0,
+    // срабатывает когда элемент попадает в центральную “полосу” экрана
+    rootMargin: '-45% 0px -45% 0px'
+  });
+
+  obs.observe(lamp);
+})();
