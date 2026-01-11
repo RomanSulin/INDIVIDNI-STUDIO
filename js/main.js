@@ -80,7 +80,7 @@ const yearEl = document.getElementById('year');
 if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
 /* =========================
-   Ambient glow everywhere (runs only when needed)
+   Ambient glow everywhere (smooth follow)
 ========================= */
 (() => {
   let mx = window.innerWidth * 0.5;
@@ -93,12 +93,9 @@ if (yearEl) yearEl.textContent = String(new Date().getFullYear());
   const tick = () => {
     mx = lerp(mx, tx, 0.14);
     my = lerp(my, ty, 0.14);
-
     document.documentElement.style.setProperty('--mx', `${mx.toFixed(1)}px`);
     document.documentElement.style.setProperty('--my', `${my.toFixed(1)}px`);
-
-    const moving = (Math.abs(mx - tx) + Math.abs(my - ty)) > 0.6;
-    raf = moving ? requestAnimationFrame(tick) : 0;
+    raf = requestAnimationFrame(tick);
   };
 
   window.addEventListener('pointermove', (e) => {
@@ -106,13 +103,6 @@ if (yearEl) yearEl.textContent = String(new Date().getFullYear());
     ty = e.clientY;
     if (!raf) raf = requestAnimationFrame(tick);
   }, { passive: true });
-
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden && raf) {
-      cancelAnimationFrame(raf);
-      raf = 0;
-    }
-  });
 })();
 
 /* =========================
@@ -138,8 +128,6 @@ if (canUseCustomCursor) {
   const normalize180 = (a) => (((a + 180) % 360 + 360) % 360) - 180;
   const shortestDelta = (from, to) => normalize180(to - from);
 
-  let raf = 0;
-
   const tick = () => {
     cx += (tx - cx) * 0.22;
     cy += (ty - cy) * 0.22;
@@ -150,19 +138,13 @@ if (canUseCustomCursor) {
     currentAngle = normalize180(currentAngle + d * 0.12);
     cursor.style.setProperty('--angle', currentAngle + 'deg');
 
-    const moving =
-      (Math.abs(tx - cx) + Math.abs(ty - cy) > 0.35) ||
-      (Math.abs(d) > 0.25);
-
-    raf = moving ? requestAnimationFrame(tick) : 0;
+    requestAnimationFrame(tick);
   };
+  requestAnimationFrame(tick);
 
   document.addEventListener('mousemove', (e) => {
     tx = e.clientX;
     ty = e.clientY;
-
-    // запускаем цикл только когда реально есть движение
-    if (!raf) raf = requestAnimationFrame(tick);
 
     if (prevX !== null && prevY !== null) {
       const dx = e.clientX - prevX;
@@ -174,14 +156,6 @@ if (canUseCustomCursor) {
     prevX = e.clientX;
     prevY = e.clientY;
   }, { passive: true });
-
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden && raf) {
-      cancelAnimationFrame(raf);
-      raf = 0;
-    }
-  });
-}
 
   // boost on hover interactives
   document.querySelectorAll('a, button, .btn').forEach((el) => {
