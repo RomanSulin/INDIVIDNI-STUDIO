@@ -775,8 +775,10 @@ body.hovered #custom-cursor .core{ opacity: 1; }
 /* важно: чтобы absolute считался от between-rig, а не от страницы */
 .between-rig{
   position: relative;
-  height: 520px;       /* больше места, чтобы хлопушка не лезла вверх */
-  margin-top: 140px;   /* опускаем блок ниже от hero */
+  height: 520px;
+  margin-top: 140px;
+  z-index: 20;
+  overflow: visible;
 }
 
 /* позиция хлопушки */
@@ -804,9 +806,11 @@ body.hovered #custom-cursor .core{ opacity: 1; }
 /* === CLAPPER LAYERING: top behind base + hide corner === */
 
 .between-rig #clapButton{
-  position: absolute; /* у тебя уже есть, на всякий */
-  overflow: visible;  /* кнопку не режем, режем базу маской */
+  position: absolute;
+  overflow: visible;
+  z-index: 50;
 }
+
 
 /* порядок слоёв */
 .between-rig #clapButton .clap-top{
@@ -838,3 +842,15 @@ body.hovered #custom-cursor .core{ opacity: 1; }
   filter: blur(0.2px);
 }
 
+#showreel{
+  position: relative;
+  z-index: 1;
+}
+
+/* TEMP: спрятали декор, вернём позже */
+.note.tape1,
+.note.tape2,
+.note.cine,
+.note.night{
+  display: none !important;
+}
