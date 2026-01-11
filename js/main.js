@@ -95,7 +95,8 @@ if (yearEl) yearEl.textContent = String(new Date().getFullYear());
     my = lerp(my, ty, 0.14);
     document.documentElement.style.setProperty('--mx', `${mx.toFixed(1)}px`);
     document.documentElement.style.setProperty('--my', `${my.toFixed(1)}px`);
-    raf = requestAnimationFrame(tick);
+    const moving = (Math.abs(mx - tx) + Math.abs(my - ty)) > 0.6;
+    raf = moving ? requestAnimationFrame(tick) : 0;
   };
 
   window.addEventListener('pointermove', (e) => {
