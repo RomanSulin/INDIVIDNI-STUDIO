@@ -1158,12 +1158,51 @@ body.hovered #custom-cursor .core{ opacity: 1; }
   }
 }
 
+/* === DECK OPEN ON HOVER: даём доступ нижним карточкам === */
+@media (hover:hover){
+  .service-deck:hover .deck-card{
+    /* если заданы --dx-open/--dy-open/--rot-open — используем их */
+    --dx: var(--dx-open, var(--dx));
+    --dy: var(--dy-open, var(--dy));
+    --rot: var(--rot-open, var(--rot));
+  }
+}
+
 /* individuality: each card has its own “character” */
-.dc-commercial{ --dx: -260px; --dy: -170px; --rot: -10deg; --z: 1; --a1: rgba(0, 220, 255, .26); --radius: 28px 16px 44px 18px; --cut: 26px; --delay: 0ms; }
-.dc-clips{ --dx: -120px; --dy: -60px; --rot: -6deg; --z: 2; --a1: rgba(190, 110, 255, .24); --radius: 34px 14px 28px 18px; --cut: 18px; --delay: 90ms; }
-.dc-live{ --dx: 10px; --dy: 80px; --rot: 2deg; --z: 3; --a1: rgba(140, 255, 120, .20); --radius: 18px 28px 42px 16px; --cut: 22px; --delay: 170ms; }
-.dc-producing{ --dx: 160px; --dy: -40px; --rot: 7deg; --z: 4; --a1: rgba(255, 190, 90, .24); --radius: 28px 18px 34px 14px; --cut: 24px; --delay: 240ms; }
-.dc-graphics{ --dx: 280px; --dy: 150px; --rot: 12deg; --z: 5; --a1: rgba(255, 90, 190, .18); --radius: 18px 34px 28px 16px; --cut: 16px; --delay: 310ms; }
+.dc-commercial{
+  --dx: -260px; --dy: -170px; --rot: -10deg; --z: 1;
+  --dx-open: -420px; --dy-open: -260px; --rot-open: -16deg;
+  --a1: rgba(0, 220, 255, .26);
+  --radius: 28px 16px 44px 18px; --cut: 26px; --delay: 0ms;
+}
+
+.dc-clips{
+  --dx: -120px; --dy: -60px; --rot: -6deg; --z: 2;
+  --dx-open: -250px; --dy-open: -110px; --rot-open: -10deg;
+  --a1: rgba(190, 110, 255, .24);
+  --radius: 34px 14px 28px 18px; --cut: 18px; --delay: 90ms;
+}
+
+.dc-live{
+  --dx: 10px; --dy: 80px; --rot: 2deg; --z: 3;
+  --dx-open: -40px; --dy-open: 140px; --rot-open: 3deg;
+  --a1: rgba(140, 255, 120, .20);
+  --radius: 18px 28px 42px 16px; --cut: 22px; --delay: 170ms;
+}
+
+.dc-producing{
+  --dx: 160px; --dy: -40px; --rot: 7deg; --z: 4;
+  --dx-open: 260px; --dy-open: -80px; --rot-open: 12deg;
+  --a1: rgba(255, 190, 90, .24);
+  --radius: 28px 18px 34px 14px; --cut: 24px; --delay: 240ms;
+}
+
+.dc-graphics{
+  --dx: 280px; --dy: 150px; --rot: 12deg; --z: 5;
+  --dx-open: 440px; --dy-open: 240px; --rot-open: 18deg;
+  --a1: rgba(255, 90, 190, .18);
+  --radius: 18px 34px 28px 16px; --cut: 16px; --delay: 310ms;
+}
 
 /* responsive: уменьшаем разлёт на средних экранах */
 @media (max-width: 1100px){
