@@ -235,12 +235,18 @@ if (v && soundBtn) {
   let rAF = 0;
 
   const tick = () => {
-    cx = lerp(cx, tx, 0.18);
-    cy = lerp(cy, ty, 0.18);
-    stage.style.setProperty('--reveal-x', `${cx.toFixed(2)}%`);
-    stage.style.setProperty('--reveal-y', `${cy.toFixed(2)}%`);
-    rAF = requestAnimationFrame(tick);
-  };
+  if (!hoverActive) { rAF = 0; return; }
+
+  cx = lerp(cx, tx, 0.18);
+  cy = lerp(cy, ty, 0.18);
+
+  stage.style.setProperty('--reveal-x', `${cx.toFixed(2)}%`);
+  stage.style.setProperty('--reveal-y', `${cy.toFixed(2)}%`);
+
+  const moving = (Math.abs(cx - tx) + Math.abs(cy - ty)) > 0.06;
+  rAF = moving ? requestAnimationFrame(tick) : 0;
+};
+
 
   const insideLogo = (x, y) => {
     const r = logo.getBoundingClientRect();
