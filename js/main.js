@@ -322,3 +322,52 @@ if (v && soundBtn) {
   });
 
 })();
+
+/* =========================
+   Service Deck: glare + tilt
+========================= */
+(() => {
+  const deck = document.querySelector('.service-deck');
+  if (!deck) return;
+
+  const cards = deck.querySelectorAll('.deck-card');
+
+  cards.forEach((card) => {
+    let raf = 0;
+
+    const update = (clientX, clientY) => {
+      const r = card.getBoundingClientRect();
+      const x = (clientX - r.left) / r.width;
+      const y = (clientY - r.top) / r.height;
+
+      const px = Math.max(0, Math.min(1, x)) * 100;
+      const py = Math.max(0, Math.min(1, y)) * 100;
+
+      // glare position
+      card.style.setProperty('--px', `${px.toFixed(2)}%`);
+      card.style.setProperty('--py', `${py.toFixed(2)}%`);
+
+      // tilt (subtle)
+      const tiltX = (0.5 - y) * 10;   // up/down
+      const tiltY = (x - 0.5) * 14;   // left/right
+      card.style.setProperty('--tilt-x', `${tiltX.toFixed(2)}deg`);
+      card.style.setProperty('--tilt-y', `${tiltY.toFixed(2)}deg`);
+    };
+
+    const onMove = (e) => {
+      const p = e;
+      if (raf) cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => update(p.clientX, p.clientY));
+    };
+
+    const reset = () => {
+      card.style.setProperty('--tilt-x', `0deg`);
+      card.style.setProperty('--tilt-y', `0deg`);
+    };
+
+    card.addEventListener('pointermove', onMove);
+    card.addEventListener('pointerleave', reset);
+    card.addEventListener('pointerdown', reset);
+  });
+})();
+
