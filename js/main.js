@@ -116,7 +116,7 @@ if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 })();
 
 /* =========================
-   Custom cursor beam (only mouse devices)
+   Custom cursor beam (only mouse devices) — runs only when needed
 ========================= */
 const cursor = document.getElementById('custom-cursor');
 const canUseCustomCursor =
@@ -127,16 +127,16 @@ if (canUseCustomCursor) {
 
   let prevX = null, prevY = null;
 
-  // smooth position
   let cx = 0, cy = 0;
   let tx = 0, ty = 0;
 
-  // smooth angle with shortest path
   let currentAngle = 0;
   let targetAngle = 0;
 
   const normalize180 = (a) => (((a + 180) % 360 + 360) % 360) - 180;
   const shortestDelta = (from, to) => normalize180(to - from);
+
+  let raf = 0;
 
   const tick = () => {
     cx += (tx - cx) * 0.22;
@@ -148,13 +148,18 @@ if (canUseCustomCursor) {
     currentAngle = normalize180(currentAngle + d * 0.12);
     cursor.style.setProperty('--angle', currentAngle + 'deg');
 
-    requestAnimationFrame(tick);
+    const moving =
+      (Math.abs(tx - cx) + Math.abs(ty - cy) > 0.35) ||
+      (Math.abs(d) > 0.25);
+
+    raf = moving ? requestAnimationFrame(tick) : 0;
   };
-  requestAnimationFrame(tick);
 
   document.addEventListener('mousemove', (e) => {
     tx = e.clientX;
     ty = e.clientY;
+
+    if (!raf) raf = requestAnimationFrame(tick);
 
     if (prevX !== null && prevY !== null) {
       const dx = e.clientX - prevX;
@@ -167,7 +172,13 @@ if (canUseCustomCursor) {
     prevY = e.clientY;
   }, { passive: true });
 
-  // boost on hover interactives
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && raf) {
+      cancelAnimationFrame(raf);
+      raf = 0;
+    }
+  });
+
   document.querySelectorAll('a, button, .btn').forEach((el) => {
     el.addEventListener('mouseenter', () => document.body.classList.add('hovered'));
     el.addEventListener('mouseleave', () => document.body.classList.remove('hovered'));
