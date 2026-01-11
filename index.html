@@ -1,40 +1,36 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#0b0b0b" />
-  <title>INDIVIDNI STUDIO — видеопродакшн</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Montserrat:wght@500;600&display=swap" rel="stylesheet" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>INDIVIDNI STUDIO</title>
+  <meta name="description" content="INDIVIDNI STUDIO — ночной урбан видеопродакшн. Шоу-рил, реклама, контент, клипы." />
 
   <link rel="stylesheet" href="style.css" />
+  <script src="js/main.js" defer></script>
 </head>
 
 <body>
+  <!-- Глобальный мягкий свет (по курсору) -->
+  <div id="ambientGlow" aria-hidden="true"></div>
 
-  <!-- Кастомный курсор (луч света) -->
+  <!-- Кастомный курсор-луч (только ПК) -->
   <div id="custom-cursor" aria-hidden="true">
-    <div class="beam"></div>
     <div class="core"></div>
+    <div class="beam"></div>
   </div>
 
+  <!-- HEADER -->
+  <header id="header" class="site-header">
+    <a class="brand" href="#home" aria-label="INDIVIDNI Home">INDIVIDNI</a>
 
-  <!-- Шапка (фиксированная) -->
-  <header class="site-header" id="header">
-    <a class="logo" href="#home" aria-label="INDIVIDNI — на главную">INDIVIDNI</a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-list">
+      <span></span><span></span><span></span>
+      <span class="sr-only">Menu</span>
+    </button>
 
-    <nav class="nav" aria-label="Навигация">
-      <button class="nav-toggle" type="button" aria-controls="nav-list" aria-expanded="false">
-        <span class="nav-toggle__line"></span>
-        <span class="nav-toggle__line"></span>
-        <span class="nav-toggle__line"></span>
-        <span class="sr-only">Открыть меню</span>
-      </button>
-
-      <ul class="nav-list" id="nav-list">
+    <nav class="nav">
+      <ul id="nav-list" class="nav-list">
         <li><a href="#studio">Студия</a></li>
         <li><a href="#showreel">Шоу-рил</a></li>
         <li><a href="#services">Услуги</a></li>
@@ -43,163 +39,114 @@
       </ul>
     </nav>
 
-    <a class="btn btn--primary" href="#contacts">Связаться</a>
+    <a class="btn btn-cta" href="#contacts">Связаться</a>
   </header>
 
   <main>
     <!-- HERO -->
-<section id="home" class="hero hero-cold" data-hero="true">
-
-  <!-- Глобальный мягкий свет по всему сайту -->
-  <div id="ambientGlow" aria-hidden="true"></div>
-
-  <!-- СЦЕНА -->
-  <div class="hero-stage" id="heroStage">
-
-    <!-- ЛОГО -->
-    <div class="hero-logo" id="heroLogo">
-      <img class="logo-layer base" src="assets/hero/INDIVIDNI_3.png" alt="INDIVIDNI">
-      <img class="logo-layer reveal" src="assets/hero/INDIVIDNI_2.png" alt="" aria-hidden="true">
-      <div class="reveal-glow" aria-hidden="true"></div>
-    </div>
-
-    <!-- HUD -->
-    <div class="hero-hud" aria-hidden="true">
-      <img class="hud rec" src="assets/hero/rec_1.png" alt="">
-      <img class="hud fps" src="assets/hero/FPS_1.png" alt="">
-      <img class="hud iso" src="assets/hero/ISO.png" alt="">
-      <img class="hud tc" src="assets/hero/TIME_CODE_1.png" alt="">
-    </div>
-
-    <!-- NOTES / TAPE -->
-    <div class="hero-notes" aria-hidden="true">
-      <img class="note tape1" src="assets/hero/Tip_1.png" alt="">
-      <img class="note tape2" src="assets/hero/Tip_2.png" alt="">
-      <img class="note keep" src="assets/hero/KEEP%20RAW.png" alt="">
-      <img class="note night" src="assets/hero/NIGHT_TAKE.png" alt="">
-    </div>
-
-    <!-- маленький триггер -->
-  <div class="hero-hint" aria-hidden="true">
-  <span>FIND THE SIGNAL</span>
-  <small>scan the logo with light</small>
-  </div>
-
-  </div>
-
-<!-- Межблок: слева будут ассеты, справа хлопушка -->
-<div class="between-rig" id="betweenRig">
-  <div class="between-left" aria-hidden="true"></div>
-
-  <button class="clap dock" id="clapButton" type="button" aria-label="Clapperboard">
-    <img class="clap-base" src="assets/hero/clapperboard_1.png" alt="" aria-hidden="true">
-    <img class="clap-top" src="assets/hero/clapperboard_2.png" alt="" aria-hidden="true">
-  </button>
-</div>
-
-
-</section>
-
-
-
-
-
-    <!-- STUDIO -->
-    <section id="studio" class="section">
-      <div class="container grid-2 reveal">
-        <div>
-          <h2>Студия</h2>
-          <p class="muted">
-            INDIVIDNI — гибкий продакшн: быстро включаемся в задачу, делаем аккуратный свет, звук и монтаж.
-            На выходе — картинка и ощущение «дорого».
-          </p>
-          <ul class="list">
-            <li>Пре-продакшн: идея, референсы, раскадровка</li>
-            <li>Съёмка: свет, звук, команда</li>
-            <li>Пост: монтаж, цвет, титры, адаптации под соцсети</li>
-          </ul>
+    <section id="home" class="hero hero-cold" data-hero="true">
+      <div class="hero-stage" id="heroStage">
+        <!-- LOGO (hover reveal) -->
+        <div class="hero-logo" id="heroLogo" aria-label="Hover to scan">
+          <!-- базовый слой -->
+          <img class="logo-layer base" src="assets/hero/INDIVIDNI_3.png" alt="INDIVIDNI">
+          <!-- раскрываемый слой -->
+          <img class="logo-layer reveal" src="assets/hero/INDIVIDNI_2.png" alt="" aria-hidden="true">
+          <div class="reveal-glow" aria-hidden="true"></div>
         </div>
 
-        <div class="panel">
-          <h3>Форматы</h3>
-          <div class="chips">
-            <span>Reels / Shorts</span>
-            <span>Интервью</span>
-            <span>Реклама</span>
-            <span>Бренд-фильм</span>
-            <span>Подкаст</span>
-            <span>Событие</span>
-          </div>
-          <p class="note">Потом подставим реальные кейсы, клиентов и цифры.</p>
+        <!-- HUD -->
+        <div class="hero-hud" aria-hidden="true">
+          <img class="hud rec" src="assets/hero/rec_1.png" alt="">
+          <img class="hud fps" src="assets/hero/FPS_1.png" alt="">
+          <img class="hud iso" src="assets/hero/ISO.png" alt="">
+          <img class="hud tc"  src="assets/hero/TIME_CODE_1.png" alt="">
         </div>
+
+        <!-- NOTES / TAPE -->
+        <div class="hero-notes" aria-hidden="true">
+          <img class="note tape1" src="assets/hero/Tip_1.png" alt="">
+          <img class="note tape2" src="assets/hero/Tip_2.png" alt="">
+          <img class="note keep"  src="assets/hero/KEEP%20RAW.png" alt="">
+          <img class="note night" src="assets/hero/NIGHT_TAKE.png" alt="">
+          <img class="note drag"  src="assets/hero/DRAG_TO_REVEAL.png" alt="">
+          <img class="note cine"  src="assets/hero/Cine.png" alt="">
+        </div>
+
+        <!-- HINT -->
+        <div class="hero-hint" aria-hidden="true">
+          <span class="hint-main">FIND THE SIGNAL</span>
+          <small class="hint-sub">scan the logo with light</small>
+        </div>
+      </div>
+
+      <!-- Между hero и следующим блоком: хлопушка справа -->
+      <div class="between-rig">
+        <div class="between-left" aria-hidden="true">
+          <!-- сюда позже добавим оборудование/команду -->
+        </div>
+
+        <button class="clap dock" id="clapButton" type="button" aria-label="Clapperboard">
+          <img class="clap-base" src="assets/hero/clapperboard_1.png" alt="" aria-hidden="true">
+          <img class="clap-top"  src="assets/hero/clapperboard_2.png" alt="" aria-hidden="true">
+        </button>
       </div>
     </section>
 
     <!-- SHOWREEL -->
-<section id="showreel" class="section dark">
-  <div class="container reveal">
-    <div class="showreel-head">
-      <div>
-        <h2>Шоу-рил</h2>
-        <p class="muted">Видео играет автоматически (без звука). Звук включается кнопкой.</p>
+    <section id="showreel" class="section dark">
+      <div class="container reveal">
+        <div class="showreel-head">
+          <div>
+            <h2>Шоу-рил</h2>
+            <p class="muted">Видео играет автоматически (без звука). Звук — кнопкой.</p>
+          </div>
+
+          <button class="sound-blob is-off" type="button" id="soundToggle" aria-pressed="false">
+            <span class="sound-blob__bg" aria-hidden="true"></span>
+            <span class="sound-blob__shine" aria-hidden="true"></span>
+            <span class="sound-blob__dot" aria-hidden="true"></span>
+            <span class="sound-blob__text">Вкл звук</span>
+          </button>
+        </div>
+
+        <div class="showreel-window">
+          <div class="showreel-sticker">RAW · STREET CUT</div>
+
+          <video
+            id="showreelVideo"
+            class="showreel-video"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="metadata"
+          >
+            <source src="assets/showreel.mp4" type="video/mp4">
+          </video>
+
+          <div class="grain" aria-hidden="true"></div>
+          <div class="scanlines" aria-hidden="true"></div>
+        </div>
       </div>
+    </section>
 
-<button class="sound-blob" type="button" id="soundToggle" aria-pressed="false">
-  <span class="sound-blob__bg" aria-hidden="true"></span>
-  <span class="sound-blob__shine" aria-hidden="true"></span>
-  <span class="sound-blob__dot" aria-hidden="true"></span>
-  <span class="sound-blob__text">Вкл звук</span>
-</button>
-
-    </div>
-
-    <div class="showreel-window">
-      <div class="showreel-sticker">RAW · STREET CUT</div>
-
-      <video
-        id="showreelVideo"
-        class="showreel-video"
-        autoplay
-        muted
-        loop
-        playsinline
-        preload="metadata"
-      >
-        <source src="assets/showreel.mp4" type="video/mp4">
-      </video>
-
-      <div class="grain" aria-hidden="true"></div>
-      <div class="scanlines" aria-hidden="true"></div>
-    </div>
-  </div>
-</section>
-
+    <!-- STUDIO -->
+    <section id="studio" class="section">
+      <div class="container reveal">
+        <h2>Студия</h2>
+        <p class="muted">Потом сделаем “детективную” подачу: факты, маркеры, штампы, оборудование, город.</p>
+      </div>
+    </section>
 
     <!-- SERVICES -->
     <section id="services" class="section">
       <div class="container reveal">
         <h2>Услуги</h2>
-
         <div class="grid">
-          <article class="card">
-            <h3>Реклама и бренд-видео</h3>
-            <p class="muted">Ролики под кампанию, сайт, презентации и digital.</p>
-          </article>
-
-          <article class="card">
-            <h3>Контент для соцсетей</h3>
-            <p class="muted">Пакеты Reels/Shorts: быстро, регулярно, единый стиль.</p>
-          </article>
-
-          <article class="card">
-            <h3>Интервью и подкасты</h3>
-            <p class="muted">Свет, звук, 1–3 камеры, «телевизионный» уровень.</p>
-          </article>
-
-          <article class="card">
-            <h3>YouTube-продакшн</h3>
-            <p class="muted">Съёмка и монтаж выпусков под формат канала.</p>
-          </article>
+          <article class="card"><h3>Реклама</h3><p class="muted">Кампания, сайт, digital, брендинг.</p></article>
+          <article class="card"><h3>Контент</h3><p class="muted">Reels/Shorts пакеты: ритм, стиль, серия.</p></article>
+          <article class="card"><h3>Интервью</h3><p class="muted">Свет/звук/несколько камер, чистый монтаж.</p></article>
         </div>
       </div>
     </section>
@@ -208,71 +155,24 @@
     <section id="works" class="section dark">
       <div class="container reveal">
         <h2>Работы</h2>
-        <p class="muted">Тут будут обложки/кадры. Пока — красивые заглушки.</p>
-
-        <div class="works">
-          <a class="work" href="#" aria-label="Проект 1">
-            <div class="work__thumb" aria-hidden="true"></div>
-            <div class="work__meta">
-              <strong>Project One</strong>
-              <span class="muted">Commercial · 30–60s</span>
-            </div>
-          </a>
-
-          <a class="work" href="#" aria-label="Проект 2">
-            <div class="work__thumb" aria-hidden="true"></div>
-            <div class="work__meta">
-              <strong>Project Two</strong>
-              <span class="muted">Interview · 3 cameras</span>
-            </div>
-          </a>
-
-          <a class="work" href="#" aria-label="Проект 3">
-            <div class="work__thumb" aria-hidden="true"></div>
-            <div class="work__meta">
-              <strong>Project Three</strong>
-              <span class="muted">Social · Reels pack</span>
-            </div>
-          </a>
-        </div>
+        <p class="muted">Дальше сделаем “архив/filmstrip/контактную печать”, раскрытие карточки как досье.</p>
       </div>
     </section>
 
     <!-- CONTACTS -->
     <section id="contacts" class="section">
-      <div class="container grid-2 reveal">
-        <div>
-          <h2>Контакты</h2>
-          <p class="muted">Напиши: ниша, референсы, сроки, бюджет — предложим формат и смету.</p>
-
-          <div class="contact-actions">
-            <a class="btn btn--primary" href="https://t.me/" target="_blank" rel="noreferrer">Telegram</a>
-            <a class="btn btn--outline" href="mailto:hello@individni.studio">Email</a>
-          </div>
-
-          <p class="note">Позже добавим форму заявки (без бэкенда — через Formspree).</p>
-        </div>
-
-        <div class="panel">
-          <h3>Как мы работаем</h3>
-          <ol class="steps">
-            <li><strong>Бриф</strong> — цели, аудитория, формат</li>
-            <li><strong>План</strong> — сценарий, локация, команда</li>
-            <li><strong>Съёмка</strong> — 1 день / несколько смен</li>
-            <li><strong>Пост</strong> — монтаж, цвет, звук, адаптации</li>
-          </ol>
-        </div>
+      <div class="container reveal">
+        <h2>Контакты</h2>
+        <p class="muted">Добавим форму/мессенджеры/почту — и сделаем это тоже стилевым объектом.</p>
       </div>
     </section>
   </main>
 
-  <footer class="footer">
-    <div class="container footer-inner">
-      <p class="muted">© <span id="year"></span> INDIVIDNI STUDIO</p>
-      <p class="muted">Made for GitHub Pages</p>
+  <footer class="site-footer">
+    <div class="container">
+      <div>© <span id="year"></span> INDIVIDNI STUDIO</div>
+      <div class="muted">Made for GitHub Pages</div>
     </div>
   </footer>
-
-  <script src="js/main.js" defer></script>
 </body>
 </html>
