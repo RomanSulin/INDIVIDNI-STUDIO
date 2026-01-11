@@ -255,6 +255,15 @@ body.cursor-on, body.cursor-on a, body.cursor-on button{ cursor:none; }
   transform-origin: 0% 50%;
   transform: translateY(-50%) rotate(var(--angle));
   clip-path: polygon(0 50%, 100% 0, 100% 100%);
+  opacity: .72;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+#custom-cursor .beam::before{
+  content:"";
+  position:absolute;
+  inset:0;
   background:
     radial-gradient(closest-side at 0% 50%,
       rgba(255, 214, 140, 0.30),
@@ -265,11 +274,15 @@ body.cursor-on, body.cursor-on a, body.cursor-on button{ cursor:none; }
       rgba(255, 200, 120, 0.18),
       rgba(255, 170, 80, 0.00) 70%);
   filter: blur(2px);
-  opacity: .72;
-  mix-blend-mode: screen;
+  transform: translateZ(0);
+  will-change: filter, transform;
 }
-body.hovered #custom-cursor .beam{ opacity: .88; filter: blur(1.6px); }
+
+/* hover-усиление — теперь blur на ::before, не на .beam */
+body.hovered #custom-cursor .beam{ opacity: .88; }
+body.hovered #custom-cursor .beam::before{ filter: blur(1.6px); }
 body.hovered #custom-cursor .core{ opacity: 1; }
+
 
 @media (hover:none), (pointer:coarse){
   #custom-cursor{ display:none !important; }
