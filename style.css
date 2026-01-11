@@ -1354,3 +1354,34 @@ body.hovered #custom-cursor .core{ opacity: 1; }
   position: relative;
   z-index: 1 !important;
 }
+
+/* =========================
+   LAYERS: HERO/CLAP > DECK > SHOWREEL
+========================= */
+
+/* хлопушка и hero — всегда сверху */
+.hero.hero-cold{
+  position: relative;
+  z-index: 90 !important;
+  overflow: visible !important;
+}
+.between-rig{
+  position: relative;
+  z-index: 95 !important;
+}
+#clapButton{
+  z-index: 100 !important;
+}
+
+/* колода — выше шоу-рила, но ниже хлопушки */
+#services-deck{
+  position: relative;
+  z-index: 60 !important;
+  overflow: visible !important;
+}
+
+/* шоу-рил — самый нижний из трёх */
+#showreel{
+  position: relative;
+  z-index: 1 !important;
+}
