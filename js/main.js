@@ -220,7 +220,9 @@ if (v && soundBtn) {
     cy = lerp(cy, ty, 0.18);
     stage.style.setProperty('--reveal-x', `${cx.toFixed(2)}%`);
     stage.style.setProperty('--reveal-y', `${cy.toFixed(2)}%`);
-    rAF = requestAnimationFrame(tick);
+if (!hoverActive) { rAF = 0; return; }
+const moving = (Math.abs(cx - tx) + Math.abs(cy - ty)) > 0.06;
+rAF = moving ? requestAnimationFrame(tick) : 0;
   };
 
   const insideLogo = (x, y) => {
@@ -240,24 +242,29 @@ if (v && soundBtn) {
   stage.style.setProperty('--reveal-x', `50%`);
   stage.style.setProperty('--reveal-y', `50%`);
    
-  window.addEventListener('pointermove', (e) => {
-    const inside = insideLogo(e.clientX, e.clientY);
+window.addEventListener('pointermove', (e) => {
+  const inside = insideLogo(e.clientX, e.clientY);
 
-    if (inside && !hoverActive) {
-      hoverActive = true;
-      stage.classList.add('is-hover');
-      document.body.classList.add('glow-boost');
-      if (!rAF) rAF = requestAnimationFrame(tick);
-    }
+  if (inside && !hoverActive) {
+    hoverActive = true;
+    stage.classList.add('is-hover');
+    document.body.classList.add('glow-boost');
+    if (!rAF) rAF = requestAnimationFrame(tick);
+  }
 
-    if (!inside && hoverActive) {
-      hoverActive = false;
-      stage.classList.remove('is-hover');
-      document.body.classList.remove('glow-boost');
-    }
+  if (!inside && hoverActive) {
+    hoverActive = false;
+    stage.classList.remove('is-hover');
+    document.body.classList.remove('glow-boost');
+    if (rAF) { cancelAnimationFrame(rAF); rAF = 0; }
+  }
 
-    if (hoverActive) setTargetFromPoint(e.clientX, e.clientY);
-  }, { passive: true });
+  if (hoverActive) {
+    setTargetFromPoint(e.clientX, e.clientY);
+    if (!rAF) rAF = requestAnimationFrame(tick);
+  }
+}, { passive: true });
+
 })();
 
 /* ==========================
