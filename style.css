@@ -331,14 +331,16 @@ body.hovered #custom-cursor .core{ opacity: 1; }
   mix-blend-mode: screen;
   filter: drop-shadow(0 0 90px rgba(255,160,70,.12)) saturate(1.06) contrast(1.08);
 
-  -webkit-mask-image: radial-gradient(circle var(--reveal-r) at var(--reveal-x) var(--reveal-y),
-    rgba(255,255,255,1) 0%,
-    rgba(255,255,255,1) 70%,
-    rgba(255,255,255,0) 100%);
-  mask-image: radial-gradient(circle var(--reveal-r) at var(--reveal-x) var(--reveal-y),
-    rgba(255,255,255,1) 0%,
-    rgba(255,255,255,1) 70%,
-    rgba(255,255,255,0) 100%);
+   -webkit-mask-image: radial-gradient(circle var(--reveal-r) at var(--reveal-x) var(--reveal-y),
+     rgba(255,255,255,1) 0%,
+     rgba(255,255,255,1) 42%,
+     rgba(255,255,255,.55) 72%,
+     rgba(255,255,255,0) 100%);
+   mask-image: radial-gradient(circle var(--reveal-r) at var(--reveal-x) var(--reveal-y),
+     rgba(255,255,255,1) 0%,
+     rgba(255,255,255,1) 42%,
+     rgba(255,255,255,.55) 72%,
+     rgba(255,255,255,0) 100%);
 }
 
 /* warm halo on reveal */
