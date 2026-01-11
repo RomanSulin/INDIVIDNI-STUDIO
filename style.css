@@ -742,3 +742,17 @@ body.hovered #custom-cursor .core{ opacity: 1; }
   right: 3vw !important;      /* вправо, но в пределах экрана */
   width: clamp(210px, 14vw, 340px) !important; /* меньше */
 }
+
+/* === CLAPPER: фикс "уезжает при открытии" === */
+
+/* 1) КНОПКА: делаем квадратную область под твои PNG (они 400x400) */
+.between-rig #clapButton.clap.dock{
+  aspect-ratio: 1 / 1 !important;
+}
+
+/* 2) ВЕРХНЯЯ ПЛАНКА: правильная точка вращения + стабильный трансформ */
+.between-rig #clapButton .clap-top{
+  transform-origin: 23% 30% !important; /* петля слева сверху */
+  transform: translate3d(0, 0, 0) rotate(var(--clapAngle)) !important;
+  will-change: transform;
+}
