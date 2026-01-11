@@ -1340,7 +1340,7 @@ body.hovered #custom-cursor .core{ opacity: 1; }
 /* === Deck should overlap ABOVE the next section (showreel) === */
 #services-deck{
   position: relative;
-  z-index: 60 !important;
+  z-index: 99 !important;
   overflow: visible !important;
 }
 
