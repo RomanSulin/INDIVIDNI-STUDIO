@@ -1237,3 +1237,25 @@ body.hovered #custom-cursor .core{ opacity: 1; }
   .deck-card{ transition: none; }
   .deck-card::before{ transition: none; }
 }
+
+/* === Fix: center title image === */
+.deck-head{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.deck-title-imgwrap{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.deck-title-img{
+  display: block;
+  width: 100%;
+  max-width: 980px; /* можешь подогнать */
+  height: auto;
+  margin: 0;
+}
+
