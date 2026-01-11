@@ -1385,3 +1385,9 @@ body.hovered #custom-cursor .core{ opacity: 1; }
   position: relative;
   z-index: 1 !important;
 }
+
+/* SAFETY: если JS сломался, не прячем контент намертво */
+html:not(.js) .reveal{
+  opacity: 1;
+  transform: none;
+}
