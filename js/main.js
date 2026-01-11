@@ -1,15 +1,27 @@
 document.documentElement.classList.add('js');
-// ===== Header on scroll
-const header = document.getElementById('header');
-const onScroll = () => {
-  if (!header) return;
-  if (window.scrollY > 24) header.classList.add('scrolled');
-  else header.classList.remove('scrolled');
-};
-window.addEventListener('scroll', onScroll, { passive: true });
-onScroll();
 
-// ===== Mobile menu
+/* =========================
+   Header height var + scroll bg
+========================= */
+const header = document.getElementById('header');
+
+function setHeaderHeightVar() {
+  if (!header) return;
+  document.documentElement.style.setProperty('--header-h', `${header.offsetHeight}px`);
+}
+setHeaderHeightVar();
+window.addEventListener('resize', setHeaderHeightVar, { passive: true });
+
+function onHeaderScroll() {
+  if (!header) return;
+  header.classList.toggle('scrolled', window.scrollY > 24);
+}
+onHeaderScroll();
+window.addEventListener('scroll', onHeaderScroll, { passive: true });
+
+/* =========================
+   Mobile menu
+========================= */
 const navToggle = document.querySelector('.nav-toggle');
 const navList = document.getElementById('nav-list');
 
@@ -39,8 +51,11 @@ if (header && navToggle && navList) {
   });
 }
 
-// ===== Reveal sections
+/* =========================
+   Reveal sections
+========================= */
 const revealItems = document.querySelectorAll('.reveal');
+
 if (revealItems.length && 'IntersectionObserver' in window) {
   const io = new IntersectionObserver(
     (entries) => {
@@ -58,7 +73,41 @@ if (revealItems.length && 'IntersectionObserver' in window) {
   revealItems.forEach((el) => el.classList.add('is-visible'));
 }
 
-// ===== Custom cursor (spotlight) ONLY on mouse devices
+/* =========================
+   Footer year
+========================= */
+const yearEl = document.getElementById('year');
+if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+/* =========================
+   Ambient glow everywhere (smooth follow)
+========================= */
+(() => {
+  let mx = window.innerWidth * 0.5;
+  let my = window.innerHeight * 0.45;
+  let tx = mx, ty = my;
+  let raf = 0;
+
+  const lerp = (a, b, t) => a + (b - a) * t;
+
+  const tick = () => {
+    mx = lerp(mx, tx, 0.14);
+    my = lerp(my, ty, 0.14);
+    document.documentElement.style.setProperty('--mx', `${mx.toFixed(1)}px`);
+    document.documentElement.style.setProperty('--my', `${my.toFixed(1)}px`);
+    raf = requestAnimationFrame(tick);
+  };
+
+  window.addEventListener('pointermove', (e) => {
+    tx = e.clientX;
+    ty = e.clientY;
+    if (!raf) raf = requestAnimationFrame(tick);
+  }, { passive: true });
+})();
+
+/* =========================
+   Custom cursor beam (only mouse devices)
+========================= */
 const cursor = document.getElementById('custom-cursor');
 const canUseCustomCursor =
   cursor && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
@@ -66,39 +115,27 @@ const canUseCustomCursor =
 if (canUseCustomCursor) {
   document.body.classList.add('cursor-on');
 
-  let prevX = null;
-  let prevY = null;
+  let prevX = null, prevY = null;
 
-  // позиция курсора (сглаживание)
+  // smooth position
   let cx = 0, cy = 0;
   let tx = 0, ty = 0;
 
-  // угол луча (сглаживание + правильный переход через -180/180)
-  let currentAngle = 0; // фактический угол (в градусах)
-  let targetAngle = 0;  // куда хотим повернуться
+  // smooth angle with shortest path
+  let currentAngle = 0;
+  let targetAngle = 0;
 
-  const normalize180 = (a) => {
-    // приводит угол к диапазону [-180, 180)
-    a = ((a + 180) % 360 + 360) % 360 - 180;
-    return a;
-  };
-
-  const shortestAngleDelta = (from, to) => {
-    // возвращает разницу по кратчайшему пути
-    const delta = normalize180(to - from);
-    return delta;
-  };
+  const normalize180 = (a) => (((a + 180) % 360 + 360) % 360) - 180;
+  const shortestDelta = (from, to) => normalize180(to - from);
 
   const tick = () => {
-    // плавно двигаем позицию
     cx += (tx - cx) * 0.22;
     cy += (ty - cy) * 0.22;
     cursor.style.top = cy + 'px';
     cursor.style.left = cx + 'px';
 
-    // плавно поворачиваем луч по кратчайшему пути
-    const d = shortestAngleDelta(currentAngle, targetAngle);
-    currentAngle = normalize180(currentAngle + d * 0.12); // 0.18 = скорость поворота
+    const d = shortestDelta(currentAngle, targetAngle);
+    currentAngle = normalize180(currentAngle + d * 0.12);
     cursor.style.setProperty('--angle', currentAngle + 'deg');
 
     requestAnimationFrame(tick);
@@ -112,113 +149,81 @@ if (canUseCustomCursor) {
     if (prevX !== null && prevY !== null) {
       const dx = e.clientX - prevX;
       const dy = e.clientY - prevY;
-
-      // если мышь реально двигается — обновляем целевой угол
       if (Math.abs(dx) + Math.abs(dy) > 1) {
         targetAngle = Math.atan2(dy, dx) * 180 / Math.PI;
       }
     }
-
     prevX = e.clientX;
     prevY = e.clientY;
   }, { passive: true });
 
-  // усиление при наведении на кликабельное
+  // boost on hover interactives
   document.querySelectorAll('a, button, .btn').forEach((el) => {
     el.addEventListener('mouseenter', () => document.body.classList.add('hovered'));
     el.addEventListener('mouseleave', () => document.body.classList.remove('hovered'));
   });
 }
 
-
-
-// ===== Footer year
-const yearEl = document.getElementById('year');
-if (yearEl) yearEl.textContent = String(new Date().getFullYear());
-
-
-// ===== Showreel sound toggle (TRASH BLOB)
+/* =========================
+   Showreel sound toggle
+========================= */
 const v = document.getElementById('showreelVideo');
-const btn = document.getElementById('soundToggle');
+const soundBtn = document.getElementById('soundToggle');
 
-if (v && btn) {
-  const textEl = btn.querySelector('.sound-blob__text');
+if (v && soundBtn) {
+  const textEl = soundBtn.querySelector('.sound-blob__text');
 
   const setUI = (isOn) => {
-    btn.classList.toggle('is-on', isOn);
-    btn.classList.toggle('is-off', !isOn);
-    btn.setAttribute('aria-pressed', String(isOn));
+    soundBtn.classList.toggle('is-on', isOn);
+    soundBtn.classList.toggle('is-off', !isOn);
+    soundBtn.setAttribute('aria-pressed', String(isOn));
     if (textEl) textEl.textContent = isOn ? 'Выкл звук' : 'Вкл звук';
 
-    // перезапуск "желе" анимации
-    btn.classList.remove('jelly');
-    void btn.offsetWidth;
-    btn.classList.add('jelly');
+    soundBtn.classList.remove('jelly');
+    void soundBtn.offsetWidth;
+    soundBtn.classList.add('jelly');
   };
 
-  // старт: autoplay почти всегда muted
   setUI(!v.muted);
 
-  btn.addEventListener('click', async () => {
-    const isTurningOn = v.muted;
-    v.muted = !isTurningOn;
+  soundBtn.addEventListener('click', async () => {
+    const turningOn = v.muted;
+    v.muted = !turningOn;
 
-    if (isTurningOn) {
+    if (turningOn) {
       try { await v.play(); } catch (e) {}
     }
-
-    setUI(isTurningOn);
+    setUI(turningOn);
   });
 }
 
-// ===== HERO: spotlight reveal (robust) + clapper scroll-open (delayed) + ambient glow =====
+/* =========================
+   HERO: hover reveal + clapper opens on scroll-to-it
+========================= */
 (() => {
-  const section = document.querySelector('.hero.hero-cold[data-hero="true"]');
-  const stage   = document.getElementById('heroStage');
-  const logo    = document.getElementById('heroLogo');
-  const clap    = document.getElementById('clapButton');
-
-  if (!section || !stage || !logo) return;
+  const stage = document.getElementById('heroStage');
+  const logo  = document.getElementById('heroLogo');
+  const clap  = document.getElementById('clapButton');
+  if (!stage || !logo) return;
 
   const lerp  = (a, b, t) => a + (b - a) * t;
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
-  // ---------- Ambient glow everywhere ----------
-  let amx = window.innerWidth * 0.5;
-  let amy = window.innerHeight * 0.45;
-  let atx = amx, aty = amy;
-  let araf = 0;
-
-  const ambientTick = () => {
-    amx = lerp(amx, atx, 0.14);
-    amy = lerp(amy, aty, 0.14);
-    document.documentElement.style.setProperty('--mx', `${amx.toFixed(1)}px`);
-    document.documentElement.style.setProperty('--my', `${amy.toFixed(1)}px`);
-    araf = requestAnimationFrame(ambientTick);
-  };
-
-  window.addEventListener('pointermove', (e) => {
-    atx = e.clientX;
-    aty = e.clientY;
-    if (!araf) ambientTick();
-  }, { passive: true });
-
-  // ---------- Spotlight reveal on logo (НЕ ломается от перекрытий) ----------
+  // reveal follow
   let hoverActive = false;
-
   let tx = 50, ty = 50;
   let cx = 50, cy = 50;
-  let raf = 0;
+  let rAF = 0;
 
   const tick = () => {
     cx = lerp(cx, tx, 0.18);
     cy = lerp(cy, ty, 0.18);
     stage.style.setProperty('--reveal-x', `${cx.toFixed(2)}%`);
     stage.style.setProperty('--reveal-y', `${cy.toFixed(2)}%`);
-    raf = requestAnimationFrame(tick);
+    rAF = requestAnimationFrame(tick);
   };
 
-  const pointInsideLogo = (x, y) => {
+  const insideLogo = (x, y) => {
     const r = logo.getBoundingClientRect();
     return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
   };
@@ -231,14 +236,15 @@ if (v && btn) {
     ty = clamp(py, 0, 100);
   };
 
+  // pointermove on window = НЕ ломается, даже если сверху есть другой объект
   window.addEventListener('pointermove', (e) => {
-    const inside = pointInsideLogo(e.clientX, e.clientY);
+    const inside = insideLogo(e.clientX, e.clientY);
 
     if (inside && !hoverActive) {
       hoverActive = true;
       stage.classList.add('is-hover');
       document.body.classList.add('glow-boost');
-      if (!raf) tick();
+      if (!rAF) rAF = requestAnimationFrame(tick);
     }
 
     if (!inside && hoverActive) {
@@ -250,7 +256,7 @@ if (v && btn) {
     if (hoverActive) setTargetFromPoint(e.clientX, e.clientY);
   }, { passive: true });
 
-  // ---------- Clapper: opens when you scroll TO IT (not from start) ----------
+  // clapper open on scroll-to-it (not from page top)
   let pinned = false;
 
   const setClapAngle = (deg) => {
@@ -261,32 +267,22 @@ if (v && btn) {
   const updateClapFromScroll = () => {
     if (!clap || pinned) return;
 
-    // Чтобы она НЕ была раскрыта на самом верху страницы:
-    if (window.scrollY < 30) {
-      setClapAngle(0);
-      stage.classList.remove('is-open');
-      return;
-    }
-
     const r  = clap.getBoundingClientRect();
     const vh = window.innerHeight;
 
-    // старт: когда верх хлопушки ещё почти у нижнего края
+    // start: when clapper top is near bottom of viewport
     const start = vh * 0.92;
     const end   = vh * 0.55;
 
     const t = clamp((start - r.top) / (start - end), 0, 1);
     setClapAngle(-72 * t);
-
-    if (t > 0.78) stage.classList.add('is-open');
-    else stage.classList.remove('is-open');
   };
 
-  let sraf = 0;
+  let sRAF = 0;
   const onScroll = () => {
-    if (sraf) return;
-    sraf = requestAnimationFrame(() => {
-      sraf = 0;
+    if (sRAF) return;
+    sRAF = requestAnimationFrame(() => {
+      sRAF = 0;
       updateClapFromScroll();
     });
   };
@@ -294,124 +290,15 @@ if (v && btn) {
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onScroll, { passive: true });
 
-  // старт: закрыта
+  // start closed
   setClapAngle(0);
   updateClapFromScroll();
 
   if (clap) {
     clap.addEventListener('click', () => {
       pinned = !pinned;
-      if (pinned) {
-        setClapAngle(-72);
-        stage.classList.add('is-open');
-      } else {
-        updateClapFromScroll();
-      }
-    });
-  }
-})();
-
-
-
-  // ---------- Spotlight reveal on logo (works even if something overlaps) ----------
-  let hoverActive = false;
-
-  let tx = 50, ty = 50;
-  let cx = 50, cy = 50;
-  let raf = 0;
-
-  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-
-  const tick = () => {
-    cx = lerp(cx, tx, 0.18);
-    cy = lerp(cy, ty, 0.18);
-    stage.style.setProperty('--reveal-x', `${cx.toFixed(2)}%`);
-    stage.style.setProperty('--reveal-y', `${cy.toFixed(2)}%`);
-    raf = requestAnimationFrame(tick);
-  };
-
-  const setTargetFromEvent = (clientX, clientY) => {
-    const r = logo.getBoundingClientRect();
-    const x = ((clientX - r.left) / r.width) * 100;
-    const y = ((clientY - r.top) / r.height) * 100;
-    tx = clamp(x, 0, 100);
-    ty = clamp(y, 0, 100);
-  };
-
-  // включаем режим только когда вошли в лого
-  logo.addEventListener('pointerenter', (e) => {
-    hoverActive = true;
-    stage.classList.add('is-hover');
-    document.body.classList.add('glow-boost');
-    setTargetFromEvent(e.clientX, e.clientY);
-    if (!raf) tick();
-  });
-
-  logo.addEventListener('pointerleave', () => {
-    hoverActive = false;
-    stage.classList.remove('is-hover');
-    document.body.classList.remove('glow-boost');
-  });
-
-  // движения мыши слушаем по всей секции, чтобы перекрытия не ломали эффект
-  section.addEventListener('pointermove', (e) => {
-    if (!hoverActive) return;
-    setTargetFromEvent(e.clientX, e.clientY);
-  });
-
-  // ---------- Clapper opens when you scroll down to it ----------
-  let pinned = false;
-
-  const setClapAngle = (deg) => {
-    if (!clap) return;
-    clap.style.setProperty('--clapAngle', `${deg.toFixed(2)}deg`);
-  };
-
-  const updateClapFromScroll = () => {
-    if (!clap || pinned) return;
-
-    const r = clap.getBoundingClientRect();
-    const vh = window.innerHeight;
-
-    // когда верх хлопушки около низа экрана -> начинаем открывать
-    const startY = vh * 0.90;
-    const endY   = vh * 0.55;
-
-    const t = clamp((startY - r.top) / (startY - endY), 0, 1);
-    const angle = -72 * t;
-
-    setClapAngle(angle);
-
-    // когда почти открыта — считаем “open”
-    if (t > 0.75) stage.classList.add('is-open');
-    else stage.classList.remove('is-open');
-  };
-
-  let sraf = 0;
-  const onScroll = () => {
-    if (sraf) return;
-    sraf = requestAnimationFrame(() => {
-      sraf = 0;
-      updateClapFromScroll();
-    });
-  };
-
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll, { passive: true });
-  updateClapFromScroll();
-
-  // Клик = “зафиксировать открытой / закрытой”
-  if (clap) {
-    clap.addEventListener('click', () => {
-      pinned = !pinned;
-      clap.classList.add('touched');
-
-      if (pinned) {
-        setClapAngle(-72);
-        stage.classList.add('is-open');
-      } else {
-        updateClapFromScroll();
-      }
+      if (pinned) setClapAngle(-72);
+      else updateClapFromScroll();
     });
   }
 })();
