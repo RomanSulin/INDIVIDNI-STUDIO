@@ -752,7 +752,7 @@ body.hovered #custom-cursor .core{ opacity: 1; }
 
 /* 2) ВЕРХНЯЯ ПЛАНКА: правильная точка вращения + стабильный трансформ */
 .between-rig #clapButton .clap-top{
-  transform-origin: 23% 35% !important; /* петля слева сверху */
+  transform-origin: 27% 35% !important; /* петля слева сверху */
   transform: translate3d(0, 0, 0) rotate(var(--clapAngle)) !important;
   will-change: transform;
 }
