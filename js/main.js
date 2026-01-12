@@ -199,7 +199,7 @@ if (v && soundBtn) {
   });
 }
 
-/* ==========================
+/* ======================================================================================================================================================================================================================================================================================================================================
    HERO: hover reveal (ТОЛЬКО логотип)
 ========================== */
 (() => {
@@ -267,7 +267,7 @@ window.addEventListener('pointermove', (e) => {
 
 })();
 
-/* ==========================
+/* ======================================================================================================================================================================================================================================================================================================================================
    CLAPPER: открывается, когда доскроллил
 ========================== */
 (() => {
@@ -332,7 +332,7 @@ window.addEventListener('pointermove', (e) => {
 
 })();
 
-/* =========================
+/* ============================================================================================================================================================================================================================================================================================================
    Service Deck: glare + tilt
 ========================= */
 (() => {
@@ -380,7 +380,7 @@ window.addEventListener('pointermove', (e) => {
   });
 })();
 
-/* =========================
+/* =====================================================================================================================================================================================================================================================================================================================================
    Title Lamp: flicker when centered
 ========================= */
 (() => {
@@ -410,3 +410,131 @@ window.addEventListener('pointermove', (e) => {
 
   obs.observe(lamp);
 })();
+
+/* ============================================================================================================================================================================================================================================================================================================
+   DOSSIER INDEX (safe, no rAF)
+========================= */
+(() => {
+  const root = document.getElementById('dossierIndex');
+  if (!root) return;
+
+  const list = root.querySelector('.dx-list');
+  const items = Array.from(root.querySelectorAll('.dx-item'));
+  const view = root.querySelector('.dx-view');
+  const img = root.querySelector('.dx-view-img');
+  const thumbs = root.querySelector('.dx-thumbs');
+  const brief = {
+    req: root.querySelector('[data-k="req"]'),
+    evi: root.querySelector('[data-k="evi"]'),
+    op:  root.querySelector('[data-k="op"]'),
+    res: root.querySelector('[data-k="res"]'),
+  };
+
+  const copy = {
+    courses: {
+      req: "упаковать курс в сериал, который держит внимание",
+      evi: "70+ роликов / строгая структура / критичен звук",
+      op:  "каркас → съёмка/запись → монтаж ритмом → графика",
+      res: "единый стиль серии, готово к масштабированию",
+    },
+    broadcast: {
+      req: "ровный эфир без провалов + быстрые записи после события",
+      evi: "4+ часа / 10+ камер / меняющийся свет / звук непредсказуем",
+      op:  "схема камер → контроль звука → режиссура → титры/графика",
+      res: "дело закрыто за 24 часа: эфир + нарезки",
+    },
+    concert: {
+      req: "передать энергию сцены так, чтобы смотрелось как клип",
+      evi: "контровик / дым / скорость / толпа",
+      op:  "точки → динамика → монтаж по музыке → цвет/стаб/звук",
+      res: "темп держит, кадры цепляют с первых секунд",
+    },
+  };
+
+  const accentMap = {
+    cyan: "rgba(0,220,255,.85)",
+    amber: "rgba(255,190,90,.92)",
+    magenta: "rgba(255,90,190,.82)",
+  };
+
+  let pinned = items.find(i => i.classList.contains('is-active')) || items[0];
+
+  const renderThumbs = (thumbList) => {
+    thumbs.innerHTML = "";
+    thumbList.forEach((src) => {
+      const b = document.createElement('button');
+      b.type = "button";
+      b.className = "dx-thumb";
+      b.setAttribute("aria-label", "Открыть улику");
+      b.innerHTML = `<img src="${src.trim()}" alt="evidence">`;
+      b.addEventListener('click', () => {
+        img.src = src.trim();
+        flashScan();
+      });
+      thumbs.appendChild(b);
+    });
+  };
+
+  const flashScan = () => {
+    const scan = root.querySelector('.dx-scan');
+    if (!scan) return;
+    scan.style.transition = "none";
+    scan.style.opacity = "0.42";
+    requestAnimationFrame(() => {
+      scan.style.transition = "opacity .35s ease";
+      scan.style.opacity = "0.22";
+    });
+  };
+
+  const apply = (btn, { pin = false } = {}) => {
+    if (!btn) return;
+
+    items.forEach(x => x.classList.remove('is-active'));
+    btn.classList.add('is-active');
+
+    const accentKey = btn.dataset.accent || "amber";
+    const accent = accentMap[accentKey] || accentMap.amber;
+
+    // accent for list item glow
+    btn.style.setProperty('--ac', accent);
+
+    // accent for viewer
+    view.style.setProperty('--accent', accent);
+
+    // main image
+    img.src = btn.dataset.cover;
+
+    // thumbs
+    const t = (btn.dataset.thumbs || "").split(",").filter(Boolean);
+    renderThumbs(t.length ? t : [btn.dataset.cover]);
+
+    // text
+    const k = btn.dataset.case;
+    const c = copy[k];
+    if (c) {
+      if (brief.req) brief.req.textContent = c.req;
+      if (brief.evi) brief.evi.textContent = c.evi;
+      if (brief.op)  brief.op.textContent  = c.op;
+      if (brief.res) brief.res.textContent = c.res;
+    }
+
+    flashScan();
+
+    if (pin) pinned = btn;
+  };
+
+  // init
+  apply(pinned, { pin: true });
+
+  // hover preview
+  items.forEach((btn) => {
+    btn.addEventListener('pointerenter', () => apply(btn, { pin: false }));
+    btn.addEventListener('click', () => apply(btn, { pin: true }));
+  });
+
+  // when leaving list, revert to pinned
+  if (list) {
+    list.addEventListener('pointerleave', () => apply(pinned, { pin: false }));
+  }
+})();
+
