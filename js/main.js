@@ -663,7 +663,6 @@ items.forEach((btn) => {
   update();
 })();
 
-
 /* =============================================================================================================================
    SERVICES LAB (Desktop switchboard + Mobile tuner)
 ============================================================================================================================= */
@@ -686,6 +685,24 @@ items.forEach((btn) => {
   };
 
   const pipeNodes = Array.from(section.querySelectorAll('.svc-node'));
+
+  // detail toggle (desktop) — keeps the panel clean
+  const glass = section.querySelector('.svc-glass');
+  const moreBtn = section.querySelector('[data-svc-more]');
+  const setExpanded = (on) => {
+    if (glass) glass.classList.toggle('is-expanded', !!on);
+    if (moreBtn) {
+      moreBtn.setAttribute('aria-expanded', on ? 'true' : 'false');
+      moreBtn.textContent = on ? 'Свернуть' : 'Подробнее';
+    }
+  };
+  if (moreBtn) {
+    moreBtn.addEventListener('click', () => {
+      const on = glass ? !glass.classList.contains('is-expanded') : false;
+      setExpanded(on);
+    });
+  }
+
 
   const mobile = {
     knob: section.querySelector('#tunerKnob'),
@@ -743,8 +760,10 @@ items.forEach((btn) => {
 
     const d = btn.dataset;
 
+    // accent for whole section
     section.dataset.accent = d.accent || 'amber';
 
+    // desktop view
     if (view.code) view.code.textContent = d.code || '';
     if (view.chip) view.chip.textContent = d.chip || '';
     if (view.title) view.title.textContent = d.title || '';
@@ -755,6 +774,10 @@ items.forEach((btn) => {
     fillList(view.doList, splitList(d.do));
     fillList(view.getList, splitList(d.get));
 
+    // collapse details on every switch (less visual noise)
+    setExpanded(false);
+
+    // pipeline highlight
     const steps = new Set(
       String(d.steps || '')
         .split(',')
@@ -765,6 +788,7 @@ items.forEach((btn) => {
       node.classList.toggle('is-on', steps.has(node.dataset.step));
     });
 
+    // mobile view
     if (mobile.code) mobile.code.textContent = d.code || '';
     if (mobile.chip) mobile.chip.textContent = d.chip || '';
     if (mobile.title) mobile.title.textContent = d.title || '';
@@ -775,6 +799,7 @@ items.forEach((btn) => {
     fillList(mobile.doList, splitList(d.do));
     fillList(mobile.getList, splitList(d.get));
 
+    // tuner rotation + progress
     if (mobile.knob) {
       const seg = 360 / n;
       mobile.knob.style.setProperty('--rot', `${(idx * seg).toFixed(2)}deg`);
@@ -786,18 +811,24 @@ items.forEach((btn) => {
     }
   };
 
+  // init aria for tabs
   buttons.forEach((btn, i) => {
     btn.setAttribute('role', 'tab');
     btn.setAttribute('tabindex', btn.classList.contains('is-active') ? '0' : '-1');
     btn.setAttribute('aria-selected', btn.classList.contains('is-active') ? 'true' : 'false');
 
+    // click = lock (tap works on mobile too)
     btn.addEventListener('click', () => {
-      if (currentIndex === i) locked = !locked;
-      else locked = true;
+      if (currentIndex === i) {
+        locked = !locked;
+      } else {
+        locked = true;
+      }
       setLockedUI();
       setIndex(i);
     });
 
+    // hover = select (only when not locked)
     if (canHover) {
       btn.addEventListener('mouseenter', () => setIndex(i, { fromHover: true }));
       btn.addEventListener('focus', () => setIndex(i, { fromHover: true }));
@@ -807,6 +838,7 @@ items.forEach((btn) => {
   setLockedUI();
   setIndex(currentIndex);
 
+  // mobile prev/next
   if (mobile.nav.length) {
     mobile.nav.forEach((b) => {
       b.addEventListener('click', () => {
@@ -818,6 +850,7 @@ items.forEach((btn) => {
     });
   }
 
+  // knob: drag to change service (mobile wow)
   if (mobile.knob) {
     const knob = mobile.knob;
 
@@ -832,7 +865,8 @@ items.forEach((btn) => {
       const cx = r.left + r.width / 2;
       const cy = r.top + r.height / 2;
       const a = Math.atan2(clientY - cy, clientX - cx) * 180 / Math.PI;
-      return (a + 450) % 360; // 0° сверху, по часовой
+      // normalize: 0° at top, clockwise
+      return (a + 450) % 360;
     };
 
     let dragging = false;
@@ -843,12 +877,14 @@ items.forEach((btn) => {
       try { knob.setPointerCapture(e.pointerId); } catch (_) {}
       locked = false;
       setLockedUI();
-      setIndex(angleToIndex(pointToDeg(e.clientX, e.clientY)));
+      const deg = pointToDeg(e.clientX, e.clientY);
+      setIndex(angleToIndex(deg));
     };
 
     const onMove = (e) => {
       if (!dragging) return;
-      setIndex(angleToIndex(pointToDeg(e.clientX, e.clientY)));
+      const deg = pointToDeg(e.clientX, e.clientY);
+      setIndex(angleToIndex(deg));
     };
 
     const onUp = () => {
@@ -861,6 +897,7 @@ items.forEach((btn) => {
     knob.addEventListener('pointerup', onUp);
     knob.addEventListener('pointercancel', onUp);
 
+    // keyboard fallback
     knob.addEventListener('keydown', (e) => {
       const nextKeys = ['ArrowRight', 'ArrowDown'];
       const prevKeys = ['ArrowLeft', 'ArrowUp'];
