@@ -2054,3 +2054,20 @@ html:not(.js) .reveal{
   padding-left: 50px;
   padding-right: 50px;
 }
+
+/* === DOSSIER title image === */
+.dx-title-imgwrap{
+  margin-top: 10px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.dx-title-img{
+  display: block;
+  width: min(980px, 92vw);
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  filter: drop-shadow(0 18px 55px rgba(0,0,0,.65));
+}
