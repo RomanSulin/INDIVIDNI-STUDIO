@@ -206,6 +206,33 @@ if (canUseCustomCursor) {
   io.observe(section);
 })();
 
+/* =========================
+   Showreel pause when offscreen
+========================= */
+(() => {
+  const section = document.getElementById('showreel');
+  const video = document.getElementById('showreelVideo');
+  if (!section || !video) return;
+
+  const io = new IntersectionObserver((entries) => {
+    const e = entries[0];
+    if (!e) return;
+
+    // когда ушли — пауза
+    if (!e.isIntersecting) {
+      video.pause();
+      return;
+    }
+
+    // когда вернулись — если уже загружено, продолжаем
+    if (video.dataset.loaded === '1') {
+      video.play().catch(() => {});
+    }
+  }, { threshold: 0.08 });
+
+  io.observe(section);
+})();
+
 /* ===============================================================================================================================================================================
    Showreel sound toggle
 ========================= */
