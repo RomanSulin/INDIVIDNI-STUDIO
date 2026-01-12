@@ -1982,3 +1982,50 @@ html:not(.js) .reveal{
 .dx-strip.has-right::after{
   box-shadow: 0 0 22px rgba(255,255,255,.08);
 }
+
+/* === Evidence strip arrows (real buttons) === */
+.dx-strip{ position: relative; }
+
+.dx-arrow{
+  position: absolute;
+  top: 52px;                 /* подгон: рядом с лентой */
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.38);
+  color: rgba(255,255,255,.86);
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 5;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .18s ease, transform .18s ease, background .18s ease;
+  box-shadow: 0 18px 60px rgba(0,0,0,.45);
+  backdrop-filter: blur(6px);
+}
+
+.dx-arrow-left{ left: 10px; }
+.dx-arrow-right{ right: 10px; }
+
+.dx-strip.has-left .dx-arrow-left,
+.dx-strip.has-right .dx-arrow-right{
+  opacity: .92;
+  pointer-events: auto;
+}
+
+@media (hover:hover){
+  .dx-arrow:hover{
+    background: rgba(0,0,0,.52);
+    transform: translateY(-1px);
+  }
+}
+
+/* чтобы стрелки не мешали клику по превью — добавим паддинги внутри скролла */
+.dx-thumbs{
+  padding-left: 50px;
+  padding-right: 50px;
+}
