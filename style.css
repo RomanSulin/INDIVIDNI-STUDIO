@@ -618,10 +618,23 @@ body.hovered #custom-cursor .core{ opacity: 1; }
 
 .showreel-sub{
   margin: 10px 0 0;
+  text-align: center;
+  display: grid;
+  gap: 6px;
+}
+
+.showreel-sub-main{
   font-size: 12px;
-  letter-spacing: .12em;
+  letter-spacing: .18em;
   text-transform: uppercase;
-  opacity: .68;
+  opacity: .82;
+}
+
+.showreel-sub-muted{
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  opacity: .55;
 }
 
 .showreel-kicker{
