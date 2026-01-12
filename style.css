@@ -1393,425 +1393,228 @@ html:not(.js) .reveal{
 }
 
 /* ========================================================================================================================================================================================================
-   DOSSIER (cases)
+   DOSSIER — WOW OVERRIDE (non-template)
+   paste at the VERY END of style.css
 ========================= */
+
 .section-dossier{
-  padding-top: clamp(70px, 9vh, 130px);
-  padding-bottom: clamp(70px, 10vh, 140px);
   position: relative;
   overflow: hidden;
+  isolation: isolate;
 }
 
+/* big ghost typography */
+.section-dossier::after{
+  content:"DOSSIER";
+  position:absolute;
+  left: 50%;
+  top: -40px;
+  transform: translateX(-50%);
+  font-weight: 900;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  font-size: clamp(56px, 10vw, 160px);
+  opacity: .06;
+  pointer-events:none;
+  white-space: nowrap;
+}
+
+/* evidence-board background: vignette + scan + cursor-reactive light */
 .section-dossier::before{
   content:"";
   position:absolute;
-  inset:0;
+  inset:-2px;
   background:
-    radial-gradient(900px 420px at 20% 10%, rgba(255,255,255,.05), rgba(0,0,0,0) 60%),
-    radial-gradient(700px 420px at 80% 40%, rgba(255,180,90,.06), rgba(0,0,0,0) 60%),
-    repeating-linear-gradient(0deg, rgba(255,255,255,.018) 0px, rgba(255,255,255,.018) 1px, rgba(0,0,0,0) 9px, rgba(0,0,0,0) 14px);
-  opacity: .55;
+    radial-gradient(900px 520px at 50% 0%, rgba(255,255,255,.06), rgba(0,0,0,0) 62%),
+    radial-gradient(720px 460px at var(--mx, 50%) var(--my, 35%), rgba(255,190,90,.10), rgba(0,0,0,0) 60%),
+    radial-gradient(780px 520px at 25% 65%, rgba(110,220,255,.06), rgba(0,0,0,0) 64%),
+    repeating-linear-gradient(0deg, rgba(255,255,255,.020) 0px, rgba(255,255,255,.020) 1px, rgba(0,0,0,0) 10px, rgba(0,0,0,0) 16px),
+    radial-gradient(circle at 50% 50%, rgba(0,0,0,0) 0%, rgba(0,0,0,.55) 72%, rgba(0,0,0,.72) 100%);
+  opacity: .85;
   pointer-events:none;
+  z-index: 0;
 }
 
-.section-dossier .container{ position: relative; z-index: 1; }
-
-.section-dossier .reveal{ transition-delay: var(--delay, 0ms); }
-
-.dossier-head{
-  text-align: center;
-  margin-bottom: clamp(18px, 4vh, 34px);
-}
-
-.dossier-kicker{
-  display:inline-flex;
-  align-items:center;
-  gap: 10px;
-  letter-spacing:.26em;
-  text-transform:uppercase;
-  font-size: 11px;
-  opacity:.86;
-}
-
-.dossier-dot{
-  width:8px; height:8px; border-radius:999px;
-  background: rgba(255, 214, 140, 0.95);
-  box-shadow: 0 0 18px rgba(255, 190, 90, .45);
-}
-
+/* head becomes sharper, more “stamp” */
 .dossier-title{
-  margin-top: 14px;
-  font-size: clamp(28px, 3.5vw, 56px);
-  letter-spacing: .12em;
-  text-transform: uppercase;
+  letter-spacing: .28em !important;
+  transform: translateZ(0);
 }
-
-.dossier-sub{
-  margin: 12px auto 0;
-  max-width: 78ch;
-  font-size: 14px;
-  line-height: 1.65;
-  opacity: .78;
-}
-
 .dossier-rule{
-  margin: 16px auto 0;
-  display: inline-grid;
-  gap: 6px;
-  padding: 12px 14px;
-  border: 1px solid rgba(255,255,255,.12);
-  border-radius: 18px;
-  background: rgba(0,0,0,.18);
-  box-shadow: 0 18px 60px rgba(0,0,0,.45);
+  border-radius: 14px !important;
+  background: rgba(0,0,0,.22) !important;
+  border-color: rgba(255,255,255,.16) !important;
 }
-
-.rule-line{
-  display:flex;
-  gap: 10px;
-  justify-content: center;
-  font-size: 12px;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  opacity: .88;
-}
-
 .rule-label{
-  color: rgba(255, 214, 140, 0.98);
-  text-shadow: 0 0 16px rgba(255, 190, 90, .18);
+  color: rgba(255, 200, 120, 0.98) !important;
 }
 
-.dossier-facts{
-  margin: 18px auto 0;
-  max-width: 980px;
-  display:grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.df{
-  padding: 12px 12px 10px;
-  border-radius: 18px;
-  border: 1px solid rgba(255,255,255,.10);
-  background: rgba(255,255,255,.03);
-  box-shadow: 0 18px 60px rgba(0,0,0,.30);
-}
-
-.df-k{
-  display:block;
-  font-size: 10px;
-  letter-spacing: .28em;
-  text-transform: uppercase;
-  opacity: .62;
-}
-
-.df-v{
-  display:block;
-  margin-top: 6px;
-  font-weight: 900;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  font-size: 12px;
-  opacity: .92;
-}
-
-/* cases layout */
+/* make cases feel like files on a desk */
 .case-wall{
-  margin-top: clamp(18px, 4vh, 28px);
-  display:grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
+  position: relative;
+  z-index: 1;
+  grid-template-columns: 0.92fr 1.18fr 0.92fr !important;
+  gap: 18px !important;
   align-items: start;
 }
 
+/* red “string” between cases */
+.case-wall::after{
+  content:"";
+  position:absolute;
+  left: 10%;
+  right: 10%;
+  top: 38px;
+  height: 2px;
+  background: linear-gradient(90deg,
+    rgba(255,70,70,0),
+    rgba(255,70,70,.55),
+    rgba(255,70,70,0));
+  opacity: .55;
+  filter: blur(.2px);
+  pointer-events:none;
+}
+
+/* accents per case */
+.cf-courses{ --accent: rgba(0,220,255,.80); --accent2: rgba(0,220,255,.00); --r: -1.2deg; }
+.cf-broadcast{ --accent: rgba(255,190,90,.92); --accent2: rgba(255,190,90,.00); --r: .8deg; }
+.cf-concert{ --accent: rgba(255,90,190,.82); --accent2: rgba(255,90,190,.00); --r: -0.6deg; }
+
+/* Featured middle case = bigger + “dominant” */
+.cf-broadcast{
+  grid-column: 2;
+  transform: rotate(var(--r)) scale(1.03);
+}
+.cf-courses{ grid-column: 1; margin-top: 26px; }
+.cf-concert{ grid-column: 3; margin-top: 46px; }
+
 .case-file{
-  border-radius: 26px;
+  border-radius: 28px !important;
   transform: rotate(var(--r, 0deg));
+  transition: transform .25s ease, filter .25s ease;
 }
 
-.cf-courses{ --r: -0.6deg; }
-.cf-broadcast{ --r: 0.4deg; }
-.cf-concert{ --r: -0.2deg; }
-
+/* case summary becomes “folder”: cut corner + hard edge + glow */
 .case-summary{
-  list-style:none;
-  cursor: pointer;
-  user-select: none;
+  border-radius: 28px !important;
+  border-color: rgba(255,255,255,.14) !important;
 
-  display:grid;
-  grid-template-columns: 1fr 1.15fr;
-  gap: 14px;
+  /* folder cut corner */
+  clip-path: polygon(0 0,
+    calc(100% - 28px) 0,
+    100% 28px,
+    100% 100%,
+    0 100%);
 
-  position: relative;
-  padding: 14px;
-  border-radius: 26px;
-  border: 1px solid rgba(255,255,255,.12);
   background:
-    radial-gradient(900px 360px at 10% 0%, rgba(255,255,255,.06), rgba(0,0,0,0) 60%),
+    radial-gradient(900px 360px at 10% 0%, rgba(255,255,255,.08), rgba(0,0,0,0) 60%),
+    radial-gradient(520px 320px at 0% 50%, rgba(255,255,255,.05), rgba(0,0,0,0) 62%),
     linear-gradient(180deg, rgba(255,255,255,.04), rgba(0,0,0,0));
-  box-shadow: 0 30px 90px rgba(0,0,0,.70);
-  overflow:hidden;
+  box-shadow: 0 38px 120px rgba(0,0,0,.78) !important;
 }
 
-.case-summary::-webkit-details-marker{ display:none; }
-.case-summary::marker{ content:""; }
+/* accent edge */
+.case-summary::after{
+  content:"";
+  position:absolute;
+  inset:-1px;
+  border-radius: inherit;
+  background:
+    radial-gradient(420px 240px at 20% 0%,
+      var(--accent, rgba(255,190,90,.55)),
+      var(--accent2, rgba(0,0,0,0)) 70%);
+  opacity: .28;
+  pointer-events:none;
+  mix-blend-mode: screen;
+}
 
+/* tab looks like label */
 .case-summary::before{
-  content:"";
-  position:absolute;
-  left: 14px;
-  top: 0;
-  width: 160px;
-  height: 34px;
-  transform: translateY(-12px);
-  border-radius: 14px 14px 18px 18px;
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.10);
-  box-shadow: 0 18px 50px rgba(0,0,0,.35);
-  opacity: .9;
+  width: 210px !important;
+  height: 38px !important;
+  left: 16px !important;
+  border-radius: 14px 14px 18px 18px !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
+  border-color: rgba(255,255,255,.16) !important;
 }
 
-.case-tab{
-  position:absolute;
-  left: 26px;
-  top: 6px;
-  display:flex;
-  gap: 10px;
-  align-items:center;
-  z-index: 2;
-  pointer-events:none;
-}
-
-.case-id{
-  font-size: 10px;
-  letter-spacing: .26em;
-  text-transform: uppercase;
-  opacity: .7;
-}
-
-.case-type{
-  font-size: 10px;
-  letter-spacing: .22em;
-  text-transform: uppercase;
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,.14);
-  background: rgba(0,0,0,.18);
-  opacity: .85;
-}
-
+/* photo becomes “polaroid / evidence” */
 .case-photo{
-  position: relative;
-  border-radius: 20px;
-  overflow:hidden;
-  border: 1px solid rgba(255,255,255,.10);
-  background: rgba(0,0,0,.25);
-  min-height: 180px;
+  border-radius: 22px !important;
+  transform: rotate(-.4deg);
+  box-shadow: 0 18px 60px rgba(0,0,0,.55);
 }
-
 .case-photo img{
-  width:100%;
-  height:100%;
-  object-fit: cover;
-  display:block;
-  transform: scale(1.02);
-  filter: contrast(1.06) saturate(1.02);
+  transform: scale(1.06) !important;
+  filter: contrast(1.12) saturate(1.05) !important;
 }
-
 .case-photo-label{
-  position:absolute;
-  left: 10px;
-  bottom: 10px;
-  font-size: 10px;
-  letter-spacing: .28em;
-  text-transform: uppercase;
-  padding: 6px 9px;
-  border-radius: 999px;
-  background: rgba(0,0,0,.45);
-  border: 1px solid rgba(255,255,255,.16);
-  opacity: .86;
-  backdrop-filter: blur(6px);
+  background: rgba(0,0,0,.55) !important;
+  border-color: rgba(255,255,255,.18) !important;
 }
 
-.case-meta{
-  display:flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 10px;
-  padding-right: 4px;
-}
-
-.case-stamps{
-  display:flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
+/* stamps become more aggressive */
 .stamp{
-  font-size: 10px;
-  letter-spacing: .22em;
-  text-transform: uppercase;
-  padding: 6px 9px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,.14);
-  background: rgba(0,0,0,.14);
-  opacity: .86;
+  border-color: rgba(255,255,255,.16) !important;
+  background: rgba(0,0,0,.18) !important;
 }
-
-.stamp.dim{ opacity: .62; }
 .stamp.hot{
-  color: rgba(255, 214, 140, 0.98);
-  border-color: rgba(255, 190, 90, .28);
-  box-shadow: 0 0 18px rgba(255, 190, 90, .12);
+  color: rgba(255, 210, 140, 0.98) !important;
+  border-color: rgba(255, 190, 90, .36) !important;
+  box-shadow: 0 0 26px rgba(255, 190, 90, .14) !important;
+  animation: stampPulse 1.6s ease-in-out infinite;
+}
+@keyframes stampPulse{
+  0%, 100%{ transform: rotate(-2deg) scale(1); }
+  50%{ transform: rotate(-2deg) scale(1.04); }
 }
 
-.case-title{
-  margin:0;
-  font-weight: 900;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  font-size: 16px;
-}
-
-.case-desc{
-  margin:0;
-  font-size: 13px;
-  line-height: 1.55;
-  opacity: .76;
-}
-
-.case-openhint{
-  margin-top: 2px;
-  font-size: 12px;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  opacity: .62;
-  transform: translateX(0);
-  transition: transform .2s ease, opacity .2s ease;
-}
-
+/* hover: lift + bring to front */
 @media (hover:hover){
-  .case-summary:hover{
-    border-color: rgba(255,255,255,.22);
-    box-shadow: 0 45px 120px rgba(0,0,0,.78);
+  .case-file:hover{
+    transform: rotate(0deg) translateY(-10px) scale(1.03);
+    filter: saturate(1.05);
+    z-index: 20;
   }
-  .case-summary:hover .case-openhint{
-    opacity: .92;
-    transform: translateX(6px);
-  }
+  .case-file:hover .case-summary::after{ opacity: .45; }
 }
 
-/* open panel animation (no JS) */
-.case-panel{
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows .35s ease;
+/* open state: “case opened” */
+.case-file[open]{
+  transform: rotate(0deg) translateY(-6px) scale(1.02);
+  z-index: 30;
+}
+.case-file[open] .case-summary{
+  border-color: rgba(255,255,255,.26) !important;
 }
 
-.case-panel-inner{
-  overflow: hidden;
-  padding: 0 6px 0;
-}
-
-.case-file[open] .case-panel{ grid-template-rows: 1fr; }
-.case-file[open] .case-panel-inner{ padding: 12px 6px 0; }
-
+/* inside panel gets “file sheet” vibe */
 .case-cols{
-  display:grid;
-  grid-template-columns: 1.25fr .95fr;
-  gap: 12px;
-  padding: 14px;
-  border-radius: 22px;
-  border: 1px solid rgba(255,255,255,.10);
-  background: rgba(0,0,0,.20);
-  box-shadow: 0 18px 70px rgba(0,0,0,.45);
-  position: relative;
-  overflow:hidden;
+  border-radius: 22px !important;
+  background:
+    radial-gradient(900px 420px at 10% 0%, rgba(255,255,255,.06), rgba(0,0,0,0) 60%),
+    rgba(0,0,0,.22) !important;
+  border-color: rgba(255,255,255,.12) !important;
 }
 
-/* scanline when opened */
-.case-file[open] .case-cols::before{
-  content:"";
-  position:absolute;
-  left:-20%;
-  top:0;
-  width: 40%;
-  height: 100%;
-  background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,210,150,.12), rgba(255,255,255,0));
-  animation: scanPass 1.1s ease-out 1;
-  pointer-events:none;
-  opacity: .9;
-}
-
-@keyframes scanPass{
-  0%{ transform: translateX(0); opacity: 0; }
-  15%{ opacity: .9; }
-  100%{ transform: translateX(320%); opacity: 0; }
-}
-
-.case-evidence{
-  border-radius: 18px;
-  overflow:hidden;
-  border: 1px solid rgba(255,255,255,.10);
-  background: rgba(0,0,0,.20);
-}
-
-.case-evidence img{
-  width:100%;
-  height:100%;
-  object-fit: cover;
-  display:block;
-}
-
-.case-evidence.strip{
-  display:flex;
-  gap: 10px;
-  padding: 10px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-}
-
-.case-evidence.strip img{
-  height: 180px;
-  width: auto;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,.10);
-  scroll-snap-align: start;
-}
-
-.case-notes{
-  display:grid;
-  gap: 10px;
-  align-content: start;
-}
-
+/* note rows: like evidence slips */
 .note-row{
-  padding: 10px 10px 9px;
-  border-radius: 16px;
-  border: 1px solid rgba(255,255,255,.10);
-  background: rgba(255,255,255,.03);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.05), rgba(0,0,0,0)),
+    rgba(0,0,0,.16) !important;
+  border-color: rgba(255,255,255,.12) !important;
 }
 
-.note-k{
-  display:block;
-  font-size: 10px;
-  letter-spacing: .28em;
-  text-transform: uppercase;
-  opacity: .62;
-}
-
-.note-v{
-  display:block;
-  margin-top: 6px;
-  font-size: 13px;
-  line-height: 1.5;
-  opacity: .86;
-}
-
-/* responsive */
+/* responsive: stop collage on small screens */
 @media (max-width: 980px){
-  .dossier-facts{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .case-wall{ grid-template-columns: 1fr; }
-  .case-summary{ grid-template-columns: 1fr; }
-  .case-cols{ grid-template-columns: 1fr; }
-  .case-evidence.strip img{ height: 160px; }
+  .case-wall{
+    grid-template-columns: 1fr !important;
+  }
+  .cf-courses, .cf-broadcast, .cf-concert{
+    grid-column: auto;
+    margin-top: 0 !important;
+    transform: rotate(var(--r, 0deg)) scale(1);
+  }
+  .case-wall::after{ display:none; }
 }
