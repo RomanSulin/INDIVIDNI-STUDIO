@@ -645,14 +645,41 @@ body.hovered #custom-cursor .core{ opacity: 1; }
 
 .showreel-window{
   position: relative;
-  margin-top: 16px;
-  border-radius: 18px;
-  overflow:hidden;
+  margin-top: 18px;
+
+  border-radius: 28px;
+  padding: 14px;                 /* больше подложка */
+  overflow: hidden;
+
   border: 1px solid rgba(255,255,255,.14);
-  box-shadow: var(--shadow);
-  background:#000;
-  transform: rotate(-0.4deg);
+  background: rgba(255,255,255,.035);
+  backdrop-filter: blur(16px);
+
+  box-shadow: 0 55px 170px rgba(0,0,0,.78);
+  transform: rotate(-0.35deg);
 }
+
+.showreel-window::before{
+  content:"";
+  position:absolute;
+  inset: 10px;
+  border-radius: 22px;
+  border: 1px solid rgba(255,255,255,.12);
+  pointer-events:none;
+  opacity: .9;
+}
+
+.showreel-video{
+  width:100%;
+  height:auto;
+  display:block;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.12);
+}
+
 .showreel-sticker{
   position:absolute;
   left: 14px; top: 14px;
@@ -694,6 +721,11 @@ body.hovered #custom-cursor .core{ opacity: 1; }
     rgba(0,0,0,0) 6px
   );
   opacity:.08;
+}
+
+.grain, .scanlines{
+  inset: 14px;
+  border-radius: 18px;
 }
 
 /* =========================
@@ -793,6 +825,31 @@ body.hovered #custom-cursor .core{ opacity: 1; }
   align-self: end;
 }
 
+@media (max-width: 820px){
+  .showreel-head{
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align:center;
+  }
+  #soundToggle{ justify-self: center; margin-top: 12px; }
+
+  .showreel-window{
+    transform: none;
+    border-radius: 20px;
+    padding: 10px;
+  }
+  .showreel-window::before{
+    inset: 8px;
+    border-radius: 16px;
+  }
+  .showreel-video{ border-radius: 14px; }
+  .grain, .scanlines{
+    inset: 10px;
+    border-radius: 14px;
+  }
+  .showreel-title-img{ width: min(440px, 86vw); }
+  .showreel-sub{ font-size: 11px; letter-spacing: .10em; }
+}
 
 /* ========================================================================================================================================================================================================
    FOOTER
