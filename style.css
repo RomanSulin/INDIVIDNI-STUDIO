@@ -1895,3 +1895,29 @@ html:not(.js) .reveal{
   grid-template-columns: clamp(320px, 34vw, 420px) 1fr;
 }
 
+/* === Dossier Index: stop right column resizing === */
+.dx-grid{
+  /* важно: второй столбец должен уметь сжиматься */
+  grid-template-columns: clamp(320px, 34vw, 420px) minmax(0, 1fr) !important;
+}
+
+.dx-right,
+.dx-view,
+.dx-strip,
+.dx-thumbs{
+  min-width: 0;
+}
+
+/* лента миниатюр — строго одна строка + горизонтальный скролл */
+.dx-thumbs{
+  flex-wrap: nowrap !important;
+  overflow-x: auto !important;
+}
+
+.dx-strip{
+  overflow: hidden; /* чтобы “лишнее” не раздвигало блок */
+}
+
+.dx-thumb{
+  flex: 0 0 auto;
+}
