@@ -201,18 +201,23 @@
     <section id="showreel" class="section dark">
       <div class="container reveal">
         <div class="showreel-head">
-          <div>
-            <h2>Шоу-рил</h2>
-            <p class="muted">Видео играет автоматически (без звука). Звук — кнопкой.</p>
-          </div>
+  <div class="showreel-spacer" aria-hidden="true"></div>
 
-          <button class="sound-blob is-off" type="button" id="soundToggle" aria-pressed="false">
-            <span class="sound-blob__bg" aria-hidden="true"></span>
-            <span class="sound-blob__shine" aria-hidden="true"></span>
-            <span class="sound-blob__dot" aria-hidden="true"></span>
-            <span class="sound-blob__text">Вкл звук</span>
-          </button>
-        </div>
+  <div class="showreel-title">
+    <div class="showreel-title-imgwrap">
+      <img class="showreel-title-img" src="assets/ui/showreel.png" alt="Шоу-рил">
+    </div>
+    <p class="showreel-sub">Беззвучный прогон. Включи звук, когда готов.</p>
+  </div>
+
+  <button class="sound-blob is-off" type="button" id="soundToggle" aria-pressed="false" disabled>
+    <span class="sound-blob__bg" aria-hidden="true"></span>
+    <span class="sound-blob__shine" aria-hidden="true"></span>
+    <span class="sound-blob__dot" aria-hidden="true"></span>
+    <span class="sound-blob__text">Вкл звук</span>
+  </button>
+</div>
+
 
         <div class="showreel-window">
           <div class="showreel-sticker">RAW · STREET CUT</div>
