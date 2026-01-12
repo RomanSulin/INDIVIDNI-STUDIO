@@ -718,6 +718,29 @@ items.forEach((btn) => {
     nav: Array.from(section.querySelectorAll('[data-tuner-dir]')),
   };
 
+  // mobile tabs (keeps the card compact; no endless accordion)
+  const mobileTabs = {
+    btns: Array.from(section.querySelectorAll('[data-tuner-tab]')),
+    panels: Array.from(section.querySelectorAll('[data-tuner-panel]')),
+  };
+
+  const setMobileTab = (name) => {
+    if (!mobileTabs.btns.length || !mobileTabs.panels.length) return;
+
+    mobileTabs.btns.forEach((b) => {
+      const on = b.dataset.tunerTab === name;
+      b.classList.toggle('is-active', on);
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
+      b.setAttribute('tabindex', on ? '0' : '-1');
+    });
+
+    mobileTabs.panels.forEach((p) => {
+      const on = p.dataset.tunerPanel === name;
+      p.classList.toggle('is-active', on);
+      if (on) p.scrollTop = 0;
+    });
+  };
+
   const canHover = window.matchMedia('(hover: hover)').matches;
 
   const splitList = (s) =>
@@ -799,6 +822,9 @@ items.forEach((btn) => {
     fillList(mobile.doList, splitList(d.do));
     fillList(mobile.getList, splitList(d.get));
 
+    // reset mobile panel to 'brief' on every switch
+    setMobileTab('brief');
+
     // tuner rotation + progress
     if (mobile.knob) {
       const seg = 360 / n;
@@ -837,6 +863,15 @@ items.forEach((btn) => {
 
   setLockedUI();
   setIndex(currentIndex);
+
+  // mobile tab interactions
+  if (mobileTabs.btns.length) {
+    mobileTabs.btns.forEach((b) => {
+      b.addEventListener('click', () => setMobileTab(b.dataset.tunerTab));
+    });
+    setMobileTab('brief');
+  }
+
 
   // mobile prev/next
   if (mobile.nav.length) {
