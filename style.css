@@ -2537,3 +2537,31 @@ html:not(.js) .reveal{
   .dx-grid{ grid-template-columns: 1fr; }
 }
 
+/* =========================
+   DOSSIER INDEX — 16:9 VIDEO FORMAT
+========================= */
+
+/* главный экран всегда 16:9 */
+.dx-view-img{
+  height: auto !important;
+  aspect-ratio: 16 / 9;
+}
+
+/* рамка/оверлеи пусть тянутся по размеру изображения */
+.dx-view-frame{ display: grid; gap: 0; }
+.dx-view-frame > *{ grid-area: 1 / 1; }
+
+/* мини-улики тоже 16:9 */
+.dx-thumb{
+  width: clamp(150px, 18vw, 240px);
+  height: auto !important;
+  aspect-ratio: 16 / 9;
+}
+
+.dx-thumb img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
