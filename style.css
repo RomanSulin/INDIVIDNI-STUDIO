@@ -551,7 +551,6 @@ body.hovered #custom-cursor .core{ opacity: 1; }
   .note.keep, .note.night, .note.cine{ display:none; }
 }
 
-/* =========================
 /* ===== CLEAN BETWEEN RIG + CLAPPER POSITION ===== */
 .between-rig{
   position: relative;
