@@ -106,7 +106,7 @@ if (yearEl) yearEl.textContent = String(new Date().getFullYear());
   }, { passive: true });
 })();
 
-/* =========================
+/* ===============================================================================================================================================================================
    Custom cursor beam (only mouse devices)
 ========================= */
 const cursor = document.getElementById('custom-cursor');
@@ -166,7 +166,7 @@ if (canUseCustomCursor) {
   });
 }
 
-/* =========================
+/* ===============================================================================================================================================================================
    Showreel sound toggle
 ========================= */
 const v = document.getElementById('showreelVideo');
@@ -457,8 +457,6 @@ window.addEventListener('pointermove', (e) => {
     magenta: "rgba(255,90,190,.82)",
   };
 
-  let pinned = items.find(i => i.classList.contains('is-active')) || items[0];
-
   const renderThumbs = (thumbList) => {
     thumbs.innerHTML = "";
     thumbList.forEach((src) => {
@@ -486,7 +484,7 @@ window.addEventListener('pointermove', (e) => {
     });
   };
 
-  const apply = (btn, { pin = false } = {}) => {
+  const apply = (btn) => {
     if (!btn) return;
 
     items.forEach(x => x.classList.remove('is-active'));
@@ -519,26 +517,26 @@ window.addEventListener('pointermove', (e) => {
     }
 
     flashScan();
-
-    if (pin) pinned = btn;
   };
 
   // init
   apply(pinned, { pin: true });
 
-  // hover preview
-  items.forEach((btn) => {
-    btn.addEventListener('pointerenter', () => apply(btn, { pin: false }));
-    btn.addEventListener('click', () => apply(btn, { pin: true }));
-  });
+// init: берём тот, который уже помечен is-active (или первый)
+const initial = items.find(i => i.classList.contains('is-active')) || items[0];
+apply(initial);
 
-  // when leaving list, revert to pinned
-  if (list) {
-    list.addEventListener('pointerleave', () => apply(pinned, { pin: false }));
-  }
+// hover/focus/click = выбрать (без отката)
+items.forEach((btn) => {
+  btn.addEventListener('pointerenter', () => apply(btn));
+  btn.addEventListener('focus', () => apply(btn));
+  btn.addEventListener('click', () => apply(btn));
+});
+
+// убрали pointerleave-откат полностью
 })();
 
-/* =========================
+/* ===============================================================================================================================================================================
    Evidence strip: wheel scroll horizontally (no visible bar)
 ========================= */
 (() => {
