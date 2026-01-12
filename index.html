@@ -392,7 +392,7 @@
   </div>
 </section>
 
-    <!-- SERVICES ---------------------------------------------------------------------------------------------------------------------->
+    <!-- SERVICES -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
     <section id="services" class="section dark services-lab" data-accent="amber">
       <div class="container">
 
@@ -404,10 +404,12 @@
 
           <div class="svc-title">
             <div class="svc-ghost" aria-hidden="true">SERVICES</div>
-            <h2 class="svc-h2">Услуги</h2>
-            <p class="svc-sub">
-              Мы ловим сигнал, строим пайплайн и отдаём мастер под любую платформу.
-              От идеи до мастера: съёмка, монтаж, звук, графика, AI и 3D.
+            <div class="svc-title-imgwrap">
+              <img class="svc-title-img" src="assets/ui/services.png" alt="Услуги">
+            </div>
+            <p class="svc-sub svc-sub-2c">
+              <span class="svc-sub-a">Съёмка, эфир, продюсирование.</span>
+              <span class="svc-sub-b">Монтаж, звук, AI, 3D и графика.</span>
             </p>
           </div>
         </header>
@@ -505,7 +507,7 @@
                     <span class="svc-tags">
                       <i class="svc-tag">STRUCTURE</i>
                       <i class="svc-tag">SERIES</i>
-                      <i class="svc-tag dim">SOUND</i>
+                      <i class="svc-tag dim">ЗВУК</i>
                     </span>
                     <span class="svc-note">Серия, которую реально досматривают.</span>
                   </button>
@@ -613,7 +615,7 @@
                     <span class="svc-no">09</span>
                     <span class="svc-name">Пост‑прод</span>
                     <span class="svc-tags">
-                      <i class="svc-tag">EDIT</i>
+                      <i class="svc-tag">МОНТАЖ</i>
                       <i class="svc-tag">COLOR</i>
                       <i class="svc-tag dim">SFX</i>
                     </span>
@@ -700,17 +702,17 @@
               
               <div class="svc-folds" aria-label="Система">
                 <details class="svc-fold">
-                  <summary><span>PIPELINE</span><i class="svc-chevron" aria-hidden="true"></i></summary>
+                  <summary><span>ПАЙПЛАЙН</span><i class="svc-chevron" aria-hidden="true"></i></summary>
                   <div class="svc-fold-body">
                     <div class="svc-pipe-row">
 
-                  <span class="svc-node" data-step="idea">IDEA</span>
-                  <span class="svc-node" data-step="prep">PREP</span>
-                  <span class="svc-node" data-step="shoot">SHOOT</span>
-                  <span class="svc-node" data-step="edit">EDIT</span>
-                  <span class="svc-node" data-step="sound">SOUND</span>
-                  <span class="svc-node" data-step="vfx">VFX / 3D</span>
-                  <span class="svc-node" data-step="master">MASTER</span>
+                  <span class="svc-node" data-step="idea">ИДЕЯ</span>
+                  <span class="svc-node" data-step="prep">ПОДГОТОВКА</span>
+                  <span class="svc-node" data-step="shoot">СЪЁМКА</span>
+                  <span class="svc-node" data-step="edit">МОНТАЖ</span>
+                  <span class="svc-node" data-step="sound">ЗВУК</span>
+                  <span class="svc-node" data-step="vfx">ГРАФИКА / 3D</span>
+                  <span class="svc-node" data-step="master">МАСТЕР</span>
                 
                     </div>
                     <div class="svc-pipe-line" aria-hidden="true"></div>
@@ -718,16 +720,16 @@
                 </details>
 
                 <details class="svc-fold">
-                  <summary><span>ADD‑ONS</span><i class="svc-chevron" aria-hidden="true"></i></summary>
+                  <summary><span>ДОП. ОПЦИИ</span><i class="svc-chevron" aria-hidden="true"></i></summary>
                   <div class="svc-fold-body">
                     <div class="svc-addon-strip">
-                  <div class="svc-addon">SUBTITLES (AI+QA)</div>
-                  <div class="svc-addon">THUMBNAILS</div>
-                  <div class="svc-addon">VERTICAL CUTS</div>
-                  <div class="svc-addon">SOUND CLEANUP</div>
-                  <div class="svc-addon">COLOR PASS</div>
-                  <div class="svc-addon">3D / MOTION</div>
-                  <div class="svc-addon">DELIVERY PACK</div>
+                  <div class="svc-addon">СУБТИТРЫ (AI+QA)</div>
+                  <div class="svc-addon">ОБЛОЖКИ</div>
+                  <div class="svc-addon">ВЕРТИКАЛЬ</div>
+                  <div class="svc-addon">ЧИСТКА ЗВУКА</div>
+                  <div class="svc-addon">ЦВЕТ</div>
+                  <div class="svc-addon">3D / ГРАФИКА</div>
+                  <div class="svc-addon">ПАКЕТ СДАЧИ</div>
                 </div>
                   </div>
                 </details>
@@ -760,32 +762,42 @@
             </div>
 
             <div class="tuner-card" id="tunerCard" aria-live="polite">
-              <div class="tuner-title" data-tuner-title>Продюсирование / под ключ</div>
-              <div class="tuner-lead" data-tuner-lead>Концепт, команда, план, тайминг. Мы держим процесс — ты получаешь результат.</div>
+              <div class="tuner-top">
+                <div class="tuner-title" data-tuner-title>Продюсирование / под ключ</div>
+                <div class="tuner-mini">
+                  <span class="tuner-mini-pill" data-tuner-turnaround>Срок: 7–21 день</span>
+                  <span class="tuner-mini-pill" data-tuner-format>полный цикл</span>
+                </div>
+              </div>
 
-              <details class="tuner-details">
-                <summary>Что делаем</summary>
-                <ul class="tuner-list" data-tuner-do>
-                  <li>бриф → идея → референсы</li>
-                  <li>план съёмки + тайминг</li>
-                  <li>подбор локаций/команды</li>
-                  <li>смета и контроль продакшна</li>
-                </ul>
-              </details>
+              <div class="tuner-tabs" role="tablist" aria-label="Разделы">
+                <button class="tuner-tab is-active" type="button" data-tuner-tab="brief" role="tab" aria-selected="true">Кратко</button>
+                <button class="tuner-tab" type="button" data-tuner-tab="do" role="tab" aria-selected="false">Делаем</button>
+                <button class="tuner-tab" type="button" data-tuner-tab="get" role="tab" aria-selected="false">Вы получаете</button>
+              </div>
 
-              <details class="tuner-details">
-                <summary>Вы получаете</summary>
-                <ul class="tuner-list" data-tuner-get>
-                  <li>готовый мастер + версии</li>
-                  <li>графика/титры</li>
-                  <li>саунд‑дизайн</li>
-                  <li>адаптации под площадки</li>
-                </ul>
-              </details>
+              <div class="tuner-panels">
+                <div class="tuner-panel is-active" data-tuner-panel="brief" role="tabpanel">
+                  <div class="tuner-lead" data-tuner-lead>Концепт, команда, план, тайминг. Мы держим процесс — ты получаешь результат.</div>
+                </div>
 
-              <div class="tuner-meta">
-                <span class="tuner-pill" data-tuner-turnaround>Срок: 7–21 день</span>
-                <span class="tuner-pill" data-tuner-format>полный цикл</span>
+                <div class="tuner-panel" data-tuner-panel="do" role="tabpanel">
+                  <ul class="tuner-list" data-tuner-do>
+                    <li>бриф → идея → референсы</li>
+                    <li>план съёмки + тайминг</li>
+                    <li>подбор локаций/команды</li>
+                    <li>смета и контроль продакшна</li>
+                  </ul>
+                </div>
+
+                <div class="tuner-panel" data-tuner-panel="get" role="tabpanel">
+                  <ul class="tuner-list" data-tuner-get>
+                    <li>готовый мастер + версии</li>
+                    <li>графика/титры</li>
+                    <li>саунд‑дизайн</li>
+                    <li>адаптации под площадки</li>
+                  </ul>
+                </div>
               </div>
 
               <a class="btn tuner-cta" href="#contacts">Запросить смету</a>
