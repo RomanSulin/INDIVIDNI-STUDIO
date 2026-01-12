@@ -2065,7 +2065,7 @@ html:not(.js) .reveal{
 
 .dx-title-img{
   display: block;
-  width: min(420px, 68vw);   /* было ~980px — стало меньше */
+  width: min(240px, 28vw);   /* было ~980px — стало меньше */
   max-width: 100%;
   height: auto;
   margin: 0 auto;
