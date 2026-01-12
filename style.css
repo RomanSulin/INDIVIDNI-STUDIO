@@ -1940,3 +1940,64 @@ html:not(.js) .reveal{
   border-top: 1px solid rgba(255,255,255,.10);
   background: rgba(0,0,0,.14);
 }
+
+/* === Evidence strip: hide ugly scrollbar but keep scrolling === */
+.dx-thumbs{
+  scrollbar-width: none;      /* Firefox */
+  -ms-overflow-style: none;   /* old Edge */
+}
+.dx-thumbs::-webkit-scrollbar{
+  height: 0;
+}
+
+/* === Evidence strip arrows === */
+.dx-strip{ position: relative; }
+
+.dx-strip::before,
+.dx-strip::after{
+  content:"";
+  position:absolute;
+  top: 44px;                 /* подгон под твою полосу */
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.35);
+  opacity: 0;
+  transform: translateY(-50%);
+  pointer-events: none;
+  box-shadow: 0 18px 60px rgba(0,0,0,.45);
+}
+
+.dx-strip::before{
+  left: 10px;
+  mask: radial-gradient(circle, #000 60%, transparent 61%); /* просто “линза”, иконку добавим JS */
+}
+.dx-strip::after{
+  right: 10px;
+}
+
+.dx-strip.has-left::before,
+.dx-strip.has-right::after{
+  opacity: .85;
+}
+
+.dx-strip.has-left::before{
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,.08), rgba(0,0,0,0) 60%),
+    rgba(0,0,0,.35);
+}
+
+.dx-strip.has-right::after{
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,.08), rgba(0,0,0,0) 60%),
+    rgba(0,0,0,.35);
+}
+
+/* маленькие “шевроны” через псевдо-элементы */
+.dx-strip.has-left::before{
+  box-shadow: 0 0 22px rgba(255,255,255,.08);
+}
+.dx-strip.has-right::after{
+  box-shadow: 0 0 22px rgba(255,255,255,.08);
+}
