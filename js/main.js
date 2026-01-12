@@ -411,8 +411,8 @@ window.addEventListener('pointermove', (e) => {
   obs.observe(lamp);
 })();
 
-/* ============================================================================================================================================================================================================================================================================================================
-   DOSSIER INDEX (safe, no rAF)
+/* ===============================================================================================================================================================================
+   DOSSIER INDEX (hover = select, no pin, no revert)
 ========================= */
 (() => {
   const root = document.getElementById('dossierIndex');
@@ -423,6 +423,7 @@ window.addEventListener('pointermove', (e) => {
   const view = root.querySelector('.dx-view');
   const img = root.querySelector('.dx-view-img');
   const thumbs = root.querySelector('.dx-thumbs');
+
   const brief = {
     req: root.querySelector('[data-k="req"]'),
     evi: root.querySelector('[data-k="evi"]'),
@@ -457,21 +458,11 @@ window.addEventListener('pointermove', (e) => {
     magenta: "rgba(255,90,190,.82)",
   };
 
-  const renderThumbs = (thumbList) => {
-    thumbs.innerHTML = "";
-    thumbList.forEach((src) => {
-      const b = document.createElement('button');
-      b.type = "button";
-      b.className = "dx-thumb";
-      b.setAttribute("aria-label", "Открыть улику");
-      b.innerHTML = `<img src="${src.trim()}" alt="evidence">`;
-      b.addEventListener('click', () => {
-        img.src = src.trim();
-        flashScan();
-      });
-      thumbs.appendChild(b);
-    });
-  };
+  // проставим акцент каждому пункту один раз (чтобы подсветка работала всегда)
+  items.forEach((btn) => {
+    const key = btn.dataset.accent || "amber";
+    btn.style.setProperty('--ac', accentMap[key] || accentMap.amber);
+  });
 
   const flashScan = () => {
     const scan = root.querySelector('.dx-scan');
@@ -484,8 +475,31 @@ window.addEventListener('pointermove', (e) => {
     });
   };
 
+  const renderThumbs = (thumbList) => {
+    if (!thumbs) return;
+    thumbs.innerHTML = "";
+
+    thumbList.forEach((src) => {
+      const s = src.trim();
+      if (!s) return;
+
+      const b = document.createElement('button');
+      b.type = "button";
+      b.className = "dx-thumb";
+      b.setAttribute("aria-label", "Открыть улику");
+      b.innerHTML = `<img src="${s}" alt="evidence">`;
+
+      b.addEventListener('click', () => {
+        img.src = s;
+        flashScan();
+      });
+
+      thumbs.appendChild(b);
+    });
+  };
+
   const apply = (btn) => {
-    if (!btn) return;
+    if (!btn || !view || !img) return;
 
     items.forEach(x => x.classList.remove('is-active'));
     btn.classList.add('is-active');
@@ -493,22 +507,19 @@ window.addEventListener('pointermove', (e) => {
     const accentKey = btn.dataset.accent || "amber";
     const accent = accentMap[accentKey] || accentMap.amber;
 
-    // accent for list item glow
-    btn.style.setProperty('--ac', accent);
-
-    // accent for viewer
     view.style.setProperty('--accent', accent);
 
     // main image
-    img.src = btn.dataset.cover;
+    img.src = btn.dataset.cover || img.src;
 
     // thumbs
-    const t = (btn.dataset.thumbs || "").split(",").filter(Boolean);
-    renderThumbs(t.length ? t : [btn.dataset.cover]);
+    const raw = (btn.dataset.thumbs || "");
+    const t = raw.split(",").map(s => s.trim()).filter(Boolean);
+    renderThumbs(t.length ? t : [btn.dataset.cover].filter(Boolean));
 
     // text
-    const k = btn.dataset.case;
-    const c = copy[k];
+    const key = btn.dataset.case;
+    const c = copy[key];
     if (c) {
       if (brief.req) brief.req.textContent = c.req;
       if (brief.evi) brief.evi.textContent = c.evi;
@@ -520,21 +531,19 @@ window.addEventListener('pointermove', (e) => {
   };
 
   // init
-  apply(pinned, { pin: true });
+  const initial = items.find(i => i.classList.contains('is-active')) || items[0];
+  apply(initial);
 
-// init: берём тот, который уже помечен is-active (или первый)
-const initial = items.find(i => i.classList.contains('is-active')) || items[0];
-apply(initial);
+  // hover/focus/click = select (без отката)
+  items.forEach((btn) => {
+    btn.addEventListener('pointerenter', () => apply(btn));
+    btn.addEventListener('focus', () => apply(btn));
+    btn.addEventListener('click', () => apply(btn));
+  });
 
-// hover/focus/click = выбрать (без отката)
-items.forEach((btn) => {
-  btn.addEventListener('pointerenter', () => apply(btn));
-  btn.addEventListener('focus', () => apply(btn));
-  btn.addEventListener('click', () => apply(btn));
-});
-
-// убрали pointerleave-откат полностью
+  // УБРАЛИ: pointerleave-откат полностью
 })();
+
 
 /* ===============================================================================================================================================================================
    Evidence strip: wheel scroll horizontally (no visible bar)
