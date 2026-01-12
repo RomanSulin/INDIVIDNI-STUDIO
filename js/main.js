@@ -603,11 +603,14 @@ window.addEventListener('pointermove', (e) => {
   apply(initial);
 
   // hover/focus/click = select (без отката)
-  items.forEach((btn) => {
-    btn.addEventListener('pointerenter', () => apply(btn));
-    btn.addEventListener('focus', () => apply(btn));
-    btn.addEventListener('click', () => apply(btn));
-  });
+const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+items.forEach((btn) => {
+  if (canHover) btn.addEventListener('pointerenter', () => apply(btn));
+  btn.addEventListener('focus', () => apply(btn));
+  btn.addEventListener('click', () => apply(btn));
+});
+
 
   // УБРАЛИ: pointerleave-откат полностью
 })();
