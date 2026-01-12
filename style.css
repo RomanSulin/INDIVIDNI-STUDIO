@@ -2154,38 +2154,57 @@ html:not(.js) .reveal{
    ДЛЯ ТЕЛЕФОНА БЛОК С ДОСЬЕ
 ========================= */
 /* =========================
-   DOSSIER INDEX — MOBILE (new layout, desktop untouched)
+   DOSSIER INDEX — MOBILE REBUILD
+   Desktop untouched. Mobile gets new layout & logic.
 ========================= */
+
 @media (max-width: 820px){
 
-  /* сетка превращается в вертикальный поток */
+  /* главное: не даём странице поехать по горизонтали */
+  html, body{ overflow-x: hidden; }
+
+  /* секция: больше воздуха по бокам */
+  .dossier-index{ padding-left: 0; padding-right: 0; }
+  .dossier-index .container{ padding-left: 14px; padding-right: 14px; }
+
+  /* огромный “DOSSIER” на фоне на мобиле мешает — приглушаем */
+  .dx-title-ghost{
+    opacity: .04;
+    font-size: 22vw;
+    top: -10px;
+  }
+
+  /* 2 колонки -> 1 колонка (самое важное) */
   .dx-grid{
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
   }
 
-  /* убираем “панель” слева — на мобиле это tabs */
+  /* ЛЕВЫЙ БЛОК перестаёт быть “панелью”, становится лентой дел */
   .dx-left{
-    background: transparent;
-    border: 0;
-    box-shadow: none;
-    border-radius: 0;
-    overflow: visible;
-    padding: 0;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
   }
 
-  /* верхнюю шапку слева (CASE INDEX / hint) скрываем */
-  .dx-left-top{ display: none; }
+  /* верхний хедер “CASE INDEX / hover...” на мобиле не нужен */
+  .dx-left-top{ display: none !important; }
 
-  /* индекс дел -> горизонтальные tabs */
+  /* Индекс дел = горизонтальный скролл с snap */
   .dx-list{
-    display: flex;
-    gap: 10px;
-    padding: 2px 2px 10px;
-    margin: 0;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
+    display: flex !important;
+    gap: 12px !important;
+
+    padding: 4px 2px 12px !important;
+    margin: 0 !important;
+
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
     -webkit-overflow-scrolling: touch;
 
     scrollbar-width: none;
@@ -2194,78 +2213,74 @@ html:not(.js) .reveal{
   .dx-list::-webkit-scrollbar{ height: 0; }
 
   .dx-list > li{
-    flex: 0 0 auto;
-    scroll-snap-align: start;
+    flex: 0 0 auto !important;
+    scroll-snap-align: start !important;
   }
 
-  /* сам tab */
+  /* Карточка дела на мобиле: крупная, “тапабельная” */
   .dx-item{
+    min-width: 78vw !important;
+    max-width: 360px !important;
+
+    border-radius: 22px !important;
+    padding: 14px 14px 12px !important;
+
     transform: none !important;
-    transition: none !important;
+    transition: none !important; /* без дерганий */
 
-    border-radius: 999px;
-    padding: 10px 12px;
-    min-width: 168px;
-
-    display: grid;
-    grid-template-columns: auto 1fr;
-    grid-template-rows: auto auto;
-    column-gap: 10px;
-    row-gap: 2px;
-
-    box-shadow: 0 18px 70px rgba(0,0,0,.45);
+    box-shadow: 0 22px 80px rgba(0,0,0,.55) !important;
   }
 
-  /* номер */
-  .dx-no{
-    grid-row: 1 / span 2;
-    align-self: center;
-    font-size: 11px;
-    letter-spacing: .18em;
-    opacity: .88;
-  }
-
-  /* имя */
-  .dx-name{
-    margin: 0;
-    font-size: 13px;
-    letter-spacing: .12em;
-  }
-
-  /* теги и длинное описание на мобиле прячем — будет слишком шумно */
-  .dx-tags{ display: none; }
-  .dx-note{ display: none; }
-
-  /* активный таб: чуть более “вкусный” */
   .dx-item.is-active{
-    border-color: rgba(255,255,255,.26);
-  }
-  .dx-item.is-active::after{
-    opacity: .55;
+    transform: none !important;
   }
 
-  /* выключаем hover-движения на мобиле */
-  .dx-item:hover{ transform: none !important; }
+  /* Номер/название чуть компактнее */
+  .dx-no{ font-size: 12px !important; opacity: .9 !important; }
+  .dx-name{ font-size: 16px !important; }
 
-  /* viewer на мобиле: чуть компактнее и без перегруза HUD */
+  /* Теги оставляем, но делаем плотнее */
+  .dx-tags{ gap: 8px !important; }
+  .dx-tag{ padding: 6px 8px !important; font-size: 10px !important; }
+
+  /* Описание одной строкой, чтобы не раздувало */
+  .dx-note{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+
+  /* ПРАВЫЙ VIEWER — как отдельная “витрина” */
+  .dx-right,
+  .dx-view,
+  .dx-strip,
+  .dx-thumbs{
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
   .dx-view{
-    border-radius: 22px;
-    box-shadow: 0 32px 120px rgba(0,0,0,.70);
+    border-radius: 22px !important;
+    box-shadow: 0 32px 120px rgba(0,0,0,.70) !important;
   }
+
   .dx-view-frame{
-    padding: 8px;
-    border-radius: 22px;
+    padding: 10px !important;
+    border-radius: 22px !important;
   }
+
   .dx-view-frame::before,
   .dx-view-frame::after{
-    inset: 8px;
-    border-radius: 16px;
-  }
-  .dx-view-img{
-    border-radius: 16px;
+    inset: 10px !important;
+    border-radius: 16px !important;
   }
 
-  /* HUD-элементы, которые на мобиле мешают — прячем */
+  .dx-view-img{
+    border-radius: 16px !important;
+  }
+
+  /* HUD упрощаем: оставляем только верхние pill-ы, убираем прицел/пины/нитки */
   .dx-crosshair,
   .dx-pin,
   .dx-string,
@@ -2273,51 +2288,58 @@ html:not(.js) .reveal{
     display: none !important;
   }
 
-  /* лента улик: свайпом, стрелки скрываем */
+  /* ЛЕНТА УЛИК: свайп, без стрелок */
   .dx-arrow{ display: none !important; }
 
   .dx-strip{
-    padding: 10px 10px 12px;
+    padding: 10px 10px 12px !important;
   }
   .dx-strip-label{
-    text-align: center;
-    margin-bottom: 8px;
+    text-align: center !important;
+    margin-bottom: 8px !important;
   }
 
-  /* убираем паддинги под стрелки */
+  /* убираем padding под стрелки, делаем “киношные” большие превью */
   .dx-thumbs{
     padding: 0 0 6px !important;
-  }
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+    scroll-snap-type: x mandatory !important;
 
-  /* на мобиле превью делаем крупнее (как “filmstrip”) */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .dx-thumbs::-webkit-scrollbar{ height: 0; }
+
   .dx-thumb{
-    width: 76vw;
-    max-width: 320px;
-    border-radius: 16px;
+    width: 82vw !important;
+    max-width: 360px !important;
+    border-radius: 16px !important;
+    scroll-snap-align: start !important;
   }
 
-  /* brief: более компактно и читаемо */
+  /* БРИФ: компактнее и читабельнее */
   .dx-brief{
-    padding: 12px;
-    gap: 8px;
+    padding: 12px !important;
+    gap: 8px !important;
   }
   .dx-brief-row{
-    grid-template-columns: 88px 1fr;
-    border-radius: 16px;
-    padding: 10px 10px 9px;
+    grid-template-columns: 86px 1fr !important;
+    border-radius: 16px !important;
+    padding: 10px 10px 9px !important;
   }
   .dx-brief-row .k{
-    font-size: 10px;
-    letter-spacing: .22em;
+    font-size: 10px !important;
+    letter-spacing: .22em !important;
   }
   .dx-brief-row .v{
-    font-size: 13px;
-    -webkit-line-clamp: 3; /* на мобиле можно 3 строки */
+    font-size: 13px !important;
+    -webkit-line-clamp: 3 !important;
   }
 }
 
-/* extra small */
+/* extra small phones */
 @media (max-width: 380px){
-  .dx-item{ min-width: 152px; }
-  .dx-thumb{ width: 82vw; }
+  .dx-item{ min-width: 84vw !important; }
+  .dx-thumb{ width: 86vw !important; }
 }
