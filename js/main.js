@@ -166,47 +166,6 @@ if (canUseCustomCursor) {
   });
 }
 
-/* =========================
-   Showreel lazy load (load only when section is near)
-========================= */
-(() => {
-  const section = document.getElementById('showreel');
-  const video = document.getElementById('showreelVideo');
-  const btn = document.getElementById('soundToggle');
-  if (!section || !video) return;
-
-  const source = video.querySelector('source[data-src]');
-  if (!source) return;
-
-  // блокируем кнопку до загрузки видео
-  if (btn) btn.disabled = true;
-
-  const loadVideo = async () => {
-    if (video.dataset.loaded === '1') return;
-    const src = source.dataset.src;
-    if (!src) return;
-
-    source.src = src;
-    video.load();
-    video.dataset.loaded = '1';
-
-    // после загрузки можно включать звук
-    if (btn) btn.disabled = false;
-
-    // muted autoplay обычно разрешён
-    try { await video.play(); } catch (e) {}
-  };
-
-  const obs = new IntersectionObserver((entries) => {
-    if (entries[0]?.isIntersecting) {
-      loadVideo();
-      obs.disconnect();
-    }
-  }, { root: null, threshold: 0.12, rootMargin: '300px 0px 300px 0px' });
-
-  obs.observe(section);
-})();
-
 /* ===============================================================================================================================================================================
    Showreel sound toggle
 ========================= */
