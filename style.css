@@ -1,4 +1,11 @@
-/* =========================
+/* Prevent layout shift when scrollbar appears/disappears */
+html { overflow-y: scroll; }
+
+@supports (scrollbar-gutter: stable) {
+  html { overflow-y: auto; scrollbar-gutter: stable; }
+}
+
+/* =============================================================================================================================
    RESET / BASE
 ========================= */
 *{ box-sizing:border-box; }
@@ -1543,7 +1550,7 @@ html:not(.js) .reveal{
   }
 }
 
-/* =========================
+/* ===============================================================================================================================================================================
    DOSSIER / INDEX — BASE + 16:9 + FAT
 ========================= */
 
@@ -1869,4 +1876,16 @@ html:not(.js) .reveal{
 
 @media (max-width: 980px){
   .dx-grid{ grid-template-columns: 1fr; }
+}
+
+/* Keep brief rows stable height (prevents reflow on hover preview) */
+.dx-brief-row .v{
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; /* максимум 2 строки */
+  overflow: hidden;
+}
+
+.dx-brief-row{
+  min-height: 58px; /* одинаковая высота строк */
 }
