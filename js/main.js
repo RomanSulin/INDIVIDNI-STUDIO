@@ -533,6 +533,7 @@ window.addEventListener('pointermove', (e) => {
   });
 
   const flashScan = () => {
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
     const scan = root.querySelector('.dx-scan');
     if (!scan) return;
     scan.style.transition = "none";
