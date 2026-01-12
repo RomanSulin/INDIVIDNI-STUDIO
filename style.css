@@ -1931,85 +1931,110 @@ html:not(.js) .reveal{
   height: 0;
 }
 
-/* === Evidence strip arrows === */
-.dx-strip{ position: relative; }
+/* =========================
+   EVIDENCE STRIP (clean): no pseudo circles, only real arrow buttons
+========================= */
 
-.dx-strip::before,
-.dx-strip::after{
-  content:"";
-  position:absolute;
-  top: 44px;                 /* подгон под твою полосу */
-  width: 34px;
-  height: 34px;
-  border-radius: 999px;
+.dx-strip{
+  padding: 12px 14px 14px;
+  border-top: 1px solid rgba(255,255,255,.10);
+  background: rgba(0,0,0,.18);
+}
+
+.dx-strip-label{
+  font-size: 10px;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  opacity: .68;
+  margin-bottom: 10px;
+}
+
+.dx-strip-body{
+  position: relative;
+}
+
+/* thumbs row */
+.dx-thumbs{
+  display:flex;
+  gap: 10px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+
+  padding: 0 50px 4px; /* место под стрелки слева/справа */
+  min-width: 0;
+
+  scrollbar-width: none;      /* Firefox */
+  -ms-overflow-style: none;   /* old Edge */
+}
+.dx-thumbs::-webkit-scrollbar{ height: 0; }
+
+.dx-thumb{
+  width: clamp(150px, 18vw, 240px);
+  aspect-ratio: 16 / 9;
+  height: auto;
+  flex: 0 0 auto;
+
+  border-radius: 16px;
   border: 1px solid rgba(255,255,255,.14);
-  background: rgba(0,0,0,.35);
-  opacity: 0;
-  transform: translateY(-50%);
-  pointer-events: none;
-  box-shadow: 0 18px 60px rgba(0,0,0,.45);
+  overflow:hidden;
+  background: rgba(0,0,0,.20);
+  box-shadow: 0 22px 80px rgba(0,0,0,.62);
+  cursor: pointer;
+
+  scroll-snap-align: start;
+  position: relative;
 }
 
-.dx-strip::before{
-  left: 10px;
-  mask: radial-gradient(circle, #000 60%, transparent 61%); /* просто “линза”, иконку добавим JS */
-}
-.dx-strip::after{
-  right: 10px;
-}
-
-.dx-strip.has-left::before,
-.dx-strip.has-right::after{
-  opacity: .85;
+.dx-thumb img{
+  width:100%;
+  height:100%;
+  object-fit: cover;
+  display:block;
+  transform: scale(1.04);
+  filter: contrast(1.10) saturate(1.03);
 }
 
-.dx-strip.has-left::before{
-  background:
-    radial-gradient(circle at 50% 50%, rgba(255,255,255,.08), rgba(0,0,0,0) 60%),
-    rgba(0,0,0,.35);
-}
-
-.dx-strip.has-right::after{
-  background:
-    radial-gradient(circle at 50% 50%, rgba(255,255,255,.08), rgba(0,0,0,0) 60%),
-    rgba(0,0,0,.35);
-}
-
-/* маленькие “шевроны” через псевдо-элементы */
-.dx-strip.has-left::before{
-  box-shadow: 0 0 22px rgba(255,255,255,.08);
-}
-.dx-strip.has-right::after{
-  box-shadow: 0 0 22px rgba(255,255,255,.08);
-}
-
-/* === Evidence strip arrows (real buttons) === */
-.dx-strip{ position: relative; }
-
+/* arrows */
 .dx-arrow{
   position: absolute;
-  top: 52px;                 /* подгон: рядом с лентой */
-  width: 34px;
-  height: 34px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 36px;
+  height: 36px;
+  padding: 0;
+
   border-radius: 999px;
   border: 1px solid rgba(255,255,255,.14);
   background: rgba(0,0,0,.38);
-  color: rgba(255,255,255,.86);
-  display: grid;
-  place-items: center;
-  font-size: 20px;
+  color: rgba(255,255,255,.90);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 18px 60px rgba(0,0,0,.45);
+  backdrop-filter: blur(6px);
+
+  font-size: 22px;
   line-height: 1;
   cursor: pointer;
+
   z-index: 5;
   opacity: 0;
   pointer-events: none;
   transition: opacity .18s ease, transform .18s ease, background .18s ease;
-  box-shadow: 0 18px 60px rgba(0,0,0,.45);
-  backdrop-filter: blur(6px);
 }
 
 .dx-arrow-left{ left: 10px; }
 .dx-arrow-right{ right: 10px; }
+
+/* оптическая коррекция символа */
+.dx-arrow > span{
+  display:block;
+  transform: translateY(-1px);
+}
 
 .dx-strip.has-left .dx-arrow-left,
 .dx-strip.has-right .dx-arrow-right{
@@ -2020,7 +2045,7 @@ html:not(.js) .reveal{
 @media (hover:hover){
   .dx-arrow:hover{
     background: rgba(0,0,0,.52);
-    transform: translateY(-1px);
+    transform: translateY(calc(-50% - 1px));
   }
 }
 
