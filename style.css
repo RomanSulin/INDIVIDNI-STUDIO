@@ -604,12 +604,37 @@ body.hovered #custom-cursor .core{ opacity: 1; }
    SHOWREEL
 ========================= */
 .showreel-head{
-  display:flex;
-  align-items:flex-end;
-  justify-content:space-between;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: end;
   gap: 14px;
-  flex-wrap: wrap;
 }
+
+.showreel-spacer{ height: 1px; }
+
+/* центр */
+.showreel-title{
+  text-align: center;
+}
+
+.showreel-kicker{
+  display:inline-flex;
+  align-items:center;
+  gap: 10px;
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  font-size: 11px;
+  opacity: .86;
+  margin-bottom: 10px;
+}
+
+.showreel-dot{
+  width:8px; height:8px;
+  border-radius:999px;
+  background: rgba(255,214,140,.95);
+  box-shadow: 0 0 18px rgba(255,190,90,.45);
+}
+
 
 .showreel-window{
   position: relative;
