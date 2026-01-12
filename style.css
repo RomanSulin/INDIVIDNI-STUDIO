@@ -648,10 +648,10 @@ body.hovered #custom-cursor .core{ opacity: 1; }
 
 .showreel-window{
   position: relative;
-  margin-top: 18px;
+  margin-top: 28px;
 
-  border-radius: 28px;
-  padding: 14px;                 /* больше подложка */
+  border-radius: 34px;
+  padding: 22px;                 /* больше подложка */
   overflow: hidden;
 
   border: 1px solid rgba(255,255,255,.14);
@@ -659,7 +659,7 @@ body.hovered #custom-cursor .core{ opacity: 1; }
   backdrop-filter: blur(16px);
 
   box-shadow: 0 55px 170px rgba(0,0,0,.78);
-  transform: rotate(-0.35deg);
+  transform: rotate(-0.30deg);
 }
 
 .showreel-window::before{
@@ -842,13 +842,13 @@ body.hovered #custom-cursor .core{ opacity: 1; }
     padding: 10px;
   }
   .showreel-window::before{
-    inset: 8px;
-    border-radius: 16px;
+    inset: 14px
+    border-radius: 26px;
   }
-  .showreel-video{ border-radius: 14px; }
+  .showreel-video{ border-radius: 20px; }
   .grain, .scanlines{
-    inset: 10px;
-    border-radius: 14px;
+    inset: 22px;
+    border-radius: 20px;
   }
   .showreel-title-img{ width: min(440px, 86vw); }
   .showreel-sub{ font-size: 11px; letter-spacing: .10em; }
