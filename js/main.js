@@ -165,6 +165,46 @@ if (canUseCustomCursor) {
     el.addEventListener('mouseleave', () => document.body.classList.remove('hovered'));
   });
 }
+/* =========================
+   Showreel lazy load (load only when section is near)
+========================= */
+(() => {
+  const section = document.getElementById('showreel');
+  const video = document.getElementById('showreelVideo');
+  const btn = document.getElementById('soundToggle');
+  if (!section || !video) return;
+
+  const srcEl = video.querySelector('source[data-src]');
+  if (!srcEl) return;
+
+  if (btn) btn.disabled = true;
+
+  const load = () => {
+    if (video.dataset.loaded === '1') return;
+    const src = srcEl.dataset.src;
+    if (!src) return;
+
+    srcEl.src = src;
+    video.load();
+    video.dataset.loaded = '1';
+
+    // включаем кнопку, когда видео реально готово
+    const enable = () => { if (btn) btn.disabled = false; };
+    video.addEventListener('loadeddata', enable, { once: true });
+
+    // autoplay muted обычно разрешён
+    video.play().catch(() => {});
+  };
+
+  const io = new IntersectionObserver((entries) => {
+    if (entries[0]?.isIntersecting) {
+      load();
+      io.disconnect();
+    }
+  }, { threshold: 0.12, rootMargin: '300px 0px 300px 0px' });
+
+  io.observe(section);
+})();
 
 /* ===============================================================================================================================================================================
    Showreel sound toggle
