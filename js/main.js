@@ -615,45 +615,7 @@ items.forEach((btn) => {
   // УБРАЛИ: pointerleave-откат полностью
 })();
 
-
-/* ===============================================================================================================================================================================
-   Evidence strip: wheel scroll horizontally (no visible bar)
-========================= */
-(() => {
-  const strip = document.querySelector('.dx-thumbs');
-  if (!strip) return;
-
-  strip.addEventListener('wheel', (e) => {
-    // если пользователь реально крутит колесо вертикально — переводим в горизонталь
-    const dominantVertical = Math.abs(e.deltaY) > Math.abs(e.deltaX);
-    if (!dominantVertical) return;
-
-    // только когда есть горизонтальный скролл
-    if (strip.scrollWidth <= strip.clientWidth) return;
-
-    e.preventDefault();
-    strip.scrollLeft += e.deltaY;
-  }, { passive: false });
-})();
-
-/* show arrows only when can scroll */
-(() => {
-  const strip = document.querySelector('.dx-thumbs');
-  const shell = document.querySelector('.dx-strip');
-  if (!strip || !shell) return;
-
-  const update = () => {
-    const max = strip.scrollWidth - strip.clientWidth;
-    shell.classList.toggle('has-left', strip.scrollLeft > 2);
-    shell.classList.toggle('has-right', strip.scrollLeft < max - 2);
-  };
-
-  strip.addEventListener('scroll', update, { passive: true });
-  window.addEventListener('resize', update);
-  update();
-})();
-
-/* =========================
+/* ======================================================================================================================================================
    Evidence strip arrows + wheel horizontal scroll
 ========================= */
 (() => {
