@@ -581,3 +581,50 @@ window.addEventListener('pointermove', (e) => {
   window.addEventListener('resize', update);
   update();
 })();
+
+/* =========================
+   Evidence strip arrows + wheel horizontal scroll
+========================= */
+(() => {
+  const strip = document.querySelector('.dx-strip');
+  const thumbs = document.querySelector('.dx-thumbs');
+  const leftBtn = document.querySelector('.dx-arrow-left');
+  const rightBtn = document.querySelector('.dx-arrow-right');
+
+  if (!strip || !thumbs) return;
+
+  // wheel -> horizontal scroll (only when hover on thumbs)
+  thumbs.addEventListener('wheel', (e) => {
+    const dominantVertical = Math.abs(e.deltaY) > Math.abs(e.deltaX);
+    if (!dominantVertical) return;
+    if (thumbs.scrollWidth <= thumbs.clientWidth) return;
+
+    e.preventDefault();
+    thumbs.scrollLeft += e.deltaY;
+  }, { passive: false });
+
+  const update = () => {
+    const max = thumbs.scrollWidth - thumbs.clientWidth;
+    strip.classList.toggle('has-left', thumbs.scrollLeft > 2);
+    strip.classList.toggle('has-right', thumbs.scrollLeft < max - 2);
+  };
+
+  const scrollByAmount = (dir) => {
+    // примерно 2 превью за раз
+    const step = Math.max(240, thumbs.clientWidth * 0.55);
+    thumbs.scrollBy({ left: dir * step, behavior: 'smooth' });
+  };
+
+  if (leftBtn) leftBtn.addEventListener('click', () => scrollByAmount(-1));
+  if (rightBtn) rightBtn.addEventListener('click', () => scrollByAmount(1));
+
+  thumbs.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+
+  // Когда меняется кейс, вы пересоздаёте превью (thumbs.innerHTML = ...),
+  // поэтому обновляем состояние стрелок чуть позже.
+  const mo = new MutationObserver(() => requestAnimationFrame(update));
+  mo.observe(thumbs, { childList: true });
+
+  update();
+})();
