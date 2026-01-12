@@ -614,13 +614,18 @@ body.hovered #custom-cursor .core{ opacity: 1; }
 .showreel-window{
   position: relative;
   margin-top: 16px;
-  border-radius: 18px;
-  overflow:hidden;
+  border-radius: 22px;
+  overflow: hidden;
+  padding: 10px;
+
   border: 1px solid rgba(255,255,255,.14);
-  box-shadow: var(--shadow);
-  background:#000;
+  background: rgba(255,255,255,.03);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 45px 140px rgba(0,0,0,.75);
+
   transform: rotate(-0.4deg);
 }
+
 .showreel-sticker{
   position:absolute;
   left: 14px; top: 14px;
@@ -642,6 +647,8 @@ body.hovered #custom-cursor .core{ opacity: 1; }
   display:block;
   aspect-ratio: 16 / 9;
   object-fit: cover;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.12);
 }
 
 .grain{
@@ -650,6 +657,10 @@ body.hovered #custom-cursor .core{ opacity: 1; }
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E");
   mix-blend-mode: overlay;
   opacity:.25;
+}
+.grain, .scanlines{
+  inset: 10px;
+  border-radius: 16px;
 }
 .scanlines{
   position:absolute; inset:0;
@@ -671,7 +682,7 @@ body.hovered #custom-cursor .core{ opacity: 1; }
   align-items:center;
   gap: 10px;
 
-  padding: 12px 16px;
+  padding: 16px 22px; 
   border: 0;
   background: transparent;
   cursor:pointer;
@@ -679,7 +690,7 @@ body.hovered #custom-cursor .core{ opacity: 1; }
   color: rgba(255, 245, 225, 0.96);
   border-radius: 34% 66% 44% 56% / 55% 38% 62% 45%;
   transform-origin: 50% 50%;
-  filter: drop-shadow(0 16px 40px rgba(0,0,0,0.45));
+  filter: none; 
   transition: transform .18s ease;
   user-select:none;
   overflow: visible;
@@ -693,11 +704,10 @@ body.hovered #custom-cursor .core{ opacity: 1; }
   z-index:0;
   border-radius: inherit;
   background:
-    radial-gradient(120px 90px at 30% 30%, rgba(255, 220, 155, 0.45), transparent 60%),
-    radial-gradient(140px 110px at 75% 70%, rgba(255, 150, 80, 0.25), transparent 62%),
-    linear-gradient(135deg, rgba(0,0,0,0.55), rgba(0,0,0,0.18));
-  border: 1px solid rgba(255, 220, 160, 0.22);
-  backdrop-filter: blur(10px);
+    radial-gradient(140px 90px at 30% 30%, rgba(255,255,255,0.10), transparent 60%),
+    linear-gradient(135deg, rgba(255,255,255,0.08), rgb
+   border: 1px solid rgba(255,255,255,0.18);
+  backdrop-filter: blur(14px);
   animation: blobFloat 3.2s ease-in-out infinite;
 }
 .sound-blob__shine{
@@ -746,7 +756,7 @@ body.hovered #custom-cursor .core{ opacity: 1; }
 }
 .sound-blob.is-off .sound-blob__dot{
   background: rgba(255, 236, 200, 0.70);
-  box-shadow: 0 0 10px rgba(255, 200, 120, 0.25);
+  box-shadow: none;
 }
 .sound-blob.is-on{
   border-radius: 58% 42% 64% 36% / 52% 65% 35% 48%;
@@ -761,6 +771,10 @@ body.hovered #custom-cursor .core{ opacity: 1; }
 }
 .sound-blob.is-on .sound-blob__dot{
   background: rgba(255, 160, 80, 0.98);
+}
+.sound-blob:disabled{
+  opacity: .55;
+  cursor: not-allowed;
 }
 
 @keyframes blobFloat{
@@ -787,6 +801,72 @@ body.hovered #custom-cursor .core{ opacity: 1; }
 @media (prefers-reduced-motion: reduce){
   .sound-blob__bg, .sound-blob__shine{ animation: none !important; }
   .sound-blob.jelly{ animation: none !important; }
+}
+.showreel-head{
+  display:grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: end;
+  gap: 14px;
+}
+
+.showreel-spacer{ height: 1px; }
+
+.showreel-title{
+  text-align: center;
+}
+
+.showreel-title-imgwrap{
+  display:flex;
+  justify-content:center;
+}
+
+.showreel-title-img{
+  display:block;
+  width: min(520px, 78vw);
+  height:auto;
+  filter: drop-shadow(0 18px 55px rgba(0,0,0,.65));
+}
+
+.showreel-sub{
+  margin: 10px 0 0;
+  font-size: 12px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  opacity: .68;
+}
+
+@media (max-width: 820px){
+  .showreel-head{
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align:center;
+  }
+  .showreel-spacer{ display:none; }
+
+  #soundToggle{
+    margin-top: 12px;
+  }
+
+  .showreel-window{
+    transform: none;
+    border-radius: 18px;
+    padding: 8px;
+  }
+  .showreel-video{
+    border-radius: 14px;
+  }
+  .grain, .scanlines{
+    inset: 8px;
+    border-radius: 14px;
+  }
+
+  .showreel-title-img{
+    width: min(440px, 86vw);
+  }
+  .showreel-sub{
+    font-size: 11px;
+    letter-spacing: .10em;
+  }
 }
 
 /* ========================================================================================================================================================================================================
