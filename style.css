@@ -613,8 +613,15 @@ body.hovered #custom-cursor .core{ opacity: 1; }
 .showreel-spacer{ height: 1px; }
 
 /* центр */
-.showreel-title{
-  text-align: center;
+.showreel-title-imgwrap{ display:flex; justify-content:center; }
+.showreel-title-img{ display:block; width: min(520px, 78vw); height:auto; margin:0 auto; }
+
+.showreel-sub{
+  margin: 10px 0 0;
+  font-size: 12px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  opacity: .68;
 }
 
 .showreel-kicker{
@@ -710,7 +717,7 @@ body.hovered #custom-cursor .core{ opacity: 1; }
 }
 
 .sound-blob:hover{ transform: translateY(-1px); }
-.sound-blob:active{ transform: translateY(0px) scale(0.98); }
+.sound-blob:active{ transform: scale(0.98); }
 
 .sound-blob:disabled{
   opacity: .55;
@@ -780,6 +787,10 @@ body.hovered #custom-cursor .core{ opacity: 1; }
 
 @media (prefers-reduced-motion: reduce){
   .sound-blob.jelly{ animation: none !important; }
+}
+#soundToggle{
+  justify-self: end;
+  align-self: end;
 }
 
 
