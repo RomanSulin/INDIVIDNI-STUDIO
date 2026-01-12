@@ -1931,7 +1931,7 @@ html:not(.js) .reveal{
   height: 0;
 }
 
-/* =========================
+/* ===============================================================================================================================================================================
    EVIDENCE STRIP (clean): no pseudo circles, only real arrow buttons
 ========================= */
 
@@ -2033,7 +2033,7 @@ html:not(.js) .reveal{
 /* оптическая коррекция символа */
 .dx-arrow > span{
   display:block;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 
 .dx-strip.has-left .dx-arrow-left,
