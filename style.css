@@ -1889,3 +1889,9 @@ html:not(.js) .reveal{
 .dx-brief-row{
   min-height: 58px; /* одинаковая высота строк */
 }
+
+/* Make left column width stable */
+.dx-grid{
+  grid-template-columns: clamp(320px, 34vw, 420px) 1fr;
+}
+
