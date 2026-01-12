@@ -1922,25 +1922,6 @@ html:not(.js) .reveal{
   flex: 0 0 auto;
 }
 
-/* === DOSSIER INDEX: make left column a real panel, pin bottom bar === */
-.dx-left{
-  display: flex;
-  flex-direction: column;
-}
-
-.dx-bottom{
-  margin-top: auto;          /* прижать вниз внутри dx-left */
-  position: static !important; /* на случай, если где-то перебили */
-  width: 100%;
-  display:flex;
-  justify-content: space-between;
-  align-items:center;
-  gap: 12px;
-  padding: 12px 14px;
-  border-top: 1px solid rgba(255,255,255,.10);
-  background: rgba(0,0,0,.14);
-}
-
 /* === Evidence strip: hide ugly scrollbar but keep scrolling === */
 .dx-thumbs{
   scrollbar-width: none;      /* Firefox */
