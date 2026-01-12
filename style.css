@@ -2033,7 +2033,7 @@ html:not(.js) .reveal{
 /* оптическая коррекция символа */
 .dx-arrow > span{
   display:block;
-  transform: translateY(-2px);
+  transform: translateY(-3px);
 }
 
 .dx-strip.has-left .dx-arrow-left,
