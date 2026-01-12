@@ -235,181 +235,140 @@
       </div>
     </section>
 
-<!-- DOSSIER -->
-<section id="studio" class="section dark section-dossier">
+<!-- DOSSIER / INDEX -->
+<section id="studio" class="section dark dossier-index">
   <div class="container">
 
-    <header class="dossier-head reveal" style="--delay: 0ms;">
-      <div class="dossier-kicker">
-        <span class="dossier-dot" aria-hidden="true"></span>
-        ДОСЬЕ / INDIVIDNI STUDIO — MOSCOW — ACTIVE
+    <header class="dx-head">
+      <div class="dx-kicker">
+        <span class="dx-dot" aria-hidden="true"></span>
+        ДОСЬЕ / INDIVIDNI — MOSCOW UNIT — SINCE 2018 — 40+ CASES CLOSED
       </div>
 
-      <h2 class="dossier-title">ДОСЬЕ</h2>
-
-      <p class="dossier-sub">
-        Видеопродакшн полного цикла. <b>С 2018</b>. <b>40+ дел закрыто</b>.
-        Мы не привязаны к одной студии — собираем сет под задачу и снимаем на локации.
-      </p>
-
-      <div class="dossier-rule">
-        <div class="rule-line"><span class="rule-label">УЛИКА №1</span> сроки и бюджет</div>
-        <div class="rule-line"><span class="rule-label">УЛИКА №2</span> дальше красота</div>
-      </div>
-
-      <div class="dossier-facts">
-        <div class="df"><span class="df-k">На рынке</span><span class="df-v">с 2018</span></div>
-        <div class="df"><span class="df-k">Проектов</span><span class="df-v">40+</span></div>
-        <div class="df"><span class="df-k">Город</span><span class="df-v">Москва</span></div>
-        <div class="df"><span class="df-k">Форматы</span><span class="df-v">коммерция / клипы / live</span></div>
+      <div class="dx-title">
+        <div class="dx-title-ghost">DOSSIER</div>
+        <h2 class="dx-title-main">ДОСЬЕ</h2>
+        <p class="dx-rule">
+          <span class="dx-rule-a">УЛИКА №1 — срок и бюджет.</span>
+          <span class="dx-rule-b">УЛИКА №2 — дальше красота.</span>
+        </p>
       </div>
     </header>
 
-    <div class="case-wall">
+    <div class="dx-grid" id="dossierIndex">
 
-      <!-- CASE 01: COURSES -->
-      <details class="case-file cf-courses reveal" style="--delay: 120ms;">
-        <summary class="case-summary">
-          <div class="case-tab">
-            <span class="case-id">CASE 01</span>
-            <span class="case-type">КУРСЫ</span>
-          </div>
+      <!-- LEFT: INDEX -->
+      <div class="dx-left">
+        <div class="dx-left-top">
+          <div class="dx-label">CASE INDEX</div>
+          <div class="dx-hint">hover = preview · click = pin</div>
+        </div>
 
-          <div class="case-photo">
-            <img src="assets/dossier/courses_cover.jpg" alt="Кейс: Курсы — обложка">
-            <span class="case-photo-label">EVIDENCE</span>
-          </div>
+        <ul class="dx-list" role="tablist" aria-label="Индекс дел">
+          <li>
+            <button class="dx-item is-active"
+              data-case="courses"
+              data-accent="cyan"
+              data-cover="assets/dossier/courses_cover.jpg"
+              data-thumbs="assets/dossier/courses_1.jpg"
+              type="button">
+              <span class="dx-no">01</span>
+              <span class="dx-name">Курсы</span>
+              <span class="dx-tags">
+                <i class="dx-tag">70+ ROLLS</i>
+                <i class="dx-tag">SERIAL</i>
+                <i class="dx-tag dim">EDIT SYSTEM</i>
+              </span>
+              <span class="dx-note">Структура. Темп. Звук. Единый стиль серии.</span>
+            </button>
+          </li>
 
-          <div class="case-meta">
-            <div class="case-stamps">
-              <span class="stamp">70+ ROLLS</span>
-              <span class="stamp">SERIAL</span>
-              <span class="stamp dim">EDIT SYSTEM</span>
+          <li>
+            <button class="dx-item"
+              data-case="broadcast"
+              data-accent="amber"
+              data-cover="assets/dossier/broadcast_cover.jpg"
+              data-thumbs="assets/dossier/broadcast_1.jpg,assets/dossier/broadcast_2.jpg,assets/dossier/broadcast_3.jpg"
+              type="button">
+              <span class="dx-no">02</span>
+              <span class="dx-name">Трансляция</span>
+              <span class="dx-tags">
+                <i class="dx-tag">4+ HOURS</i>
+                <i class="dx-tag">10+ CAM</i>
+                <i class="dx-tag hot">24H DELIVERY</i>
+              </span>
+              <span class="dx-note">Режиссура эфира. Стабильность. Быстрый выпуск.</span>
+            </button>
+          </li>
+
+          <li>
+            <button class="dx-item"
+              data-case="concert"
+              data-accent="magenta"
+              data-cover="assets/dossier/concert_cover.jpg"
+              data-thumbs="assets/dossier/concert_1.jpg,assets/dossier/concert_2.jpg,assets/dossier/concert_3.jpg"
+              type="button">
+              <span class="dx-no">03</span>
+              <span class="dx-name">Концерт</span>
+              <span class="dx-tags">
+                <i class="dx-tag">11000 SEC</i>
+                <i class="dx-tag dim">≈ 03:03:20</i>
+                <i class="dx-tag">CUT TO BEAT</i>
+              </span>
+              <span class="dx-note">Сцена. Дым. Контровик. Монтаж как клип.</span>
+            </button>
+          </li>
+        </ul>
+
+        <div class="dx-bottom">
+          <div class="dx-stamp">CLASSIFIED: PRODUCTION</div>
+          <div class="dx-barcode" aria-hidden="true"></div>
+        </div>
+      </div>
+
+      <!-- RIGHT: VIEWER -->
+      <div class="dx-right">
+        <div class="dx-view" data-accent="cyan">
+          <div class="dx-view-frame">
+            <img class="dx-view-img" src="assets/dossier/courses_cover.jpg" alt="EVIDENCE">
+            <div class="dx-hud">
+              <div class="dx-hud-left">
+                <span class="hud-pill">REC</span>
+                <span class="hud-pill dim">EVIDENCE</span>
+                <span class="hud-pill dim">MOSCOW</span>
+              </div>
+              <div class="dx-hud-right">
+                <span class="hud-pill dim">TC</span>
+                <span class="hud-pill">00:00:00:00</span>
+              </div>
+              <div class="dx-crosshair" aria-hidden="true"></div>
+              <div class="dx-pin red" aria-hidden="true"></div>
+              <div class="dx-pin red p2" aria-hidden="true"></div>
+              <div class="dx-string" aria-hidden="true"></div>
             </div>
 
-            <h3 class="case-title">Курсы</h3>
-            <p class="case-desc">Серия роликов, единый стиль, структура, звук, темп.</p>
-
-            <div class="case-openhint">OPEN CASE →</div>
+            <div class="dx-scan" aria-hidden="true"></div>
+            <div class="dx-corners" aria-hidden="true"></div>
           </div>
-        </summary>
 
-        <div class="case-panel">
-          <div class="case-panel-inner">
-            <div class="case-cols">
-              <div class="case-evidence">
-                <img src="assets/dossier/courses_1.jpg" alt="Улика: кадр из курса">
-              </div>
+          <div class="dx-strip">
+            <div class="dx-strip-label">EVIDENCE STRIP</div>
+            <div class="dx-thumbs" aria-label="Улики"></div>
+          </div>
 
-              <div class="case-notes">
-                <div class="note-row"><span class="note-k">Запрос</span><span class="note-v">упаковать курс в сериал, который держит внимание</span></div>
-                <div class="note-row"><span class="note-k">Улики</span><span class="note-v">много материала / строгая структура / критичен звук</span></div>
-                <div class="note-row"><span class="note-k">Операция</span><span class="note-v">каркас → съёмка/запись → монтаж ритмом → графика</span></div>
-                <div class="note-row"><span class="note-k">Итог</span><span class="note-v">единый стиль серии, готово к масштабированию</span></div>
-              </div>
-            </div>
+          <div class="dx-brief">
+            <div class="dx-brief-row"><span class="k">Запрос</span><span class="v" data-k="req">—</span></div>
+            <div class="dx-brief-row"><span class="k">Улики</span><span class="v" data-k="evi">—</span></div>
+            <div class="dx-brief-row"><span class="k">Операция</span><span class="v" data-k="op">—</span></div>
+            <div class="dx-brief-row"><span class="k">Итог</span><span class="v" data-k="res">—</span></div>
           </div>
         </div>
-      </details>
-
-      <!-- CASE 02: BROADCAST -->
-      <details class="case-file cf-broadcast reveal" style="--delay: 170ms;">
-        <summary class="case-summary">
-          <div class="case-tab">
-            <span class="case-id">CASE 02</span>
-            <span class="case-type">ТРАНСЛЯЦИЯ</span>
-          </div>
-
-          <div class="case-photo">
-            <img src="assets/dossier/broadcast_cover.jpg" alt="Кейс: Трансляция — обложка">
-            <span class="case-photo-label">LIVE</span>
-          </div>
-
-          <div class="case-meta">
-            <div class="case-stamps">
-              <span class="stamp">4+ HOURS</span>
-              <span class="stamp">10+ CAM</span>
-              <span class="stamp hot">24H DELIVERY</span>
-            </div>
-
-            <h3 class="case-title">Трансляция</h3>
-            <p class="case-desc">Режиссура эфира, стабильность, звук, графика и быстрый выпуск.</p>
-
-            <div class="case-openhint">OPEN CASE →</div>
-          </div>
-        </summary>
-
-        <div class="case-panel">
-          <div class="case-panel-inner">
-            <div class="case-cols">
-              <div class="case-evidence strip">
-                <img src="assets/dossier/broadcast_1.jpg" alt="Улика: кадр трансляции 1">
-                <img src="assets/dossier/broadcast_2.jpg" alt="Улика: кадр трансляции 2">
-                <img src="assets/dossier/broadcast_3.jpg" alt="Улика: кадр трансляции 3">
-              </div>
-
-              <div class="case-notes">
-                <div class="note-row"><span class="note-k">Запрос</span><span class="note-v">ровный эфир без провалов + быстрые записи после события</span></div>
-                <div class="note-row"><span class="note-k">Улики</span><span class="note-v">4+ часа / 10+ камер / меняющийся свет / звук “живёт”</span></div>
-                <div class="note-row"><span class="note-k">Операция</span><span class="note-v">схема камер → контроль звука → режиссура → титры/графика</span></div>
-                <div class="note-row"><span class="note-k">Итог</span><span class="note-v">дело закрыто за 24 часа: эфир + нарезки</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </details>
-
-      <!-- CASE 03: CONCERT -->
-      <details class="case-file cf-concert reveal" style="--delay: 220ms;">
-        <summary class="case-summary">
-          <div class="case-tab">
-            <span class="case-id">CASE 03</span>
-            <span class="case-type">КОНЦЕРТ</span>
-          </div>
-
-          <div class="case-photo">
-            <img src="assets/dossier/concert_cover.jpg" alt="Кейс: Концерт — обложка">
-            <span class="case-photo-label">STAGE</span>
-          </div>
-
-          <div class="case-meta">
-            <div class="case-stamps">
-              <span class="stamp">11000 SEC</span>
-              <span class="stamp dim">≈ 03:03:20</span>
-              <span class="stamp">CUT TO BEAT</span>
-            </div>
-
-            <h3 class="case-title">Концерт</h3>
-            <p class="case-desc">Энергия зала, скорость, дым/контровик — монтаж как клип.</p>
-
-            <div class="case-openhint">OPEN CASE →</div>
-          </div>
-        </summary>
-
-        <div class="case-panel">
-          <div class="case-panel-inner">
-            <div class="case-cols">
-              <div class="case-evidence strip">
-                <img src="assets/dossier/concert_1.jpg" alt="Улика: кадр концерта 1">
-                <img src="assets/dossier/concert_2.jpg" alt="Улика: кадр концерта 2">
-                <img src="assets/dossier/concert_3.jpg" alt="Улика: кадр концерта 3">
-              </div>
-
-              <div class="case-notes">
-                <div class="note-row"><span class="note-k">Запрос</span><span class="note-v">передать энергию сцены так, чтобы смотрелось как клип</span></div>
-                <div class="note-row"><span class="note-k">Улики</span><span class="note-v">контровой свет / дым / скорость / толпа</span></div>
-                <div class="note-row"><span class="note-k">Операция</span><span class="note-v">точки → динамика → монтаж по музыке → цвет/стаб/звук</span></div>
-                <div class="note-row"><span class="note-k">Итог</span><span class="note-v">темп держит, кадры цепляют с первых секунд</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </details>
+      </div>
 
     </div>
-
   </div>
 </section>
+
 
 
     <!-- SERVICES -->
