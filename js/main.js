@@ -941,3 +941,214 @@ items.forEach((btn) => {
     });
   }
 })();
+
+/* =============================================================================================================================
+   WORKS — NLE TIMELINE (desktop) + MEDIA POOL (mobile)
+============================================================================================================================= */
+(() => {
+  const section = document.getElementById('works');
+  if (!section) return;
+
+  // ---------- Desktop timeline ----------
+  const nle = section.querySelector('[data-nle]');
+  if (nle) {
+    const scroll = nle.querySelector('[data-nle-scroll]');
+    const tracks = nle.querySelector('[data-nle-tracks]');
+    const playhead = nle.querySelector('[data-nle-playhead]');
+    const clips = Array.from(nle.querySelectorAll('.nle-clip'));
+
+    const ui = {
+      img: nle.querySelector('[data-nle-img]'),
+      tc: nle.querySelector('[data-nle-tc]'),
+      file: nle.querySelector('[data-nle-file]'),
+      badge: nle.querySelector('[data-nle-badge]'),
+      title: nle.querySelector('[data-nle-title]'),
+      desc: nle.querySelector('[data-nle-desc]'),
+      dur: nle.querySelector('[data-nle-time-mini]'),
+    };
+
+    const FPS = 25;
+    const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+    const pad2 = (n) => String(n).padStart(2, '0');
+
+    const toTC = (sec) => {
+      const totalFrames = Math.max(0, Math.round(sec * FPS));
+      const frames = totalFrames % FPS;
+      const totalSec = Math.floor(totalFrames / FPS);
+      const s = totalSec % 60;
+      const m = Math.floor(totalSec / 60) % 60;
+      const h = Math.floor(totalSec / 3600);
+      return `${pad2(h)}:${pad2(m)}:${pad2(s)}:${pad2(frames)}`;
+    };
+
+    const parseNum = (x, fallback = 0) => {
+      const n = Number(x);
+      return Number.isFinite(n) ? n : fallback;
+    };
+
+    // compute duration
+    const total = Math.max(1, ...clips.map((c) => parseNum(c.dataset.end, 0)));
+    playhead?.setAttribute('aria-valuemax', String(total));
+
+    // Layout clips as percentages
+    const layout = () => {
+      clips.forEach((c) => {
+        const s = parseNum(c.dataset.start, 0);
+        const e = parseNum(c.dataset.end, s + 1);
+        const x = (s / total) * 100;
+        const w = ((e - s) / total) * 100;
+        c.style.setProperty('--x', `${x.toFixed(4)}%`);
+        c.style.setProperty('--w', `${w.toFixed(4)}%`);
+      });
+    };
+    layout();
+    window.addEventListener('resize', layout, { passive: true });
+
+    let currentTime = 0;
+    let activeClip = null;
+
+    const setActiveClip = (clip) => {
+      if (activeClip === clip) return;
+      activeClip?.classList.remove('is-hot');
+      activeClip = clip;
+      activeClip?.classList.add('is-hot');
+
+      const d = clip?.dataset;
+      if (!d) return;
+
+      if (ui.img && d.img) ui.img.src = d.img;
+      if (ui.tc) ui.tc.textContent = toTC(currentTime);
+      if (ui.file) ui.file.textContent = d.file || '';
+      if (ui.badge) ui.badge.textContent = d.badge || '';
+      if (ui.title) ui.title.textContent = d.title || '';
+      if (ui.desc) ui.desc.textContent = d.desc || '';
+      if (ui.dur) ui.dur.textContent = d.dur || '';
+    };
+
+    const getClipByTime = (t) => {
+      for (const c of clips) {
+        const s = parseNum(c.dataset.start, 0);
+        const e = parseNum(c.dataset.end, 0);
+        if (t >= s && t < e) return c;
+      }
+      return clips[0] || null;
+    };
+
+    const pxToTime = (px) => {
+      const rect = tracks.getBoundingClientRect();
+      const w = rect.width;
+      const t = (px / w) * total;
+      return clamp(t, 0, total);
+    };
+
+    const timeToPx = (t) => {
+      const rect = tracks.getBoundingClientRect();
+      return (t / total) * rect.width;
+    };
+
+    const render = () => {
+      if (!tracks || !playhead) return;
+      const px = timeToPx(currentTime);
+      // +54px label gutter
+      playhead.style.left = `${54 + px}px`;
+      playhead.setAttribute('aria-valuenow', String(Math.round(currentTime)));
+      if (ui.tc) ui.tc.textContent = toTC(currentTime);
+
+      const c = getClipByTime(currentTime);
+      setActiveClip(c);
+    };
+
+    const setTimeFromEvent = (clientX) => {
+      const rect = tracks.getBoundingClientRect();
+      // x within tracks content (exclude label gutter)
+      const x = clamp(clientX - rect.left - 54, 0, rect.width - 54);
+      currentTime = pxToTime(x);
+      render();
+    };
+
+    // click on clip jumps to its start
+    clips.forEach((c) => {
+      c.addEventListener('click', () => {
+        currentTime = clamp(parseNum(c.dataset.start, 0), 0, total);
+        render();
+      });
+    });
+
+    // wheel -> horizontal scroll (street-style convenience)
+    if (scroll) {
+      scroll.addEventListener('wheel', (e) => {
+        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+          scroll.scrollLeft += e.deltaY;
+          e.preventDefault();
+        }
+      }, { passive: false });
+    }
+
+    // drag playhead
+    let dragging = false;
+
+    const onDown = (e) => {
+      if (!tracks || !playhead) return;
+      dragging = true;
+      playhead.focus({ preventScroll: true });
+      try { playhead.setPointerCapture(e.pointerId); } catch (_) {}
+      setTimeFromEvent(e.clientX);
+    };
+
+    const onMove = (e) => {
+      if (!dragging) return;
+      setTimeFromEvent(e.clientX);
+    };
+
+    const onUp = () => { dragging = false; };
+
+    playhead?.addEventListener('pointerdown', onDown);
+    playhead?.addEventListener('pointermove', onMove);
+    playhead?.addEventListener('pointerup', onUp);
+    playhead?.addEventListener('pointercancel', onUp);
+
+    // click on timeline area sets time too
+    tracks?.addEventListener('pointerdown', (e) => {
+      if (e.target && (e.target.closest('.nle-clip') || e.target.closest('[data-nle-playhead]'))) return;
+      setTimeFromEvent(e.clientX);
+    });
+
+    // keyboard: left/right to scrub
+    playhead?.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      e.preventDefault();
+      currentTime = clamp(currentTime + (e.key === 'ArrowRight' ? 1 : -1), 0, total);
+      render();
+    });
+
+    // init
+    activeClip = null;
+    currentTime = 0.2;
+    render();
+  }
+
+  // ---------- Mobile media pool ----------
+  const grid = section.querySelector('[data-bin-grid]');
+  if (grid) {
+    const items = Array.from(grid.querySelectorAll('.bin-item'));
+    const img = section.querySelector('[data-bin-img]');
+    const badge = section.querySelector('[data-bin-badge]');
+    const title = section.querySelector('[data-bin-title]');
+    const file = section.querySelector('[data-bin-file]');
+    const tc = section.querySelector('[data-bin-tc]');
+
+    const setActive = (item) => {
+      items.forEach((x) => x.classList.toggle('is-active', x === item));
+      const d = item.dataset;
+      if (img && d.img) img.src = d.img;
+      if (badge) badge.textContent = d.badge || '';
+      if (title) title.textContent = d.title || '';
+      if (file) file.textContent = d.file || '';
+      if (tc) tc.textContent = d.tc || '';
+    };
+
+    items.forEach((item) => item.addEventListener('click', () => setActive(item)));
+    const first = items.find((x) => x.classList.contains('is-active')) || items[0];
+    if (first) setActive(first);
+  }
+})();
