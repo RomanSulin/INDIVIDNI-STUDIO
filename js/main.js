@@ -229,6 +229,7 @@ if (v && soundBtn) {
   setUI(!v.muted);
 
   soundBtn.addEventListener('click', async () => {
+    if (soundBtn.disabled) return;
     const turningOn = v.muted;
     v.muted = !turningOn;
 
