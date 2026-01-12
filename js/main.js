@@ -662,3 +662,210 @@ items.forEach((btn) => {
 
   update();
 })();
+
+
+/* =============================================================================================================================
+   SERVICES LAB (Desktop switchboard + Mobile tuner)
+============================================================================================================================= */
+(() => {
+  const section = document.getElementById('services');
+  if (!section) return;
+
+  const buttons = Array.from(section.querySelectorAll('.svc-item'));
+  if (!buttons.length) return;
+
+  const view = {
+    code: section.querySelector('[data-svc-code]'),
+    chip: section.querySelector('[data-svc-chip]'),
+    title: section.querySelector('[data-svc-title]'),
+    lead: section.querySelector('[data-svc-lead]'),
+    doList: section.querySelector('[data-svc-do]'),
+    getList: section.querySelector('[data-svc-get]'),
+    turnaround: section.querySelector('[data-svc-turnaround]'),
+    format: section.querySelector('[data-svc-format]'),
+  };
+
+  const pipeNodes = Array.from(section.querySelectorAll('.svc-node'));
+
+  const mobile = {
+    knob: section.querySelector('#tunerKnob'),
+    code: section.querySelector('[data-tuner-code]'),
+    chip: section.querySelector('[data-tuner-chip]'),
+    title: section.querySelector('[data-tuner-title]'),
+    lead: section.querySelector('[data-tuner-lead]'),
+    doList: section.querySelector('[data-tuner-do]'),
+    getList: section.querySelector('[data-tuner-get]'),
+    turnaround: section.querySelector('[data-tuner-turnaround]'),
+    format: section.querySelector('[data-tuner-format]'),
+    bar: section.querySelector('.tuner-bar'),
+    nav: Array.from(section.querySelectorAll('[data-tuner-dir]')),
+  };
+
+  const canHover = window.matchMedia('(hover: hover)').matches;
+
+  const splitList = (s) =>
+    String(s || '')
+      .split('|')
+      .map((x) => x.trim())
+      .filter(Boolean);
+
+  const fillList = (ul, items) => {
+    if (!ul) return;
+    ul.innerHTML = '';
+    items.forEach((t) => {
+      const li = document.createElement('li');
+      li.textContent = t;
+      ul.appendChild(li);
+    });
+  };
+
+  let currentIndex = Math.max(0, buttons.findIndex((b) => b.classList.contains('is-active')));
+  let locked = false;
+
+  const setLockedUI = () => section.classList.toggle('svc-locked', locked);
+
+  const setIndex = (idx, { fromHover = false } = {}) => {
+    if (!Number.isFinite(idx)) return;
+    const n = buttons.length;
+    idx = ((idx % n) + n) % n;
+
+    if (fromHover && locked) return;
+
+    currentIndex = idx;
+    const btn = buttons[idx];
+    if (!btn) return;
+
+    buttons.forEach((b, i) => {
+      b.classList.toggle('is-active', i === idx);
+      b.setAttribute('aria-selected', i === idx ? 'true' : 'false');
+      b.setAttribute('tabindex', i === idx ? '0' : '-1');
+    });
+
+    const d = btn.dataset;
+
+    section.dataset.accent = d.accent || 'amber';
+
+    if (view.code) view.code.textContent = d.code || '';
+    if (view.chip) view.chip.textContent = d.chip || '';
+    if (view.title) view.title.textContent = d.title || '';
+    if (view.lead) view.lead.textContent = d.lead || '';
+    if (view.turnaround) view.turnaround.textContent = d.turnaround || '';
+    if (view.format) view.format.textContent = d.format || '';
+
+    fillList(view.doList, splitList(d.do));
+    fillList(view.getList, splitList(d.get));
+
+    const steps = new Set(
+      String(d.steps || '')
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+    );
+    pipeNodes.forEach((node) => {
+      node.classList.toggle('is-on', steps.has(node.dataset.step));
+    });
+
+    if (mobile.code) mobile.code.textContent = d.code || '';
+    if (mobile.chip) mobile.chip.textContent = d.chip || '';
+    if (mobile.title) mobile.title.textContent = d.title || '';
+    if (mobile.lead) mobile.lead.textContent = d.lead || '';
+    if (mobile.turnaround) mobile.turnaround.textContent = d.turnaround || '';
+    if (mobile.format) mobile.format.textContent = (d.format || '').replace(/^Формат:\s*/i, '');
+
+    fillList(mobile.doList, splitList(d.do));
+    fillList(mobile.getList, splitList(d.get));
+
+    if (mobile.knob) {
+      const seg = 360 / n;
+      mobile.knob.style.setProperty('--rot', `${(idx * seg).toFixed(2)}deg`);
+      mobile.knob.setAttribute('aria-valuenow', String(idx + 1));
+    }
+    if (mobile.bar) {
+      const pct = ((idx + 1) / n) * 100;
+      mobile.bar.style.width = `${pct.toFixed(2)}%`;
+    }
+  };
+
+  buttons.forEach((btn, i) => {
+    btn.setAttribute('role', 'tab');
+    btn.setAttribute('tabindex', btn.classList.contains('is-active') ? '0' : '-1');
+    btn.setAttribute('aria-selected', btn.classList.contains('is-active') ? 'true' : 'false');
+
+    btn.addEventListener('click', () => {
+      if (currentIndex === i) locked = !locked;
+      else locked = true;
+      setLockedUI();
+      setIndex(i);
+    });
+
+    if (canHover) {
+      btn.addEventListener('mouseenter', () => setIndex(i, { fromHover: true }));
+      btn.addEventListener('focus', () => setIndex(i, { fromHover: true }));
+    }
+  });
+
+  setLockedUI();
+  setIndex(currentIndex);
+
+  if (mobile.nav.length) {
+    mobile.nav.forEach((b) => {
+      b.addEventListener('click', () => {
+        const dir = Number(b.dataset.tunerDir || '0');
+        locked = false;
+        setLockedUI();
+        setIndex(currentIndex + dir);
+      });
+    });
+  }
+
+  if (mobile.knob) {
+    const knob = mobile.knob;
+
+    const angleToIndex = (deg) => {
+      const n = buttons.length;
+      const seg = 360 / n;
+      return Math.round(deg / seg) % n;
+    };
+
+    const pointToDeg = (clientX, clientY) => {
+      const r = knob.getBoundingClientRect();
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+      const a = Math.atan2(clientY - cy, clientX - cx) * 180 / Math.PI;
+      return (a + 450) % 360; // 0° сверху, по часовой
+    };
+
+    let dragging = false;
+
+    const onDown = (e) => {
+      dragging = true;
+      knob.classList.add('is-dragging');
+      try { knob.setPointerCapture(e.pointerId); } catch (_) {}
+      locked = false;
+      setLockedUI();
+      setIndex(angleToIndex(pointToDeg(e.clientX, e.clientY)));
+    };
+
+    const onMove = (e) => {
+      if (!dragging) return;
+      setIndex(angleToIndex(pointToDeg(e.clientX, e.clientY)));
+    };
+
+    const onUp = () => {
+      dragging = false;
+      knob.classList.remove('is-dragging');
+    };
+
+    knob.addEventListener('pointerdown', onDown);
+    knob.addEventListener('pointermove', onMove);
+    knob.addEventListener('pointerup', onUp);
+    knob.addEventListener('pointercancel', onUp);
+
+    knob.addEventListener('keydown', (e) => {
+      const nextKeys = ['ArrowRight', 'ArrowDown'];
+      const prevKeys = ['ArrowLeft', 'ArrowUp'];
+      if (nextKeys.includes(e.key)) { e.preventDefault(); setIndex(currentIndex + 1); }
+      if (prevKeys.includes(e.key)) { e.preventDefault(); setIndex(currentIndex - 1); }
+    });
+  }
+})();
