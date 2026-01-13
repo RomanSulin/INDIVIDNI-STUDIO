@@ -2,1165 +2,512 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>INDIVIDNI STUDIO</title>
-  <meta name="description" content="INDIVIDNI STUDIO — ночной урбан видеопродакшн. Шоу-рил, реклама, контент, клипы." />
-
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>INDIVIDNI STUDIO — Video Production</title>
+  <meta name="description" content="INDIVIDNI STUDIO — видеопродакшн: продюсирование, съёмка, трансляции, монтаж, звук, AI и 3D." />
+  <link rel="preload" href="assets/hero/INDIVIDNI_3.png" as="image" />
   <link rel="stylesheet" href="style.css" />
-  <script src="js/main.js" defer></script>
 </head>
 
-<body>
-  <!-- Глобальный мягкий свет (по курсору) -->
-  <div id="ambientGlow" aria-hidden="true"></div>
+<body class="night" data-touch="false">
+  <!-- cursor light -->
+  <div id="beam" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
 
-  <!-- Кастомный курсор-луч (только ПК) -->
-  <div id="custom-cursor" aria-hidden="true">
-    <div class="core"></div>
-    <div class="beam"></div>
-  </div>
+  <!-- HUD -->
+  <header class="hud" role="banner">
+    <a class="hud-brand" href="#home" aria-label="На главную">
+      <img src="assets/hero/INDIVIDNI_3.png" alt="INDIVIDNI" />
+      <span class="hud-brand-txt">STUDIO</span>
+    </a>
 
-  <!-- HEADER -->
-  <header id="header" class="site-header">
-    <a class="brand" href="#home" aria-label="INDIVIDNI Home">INDIVIDNI</a>
+    <div class="hud-center" aria-hidden="true">
+      <span class="hud-rec"><i></i> REC</span>
+      <span class="hud-divider"></span>
+      <span class="hud-title" id="hudTitle">HOME</span>
+      <span class="hud-divider"></span>
+      <span class="hud-tc" id="hudTC">00:00:00</span>
+    </div>
 
-    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-list">
-      <span></span><span></span><span></span>
-      <span class="sr-only">Menu</span>
-    </button>
-
-    <nav class="nav">
-      <ul id="nav-list" class="nav-list">
-        <li><a href="#studio">Досье</a></li>
-        <li><a href="#showreel">Шоу-рил</a></li>
-        <li><a href="#services">Услуги</a></li>
-        <li><a href="#works">Работы</a></li>
-        <li><a href="#contacts">Контакты</a></li>
-      </ul>
+    <nav class="hud-nav" aria-label="Навигация">
+      <a href="#showreel">Шоурил</a>
+      <a href="#services">Услуги</a>
+      <a href="#pricing">Стоимость</a>
+      <a href="#works">Работы</a>
+      <a class="hud-cta" href="#contacts">Запросить смету</a>
     </nav>
 
-    <a class="btn btn-cta" href="#contacts">Связаться</a>
+    <button class="hud-burger" id="burger" type="button" aria-label="Открыть меню">
+      <span></span><span></span><span></span>
+    </button>
   </header>
 
-  <main>
-    <!-- HERO -->
-    <section id="home" class="hero hero-cold" data-hero="true">
-      <div class="hero-stage" id="heroStage">
-        <!-- LOGO (hover reveal) -->
-        <div class="hero-logo" id="heroLogo" aria-label="Hover to scan">
-          <!-- базовый слой -->
-          <img class="logo-layer base" src="assets/hero/INDIVIDNI_3.png" alt="INDIVIDNI">
-          <!-- раскрываемый слой -->
-          <img class="logo-layer reveal" src="assets/hero/INDIVIDNI_2.png" alt="" aria-hidden="true">
-          <div class="reveal-glow" aria-hidden="true"></div>
-        </div>
-
-        <!-- HUD -->
-        <div class="hero-hud" aria-hidden="true">
-          <img class="hud rec" src="assets/hero/rec_1.png" alt="">
-          <img class="hud fps" src="assets/hero/FPS_1.png" alt="">
-          <img class="hud iso" src="assets/hero/ISO.png" alt="">
-          <img class="hud tc"  src="assets/hero/TIME_CODE_1.png" alt="">
-        </div>
-
-        <!-- NOTES / TAPE -->
-        <div class="hero-notes" aria-hidden="true">
-          <img class="note tape1" src="assets/hero/Tip_1.png" alt="">
-          <img class="note tape2" src="assets/hero/Tip_2.png" alt="">
-          <img class="note keep"  src="assets/hero/KEEP%20RAW.png" alt="">
-          <img class="note night" src="assets/hero/NIGHT_TAKE.png" alt="">
-          <img class="note cine"  src="assets/hero/Cine.png" alt="">
-        </div>
-
-        <!-- HINT -->
-        <div class="hero-hint" aria-hidden="true">
-          <span class="hint-main">FIND THE SIGNAL</span>
-          <small class="hint-sub">follow the light</small>
-        </div>
-      </div>
-
-      <!-- Между hero и следующим блоком: хлопушка справа -->
-      <div class="between-rig">
-        <div class="between-left" aria-hidden="true">
-          <!-- сюда позже добавим оборудование/команду -->
-        </div>
-
-        <button class="clap dock" id="clapButton" type="button" aria-label="Clapperboard">
-          <img class="clap-base" src="assets/hero/clapperboard_1.png" alt="" aria-hidden="true">
-          <img class="clap-top"  src="assets/hero/clapperboard_2.png" alt="" aria-hidden="true">
-        </button>
-      </div>
-    </section>
-
-<!-- SERVICES DECK (before showreel) -->
-<section id="services-deck" class="section dark section-deck">
-  <div class="container">
-
-    <header class="deck-head reveal">
-      <div class="deck-kicker">
-        <span class="deck-dot" aria-hidden="true"></span>
-        INDIVIDNI / FULL CYCLE
-      </div>
-
-      <div class="deck-title-imgwrap">
-  <img id="deckTitleLamp" class="deck-title-img" src="assets/ui/Videoprodcikle.png" alt="Видеопродакшн полного цикла">
-</div>
-
-      <p class="deck-sub">
-        Идея → подготовка → съёмка → монтаж → звук → графика → мастер.
-      </p>
-    </header>
-
-    <div class="service-deck reveal" aria-label="Что мы делаем">
-      <a class="deck-card dc-commercial" href="#works" aria-label="Коммерческие проекты">
-        <span class="dc-big">01</span>
-        <div class="dc-inner">
-          <div class="dc-top">
-            <span class="dc-code">ROLL 01</span>
-            <span class="dc-chip">BRAND</span>
-          </div>
-          <h3 class="dc-title">Коммерческие проекты</h3>
-          <p class="dc-desc">Реклама, промо, контент для брендов и соцсетей.</p>
-          <div class="dc-foot">
-            <span class="dc-badge">full cycle</span>
-            <span class="dc-arrow">→</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="deck-card dc-clips" href="#works" aria-label="Клипы">
-        <span class="dc-big">02</span>
-        <div class="dc-inner">
-          <div class="dc-top">
-            <span class="dc-code">ROLL 02</span>
-            <span class="dc-chip">MUSIC</span>
-          </div>
-          <h3 class="dc-title">Клипы</h3>
-          <p class="dc-desc">Ритм, свет, стиль, монтаж под трек и настроение.</p>
-          <div class="dc-foot">
-            <span class="dc-badge">visual</span>
-            <span class="dc-arrow">→</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="deck-card dc-live" href="#services" aria-label="Трансляции">
-        <span class="dc-big">03</span>
-        <div class="dc-inner">
-          <div class="dc-top">
-            <span class="dc-code">ROLL 03</span>
-            <span class="dc-chip">LIVE</span>
-          </div>
-          <h3 class="dc-title">Трансляции</h3>
-          <p class="dc-desc">Мультикамеры, эфир, звук, режиссура, графика.</p>
-          <div class="dc-foot">
-            <span class="dc-badge">broadcast</span>
-            <span class="dc-arrow">→</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="deck-card dc-producing" href="#studio" aria-label="Продюсирование">
-        <span class="dc-big">04</span>
-        <div class="dc-inner">
-          <div class="dc-top">
-            <span class="dc-code">ROLL 04</span>
-            <span class="dc-chip">PREP</span>
-          </div>
-          <h3 class="dc-title">Продюсирование</h3>
-          <p class="dc-desc">Команда, локации, план, тайминг, контроль процесса.</p>
-          <div class="dc-foot">
-            <span class="dc-badge">pipeline</span>
-            <span class="dc-arrow">→</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="deck-card dc-graphics" href="#services" aria-label="Графика">
-        <span class="dc-big">05</span>
-        <div class="dc-inner">
-          <div class="dc-top">
-            <span class="dc-code">ROLL 05</span>
-            <span class="dc-chip">MOTION</span>
-          </div>
-          <h3 class="dc-title">Графика</h3>
-          <p class="dc-desc">Титры, HUD-эстетика, акценты, VFX-штрихи.</p>
-          <div class="dc-foot">
-            <span class="dc-badge">post</span>
-            <span class="dc-arrow">→</span>
-          </div>
-        </div>
-      </a>
+  <!-- Scrubber (desktop left / mobile bottom) -->
+  <aside class="scrubber" id="scrubber" aria-label="Скруббер">
+    <div class="scrub-track" id="scrubTrack" role="presentation">
+      <div class="scrub-line" aria-hidden="true"></div>
+      <div class="scrub-head" id="scrubHead" aria-hidden="true"></div>
     </div>
 
-  </div>
-</section>
+    <div class="scrub-marks" id="scrubMarks" aria-hidden="true">
+      <!-- filled by JS -->
+    </div>
+  </aside>
 
+  <!-- Mobile menu -->
+  <div class="drawer" id="drawer" aria-hidden="true">
+    <div class="drawer-panel">
+      <div class="drawer-top">
+        <span class="drawer-title">NAV</span>
+        <button class="drawer-close" id="drawerClose" type="button" aria-label="Закрыть">×</button>
+      </div>
+      <a href="#showreel" class="drawer-link">Шоурил</a>
+      <a href="#services" class="drawer-link">Услуги</a>
+      <a href="#pricing" class="drawer-link">Стоимость</a>
+      <a href="#works" class="drawer-link">Работы</a>
+      <a href="#contacts" class="drawer-link strong">Запросить смету</a>
+      <div class="drawer-note">Скрольни как по таймлайну. Можно тянуть ползунок слева/снизу.</div>
+    </div>
+  </div>
+
+  <main id="timeline" class="timeline" role="main">
+    <!-- HOME -->
+    <section id="home" class="chapter hero" data-title="HOME" data-accent="amber">
+      <div class="chapter-bg" aria-hidden="true"></div>
+
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div class="kicker"><span class="dot"></span> INTERACTIVE VIDEO PRODUCTION</div>
+
+          <h1 class="hero-h1">
+            Мы снимаем <span class="tone">ночь</span>, <br />
+            строим <span class="tone">ритм</span>, <br />
+            отдаём <span class="tone">мастер</span>.
+          </h1>
+
+          <p class="hero-sub">
+            Съёмка мероприятий, курсы, трансляции, интервью, клипы, реклама.
+            Пост‑продакшн: монтаж, звук, AI и 3D-графика.
+          </p>
+
+          <div class="hero-actions">
+            <a class="btn primary" href="#showreel">Смотреть шоурил</a>
+            <a class="btn ghost" href="#works">Открыть монтажку</a>
+          </div>
+
+          <div class="hero-badges" aria-hidden="true">
+            <span class="pill">MULTICAM</span>
+            <span class="pill">LIVE</span>
+            <span class="pill">EDIT</span>
+            <span class="pill">AI/3D</span>
+          </div>
+        </div>
+
+        <div class="hero-monitor">
+          <div class="monitor chrome">
+            <div class="monitor-top">
+              <span class="win-dot"></span><span class="win-dot"></span><span class="win-dot"></span>
+              <span class="monitor-label">INDIVIDNI / SIGNAL</span>
+            </div>
+
+            <!-- Logo reveal inside monitor -->
+            <div class="logo-reveal" id="heroLogo" aria-label="Hover to scan">
+              <img class="logo-layer base" src="assets/hero/INDIVIDNI_3.png" alt="INDIVIDNI">
+              <img class="logo-layer reveal" src="assets/hero/INDIVIDNI_2.png" alt="" aria-hidden="true">
+              <div class="logo-scan" aria-hidden="true"></div>
+            </div>
+
+            <div class="monitor-bottom" aria-hidden="true">
+              <span class="mini">FPS 24</span>
+              <span class="mini">ISO 800</span>
+              <span class="mini">REC READY</span>
+            </div>
+          </div>
+
+          <button class="clap" id="clapButton" type="button" aria-label="Clapper">
+            <span class="clap-bar"></span>
+            <span class="clap-body">CLAP</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="scroll-hint" aria-hidden="true">
+        <span>SCROLL</span><i></i>
+      </div>
+    </section>
 
     <!-- SHOWREEL -->
-    <section id="showreel" class="section dark">
-      <div class="container reveal">
-        <div class="showreel-head">
-  <div class="showreel-spacer" aria-hidden="true"></div>
+    <section id="showreel" class="chapter showreel" data-title="SHOWREEL" data-accent="cyan">
+      <div class="chapter-bg" aria-hidden="true"></div>
 
-<div class="showreel-title">
-  <div class="showreel-kicker">
-    <span class="showreel-dot" aria-hidden="true"></span>
-    SHOWREEL / QUICK SIGNAL
-  </div>
+      <div class="chapter-grid">
+        <div class="chapter-copy">
+          <div class="kicker"><span class="dot"></span> SHOWREEL / QUICK SIGNAL</div>
+          <h2 class="title">Смотри. Слышишь? Вот и всё.</h2>
+          <p class="lead">
+            Один ролик — вся подача: кадр, темп, звук, фактура. Нажми “звук”, и не забудь — мы стопаем его, когда видео не в кадре.
+          </p>
 
-  <div class="showreel-title-imgwrap">
-    <img class="showreel-title-img" src="assets/ui/showreel.png" alt="Showreel">
-  </div>
+          <div class="list">
+            <div class="li"><b>Съёмка</b> — свет/камера/движение</div>
+            <div class="li"><b>Пост</b> — монтаж/цвет/саунд</div>
+            <div class="li"><b>Графика</b> — motion/AI/3D</div>
+          </div>
 
-  <p class="showreel-sub">
-  <span class="showreel-sub-main">Беззвучный режим</span>
-  <span class="showreel-sub-muted">Включи звук</span>
-</p>
-</div>
+          <a class="btn ghost" href="#contacts">Запросить смету</a>
+        </div>
 
-  <button class="sound-blob is-off" type="button" id="soundToggle" aria-pressed="false" disabled>
-    <span class="sound-blob__bg" aria-hidden="true"></span>
-    <span class="sound-blob__shine" aria-hidden="true"></span>
-    <span class="sound-blob__dot" aria-hidden="true"></span>
-    <span class="sound-blob__text">Вкл звук</span>
-  </button>
-</div>
+        <div class="chapter-media">
+          <div class="monitor wide">
+            <div class="monitor-top">
+              <span class="monitor-label">SHOWREEL / LOOP</span>
+              <button class="sound" id="soundBtn" type="button" aria-pressed="false">
+                <span class="sound-ico" aria-hidden="true"></span>
+                <span class="sound-txt">ЗВУК</span>
+              </button>
+            </div>
 
+            <div class="media-wrap">
+              <video
+                id="showreelVideo"
+                class="media"
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="none"
+              >
+                <source data-src="assets/showreel.mp4" type="video/mp4" />
+              </video>
 
-        <div class="showreel-window">
+              <div class="tc-overlay" id="showreelTC" aria-hidden="true">00:00:00</div>
+            </div>
+          </div>
 
-          <video
-            id="showreelVideo"
-            class="showreel-video"
-            autoplay
-            muted
-            loop
-            playsinline
-            preload="none"
-          >
-            <source data-src="assets/showreel.mp4" type="video/mp4">
-          </video>
-
-          <div class="grain" aria-hidden="true"></div>
-          <div class="scanlines" aria-hidden="true"></div>
+          <div class="street-note" aria-hidden="true">
+            <span>↳</span> звук включается только по клику. вне экрана — пауза.
+          </div>
         </div>
       </div>
     </section>
 
-<!-- DOSSIER / INDEX -->
-<section id="studio" class="section dark dossier-index">
-  <div class="container">
+    <!-- SERVICES -->
+    <section id="services" class="chapter services" data-title="SERVICES" data-accent="amber">
+      <div class="chapter-bg" aria-hidden="true"></div>
 
-    <header class="dx-head">
-      <div class="dx-kicker">
-        <span class="dx-dot" aria-hidden="true"></span>
-        ДОСЬЕ / INDIVIDNI — MOSCOW UNIT — SINCE 2018 — 40+ CASES CLOSED
-      </div>
-
-<div class="dx-title">
-  <div class="dx-title-ghost">DOSSIER</div>
-
-  <div class="dx-title-imgwrap">
-    <img class="dx-title-img" src="assets/ui/DOSSIER.png" alt="Досье">
-  </div>
-
-  <p class="dx-rule">
-    <span class="dx-rule-a">УЛИКА №1 — срок и бюджет.</span>
-    <span class="dx-rule-b">УЛИКА №2 — дальше красота.</span>
-  </p>
-</div>
-</header>
-
-    <div class="dx-grid" id="dossierIndex">
-
-      <!-- LEFT: INDEX -->
-      <div class="dx-left">
-        <div class="dx-left-top">
-          <div class="dx-label">CASE INDEX</div>
-          <div class="dx-hint">hover = select · scroll = evidence</div>
+      <div class="services-shell">
+        <div class="services-head">
+          <img class="services-title-img" src="assets/ui/services.png" alt="Услуги" />
+          <p class="services-sub">
+            <span class="a">Съёмка / эфир / продюсирование.</span>
+            <span class="b">Монтаж / звук / AI / 3D.</span>
+          </p>
         </div>
 
-        <ul class="dx-list" role="tablist" aria-label="Индекс дел">
-          <li>
-            <button class="dx-item is-active"
-              data-case="courses"
-              data-accent="cyan"
-              data-cover="assets/dossier/courses_cover.jpg"
-              data-thumbs="assets/dossier/courses_1.jpg"
-              type="button">
-              <span class="dx-no">01</span>
-              <span class="dx-name">Курсы</span>
-              <span class="dx-tags">
-                <i class="dx-tag">70+ ROLLS</i>
-                <i class="dx-tag">SERIAL</i>
-                <i class="dx-tag dim">EDIT SYSTEM</i>
-              </span>
-              <span class="dx-note">Структура. Темп. Звук. Единый стиль серии.</span>
-            </button>
-          </li>
-
-          <li>
-            <button class="dx-item"
-              data-case="broadcast"
-              data-accent="amber"
-              data-cover="assets/dossier/broadcast_cover.jpg"
-              data-thumbs="assets/dossier/broadcast_1.jpg,assets/dossier/broadcast_2.jpg,assets/dossier/broadcast_3.jpg"
-              type="button">
-              <span class="dx-no">02</span>
-              <span class="dx-name">Трансляция</span>
-              <span class="dx-tags">
-                <i class="dx-tag">4+ HOURS</i>
-                <i class="dx-tag">10+ CAM</i>
-                <i class="dx-tag hot">24H DELIVERY</i>
-              </span>
-              <span class="dx-note">Режиссура эфира. Стабильность. Быстрый выпуск.</span>
-            </button>
-          </li>
-
-          <li>
-            <button class="dx-item"
-              data-case="concert"
-              data-accent="magenta"
-              data-cover="assets/dossier/concert_cover.jpg"
-              data-thumbs="assets/dossier/concert_1.jpg,assets/dossier/concert_2.jpg,assets/dossier/concert_3.jpg"
-              type="button">
-              <span class="dx-no">03</span>
-              <span class="dx-name">Концерт</span>
-              <span class="dx-tags">
-                <i class="dx-tag">11000 SEC</i>
-                <i class="dx-tag dim">≈ 03:03:20</i>
-                <i class="dx-tag">CUT TO BEAT</i>
-              </span>
-              <span class="dx-note">Сцена. Дым. Контровик. Монтаж как клип.</span>
-            </button>
-          </li>
-        </ul>
-      </div>
-
-      <!-- RIGHT: VIEWER -->
-      <div class="dx-right">
-        <div class="dx-view" data-accent="cyan">
-          <div class="dx-view-frame">
-            <img class="dx-view-img" src="assets/dossier/courses_cover.jpg" alt="EVIDENCE">
-            <div class="dx-hud">
-              <div class="dx-hud-left">
-                <span class="hud-pill">REC</span>
-                <span class="hud-pill dim">EVIDENCE</span>
-                <span class="hud-pill dim">MOSCOW</span>
-              </div>
-              <div class="dx-hud-right">
-                <span class="hud-pill dim">TC</span>
-                <span class="hud-pill">00:00:00:00</span>
-              </div>
-              <div class="dx-crosshair" aria-hidden="true"></div>
-              <div class="dx-pin red" aria-hidden="true"></div>
-              <div class="dx-pin red p2" aria-hidden="true"></div>
-              <div class="dx-string" aria-hidden="true"></div>
-            </div>
-
-            <div class="dx-scan" aria-hidden="true"></div>
-            <div class="dx-corners" aria-hidden="true"></div>
-          </div>
-
-<div class="dx-strip">
-  <div class="dx-strip-label">EVIDENCE STRIP</div>
-
-  <div class="dx-strip-body">
-    <button class="dx-arrow dx-arrow-left" type="button" aria-label="Прокрутить улики влево">
-      <span aria-hidden="true">‹</span>
-    </button>
-
-    <div class="dx-thumbs" aria-label="Улики"></div>
-
-    <button class="dx-arrow dx-arrow-right" type="button" aria-label="Прокрутить улики вправо">
-      <span aria-hidden="true">›</span>
-    </button>
-  </div>
-</div>
-
-          <div class="dx-brief">
-            <div class="dx-brief-row"><span class="k">Запрос</span><span class="v" data-k="req">—</span></div>
-            <div class="dx-brief-row"><span class="k">Улики</span><span class="v" data-k="evi">—</span></div>
-            <div class="dx-brief-row"><span class="k">Операция</span><span class="v" data-k="op">—</span></div>
-            <div class="dx-brief-row"><span class="k">Итог</span><span class="v" data-k="res">—</span></div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-    <!-- SERVICES -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
-    <section id="services" class="section dark services-lab" data-accent="amber">
-      <div class="container">
-
-        <header class="svc-head reveal">
-          <div class="svc-kicker">
-            <span class="svc-dot" aria-hidden="true"></span>
-            SERVICES / WHAT WE DO
-          </div>
-
-          <div class="svc-title">
-            <div class="svc-ghost" aria-hidden="true">SERVICES</div>
-            <div class="svc-title-imgwrap">
-              <img class="svc-title-img" src="assets/ui/services.png" alt="Услуги">
-            </div>
-            <p class="svc-sub svc-sub-2c">
-              <span class="svc-sub-a">Съёмка, эфир, продюсирование.</span>
-              <span class="svc-sub-b">Монтаж, звук, AI, 3D и графика.</span>
-            </p>
-          </div>
-        </header>
-
-        <!-- DESKTOP: switchboard (hover = select) -->
-        <div class="svc-desktop reveal" data-svc-desktop>
-          <div class="svc-stage">
-
-            <div class="svc-index">
-              <div class="svc-index-top">
-                <div class="svc-label">OPERATIONS</div>
-                <div class="svc-hint">hover = select · click = lock</div>
-              </div>
-
-              <ul class="svc-list" role="tablist" aria-label="Индекс услуг">
-                <li>
-                  <button class="svc-item is-active" type="button"
-                    data-code="OP-01" data-chip="PROD" data-accent="amber"
-                    data-title="Продюсирование / под ключ"
-                    data-lead="Концепт, команда, план, тайминг. Мы держим процесс — ты получаешь результат."
-                    data-do="бриф → идея → референсы|план съёмки + тайминг|подбор локаций/команды|смета и контроль продакшна|согласования без боли"
-                    data-get="готовый мастер + версии|графика/титры (HUD-штрихи)|саунд-дизайн и чистый диалог|субтитры и адаптации под площадки"
-                    data-turnaround="Срок: 7–21 день"
-                    data-format="Формат: полный цикл"
-                    data-steps="idea,prep,shoot,edit,sound,vfx,master"
-                  >
-                    <span class="svc-no">01</span>
-                    <span class="svc-name">Продюсирование</span>
-                    <span class="svc-tags">
-                      <i class="svc-tag">CONCEPT</i>
-                      <i class="svc-tag">PIPELINE</i>
-                      <i class="svc-tag dim">CONTROL</i>
-                    </span>
-                    <span class="svc-note">От брифа до мастера: ответственность на нас.</span>
-                  </button>
-                </li>
-
-                <li>
-                  <button class="svc-item" type="button"
-                    data-code="OP-02" data-chip="LIVE" data-accent="lime"
-                    data-title="Съёмка мероприятий / репортаж"
-                    data-lead="Концерты, конференции, вечеринки, backstage. Снимаем так, чтобы было «как клип»."
-                    data-do="мультикамерная съёмка|режиссура репортажа|свет под площадку (без лишнего)|стаб/динамика/детали|быстрые хайлайты"
-                    data-get="highlight ролик 30–90 сек|полная версия (по задаче)|кадры для соцсетей (вертикаль)|обложки/стоп‑кадры"
-                    data-turnaround="Срок: 24–72 часа (хайлайты)"
-                    data-format="Формат: on‑site unit"
-                    data-steps="prep,shoot,edit,sound,master"
-                  >
-                    <span class="svc-no">02</span>
-                    <span class="svc-name">Мероприятия</span>
-                    <span class="svc-tags">
-                      <i class="svc-tag">REPORT</i>
-                      <i class="svc-tag hot">FAST</i>
-                      <i class="svc-tag dim">BACKSTAGE</i>
-                    </span>
-                    <span class="svc-note">Энергия события — без хаоса в монтаже.</span>
-                  </button>
-                </li>
-
-                <li>
-                  <button class="svc-item" type="button"
-                    data-code="OP-03" data-chip="BROADCAST" data-accent="cyan"
-                    data-title="Трансляции / Multicam broadcast"
-                    data-lead="Эфир без провалов: камеры, звук, режиссура, графика, запись."
-                    data-do="схема камер и план эфира|режиссёрская работа|микширование звука|титры/графика/таймеры|запись + backup"
-                    data-get="live поток (площадка/платформа)|чистая запись эфира|нарезки после|пакет для партнёров/PR"
-                    data-turnaround="Срок: в день события"
-                    data-format="Формат: эфирная команда"
-                    data-steps="prep,shoot,edit,sound,vfx,master"
-                  >
-                    <span class="svc-no">03</span>
-                    <span class="svc-name">Трансляции</span>
-                    <span class="svc-tags">
-                      <i class="svc-tag">MULTICAM</i>
-                      <i class="svc-tag">LIVE</i>
-                      <i class="svc-tag dim">GRAPHICS</i>
-                    </span>
-                    <span class="svc-note">Стабильность сигнала + красивый кадр.</span>
-                  </button>
-                </li>
-
-                <li>
-                  <button class="svc-item" type="button"
-                    data-code="OP-04" data-chip="SERIAL" data-accent="violet"
-                    data-title="Курсы / образовательные сериалы"
-                    data-lead="Собираем курс как сериал: структура, темп, стиль, звук и повторяемость."
-                    data-do="визуальная система серии|свет/звук под лекции|съёмка блоками|монтаж темпом|графика: схемы/выноски"
-                    data-get="пакет уроков под LMS|короткие тизеры|единый стиль превью|гайды по съёмке для будущих сезонов"
-                    data-turnaround="Срок: по плану сезона"
-                    data-format="Формат: production system"
-                    data-steps="idea,prep,shoot,edit,sound,vfx,master"
-                  >
-                    <span class="svc-no">04</span>
-                    <span class="svc-name">Курсы</span>
-                    <span class="svc-tags">
-                      <i class="svc-tag">STRUCTURE</i>
-                      <i class="svc-tag">SERIES</i>
-                      <i class="svc-tag dim">ЗВУК</i>
-                    </span>
-                    <span class="svc-note">Серия, которую реально досматривают.</span>
-                  </button>
-                </li>
-
-                <li>
-                  <button class="svc-item" type="button"
-                    data-code="OP-05" data-chip="TALK" data-accent="amber"
-                    data-title="Подкасты / интервью / блоги"
-                    data-lead="Чистый звук, узнаваемый свет, несколько камер — и монтаж без «швов»."
-                    data-do="сетап света под лицо|запись звука без сюрпризов|2–4 камеры|монтаж по смыслу|пакет shorts из выпуска"
-                    data-get="полный выпуск (YT/платформы)|вертикальные клипы|шаблон титров/интро|обложка + таймкоды"
-                    data-turnaround="Срок: 3–10 дней"
-                    data-format="Формат: studio / on‑site"
-                    data-steps="prep,shoot,edit,sound,master"
-                  >
-                    <span class="svc-no">05</span>
-                    <span class="svc-name">Подкасты</span>
-                    <span class="svc-tags">
-                      <i class="svc-tag">AUDIO</i>
-                      <i class="svc-tag">2–4 CAM</i>
-                      <i class="svc-tag dim">SHORTS</i>
-                    </span>
-                    <span class="svc-note">Звук — это 70% доверия. Мы это знаем.</span>
-                  </button>
-                </li>
-
-                <li>
-                  <button class="svc-item" type="button"
-                    data-code="OP-06" data-chip="MUSIC" data-accent="magenta"
-                    data-title="Клипы / music video"
-                    data-lead="Стиль, свет, ритм. Снимаем под трек и собираем монтаж как ударную партию."
-                    data-do="концепт/референсы|план смен|световая схема|динамичная камера|монтаж в бит + цвет"
-                    data-get="клип master|тизеры/вертикаль|кадры для обложки|версии под площадки"
-                    data-turnaround="Срок: 10–30 дней"
-                    data-format="Формат: creative unit"
-                    data-steps="idea,prep,shoot,edit,sound,vfx,master"
-                  >
-                    <span class="svc-no">06</span>
-                    <span class="svc-name">Клипы</span>
-                    <span class="svc-tags">
-                      <i class="svc-tag">STYLE</i>
-                      <i class="svc-tag">LIGHT</i>
-                      <i class="svc-tag dim">CUT TO BEAT</i>
-                    </span>
-                    <span class="svc-note">Картинка «с первого кадра».</span>
-                  </button>
-                </li>
-
-                <li>
-                  <button class="svc-item" type="button"
-                    data-code="OP-07" data-chip="BRAND" data-accent="cyan"
-                    data-title="Реклама / промо / кампании"
-                    data-lead="Ролики, промо, брендинг‑контент. Чётко по задаче и с запасом по стилю."
-                    data-do="сценарий/сториборд|съёмка продукта/людей|свет под фактуру|монтаж + цвет|графика и титры"
-                    data-get="master 16:9 + 9:16|варианты хронометража|пакет для таргета|версия без текста (универсал)"
-                    data-turnaround="Срок: 7–20 дней"
-                    data-format="Формат: коммерческий продакшн"
-                    data-steps="idea,prep,shoot,edit,vfx,master"
-                  >
-                    <span class="svc-no">07</span>
-                    <span class="svc-name">Реклама</span>
-                    <span class="svc-tags">
-                      <i class="svc-tag">SCRIPT</i>
-                      <i class="svc-tag">PRODUCT</i>
-                      <i class="svc-tag dim">ADS PACK</i>
-                    </span>
-                    <span class="svc-note">Промо, которое не выглядит как промо.</span>
-                  </button>
-                </li>
-
-                <li>
-                  <button class="svc-item" type="button"
-                    data-code="OP-08" data-chip="SOCIAL" data-accent="lime"
-                    data-title="Контент‑пакеты / Reels · Shorts · TikTok"
-                    data-lead="Снимаем пачкой. Собираем ритм. У тебя — система контента на месяц."
-                    data-do="контент‑план (быстро)|1–2 съёмочных дня|шаблоны титров|монтаж сериями|пакет обложек"
-                    data-get="10–40 вертикальных роликов|варианты хука (A/B)|субтитры (AI+ручная правка)|файлы под публикацию"
-                    data-turnaround="Срок: 3–14 дней"
-                    data-format="Формат: контент‑система"
-                    data-steps="idea,prep,shoot,edit,vfx,master"
-                  >
-                    <span class="svc-no">08</span>
-                    <span class="svc-name">Контент</span>
-                    <span class="svc-tags">
-                      <i class="svc-tag">PACKS</i>
-                      <i class="svc-tag hot">A/B</i>
-                      <i class="svc-tag dim">VERTICAL</i>
-                    </span>
-                    <span class="svc-note">Не 1 ролик. А поток.</span>
-                  </button>
-                </li>
-
-                <li>
-                  <button class="svc-item" type="button"
-                    data-code="OP-09" data-chip="POST" data-accent="violet"
-                    data-title="Пост‑продакшн / монтаж / цвет / звук"
-                    data-lead="Когда исходники есть, но нужно «собрать в кино». Мы это делаем каждый день."
-                    data-do="монтаж и структура|цветокоррекция/грэйдинг|чистка диалогов|саунд‑дизайн|субтитры/локализация"
-                    data-get="master + адаптации|версия под соцсети|проектный архив|таймкоды/правки без хаоса"
-                    data-turnaround="Срок: 2–14 дней"
-                    data-format="Формат: post unit"
-                    data-steps="edit,sound,vfx,master"
-                  >
-                    <span class="svc-no">09</span>
-                    <span class="svc-name">Пост‑прод</span>
-                    <span class="svc-tags">
-                      <i class="svc-tag">МОНТАЖ</i>
-                      <i class="svc-tag">COLOR</i>
-                      <i class="svc-tag dim">SFX</i>
-                    </span>
-                    <span class="svc-note">Собираем смысл, темп и вкус.</span>
-                  </button>
-                </li>
-
-                <li>
-                  <button class="svc-item" type="button"
-                    data-code="OP-10" data-chip="AI/3D" data-accent="magenta"
-                    data-title="AI + 3D / motion / VFX"
-                    data-lead="Титры, 3D‑элементы, симуляции, AI‑инструменты. Акценты, которые поднимают уровень."
-                    data-do="motion‑графика и HUD|3D объекты/трек|AI‑улучшение/апскейл|AI‑субтитры/перевод|VFX‑штрихи"
-                    data-get="пакет графики|версии с/без графики|мастер‑файлы для дальнейшей работы|консистентный стиль"
-                    data-turnaround="Срок: 3–21 день"
-                    data-format="Формат: lab"
-                    data-steps="idea,prep,edit,vfx,master"
-                  >
-                    <span class="svc-no">10</span>
-                    <span class="svc-name">AI + 3D</span>
-                    <span class="svc-tags">
-                      <i class="svc-tag">MOTION</i>
-                      <i class="svc-tag">VFX</i>
-                      <i class="svc-tag dim">LAB</i>
-                    </span>
-                    <span class="svc-note">Там, где нужен “вау” слой.</span>
-                  </button>
-                </li>
-              </ul>
-            </div>
-
-            <div class="svc-main">
-              <div class="svc-view" role="tabpanel" aria-label="Панель выбранной услуги">
-                <div class="svc-glass">
-                  <div class="svc-scan" aria-hidden="true"></div>
-                  <div class="svc-noise" aria-hidden="true"></div>
-
-                  <div class="svc-meta">
-                    <span class="svc-code" data-svc-code>OP-01</span>
-                    <span class="svc-chip" data-svc-chip>PROD</span>
-                  </div>
-
-                  <h3 class="svc-title" data-svc-title>Продюсирование / под ключ</h3>
-                  <p class="svc-lead" data-svc-lead>
-                    Концепт, команда, план, тайминг. Мы держим процесс — ты получаешь результат.
-                  </p>
-
-                  <div class="svc-cols">
-                    <div class="svc-col">
-                      <div class="svc-col-label">Что делаем</div>
-                      <ul class="svc-bullets" data-svc-do>
-                        <li>бриф → идея → референсы</li>
-                        <li>план съёмки + тайминг</li>
-                        <li>подбор локаций/команды</li>
-                        <li>смета и контроль продакшна</li>
-                        <li>согласования без боли</li>
-                      </ul>
-                    </div>
-
-                    <div class="svc-col">
-                      <div class="svc-col-label">Вы получаете</div>
-                      <ul class="svc-bullets" data-svc-get>
-                        <li>готовый мастер + версии</li>
-                        <li>графика/титры (HUD-штрихи)</li>
-                        <li>саунд-дизайн и чистый диалог</li>
-                        <li>субтитры и адаптации под площадки</li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div class="svc-foot">
-                    <div class="svc-stats">
-                      <span class="svc-stat" data-svc-turnaround>Срок: 7–21 день</span>
-                      <span class="svc-stat" data-svc-format>Формат: полный цикл</span>
-                    </div>
-                    <div class="svc-actions">
-              <button class="svc-more" type="button" data-svc-more aria-expanded="false">Подробнее</button>
-              <a class="btn svc-cta" href="#contacts">Запросить смету</a>
-            </div>
-          </div>
-                </div>
-              </div>
-
-              
-              <div class="svc-folds" aria-label="Система">
-                <details class="svc-fold">
-                  <summary><span>ПАЙПЛАЙН</span><i class="svc-chevron" aria-hidden="true"></i></summary>
-                  <div class="svc-fold-body">
-                    <div class="svc-pipe-row">
-
-                  <span class="svc-node" data-step="idea">ИДЕЯ</span>
-                  <span class="svc-node" data-step="prep">ПОДГОТОВКА</span>
-                  <span class="svc-node" data-step="shoot">СЪЁМКА</span>
-                  <span class="svc-node" data-step="edit">МОНТАЖ</span>
-                  <span class="svc-node" data-step="sound">ЗВУК</span>
-                  <span class="svc-node" data-step="vfx">ГРАФИКА / 3D</span>
-                  <span class="svc-node" data-step="master">МАСТЕР</span>
-                
-                    </div>
-                    <div class="svc-pipe-line" aria-hidden="true"></div>
-                  </div>
-                </details>
-
-                <details class="svc-fold">
-                  <summary><span>ДОП. ОПЦИИ</span><i class="svc-chevron" aria-hidden="true"></i></summary>
-                  <div class="svc-fold-body">
-                    <div class="svc-addon-strip">
-                  <div class="svc-addon">СУБТИТРЫ (AI+QA)</div>
-                  <div class="svc-addon">ОБЛОЖКИ</div>
-                  <div class="svc-addon">ВЕРТИКАЛЬ</div>
-                  <div class="svc-addon">ЧИСТКА ЗВУКА</div>
-                  <div class="svc-addon">ЦВЕТ</div>
-                  <div class="svc-addon">3D / ГРАФИКА</div>
-                  <div class="svc-addon">ПАКЕТ СДАЧИ</div>
-                </div>
-                  </div>
-                </details>
-              </div>
-
-            </div>
-
-          </div>
-        </div>
-
-        <!-- MOBILE: tuner (drag the dial) -->
-        <div class="svc-mobile reveal" data-svc-mobile>
-          <div class="tuner-kicker">
-            <span class="svc-dot" aria-hidden="true"></span>
-            MOBILE MODE / TUNE THE SIGNAL
-          </div>
-
-          <div class="tuner-body">
-            <div class="tuner-knob" id="tunerKnob"
-              role="slider" tabindex="0"
-              aria-label="Выбор услуги"
-              aria-valuemin="1" aria-valuemax="10" aria-valuenow="1"
+        <div class="services-board" data-svc>
+          <div class="svc-list" role="tablist" aria-label="Список услуг">
+            <button class="svc-item is-active" type="button"
+              data-code="OP-01" data-title="Продюсирование / под ключ"
+              data-lead="Концепт, команда, план. Мы держим процесс."
+              data-do="бриф → идея → референсы|смета и план|команда/локации|режиссура и контроль|сдача мастера"
+              data-get="мастер + версии|графика/титры|чистый звук|субтитры/адаптации"
+              data-steps="ИДЕЯ,ПОДГОТОВКА,СЪЁМКА,МОНТАЖ,ЗВУК,ГРАФИКА,МАСТЕР"
             >
-              <div class="tuner-dial" aria-hidden="true"></div>
-              <div class="tuner-center">
-                <div class="tuner-code" data-tuner-code>OP-01</div>
-                <div class="tuner-chip" data-tuner-chip>PROD</div>
-              </div>
-              <div class="tuner-hint">крути</div>
-            </div>
+              <span class="svc-n">01</span><span class="svc-t">Продюсирование</span>
+              <span class="svc-mini">full cycle</span>
+            </button>
 
-            <div class="tuner-card" id="tunerCard" aria-live="polite">
-              <div class="tuner-top">
-                <div class="tuner-title" data-tuner-title>Продюсирование / под ключ</div>
-                <div class="tuner-mini">
-                  <span class="tuner-mini-pill" data-tuner-turnaround>Срок: 7–21 день</span>
-                  <span class="tuner-mini-pill" data-tuner-format>полный цикл</span>
-                </div>
-              </div>
+            <button class="svc-item" type="button"
+              data-code="OP-02" data-title="Мероприятия / репортаж"
+              data-lead="Снимаем так, чтобы было как клип — и быстро."
+              data-do="мультикамерно|динамика/детали|backstage|быстрые хайлайты|вертикаль"
+              data-get="highlight 24–72h|полная версия|пакет соцсетей|обложки"
+              data-steps="ПОДГОТОВКА,СЪЁМКА,МОНТАЖ,ЗВУК,МАСТЕР"
+            >
+              <span class="svc-n">02</span><span class="svc-t">Мероприятия</span>
+              <span class="svc-mini">fast</span>
+            </button>
 
-              <div class="tuner-tabs" role="tablist" aria-label="Разделы">
-                <button class="tuner-tab is-active" type="button" data-tuner-tab="brief" role="tab" aria-selected="true">Кратко</button>
-                <button class="tuner-tab" type="button" data-tuner-tab="do" role="tab" aria-selected="false">Делаем</button>
-                <button class="tuner-tab" type="button" data-tuner-tab="get" role="tab" aria-selected="false">Вы получаете</button>
-              </div>
+            <button class="svc-item" type="button"
+              data-code="OP-03" data-title="Трансляции / multіcam"
+              data-lead="Эфир без провалов: камеры, режиссура, графика, запись."
+              data-do="схема камер|режиссура|звук|титры/таймеры|backup"
+              data-get="live поток|чистая запись|нарезки|пакет для PR"
+              data-steps="ПОДГОТОВКА,СЪЁМКА,ЗВУК,ГРАФИКА,МАСТЕР"
+            >
+              <span class="svc-n">03</span><span class="svc-t">Трансляции</span>
+              <span class="svc-mini">broadcast</span>
+            </button>
 
-              <div class="tuner-panels">
-                <div class="tuner-panel is-active" data-tuner-panel="brief" role="tabpanel">
-                  <div class="tuner-lead" data-tuner-lead>Концепт, команда, план, тайминг. Мы держим процесс — ты получаешь результат.</div>
-                </div>
+            <button class="svc-item" type="button"
+              data-code="OP-04" data-title="Курсы / сериалы"
+              data-lead="Собираем курс как сериал: структура, темп, стиль."
+              data-do="система серии|свет/звук|съёмка блоками|монтаж темпом|схемы/выноски"
+              data-get="пакет уроков|тизеры|единый стиль|гайд под сезоны"
+              data-steps="ИДЕЯ,ПОДГОТОВКА,СЪЁМКА,МОНТАЖ,ЗВУК,ГРАФИКА,МАСТЕР"
+            >
+              <span class="svc-n">04</span><span class="svc-t">Курсы</span>
+              <span class="svc-mini">system</span>
+            </button>
 
-                <div class="tuner-panel" data-tuner-panel="do" role="tabpanel">
-                  <ul class="tuner-list" data-tuner-do>
-                    <li>бриф → идея → референсы</li>
-                    <li>план съёмки + тайминг</li>
-                    <li>подбор локаций/команды</li>
-                    <li>смета и контроль продакшна</li>
-                  </ul>
-                </div>
+            <button class="svc-item" type="button"
+              data-code="OP-05" data-title="Подкасты / интервью"
+              data-lead="Чистый звук + узнаваемый свет + несколько камер."
+              data-do="сетап света|запись звука|2–4 камеры|монтаж по смыслу|shorts"
+              data-get="выпуск|вертикаль|таймкоды|обложка"
+              data-steps="ПОДГОТОВКА,СЪЁМКА,МОНТАЖ,ЗВУК,МАСТЕР"
+            >
+              <span class="svc-n">05</span><span class="svc-t">Подкасты</span>
+              <span class="svc-mini">talk</span>
+            </button>
 
-                <div class="tuner-panel" data-tuner-panel="get" role="tabpanel">
-                  <ul class="tuner-list" data-tuner-get>
-                    <li>готовый мастер + версии</li>
-                    <li>графика/титры</li>
-                    <li>саунд‑дизайн</li>
-                    <li>адаптации под площадки</li>
-                  </ul>
-                </div>
-              </div>
+            <button class="svc-item" type="button"
+              data-code="OP-06" data-title="Реклама / промо"
+              data-lead="Чётко по задаче. Стильно по кадру."
+              data-do="сценарий/борд|съёмка|свет|монтаж+цвет|графика"
+              data-get="master 16:9 + 9:16|варианты хронометража|пакет для таргета"
+              data-steps="ИДЕЯ,ПОДГОТОВКА,СЪЁМКА,МОНТАЖ,ГРАФИКА,МАСТЕР"
+            >
+              <span class="svc-n">06</span><span class="svc-t">Реклама</span>
+              <span class="svc-mini">brand</span>
+            </button>
 
-              <a class="btn tuner-cta" href="#contacts">Запросить смету</a>
-            </div>
+            <button class="svc-item" type="button"
+              data-code="OP-07" data-title="AI + 3D / motion / VFX"
+              data-lead="Акценты, которые поднимают уровень (без дешёвых эффектов)."
+              data-do="motion/титры|3D объекты|AI апскейл|AI субтитры|VFX штрихи"
+              data-get="пакет графики|версии с/без|мастер-файлы|единый стиль"
+              data-steps="ИДЕЯ,ПОДГОТОВКА,МОНТАЖ,ГРАФИКА,МАСТЕР"
+            >
+              <span class="svc-n">07</span><span class="svc-t">AI + 3D</span>
+              <span class="svc-mini">lab</span>
+            </button>
           </div>
 
-          <div class="tuner-nav">
-            <button class="tuner-btn" type="button" data-tuner-dir="-1" aria-label="Предыдущая услуга">‹</button>
-            <div class="tuner-progress" aria-hidden="true">
-              <span class="tuner-bar"></span>
+          <div class="svc-view" role="tabpanel" aria-label="Описание услуги">
+            <div class="svc-top">
+              <span class="svc-code" data-svc-code>OP-01</span>
+              <span class="svc-cap">УСЛУГА</span>
             </div>
-            <button class="tuner-btn" type="button" data-tuner-dir="1" aria-label="Следующая услуга">›</button>
+
+            <h3 class="svc-title" data-svc-title>Продюсирование / под ключ</h3>
+            <p class="svc-lead" data-svc-lead>Концепт, команда, план. Мы держим процесс.</p>
+
+            <div class="svc-cols">
+              <div class="svc-col">
+                <div class="svc-col-h">Что делаем</div>
+                <ul class="svc-ul" data-svc-do></ul>
+              </div>
+              <div class="svc-col">
+                <div class="svc-col-h">Вы получаете</div>
+                <ul class="svc-ul" data-svc-get></ul>
+              </div>
+            </div>
+
+            <details class="svc-fold">
+              <summary><span>ПАЙПЛАЙН</span><i aria-hidden="true"></i></summary>
+              <div class="svc-fold-body">
+                <div class="svc-pipe" data-svc-pipe></div>
+              </div>
+            </details>
+
+            <details class="svc-fold">
+              <summary><span>ДОП. ОПЦИИ</span><i aria-hidden="true"></i></summary>
+              <div class="svc-fold-body">
+                <div class="svc-addons">
+                  <span>СУБТИТРЫ</span>
+                  <span>ОБЛОЖКИ</span>
+                  <span>ВЕРТИКАЛЬ</span>
+                  <span>ЧИСТКА ЗВУКА</span>
+                  <span>ЦВЕТ</span>
+                  <span>3D / ГРАФИКА</span>
+                  <span>ПАКЕТ СДАЧИ</span>
+                </div>
+              </div>
+            </details>
+
+            <div class="svc-actions">
+              <a class="btn primary" href="#contacts">Запросить смету</a>
+              <a class="btn ghost" href="#works">Смотреть работы</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRICING -->
+    <section id="pricing" class="chapter pricing" data-title="PRICING" data-accent="lime">
+      <div class="chapter-bg" aria-hidden="true"></div>
+
+      <div class="pricing-wrap">
+        <div class="pricing-title">
+          <div class="kicker"><span class="dot"></span> PRICING / HOW MUCH</div>
+          <h2 class="price-h2">Сколько стоит видеоролик</h2>
+        </div>
+
+        <div class="pricing-body">
+          <p class="price-p">
+            <b>Все проекты — индивидуальны.</b> Наша команда создаёт уникальные видео для каждого заказчика.
+            <span class="tone2">Точная цена</span> рассчитывается на основании брифа и технического задания.
+          </p>
+
+          <p class="price-p muted">
+            Стоимость зависит от формата видео, длительности, съёмочной локации, необходимости в разработке сценария,
+            выезде в другой город, кастинге моделей и т. д.
+          </p>
+
+          <div class="pricing-cta">
+            <a class="btn primary" href="#contacts">Получить расчёт</a>
+            <span class="mini-note">Ответим быстро. Без «продажных» сообщений.</span>
           </div>
         </div>
 
+        <div class="pricing-stickers" aria-hidden="true">
+          <span class="sticker">BRIEF</span>
+          <span class="sticker">TECH</span>
+          <span class="sticker">SHOOT</span>
+          <span class="sticker">POST</span>
+        </div>
       </div>
     </section>
-    
+
     <!-- WORKS -->
-    <section id="works" class="section dark">
-      <div class="container reveal">
-        <h2>Работы</h2>
-        <p class="muted">Дальше сделаем “архив/filmstrip/контактную печать”, раскрытие карточки как досье.</p>
+    <section id="works" class="chapter works" data-title="WORKS" data-accent="violet">
+      <div class="chapter-bg" aria-hidden="true"></div>
+
+      <div class="works-shell">
+        <div class="works-head">
+          <div class="kicker"><span class="dot"></span> WORKS / OPEN THE EDIT</div>
+          <h2 class="title">Наши работы</h2>
+          <p class="lead">На ПК — таймлайн как в монтажке. На телефоне — медиапул.</p>
+        </div>
+
+        <div class="nle" data-nle>
+          <div class="nle-monitor">
+            <div class="nle-top">
+              <span class="nle-app">INDIVIDNI EDIT</span>
+              <span class="nle-sp"></span>
+              <span class="nle-seq" id="nleSeq">SEQ_01</span>
+              <span class="nle-tc" id="nleTC">00:00:00</span>
+            </div>
+
+            <div class="nle-view">
+              <img id="nlePreview" alt="Превью работы" src="https://picsum.photos/seed/individni_01/1280/720" />
+              <div class="nle-overlays" aria-hidden="true">
+                <span class="nle-safe"></span>
+                <span class="nle-safe inner"></span>
+              </div>
+            </div>
+
+            <div class="nle-bottom" aria-hidden="true">
+              <span>V1</span><span>V2</span><span>A1</span><span>A2</span>
+            </div>
+          </div>
+
+          <div class="nle-timeline" id="nleTimeline" aria-label="Таймлайн">
+            <div class="nle-ruler" id="nleRuler" aria-hidden="true"></div>
+            <div class="nle-tracks" id="nleTracks"></div>
+            <div class="nle-playhead" id="nlePlayhead" aria-hidden="true"></div>
+          </div>
+
+          <!-- mobile media pool -->
+          <div class="bin" id="nleBin" aria-label="Медиапул (мобилка)">
+            <button class="bin-item is-active" type="button" data-clip="0">
+              <span class="bin-thumb" style="background-image:url('https://picsum.photos/seed/individni_bin_01/640/360')"></span>
+              <span class="bin-meta"><b>EVENT_01</b><i>00:12</i></span>
+            </button>
+            <button class="bin-item" type="button" data-clip="1">
+              <span class="bin-thumb" style="background-image:url('https://picsum.photos/seed/individni_bin_02/640/360')"></span>
+              <span class="bin-meta"><b>COURSE_02</b><i>00:18</i></span>
+            </button>
+            <button class="bin-item" type="button" data-clip="2">
+              <span class="bin-thumb" style="background-image:url('https://picsum.photos/seed/individni_bin_03/640/360')"></span>
+              <span class="bin-meta"><b>LIVE_03</b><i>00:09</i></span>
+            </button>
+            <button class="bin-item" type="button" data-clip="3">
+              <span class="bin-thumb" style="background-image:url('https://picsum.photos/seed/individni_bin_04/640/360')"></span>
+              <span class="bin-meta"><b>AD_04</b><i>00:15</i></span>
+            </button>
+          </div>
+
+          <div class="works-cta">
+            <a class="btn primary" href="#contacts">Запросить смету</a>
+            <a class="btn ghost" href="#services">Что вы делаете?</a>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- CONTACTS -->
-    <section id="contacts" class="section">
-      <div class="container reveal">
-        <h2>Контакты</h2>
-        <p class="muted">Добавим форму/мессенджеры/почту — и сделаем это тоже стилевым объектом.</p>
+    <section id="contacts" class="chapter contacts" data-title="CONTACTS" data-accent="amber">
+      <div class="chapter-bg" aria-hidden="true"></div>
+
+      <div class="contacts-shell">
+        <div class="contacts-head">
+          <div class="kicker"><span class="dot"></span> CONTACTS / GET IN</div>
+          <h2 class="title">Связаться</h2>
+          <p class="lead">Коротко о задаче — и мы предложим план + смету.</p>
+        </div>
+
+        <div class="contacts-grid">
+          <form class="form" onsubmit="return false;">
+            <label class="field">
+              <span>Имя</span>
+              <input type="text" placeholder="Как к вам обращаться?" />
+            </label>
+
+            <label class="field">
+              <span>Контакт</span>
+              <input type="text" placeholder="Telegram / Email / телефон" />
+            </label>
+
+            <label class="field">
+              <span>Что нужно снять?</span>
+              <select>
+                <option>Мероприятие / репортаж</option>
+                <option>Трансляция</option>
+                <option>Курс</option>
+                <option>Подкаст / интервью</option>
+                <option>Клип</option>
+                <option>Реклама</option>
+                <option>Монтаж / пост‑прод</option>
+                <option>AI / 3D / графика</option>
+              </select>
+            </label>
+
+            <label class="field field-full">
+              <span>Описание</span>
+              <textarea rows="5" placeholder="Сроки, формат, площадка, референсы — всё, что важно."></textarea>
+            </label>
+
+            <button class="btn primary field-full" type="submit">Отправить запрос</button>
+
+            <div class="form-note">
+              Можно просто написать в Telegram — ответим быстрее.
+            </div>
+          </form>
+
+          <div class="contacts-card">
+            <div class="card-row"><span>Telegram</span><b>@individnistudio</b></div>
+            <div class="card-row"><span>Email</span><b>hello@individnistudio.ru</b></div>
+            <div class="card-row"><span>Город</span><b>Москва / выезды</b></div>
+            <div class="card-row"><span>Формат</span><b>Production + Post</b></div>
+
+            <div class="contacts-note">
+              <div class="note-title">Быстрый старт</div>
+              <div class="note-txt">Скинь референсы + что снимаем + где + когда. Мы вернёмся с планом и бюджетом.</div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="footer">
+          <span>© <span id="year"></span> INDIVIDNI STUDIO</span>
+          <span class="footer-s">interactive landing · night edit suite</span>
+        </footer>
       </div>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="container">
-      <div>© <span id="year"></span> INDIVIDNI STUDIO</div>
-      <div class="muted">Made for GitHub Pages</div>
-    </div>
-  </footer>
-</body>
-</html>
-
-<!-- PRICING -->
-    <section id="pricing" class="section dark price-section">
-      <div class="container">
-        <div class="price-wrap">
-          <div class="price-kicker">PRICE / СКОЛЬКО СТОИТ</div>
-
-          <h2 class="price-title" aria-label="Сколько стоит видеоролик">
-            <span class="price-title-a">Сколько стоит</span>
-            <span class="price-title-b">видеоролик</span>
-          </h2>
-
-          <p class="price-sub two-tone">
-            <span class="two-tone-a">Все проекты — индивидуальны.</span>
-            <span class="two-tone-b">Точная цена считается по брифу и техзаданию.</span>
-          </p>
-
-          <div class="price-body">
-            <p class="price-text">
-              Мы собираем уникальное видео под задачу, поэтому “фикс-прайса” нет.
-              Стоимость зависит от формата, длительности, локации, необходимости сценария,
-              выезда в другой город, кастинга и сложности пост‑продакшна.
-            </p>
-
-            <div class="price-factors" aria-label="Факторы стоимости">
-              <div class="factor">формат / площадка</div>
-              <div class="factor">хронометраж</div>
-              <div class="factor">локация / логистика</div>
-              <div class="factor">сценарий / сториборд</div>
-              <div class="factor">каст / реквизит</div>
-              <div class="factor">монтаж / цвет / звук</div>
-              <div class="factor">графика / 3D / AI</div>
-              <div class="factor">сроки (обычно это важно)</div>
-            </div>
-
-            <div class="price-cta-row">
-              <a class="btn price-cta" href="#contacts">Запросить смету</a>
-              <div class="price-note">Ответим быстро. Сначала — 3–5 вопросов по задаче.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-<!-- WORKS -->
-    <section id="works" class="section dark works-nle">
-      <div class="container">
-
-        <header class="works-head">
-          <div class="works-kicker">WORKS / NLE TIMELINE</div>
-          <h2 class="works-title">Наши работы</h2>
-          <p class="works-sub two-tone">
-            <span class="two-tone-a">ПК: как в монтажке — двигай плейхед по таймлайну.</span>
-            <span class="two-tone-b">Телефон: media pool — тап по клипу и смотри превью.</span>
-          </p>
-        </header>
-
-        <!-- DESKTOP: Premiere/Resolve-style timeline -->
-        <div class="nle-desktop" data-nle>
-          <div class="nle-frame">
-
-            <div class="nle-monitor">
-              <div class="nle-view">
-                <img class="nle-img" data-nle-img
-                     src="https://picsum.photos/seed/indivni_work_01/1280/720"
-                     alt="Просмотр работы" loading="lazy" decoding="async">
-                <div class="nle-overlay" aria-hidden="true">
-                  <div class="nle-tc" data-nle-tc>00:00:00:00</div>
-                  <div class="nle-file" data-nle-file>EVNT_2401_A_CAM01.mov</div>
-                </div>
-              </div>
-
-              <div class="nle-meta">
-                <div class="nle-meta-top">
-                  <div class="nle-badge" data-nle-badge>EVENT</div>
-                  <div class="nle-time-mini" data-nle-time-mini>01:12</div>
-                </div>
-                <h3 class="nle-title" data-nle-title>Концерт / Highlight</h3>
-                <p class="nle-desc" data-nle-desc>
-                  Динамика, свет, лица. Сборка темпом, который держит зрителя.
-                </p>
-
-                <div class="nle-pills">
-                  <span class="pill">16:9 master</span>
-                  <span class="pill">9:16 cuts</span>
-                  <span class="pill dim">sound design</span>
-                </div>
-
-                <a class="btn nle-cta" href="#contacts">Запросить смету</a>
-              </div>
-            </div>
-
-            <div class="nle-timeline">
-              <div class="nle-topbar">
-                <div class="nle-left">SEQUENCE: <span class="mono">INDIVIDNI_WORKS_v01</span></div>
-                <div class="nle-right mono">FPS 25 · 02:00</div>
-              </div>
-
-              <div class="nle-scroll" data-nle-scroll>
-                <div class="nle-ruler" aria-hidden="true"></div>
-
-                <div class="nle-tracks" data-nle-tracks>
-                  <div class="nle-track-labels" aria-hidden="true">
-                    <div class="trk">V1</div>
-                    <div class="trk">V2</div>
-                    <div class="trk a">A1</div>
-                    <div class="trk a">A2</div>
-                  </div>
-
-                  <div class="nle-track nle-v1">
-                    <button class="nle-clip" type="button"
-                      data-start="0" data-end="18"
-                      data-badge="EVENT" data-title="Концерт / Highlight"
-                      data-desc="Репортажный драйв, клиповый монтаж и чистый звук."
-                      data-file="EVNT_2401_A_CAM01.mov"
-                      data-img="https://picsum.photos/seed/indivni_work_01/1280/720"
-                      data-dur="01:12"
-                    >EVNT_HL</button>
-
-                    <button class="nle-clip" type="button"
-                      data-start="18" data-end="36"
-                      data-badge="LIVE" data-title="Трансляция / Multicam"
-                      data-desc="Эфирная режиссура, титры, запись и backup."
-                      data-file="LIVE_Studio_MX01.prproj"
-                      data-img="https://picsum.photos/seed/indivni_work_02/1280/720"
-                      data-dur="00:54"
-                    >LIVE_MX</button>
-
-                    <button class="nle-clip" type="button"
-                      data-start="36" data-end="58"
-                      data-badge="COURSE" data-title="Курс / Образовательная серия"
-                      data-desc="Структура уроков, темп, схемы и графика."
-                      data-file="COURSE_S01_EP03.mov"
-                      data-img="https://picsum.photos/seed/indivni_work_03/1280/720"
-                      data-dur="01:40"
-                    >COURSE</button>
-
-                    <button class="nle-clip" type="button"
-                      data-start="58" data-end="76"
-                      data-badge="POD" data-title="Подкаст / Интервью"
-                      data-desc="Лицо + свет, звук без сюрпризов, монтаж по смыслу."
-                      data-file="PODCAST_SET_A_4CAM.mov"
-                      data-img="https://picsum.photos/seed/indivni_work_04/1280/720"
-                      data-dur="00:48"
-                    >POD_4CAM</button>
-
-                    <button class="nle-clip" type="button"
-                      data-start="76" data-end="94"
-                      data-badge="AD" data-title="Реклама / Промо"
-                      data-desc="Сториборд, свет под фактуру, мастер под площадки."
-                      data-file="AD_PACK_15_30_60.mov"
-                      data-img="https://picsum.photos/seed/indivni_work_05/1280/720"
-                      data-dur="00:30"
-                    >AD_PACK</button>
-
-                    <button class="nle-clip" type="button"
-                      data-start="94" data-end="120"
-                      data-badge="AI/3D" data-title="AI + 3D / Motion"
-                      data-desc="HUD-штрихи, 3D-акценты, апскейл и чистка."
-                      data-file="VFX_LAB_SHOTS_07.exr"
-                      data-img="https://picsum.photos/seed/indivni_work_06/1280/720"
-                      data-dur="00:22"
-                    >VFX_LAB</button>
-                  </div>
-
-                  <div class="nle-track nle-v2" aria-hidden="true">
-                    <div class="nle-layer layer-1"></div>
-                    <div class="nle-layer layer-2"></div>
-                  </div>
-
-                  <div class="nle-track nle-a1" aria-hidden="true">
-                    <div class="wave w1"></div>
-                    <div class="wave w2"></div>
-                  </div>
-
-                  <div class="nle-track nle-a2" aria-hidden="true">
-                    <div class="wave w3"></div>
-                    <div class="wave w4"></div>
-                  </div>
-
-                  <div class="nle-playhead" data-nle-playhead role="slider" tabindex="0"
-                       aria-label="Плейхед" aria-valuemin="0" aria-valuemax="120" aria-valuenow="0">
-                    <div class="nle-ph-top"></div>
-                    <div class="nle-ph-line"></div>
-                  </div>
-
-                </div>
-              </div>
-
-              <div class="nle-hint">
-                drag плейхед · click клип · wheel = горизонтальный скролл
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- MOBILE: Media Pool -->
-        <div class="nle-mobile">
-          <div class="bin">
-            <div class="bin-monitor">
-              <div class="bin-view">
-                <img class="bin-img" data-bin-img
-                     src="https://picsum.photos/seed/indivni_work_01/1280/720"
-                     alt="Превью работы" loading="lazy" decoding="async">
-                <div class="bin-ov mono">
-                  <span data-bin-file>EVNT_2401_A_CAM01.mov</span>
-                  <span data-bin-tc>00:00:12:10</span>
-                </div>
-              </div>
-              <div class="bin-meta">
-                <div class="bin-badge" data-bin-badge>EVENT</div>
-                <div class="bin-title" data-bin-title>Концерт / Highlight</div>
-              </div>
-            </div>
-
-            <div class="bin-head">
-              <div class="bin-kicker">MEDIA POOL</div>
-              <div class="bin-note">тап по клипу — превью сверху</div>
-            </div>
-
-            <div class="bin-grid" data-bin-grid>
-              <button class="bin-item is-active" type="button"
-                data-img="https://picsum.photos/seed/indivni_work_01/1280/720"
-                data-badge="EVENT"
-                data-title="Концерт / Highlight"
-                data-file="EVNT_2401_A_CAM01.mov"
-                data-tc="00:00:12:10"
-                data-dur="01:12"
-              >
-                <span class="bin-thumb" style="background-image:url('https://picsum.photos/seed/indivni_work_01/640/360');"></span>
-                <span class="bin-name mono">EVNT_HL.mov</span>
-                <span class="bin-dur mono">01:12</span>
-              </button>
-
-              <button class="bin-item" type="button"
-                data-img="https://picsum.photos/seed/indivni_work_02/1280/720"
-                data-badge="LIVE"
-                data-title="Трансляция / Multicam"
-                data-file="LIVE_Studio_MX01.prproj"
-                data-tc="00:00:44:02"
-                data-dur="00:54"
-              >
-                <span class="bin-thumb" style="background-image:url('https://picsum.photos/seed/indivni_work_02/640/360');"></span>
-                <span class="bin-name mono">LIVE_MX.prproj</span>
-                <span class="bin-dur mono">00:54</span>
-              </button>
-
-              <button class="bin-item" type="button"
-                data-img="https://picsum.photos/seed/indivni_work_03/1280/720"
-                data-badge="COURSE"
-                data-title="Курс / Серия"
-                data-file="COURSE_S01_EP03.mov"
-                data-tc="00:01:10:18"
-                data-dur="01:40"
-              >
-                <span class="bin-thumb" style="background-image:url('https://picsum.photos/seed/indivni_work_03/640/360');"></span>
-                <span class="bin-name mono">COURSE_EP03.mov</span>
-                <span class="bin-dur mono">01:40</span>
-              </button>
-
-              <button class="bin-item" type="button"
-                data-img="https://picsum.photos/seed/indivni_work_04/1280/720"
-                data-badge="POD"
-                data-title="Подкаст / Интервью"
-                data-file="PODCAST_SET_A_4CAM.mov"
-                data-tc="00:00:22:06"
-                data-dur="00:48"
-              >
-                <span class="bin-thumb" style="background-image:url('https://picsum.photos/seed/indivni_work_04/640/360');"></span>
-                <span class="bin-name mono">POD_4CAM.mov</span>
-                <span class="bin-dur mono">00:48</span>
-              </button>
-
-              <button class="bin-item" type="button"
-                data-img="https://picsum.photos/seed/indivni_work_05/1280/720"
-                data-badge="AD"
-                data-title="Реклама / Промо"
-                data-file="AD_PACK_15_30_60.mov"
-                data-tc="00:00:08:12"
-                data-dur="00:30"
-              >
-                <span class="bin-thumb" style="background-image:url('https://picsum.photos/seed/indivni_work_05/640/360');"></span>
-                <span class="bin-name mono">AD_PACK.mov</span>
-                <span class="bin-dur mono">00:30</span>
-              </button>
-
-              <button class="bin-item" type="button"
-                data-img="https://picsum.photos/seed/indivni_work_06/1280/720"
-                data-badge="AI/3D"
-                data-title="AI + 3D / Motion"
-                data-file="VFX_LAB_SHOTS_07.exr"
-                data-tc="00:00:17:04"
-                data-dur="00:22"
-              >
-                <span class="bin-thumb" style="background-image:url('https://picsum.photos/seed/indivni_work_06/640/360');"></span>
-                <span class="bin-name mono">VFX_LAB.exr</span>
-                <span class="bin-dur mono">00:22</span>
-              </button>
-            </div>
-
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- CONTACTS -->
-    <section id="contacts" class="section">
-      <div class="container reveal">
-        <h2>Контакты</h2>
-        <p class="muted">Добавим форму/мессенджеры/почту — и сделаем это тоже стилевым объектом.</p>
-      </div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="container">
-      <div>© <span id="year"></span> INDIVIDNI STUDIO</div>
-      <div class="muted">Made for GitHub Pages</div>
-    </div>
-  </footer>
+  <script src="js/main.js" defer></script>
 </body>
 </html>
