@@ -1,20 +1,17 @@
 /* ============================================================================================================================
-   SERIAL v5 — scroll as montage (no libraries)
-   - One sticky stage with layered episodes
-   - Controlled background motion (not chaotic)
-   - Ribbon transforms across episodes
-   - Showreel lazy-load + pause offstage + audio only on click
-   - Services sticker deck (hover on desktop, tap on mobile)
-   - Works timeline scrub (desktop) + media pool (mobile)
-   ============================================================================================================================ */
+  SERIAL v6 — TOON CREW / STREET MOTION
+  - Desktop: GSAP pinned scenes, cinematic transitions, controlled decor motion, characters react per scene
+  - Mobile: snap panels, own controls, lazy-load showreel
+  - Works: placeholder frames + timeline scrub (desktop) + media pool (mobile)
+  ============================================================================================================================ */
+
+/* global gsap, ScrollTrigger */
 
 (() => {
   const root = document.documentElement;
 
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-  const lerp = (a, b, t) => a + (b - a) * t;
-  const smoothstep = (t) => t * t * (3 - 2 * t);
-  const remap = (v, a, b) => clamp((v - a) / (b - a), 0, 1);
+  const lerp  = (a, b, t) => a + (b - a) * t;
 
   function formatTC(seconds, fps = 25) {
     const totalFrames = Math.floor(seconds * fps);
@@ -29,7 +26,7 @@
   }
 
   // ------------------------------------------------------------------------------------------------
-  // Cursor light vars
+  // Cursor light
   // ------------------------------------------------------------------------------------------------
   window.addEventListener('pointermove', (e) => {
     root.style.setProperty('--mx', `${e.clientX}px`);
@@ -37,269 +34,281 @@
   }, { passive: true });
 
   // ------------------------------------------------------------------------------------------------
-  // Serial elements
+  // Menu overlay
   // ------------------------------------------------------------------------------------------------
-  const serial = document.getElementById('serial');
+  const menu = document.getElementById('menu');
+  const menuBtn = document.getElementById('menuBtn');
+  const menuClose = document.getElementById('menuClose');
+
+  function openMenu() {
+    if (!menu) return;
+    menu.hidden = false;
+    requestAnimationFrame(() => menu.classList.add('isOpen'));
+  }
+  function closeMenu() {
+    if (!menu) return;
+    menu.classList.remove('isOpen');
+    setTimeout(() => { menu.hidden = true; }, 120);
+  }
+  if (menuBtn) menuBtn.addEventListener('click', openMenu);
+  if (menuClose) menuClose.addEventListener('click', closeMenu);
+  if (menu) menu.addEventListener('click', (e) => {
+    if (e.target === menu) closeMenu();
+  });
+
+  // Menu link jumps
+  document.querySelectorAll('[data-goto]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const key = btn.getAttribute('data-goto');
+      closeMenu();
+      gotoScene(key);
+    });
+  });
+
+  // ------------------------------------------------------------------------------------------------
+  // Detect mode
+  // ------------------------------------------------------------------------------------------------
+  const isMobile = matchMedia('(max-width: 980px)').matches;
+
+  // ------------------------------------------------------------------------------------------------
+  // Desktop: scenes + pin
+  // ------------------------------------------------------------------------------------------------
+  const topTC = document.getElementById('topTC');
+
+  const pin = document.getElementById('pin');
   const stage = document.getElementById('stage');
-  const layers = Array.from(document.querySelectorAll('.layer.ep'));
-  const hudTC = document.getElementById('hudTC');
-  const hudScene = document.getElementById('hudScene');
-  const hudLabel = document.getElementById('hudLabel');
-  const railDots = Array.from(document.querySelectorAll('.rail-dot'));
 
-  // Episode ranges (0..1 progress inside the serial scroll)
-  const EP = [
-    { key: 'EP0', label: 'COLD OPEN', a: 0.00, b: 0.22, accent: '--vio' },
-    { key: 'EP1', label: 'SHOWREEL',  a: 0.18, b: 0.42, accent: '--cyn' },
-    { key: 'EP2', label: 'SERVICES',  a: 0.38, b: 0.62, accent: '--amb' },
-    { key: 'EP3', label: 'WORKS',     a: 0.58, b: 0.86, accent: '--lim' },
-    { key: 'EP4', label: 'PRICE',     a: 0.82, b: 0.94, accent: '--vio' },
-    { key: 'EP5', label: 'CONTACT',   a: 0.90, b: 1.00, accent: '--cyn' },
-  ];
+  const scenes = {
+    intro: document.querySelector('.scene.s0'),
+    reel: document.querySelector('.scene.s1'),
+    services: document.querySelector('.scene.s2'),
+    works: document.querySelector('.scene.s3'),
+    price: document.querySelector('.scene.s4'),
+    contact: document.querySelector('.scene.s5')
+  };
 
-  // Ribbon keyframes along the serial
-  const KF = [
-    { p: 0.00, x: 58, y: 60, r: -14, s: 1.10 },
-    { p: 0.28, x: 50, y: 52, r:   0, s: 1.05 },
-    { p: 0.54, x: 40, y: 54, r:   8, s: 0.90 },
-    { p: 0.78, x: 56, y: 40, r:  -3, s: 0.80 },
-    { p: 1.00, x: 62, y: 48, r:  10, s: 0.62 },
-  ];
+  const sceneOrder = ['intro', 'reel', 'services', 'works', 'price', 'contact'];
 
-  function interpKF(p) {
-    p = clamp(p, 0, 1);
-    let i = 0;
-    for (; i < KF.length - 1; i++) {
-      if (p >= KF[i].p && p <= KF[i + 1].p) break;
-    }
-    const a = KF[i], b = KF[i + 1];
-    const t = remap(p, a.p, b.p);
-    const tt = smoothstep(t);
-    return {
-      x: lerp(a.x, b.x, tt),
-      y: lerp(a.y, b.y, tt),
-      r: lerp(a.r, b.r, tt),
-      s: lerp(a.s, b.s, tt),
-    };
-  }
+  let currentScene = 'intro';
 
-  function getSerialProgress() {
-    if (!serial) return 0;
-    const r = serial.getBoundingClientRect();
-    const scrollable = r.height - window.innerHeight;
-    if (scrollable <= 1) return 0;
-    const scrolled = -r.top;
-    return clamp(scrolled / scrollable, 0, 1);
-  }
-
-  // ------------------------------------------------------------------------------------------------
-  // Controlled floatfield motion (8 elements, not random)
-  // ------------------------------------------------------------------------------------------------
-  const FF = [
-    { k: 0, ax: 42, ay: -26, ar: 18 },
-    { k: 1, ax: -36, ay:  18, ar: -14 },
-    { k: 2, ax:  24, ay:  28, ar: 12 },
-    { k: 3, ax: -22, ay: -18, ar: -10 },
-    { k: 4, ax:  18, ay:  20, ar: 8 },
-    { k: 5, ax: -26, ay:  30, ar: -12 },
-    { k: 6, ax:  30, ay: -14, ar: 10 },
-    { k: 7, ax: -18, ay: -24, ar: -8 },
-  ];
-
-  function setFF(p) {
-    const t = p * Math.PI * 2;
-    FF.forEach((f) => {
-      const sx = Math.sin(t + f.k * 0.9);
-      const cy = Math.cos(t * 0.85 + f.k * 1.2);
-      const x = (sx * f.ax) + (p - 0.5) * (f.ax * 0.9);
-      const y = (cy * f.ay) + (0.5 - p) * (f.ay * 0.9);
-      const r = (sx * f.ar) + (p - 0.5) * (f.ar * 0.6);
-      root.style.setProperty(`--ff${f.k}x`, `${x.toFixed(2)}px`);
-      root.style.setProperty(`--ff${f.k}y`, `${y.toFixed(2)}px`);
-      root.style.setProperty(`--ff${f.k}r`, `${r.toFixed(2)}deg`);
+  function setActiveScene(key) {
+    currentScene = key;
+    sceneOrder.forEach((k) => {
+      const el = scenes[k];
+      if (!el) return;
+      el.classList.toggle('is-active', k === key);
     });
   }
 
-  // ------------------------------------------------------------------------------------------------
-  // Episodes visibility, HUD, accents, rail active dot
-  // ------------------------------------------------------------------------------------------------
-  function setEpisodes(p) {
-    layers.forEach((layer) => {
-      const ep = Number(layer.dataset.ep);
-      const seg = EP[ep];
-      if (!seg) return;
-
-      // Soft overlap around edges
-      const inT = remap(p, seg.a - 0.06, seg.b);
-      const outT = remap(p, seg.b - 0.06, seg.b + 0.06);
-      const vis = clamp(inT * (1 - outT), 0, 1);
-
-      const y = (1 - vis) * 14; // subtle drift
-      layer.style.opacity = String(vis);
-      layer.style.transform = `translateY(${y.toFixed(2)}px)`;
-      layer.style.pointerEvents = vis > 0.25 ? 'auto' : 'none';
-    });
-
-    // Current episode index
-    let current = 0;
-    for (let i = 0; i < EP.length; i++) {
-      if (p >= EP[i].a) current = i;
+  function gotoScene(key) {
+    // Desktop = scroll inside pin timeline. Mobile = snap panel scroll.
+    if (!key) return;
+    if (isMobile) {
+      const snap = document.getElementById('mSnap');
+      const target = snap?.querySelector(`.mPanel[data-m="${key}"]`);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
     }
-    const seg = EP[current];
 
-    // Accent
-    const accVar = getComputedStyle(root).getPropertyValue(seg.accent).trim();
-    if (accVar) root.style.setProperty('--accent', accVar);
-
-    // HUD
-    if (hudScene) hudScene.textContent = seg.key;
-    if (hudLabel) hudLabel.textContent = seg.label;
-
-    // Rail
-    railDots.forEach((d, i) => d.classList.toggle('is-active', i === current));
-    root.style.setProperty('--railP', String(p));
+    if (!pin) return;
+    const idx = Math.max(0, sceneOrder.indexOf(key));
+    const pinTop = pin.getBoundingClientRect().top + window.scrollY;
+    const pinHeight = pin.offsetHeight;
+    const progress = idx / (sceneOrder.length - 1);
+    const y = pinTop + progress * (pinHeight - window.innerHeight);
+    window.scrollTo({ top: y, behavior: 'smooth' });
   }
 
   // ------------------------------------------------------------------------------------------------
-  // Showreel
+  // Showreel (desktop + mobile)
   // ------------------------------------------------------------------------------------------------
-  const frameImg  = document.getElementById('frameImg');
-  const frameTC   = document.getElementById('frameTC');
-  const frameMode = document.getElementById('frameMode');
-  const frameTag  = document.getElementById('frameTag');
-  const frameNote = document.getElementById('frameNote');
+  const showreel = document.getElementById('showreel');
+  const reelPlay = document.getElementById('reelPlay');
+  const reelSound = document.getElementById('reelSound');
+  const reelTC = document.getElementById('reelTC');
+  const viewerTC = document.getElementById('viewerTC');
 
-  const video    = document.getElementById('reelVideo');
-  const btnPlay  = document.getElementById('btnPlay');
-  const btnSound = document.getElementById('btnSound');
-  const reelMode = document.getElementById('reelMode');
+  let reelAudio = false;
+  let reelLoaded = false;
 
-  let audioEnabled = false;
-  let srcLoaded = false;
-
-  function loadVideoSources() {
-    if (!video || srcLoaded) return;
-    const sources = Array.from(video.querySelectorAll('source[data-src]'));
+  function loadVideo(v) {
+    if (!v) return;
+    const sources = Array.from(v.querySelectorAll('source[data-src]'));
+    if (!sources.length) return;
     sources.forEach((s) => { s.src = s.dataset.src; s.removeAttribute('data-src'); });
-    video.load();
-    srcLoaded = true;
+    v.load();
   }
 
-  function setAudio(on) {
-    audioEnabled = !!on;
-    if (!video) return;
-    video.muted = !audioEnabled;
-    if (btnSound) btnSound.textContent = audioEnabled ? 'Sound: ON' : 'Sound: OFF';
-    if (reelMode && !video.paused) reelMode.textContent = audioEnabled ? 'playing (audio)' : 'playing';
+  function ensureReelLoaded() {
+    if (!showreel || reelLoaded) return;
+    loadVideo(showreel);
+    reelLoaded = true;
   }
 
-  function updateVideoMode() {
-    if (!video || !reelMode) return;
-    if (video.paused) reelMode.textContent = 'paused';
-    else reelMode.textContent = audioEnabled ? 'playing (audio)' : 'playing';
+  function setReelAudio(on) {
+    reelAudio = !!on;
+    if (!showreel) return;
+    showreel.muted = !reelAudio;
+    if (reelSound) reelSound.textContent = reelAudio ? 'Sound: ON' : 'Sound: OFF';
   }
 
-  if (btnPlay && video) {
-    btnPlay.addEventListener('click', async () => {
-      loadVideoSources();
+  function updateReelTC() {
+    if (!showreel) return;
+    const tc = formatTC(showreel.currentTime || 0);
+    if (reelTC) reelTC.textContent = tc;
+    if (viewerTC) viewerTC.textContent = tc;
+  }
+
+  if (showreel) {
+    showreel.addEventListener('timeupdate', updateReelTC);
+  }
+  if (reelPlay && showreel) {
+    reelPlay.addEventListener('click', async () => {
+      ensureReelLoaded();
       try {
-        if (video.paused) await video.play();
-        else video.pause();
+        if (showreel.paused) await showreel.play();
+        else showreel.pause();
       } catch (_) {}
-      updateVideoMode();
     });
   }
-
-  if (btnSound && video) {
-    btnSound.addEventListener('click', async () => {
-      loadVideoSources();
-      setAudio(!audioEnabled);
-      if (audioEnabled && video.paused) {
-        try { await video.play(); } catch (_) {}
+  if (reelSound && showreel) {
+    reelSound.addEventListener('click', async () => {
+      ensureReelLoaded();
+      setReelAudio(!reelAudio);
+      if (reelAudio && showreel.paused) {
+        try { await showreel.play(); } catch (_) {}
       }
-      updateVideoMode();
+    });
+  }
+  setReelAudio(false);
+
+  // Mobile showreel
+  const mShowreel = document.getElementById('mShowreel');
+  const mPlay = document.getElementById('mPlay');
+  const mSound = document.getElementById('mSound');
+  let mAudio = false, mLoaded = false;
+
+  function ensureMReelLoaded() {
+    if (!mShowreel || mLoaded) return;
+    loadVideo(mShowreel);
+    mLoaded = true;
+  }
+
+  function setMAudio(on) {
+    mAudio = !!on;
+    if (!mShowreel) return;
+    mShowreel.muted = !mAudio;
+    if (mSound) mSound.textContent = mAudio ? 'Sound: ON' : 'Sound: OFF';
+  }
+
+  if (mPlay && mShowreel) {
+    mPlay.addEventListener('click', async () => {
+      ensureMReelLoaded();
+      try {
+        if (mShowreel.paused) await mShowreel.play();
+        else mShowreel.pause();
+      } catch (_) {}
     });
   }
 
-  setAudio(false);
+  if (mSound && mShowreel) {
+    mSound.addEventListener('click', async () => {
+      ensureMReelLoaded();
+      setMAudio(!mAudio);
+      if (mAudio && mShowreel.paused) {
+        try { await mShowreel.play(); } catch (_) {}
+      }
+    });
+  }
+  setMAudio(false);
 
-  function setReelActive(isActive) {
-    if (stage) stage.classList.toggle('is-reel', isActive);
-    if (!video) return;
-
-    if (!isActive) {
-      try { video.pause(); } catch (_) {}
-      updateVideoMode();
-    } else {
-      loadVideoSources();
-      if (reelMode && video.paused) reelMode.textContent = 'armed';
+  // Pause reel when leaving reel scene (desktop)
+  function pauseReelIfNeeded() {
+    if (!showreel) return;
+    if (currentScene !== 'reel') {
+      try { showreel.pause(); } catch (_) {}
     }
   }
 
   // ------------------------------------------------------------------------------------------------
-  // Services — sticker deck
+  // Services (desktop wall + mobile carousel)
   // ------------------------------------------------------------------------------------------------
-  const svcDeck = document.getElementById('svcDeck');
-  const svcName = document.getElementById('svcName');
+  const svcWall = document.getElementById('svcWall');
+  const svcTitle = document.getElementById('svcTitle');
   const svcDesc = document.getElementById('svcDesc');
-  const canHover = window.matchMedia('(hover: hover)').matches;
 
   const services = [
     { k:'Продюсирование', d:'Идея → команда → контроль → мастер.' },
-    { k:'Мероприятия',    d:'Репортаж / backstage / хайлайты 24–72h.' },
-    { k:'Трансляции',     d:'Multicam эфир + графика + backup.' },
-    { k:'Курсы',          d:'Сезоны, структура, единый стиль.' },
-    { k:'Подкасты',       d:'Чистый звук + 2–4 камеры + shorts.' },
-    { k:'Клипы',          d:'Свет, стиль, монтаж в бит, цвет.' },
-    { k:'Реклама',        d:'Сценарий, сториборд, masters 16:9 + 9:16.' },
-    { k:'Пост-прод',      d:'Монтаж, цвет, звук, субтитры.' },
-    { k:'AI + 3D',        d:'Motion, HUD, VFX-штрихи, апскейл.' },
+    { k:'Съёмка мероприятий', d:'Репортаж, backstage, хайлайты 24–72h.' },
+    { k:'Трансляции', d:'Multicam эфир + графика + backup.' },
+    { k:'Курсы', d:'Сезоны, структура, единый стиль.' },
+    { k:'Подкасты / интервью', d:'Чистый звук + 2–4 камеры + shorts.' },
+    { k:'Клипы', d:'Свет, стиль, монтаж в бит, цвет.' },
+    { k:'Реклама', d:'Сценарий, сториборд, мастера 16:9 + 9:16.' },
+    { k:'Пост-прод', d:'Монтаж, цвет, звук, субтитры.' },
+    { k:'AI + 3D', d:'Motion, VFX-штрихи, апскейл.' },
   ];
 
-  function setSvc(i) {
+  function setService(i) {
     const s = services[i];
     if (!s) return;
-    if (svcName) svcName.textContent = s.k;
+    if (svcTitle) svcTitle.textContent = s.k;
     if (svcDesc) svcDesc.textContent = s.d;
 
-    const items = Array.from(document.querySelectorAll('.svc-sticker'));
-    items.forEach((el) => el.classList.toggle('is-active', Number(el.dataset.idx) === i));
+    document.querySelectorAll('.svcSticker').forEach((el) => {
+      el.classList.toggle('isActive', Number(el.dataset.idx) === i);
+    });
   }
 
-  if (svcDeck) {
-    svcDeck.innerHTML = '';
+  if (svcWall) {
+    svcWall.innerHTML = '';
     services.forEach((s, i) => {
       const b = document.createElement('button');
       b.type = 'button';
-      b.className = 'svc-sticker';
+      b.className = 'svcSticker';
       b.dataset.idx = String(i);
       b.innerHTML = `<div class="sk">${s.k}</div><div class="sd">${s.d}</div>`;
-
-      if (canHover) {
-        b.addEventListener('mouseenter', () => setSvc(i));
-        b.addEventListener('focus', () => setSvc(i));
-      }
-      b.addEventListener('click', () => setSvc(i));
-
-      svcDeck.appendChild(b);
+      b.addEventListener('mouseenter', () => setService(i));
+      b.addEventListener('focus', () => setService(i));
+      b.addEventListener('click', () => setService(i));
+      svcWall.appendChild(b);
     });
-    setSvc(0);
+    setService(0);
+  }
+
+  // Mobile services carousel
+  const mSvc = document.getElementById('mSvc');
+  if (mSvc) {
+    mSvc.innerHTML = '';
+    services.forEach((s) => {
+      const card = document.createElement('div');
+      card.className = 'mCard';
+      card.innerHTML = `<div class="mk">MODULE</div><div class="mt">${s.k}</div><div class="md">${s.d}</div>`;
+      mSvc.appendChild(card);
+    });
   }
 
   // ------------------------------------------------------------------------------------------------
-  // Works — placeholders + timeline + media pool
+  // Works placeholders + timeline (desktop) + mobile pool
   // ------------------------------------------------------------------------------------------------
+  const workImg = document.getElementById('workImg');
+  const workName = document.getElementById('workName');
+  const workTime = document.getElementById('workTime');
+
   const ruler = document.getElementById('ruler');
   const tracksEl = document.getElementById('tracks');
   const playhead = document.getElementById('playhead');
   const binGrid = document.getElementById('binGrid');
+
+  const mWorkImg = document.getElementById('mWorkImg');
+  const mWorkGrid = document.getElementById('mWorkGrid');
 
   function makePlaceholder(label, hue = 210) {
     const svg = `
       <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720">
         <defs>
           <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
-            <stop offset="0" stop-color="hsl(${hue} 80% 55%)" stop-opacity="0.22"/>
+            <stop offset="0" stop-color="hsl(${hue} 80% 55%)" stop-opacity="0.24"/>
             <stop offset="1" stop-color="hsl(${(hue+50)%360} 80% 55%)" stop-opacity="0.14"/>
           </linearGradient>
           <filter id="n">
@@ -317,32 +326,33 @@
         <g fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="2">
           <rect x="70" y="70" width="1140" height="580" rx="26"/>
         </g>
-        <text x="90" y="140" fill="rgba(255,255,255,0.86)" font-family="ui-monospace, monospace" font-size="34" letter-spacing="6">${label}</text>
+        <text x="90" y="140" fill="rgba(255,255,255,0.90)" font-family="ui-monospace, monospace" font-size="34" letter-spacing="6">${label}</text>
         <text x="90" y="186" fill="rgba(255,255,255,0.52)" font-family="ui-monospace, monospace" font-size="18" letter-spacing="3">REPLACE WITH YOUR 16:9 SCREENSHOT</text>
       </svg>`;
     return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
   }
 
   const shots = [
-    { name: 'EVENT_01',   len: 6.4, img: makePlaceholder('EVENT_01', 195) },
-    { name: 'LIVE_02',    len: 5.2, img: makePlaceholder('LIVE_02', 165) },
-    { name: 'COURSE_03',  len: 7.1, img: makePlaceholder('COURSE_03', 245) },
-    { name: 'PODCAST_04', len: 4.8, img: makePlaceholder('PODCAST_04', 285) },
-    { name: 'AD_05',      len: 6.0, img: makePlaceholder('AD_05', 35) },
-    { name: 'MV_06',      len: 8.0, img: makePlaceholder('MV_06', 310) },
+    { name:'EVENT_01',   len:6.4, img: makePlaceholder('EVENT_01', 195) },
+    { name:'LIVE_02',    len:5.2, img: makePlaceholder('LIVE_02', 165) },
+    { name:'COURSE_03',  len:7.1, img: makePlaceholder('COURSE_03', 245) },
+    { name:'PODCAST_04', len:4.8, img: makePlaceholder('PODCAST_04', 285) },
+    { name:'AD_05',      len:6.0, img: makePlaceholder('AD_05', 35)  },
+    { name:'MV_06',      len:8.0, img: makePlaceholder('MV_06', 310) },
   ];
-
   const totalLen = shots.reduce((a, s) => a + s.len, 0);
-  let playheadT = 0;
+  let playT = 0;
 
-  function setFrameByT(t) {
+  function setWorkByT(t) {
     t = clamp(t, 0, 1);
-    playheadT = t;
+    playT = t;
 
     const seconds = t * totalLen;
-    if (frameTC) frameTC.textContent = formatTC(seconds);
+    const tc = formatTC(seconds);
 
-    // choose shot based on time
+    if (workTime) workTime.textContent = tc;
+    if (playhead) playhead.style.left = `${(t * 100).toFixed(3)}%`;
+
     let acc = 0;
     let pick = shots[0];
     for (const s of shots) {
@@ -350,9 +360,10 @@
       acc += s.len;
     }
 
-    if (frameImg && frameImg.src !== pick.img) frameImg.src = pick.img;
-    if (frameTag) frameTag.textContent = pick.name;
-    if (playhead) playhead.style.left = `${(t * 100).toFixed(3)}%`;
+    if (workImg) workImg.src = pick.img;
+    if (workName) workName.textContent = pick.name;
+
+    if (mWorkImg) mWorkImg.src = pick.img;
   }
 
   function buildRuler() {
@@ -377,8 +388,8 @@
       const track = document.createElement('div');
       track.className = 'track';
       track.style.top = `${topIndex * 44}px`;
-      track.innerHTML = `<span class="track-label">${label}</span><div class="cliprow"></div>`;
-      const row = track.querySelector('.cliprow');
+      track.innerHTML = `<span class="trackLabel">${label}</span><div class="clipRow"></div>`;
+      const row = track.querySelector('.clipRow');
 
       let x = 0;
       clips.forEach((c) => {
@@ -388,12 +399,11 @@
         clip.className = `clip ${c.dim ? 'dim' : ''}`;
         clip.style.left = `${x}%`;
         clip.style.width = `${w}%`;
-
-        clip.innerHTML = `<span class="clip-name">${c.name}</span><span class="clip-len">${c.len.toFixed(1)}s</span>`;
-        clip.addEventListener('click', () => setFrameByT(c.start / totalLen));
+        clip.innerHTML = `<span class="clipName">${c.name}</span><span class="clipLen">${c.len.toFixed(1)}s</span>`;
+        clip.addEventListener('click', () => setWorkByT(c.start / totalLen));
 
         row.appendChild(clip);
-        x += w + 1.2; // tiny gap
+        x += w + 1.2;
       });
 
       tracksEl.appendChild(track);
@@ -401,7 +411,7 @@
 
     let start = 0;
     const primary = shots.map((s) => {
-      const o = { ...s, start, dim: false };
+      const o = { ...s, start, dim:false };
       start += s.len;
       return o;
     });
@@ -415,17 +425,18 @@
     }));
     mkTrack('V2', broll, 1);
 
+    // audio layer
     const a = document.createElement('div');
     a.className = 'track';
     a.style.top = `${2 * 44}px`;
-    a.innerHTML = `<span class="track-label">A1</span><div class="cliprow"></div>`;
-    const row = a.querySelector('.cliprow');
+    a.innerHTML = `<span class="trackLabel">A1</span><div class="clipRow"></div>`;
+    const row = a.querySelector('.clipRow');
 
     const audio = document.createElement('div');
     audio.className = 'clip dim';
     audio.style.left = '0%';
     audio.style.width = '98%';
-    audio.innerHTML = `<span class="clip-name">MIXDOWN</span><span class="clip-len">${totalLen.toFixed(1)}s</span>`;
+    audio.innerHTML = `<span class="clipName">MIXDOWN</span><span class="clipLen">${totalLen.toFixed(1)}s</span>`;
     row.appendChild(audio);
 
     tracksEl.appendChild(a);
@@ -440,25 +451,35 @@
       t.innerHTML = `<img alt="${s.name}" src="${s.img}"><div class="bin-cap">${s.name}</div>`;
       t.addEventListener('click', () => {
         const start = shots.slice(0, i).reduce((a, x) => a + x.len, 0);
-        setFrameByT(start / totalLen);
+        setWorkByT(start / totalLen);
       });
       binGrid.appendChild(t);
     });
   }
 
-  // initial placeholder
-  if (frameImg && !frameImg.src) {
-    frameImg.src = shots[0].img;
-    if (frameTag) frameTag.textContent = shots[0].name;
-    if (frameNote) frameNote.textContent = 'replace with your 16:9 screenshot';
+  function buildMobileWorks() {
+    if (!mWorkGrid) return;
+    mWorkGrid.innerHTML = '';
+    shots.forEach((s, i) => {
+      const t = document.createElement('div');
+      t.className = 'mThumb';
+      t.innerHTML = `<img alt="${s.name}" src="${s.img}"><div class="cap">${s.name}</div>`;
+      t.addEventListener('click', () => {
+        const start = shots.slice(0, i).reduce((a, x) => a + x.len, 0);
+        setWorkByT(start / totalLen);
+      });
+      mWorkGrid.appendChild(t);
+    });
+    if (mWorkImg) mWorkImg.src = shots[0].img;
   }
 
   buildRuler();
   buildTracks();
   buildBin();
-  setFrameByT(0.18);
+  buildMobileWorks();
+  setWorkByT(0.12);
 
-  // timeline interactions (desktop)
+  // timeline interactions
   if (tracksEl && playhead) {
     let dragging = false;
 
@@ -469,15 +490,15 @@
 
     tracksEl.addEventListener('pointerdown', (e) => {
       const tl = document.getElementById('timeline');
-      if (tl && getComputedStyle(tl).display === 'none') return; // mobile
+      if (tl && getComputedStyle(tl).display === 'none') return; // mobile hidden
       dragging = true;
       tracksEl.setPointerCapture?.(e.pointerId);
-      setFrameByT(pxToT(e.clientX));
+      setWorkByT(pxToT(e.clientX));
     });
 
     tracksEl.addEventListener('pointermove', (e) => {
       if (!dragging) return;
-      setFrameByT(pxToT(e.clientX));
+      setWorkByT(pxToT(e.clientX));
     });
 
     window.addEventListener('pointerup', () => { dragging = false; }, { passive:true });
@@ -485,117 +506,131 @@
     tracksEl.addEventListener('wheel', (e) => {
       e.preventDefault();
       const delta = (e.deltaY || e.deltaX) * 0.00035;
-      setFrameByT(playheadT + delta);
+      setWorkByT(playT + delta);
     }, { passive:false });
   }
 
   // ------------------------------------------------------------------------------------------------
-  // Navigation (rail + buttons)
+  // Mobile navigation helpers (buttons in index)
   // ------------------------------------------------------------------------------------------------
-  const chapterToP = [0.02, 0.28, 0.50, 0.72, 0.90, 0.98];
+  document.querySelectorAll('[data-mgoto]').forEach((b) => {
+    b.addEventListener('click', () => {
+      const key = b.getAttribute('data-mgoto');
+      const snap = document.getElementById('mSnap');
+      const target = snap?.querySelector(`.mPanel[data-m="${key}"]`);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
 
-  function scrollToSerialP(p) {
-    if (!serial) return;
-    const rect = serial.getBoundingClientRect();
-    const top = window.scrollY + rect.top;
-    const maxScroll = rect.height - window.innerHeight;
-    const y = top + maxScroll * clamp(p, 0, 1);
-    window.scrollTo({ top: y, behavior: 'smooth' });
+  // ------------------------------------------------------------------------------------------------
+  // Desktop GSAP scroll serial (pinned)
+  // ------------------------------------------------------------------------------------------------
+  function sceneIndexFromProgress(p) {
+    const idx = Math.round(p * (sceneOrder.length - 1));
+    return clamp(idx, 0, sceneOrder.length - 1);
   }
 
-  railDots.forEach((d) => {
-    d.addEventListener('click', () => {
-      const ch = Number(d.dataset.ch || '0');
-      scrollToSerialP(chapterToP[ch] ?? 0);
-    });
-  });
+  function applySceneVisual(idx, progress) {
+    // Change background vibe + characters pose + decor intensity (controlled)
+    // idx: 0..5
+    const accents = ['--a2','--a1','--a3','--a4','--a5','--a2'];
+    const acc = getComputedStyle(root).getPropertyValue(accents[idx]).trim();
+    if (acc) root.style.setProperty('--accent', acc);
 
-  document.querySelectorAll('[data-ch]').forEach((el) => {
-    el.addEventListener('click', () => {
-      const ch = Number(el.getAttribute('data-ch'));
-      scrollToSerialP(chapterToP[ch] ?? 0);
-    });
-  });
+    // timecode
+    if (topTC) topTC.textContent = formatTC(progress * 120);
 
-  document.querySelectorAll('[data-scrollto]').forEach((el) => {
-    el.addEventListener('click', () => {
-      const sel = el.getAttribute('data-scrollto');
-      const target = document.querySelector(sel);
-      if (!target) return;
-      const y = window.scrollY + target.getBoundingClientRect().top - 12;
-      window.scrollTo({ top: y, behavior: 'smooth' });
-    });
-  });
+    // activate scene blocks
+    const key = sceneOrder[idx];
+    setActiveScene(key);
 
-  // ------------------------------------------------------------------------------------------------
-  // Render loop
-  // ------------------------------------------------------------------------------------------------
-  let raf = 0;
+    // pause reel if leaving
+    pauseReelIfNeeded();
 
-  function render() {
-    raf = 0;
+    // character “directing” — simple transforms
+    const crew = document.getElementById('crew');
+    if (crew) {
+      const cam = crew.querySelector('.guy.cam');
+      const mic = crew.querySelector('.guy.mic');
+      const clap = crew.querySelector('.guy.clap');
 
-    const p = getSerialProgress();
-    root.style.setProperty('--serialP', String(p));
-    root.style.setProperty('--railP', String(p));
+      // base wiggle based on progress (not chaotic)
+      const wob = Math.sin(progress * Math.PI * 2) * 6;
 
-    // timecode across serial (~100 sec)
-    if (hudTC) hudTC.textContent = formatTC(p * 100);
+      if (cam) cam.style.transform = `translate(-50%,-50%) rotate(${(-8 + wob*0.4)}deg)`;
+      if (mic) mic.style.transform = `translate(-50%,-50%) rotate(${(2 - wob*0.3)}deg)`;
+      if (clap) clap.style.transform = `translate(-50%,-50%) rotate(${(8 + wob*0.2)}deg)`;
 
-    // ribbon interpolation
-    const k = interpKF(p);
-    root.style.setProperty('--rbx', `${k.x.toFixed(2)}vw`);
-    root.style.setProperty('--rby', `${k.y.toFixed(2)}vh`);
-    root.style.setProperty('--rrot', `${k.r.toFixed(2)}deg`);
-    root.style.setProperty('--rsc', `${k.s.toFixed(3)}`);
+      // positions by scene (bigger moves)
+      const pos = [
+        { cam:[22,66], mic:[52,78], clap:[80,62] }, // intro
+        { cam:[18,72], mic:[44,84], clap:[78,70] }, // reel
+        { cam:[24,76], mic:[54,80], clap:[82,58] }, // services
+        { cam:[16,62], mic:[50,74], clap:[84,66] }, // works
+        { cam:[22,72], mic:[58,80], clap:[86,60] }, // price
+        { cam:[18,78], mic:[52,82], clap:[84,72] }, // contact
+      ][idx];
 
-    // episode visibility + accents
-    setEpisodes(p);
-
-    // reel active segment
-    const isReel = (p >= 0.18 && p <= 0.42);
-    setReelActive(isReel);
-
-    // frame mode label
-    if (frameMode) {
-      frameMode.textContent = isReel ? 'SHOWREEL' : (p >= 0.58 ? 'WORKS' : 'STANDBY');
+      if (cam) { cam.style.left = pos.cam[0] + '%'; cam.style.top = pos.cam[1] + '%'; }
+      if (mic) { mic.style.left = pos.mic[0] + '%'; mic.style.top = pos.mic[1] + '%'; }
+      if (clap){ clap.style.left= pos.clap[0]+ '%'; clap.style.top= pos.clap[1]+ '%'; }
     }
 
-    // background controlled drift
-    setFF(p);
-
-    // if video is playing, sync TC
-    if (isReel && video && !video.paused) {
-      if (frameTC) frameTC.textContent = formatTC(video.currentTime || 0);
-    }
+    // decor spray subtle breathing
+    document.querySelectorAll('.spr').forEach((s, i) => {
+      const amp = 10 + i * 2;
+      const x = Math.sin(progress * 6 + i) * amp;
+      const y = Math.cos(progress * 5 + i * 1.3) * (amp * 0.7);
+      s.style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(2)}px)`;
+    });
   }
 
-  function requestRender() {
-    if (raf) return;
-    raf = requestAnimationFrame(render);
-  }
+  if (!isMobile && window.gsap && window.ScrollTrigger && pin && stage) {
+    gsap.registerPlugin(ScrollTrigger);
 
-  window.addEventListener('scroll', requestRender, { passive: true });
-  window.addEventListener('resize', requestRender, { passive: true });
+    // Init
+    setActiveScene('intro');
 
-  if (video) {
-    video.addEventListener('timeupdate', () => {
-      if (stage && stage.classList.contains('is-reel')) {
-        if (frameTC) frameTC.textContent = formatTC(video.currentTime || 0);
+    // Pin timeline
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: pin,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1,
+        onUpdate: (self) => {
+          const p = self.progress;
+          const idx = sceneIndexFromProgress(p);
+          applySceneVisual(idx, p);
+
+          // Lazy load reel when approaching reel scene
+          if (p > 0.12 && !reelLoaded) ensureReelLoaded();
+        }
       }
     });
-    video.addEventListener('play', updateVideoMode);
-    video.addEventListener('pause', updateVideoMode);
+
+    // Make scenes crossfade/slide (simple but cinematic, more comes from decor & characters)
+    sceneOrder.forEach((key, i) => {
+      const sc = scenes[key];
+      if (!sc) return;
+
+      const a = i / (sceneOrder.length - 1);
+      const b = (i + 1) / (sceneOrder.length - 1);
+
+      tl.fromTo(sc, { opacity: i === 0 ? 1 : 0, y: i === 0 ? 0 : 20 }, {
+        opacity: 1,
+        y: 0,
+        duration: 0.12
+      }, a);
+
+      if (i < sceneOrder.length - 1) {
+        tl.to(sc, { opacity: 0, y: -16, duration: 0.12 }, b - 0.06);
+      }
+    });
+
+  } else {
+    // Mobile: pause desktop reel if exists
+    pauseReelIfNeeded();
   }
 
-  // sheet TC mirrors HUD TC
-  const sheetTC = document.getElementById('sheetTC');
-  if (sheetTC) {
-    const sync = () => { sheetTC.textContent = hudTC ? hudTC.textContent : formatTC(0); };
-    window.addEventListener('scroll', sync, { passive: true });
-    sync();
-  }
-
-  // first render
-  render();
 })();
