@@ -8,328 +8,366 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 
-<body class="theme-night">
-  <!-- cursor light (desktop): driven by CSS vars -->
-  <div class="cursor-light" aria-hidden="true"></div>
+<body class="v6">
+  <!-- Cursor light (desktop only, controlled by CSS vars) -->
+  <div class="cursorLight" aria-hidden="true"></div>
 
-  <!-- subtle texture layers -->
-  <div class="texture grain" aria-hidden="true"></div>
-  <div class="texture scan" aria-hidden="true"></div>
+  <!-- Texture -->
+  <div class="fx fx-grain" aria-hidden="true"></div>
+  <div class="fx fx-halftone" aria-hidden="true"></div>
 
-  <!-- minimal corners (no classic header) -->
-  <div class="corners" aria-hidden="true">
-    <div class="corner tl">
-      <span class="c-tag">REC</span><span class="c-dot"></span><span class="c-text">INDIVIDNI STUDIO</span>
+  <!-- Minimal top controls (NOT a classic header) -->
+  <div class="topUI" aria-hidden="false">
+    <button class="menuBtn" id="menuBtn" type="button" aria-label="Открыть меню">MENU</button>
+    <div class="topMeta">
+      <span class="recDot" aria-hidden="true"></span>
+      <span class="topLabel">INDIVIDNI / VIDEO PRODUCTION</span>
+      <span class="topSep" aria-hidden="true"></span>
+      <span class="topTC" id="topTC">00:00:00:00</span>
     </div>
-    <div class="corner tr">
-      <span class="c-text">VIDEO OPS</span><span class="c-sep"></span><span class="c-text" id="hudTC">00:00:00:00</span>
-    </div>
-    <div class="corner bl">
-      <span class="c-text" id="hudScene">EP0</span><span class="c-sep"></span><span class="c-text" id="hudLabel">COLD OPEN</span>
-    </div>
-    <div class="corner br">
-      <button class="cta-stamp" type="button" data-scrollto="#contact">Запросить смету</button>
+    <button class="ctaBtn" type="button" data-goto="contact">Запросить смету</button>
+  </div>
+
+  <!-- Menu overlay -->
+  <div class="menu" id="menu" hidden>
+    <div class="menuPanel">
+      <div class="menuHead">
+        <div class="menuTitle">Навигация</div>
+        <button class="menuClose" id="menuClose" type="button" aria-label="Закрыть меню">✕</button>
+      </div>
+
+      <div class="menuGrid">
+        <button class="menuLink" type="button" data-goto="intro">Интро</button>
+        <button class="menuLink" type="button" data-goto="reel">Шоурил</button>
+        <button class="menuLink" type="button" data-goto="services">Услуги</button>
+        <button class="menuLink" type="button" data-goto="works">Работы</button>
+        <button class="menuLink" type="button" data-goto="price">Стоимость</button>
+        <button class="menuLink hot" type="button" data-goto="contact">Контакт</button>
+      </div>
+
+      <div class="menuFoot">
+        <div class="menuNote">
+          Скролл — это сериал. В каждой сцене своя механика.
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- chapter rail -->
-  <nav class="rail" aria-label="Сцены">
-    <button class="rail-dot is-active" type="button" data-ch="0"><span>Intro</span></button>
-    <button class="rail-dot" type="button" data-ch="1"><span>Reel</span></button>
-    <button class="rail-dot" type="button" data-ch="2"><span>Services</span></button>
-    <button class="rail-dot" type="button" data-ch="3"><span>Works</span></button>
-    <button class="rail-dot" type="button" data-ch="4"><span>Price</span></button>
-    <button class="rail-dot" type="button" data-ch="5"><span>Contact</span></button>
-    <div class="rail-progress" aria-hidden="true"><i></i></div>
-  </nav>
+  <!-- Desktop experience (pinned) -->
+  <main class="desk">
+    <section class="pin" id="pin">
+      <div class="stage" id="stage" aria-label="Интерактивный сериал">
 
-  <main>
-    <!-- SERIAL: one sticky stage, scroll = montage -->
-    <section class="serial" id="serial">
-      <div class="serial-spacer" aria-hidden="true"></div>
+        <!-- Background color plate -->
+        <div class="bgPlate" aria-hidden="true"></div>
 
-      <div class="stage" id="stage">
-        <!-- controlled background frames (not chaotic) -->
-        <div class="floatfield" aria-hidden="true">
-          <div class="ff" data-ff="0"></div>
-          <div class="ff" data-ff="1"></div>
-          <div class="ff" data-ff="2"></div>
-          <div class="ff" data-ff="3"></div>
-          <div class="ff" data-ff="4"></div>
-          <div class="ff" data-ff="5"></div>
-          <div class="ff" data-ff="6"></div>
-          <div class="ff" data-ff="7"></div>
+        <!-- Floating stickers (controlled, not chaotic) -->
+        <div class="spray" aria-hidden="true">
+          <span class="spr s1"></span><span class="spr s2"></span><span class="spr s3"></span>
+          <span class="spr s4"></span><span class="spr s5"></span><span class="spr s6"></span>
         </div>
 
-        <!-- RIBBON: the main character (holds video/image) -->
-        <div class="ribbon" id="ribbon" aria-label="Лента кадров">
-          <div class="ribbon-shadow" aria-hidden="true"></div>
+        <!-- TOON CREW (characters) -->
+        <div class="crew" aria-hidden="true" id="crew">
+          <div class="guy cam">
+            <div class="gBody"></div>
+            <div class="gFace"></div>
+            <div class="gLegs"><i></i><i></i></div>
+          </div>
+          <div class="guy mic">
+            <div class="gBody"></div>
+            <div class="gFace"></div>
+            <div class="gLegs"><i></i><i></i></div>
+          </div>
+          <div class="guy clap">
+            <div class="gBody"></div>
+            <div class="gFace"></div>
+            <div class="gLegs"><i></i><i></i></div>
+          </div>
+        </div>
 
-          <div class="frame">
-            <!-- showreel video (only used in EP1) -->
-            <video id="reelVideo" class="frame-video"
-                   playsinline preload="none" muted
-                   data-ready="0">
-              <source data-src="assets/showreel.mp4" type="video/mp4" />
-            </video>
+        <!-- SCENE 0: INTRO -->
+        <section class="scene s0 is-active" data-scene="intro" aria-label="Интро">
+          <div class="bigType">
+            <div class="btLine">СНИМАЕМ</div>
+            <div class="btLine outline">ЖИВО</div>
+            <div class="btLine">МОНТИРУЕМ</div>
+            <div class="btLine outline">ВКУСНО</div>
+          </div>
 
-            <!-- image layer (works previews, placeholders) -->
-            <img id="frameImg" class="frame-img" alt="Preview" />
+          <div class="subType">
+            Видеопродакшн без пафоса: мероприятия · курсы · репортаж · подкасты · клипы · реклама · монтаж · AI · 3D
+          </div>
 
-            <div class="frame-ui" aria-hidden="true">
-              <div class="f-top">
-                <span class="f-chip" id="frameMode">STANDBY</span>
-                <span class="f-tc" id="frameTC">00:00:00:00</span>
+          <div class="introTags" aria-hidden="true">
+            <span class="tag">STREET</span>
+            <span class="tag">RHYTHM</span>
+            <span class="tag">CLEAN SOUND</span>
+            <span class="tag">FAST DELIVERY</span>
+          </div>
+
+          <div class="introBtns">
+            <button class="btnTape" type="button" data-goto="reel">Смотреть шоурил</button>
+            <button class="btnTape ghost" type="button" data-goto="works">Открыть работы</button>
+          </div>
+        </section>
+
+        <!-- SCENE 1: SHOWREEL -->
+        <section class="scene s1" data-scene="reel" aria-label="Шоурил">
+          <div class="leftCopy">
+            <div class="cap">SCENE 01</div>
+            <div class="h2">Шоурил.<br/>Нажми play.</div>
+            <div class="p">
+              Звук включается только по клику. Уходишь дальше — видео ставится на паузу.
+            </div>
+
+            <div class="reelBtns">
+              <button class="btnTape" type="button" id="reelPlay">Play</button>
+              <button class="btnTape ghost" type="button" id="reelSound">Sound: OFF</button>
+              <span class="miniTC" id="reelTC">00:00:00:00</span>
+            </div>
+          </div>
+
+          <div class="viewer">
+            <div class="viewerBar">
+              <span class="vbDot"></span><span class="vbDot"></span><span class="vbDot"></span>
+              <span class="vbTitle">PROGRAM</span>
+              <span class="vbTC" id="viewerTC">00:00:00:00</span>
+            </div>
+            <div class="viewerScreen">
+              <video id="showreel" playsinline muted preload="none">
+                <source data-src="assets/showreel.mp4" type="video/mp4" />
+              </video>
+              <div class="viewerOverlay" aria-hidden="true"></div>
+            </div>
+            <div class="viewerFoot" aria-hidden="true">
+              <span class="chip">lazy-load</span>
+              <span class="chip">pause offscreen</span>
+              <span class="chip">click audio</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- SCENE 2: SERVICES (sticker wall) -->
+        <section class="scene s2" data-scene="services" aria-label="Услуги">
+          <div class="leftCopy">
+            <div class="cap">SCENE 02</div>
+            <div class="h2">Услуги.<br/>Как набор приёмов.</div>
+            <div class="p">Выбирай модуль — мы соберём пайплайн под задачу.</div>
+
+            <div class="picked">
+              <div class="pk">Выбрано</div>
+              <div class="pv" id="svcTitle">Продюсирование</div>
+              <div class="pd" id="svcDesc">Идея → команда → контроль → мастер.</div>
+            </div>
+
+            <button class="btnTape" type="button" data-goto="contact">Запросить смету</button>
+          </div>
+
+          <div class="wall" id="svcWall" aria-label="Стикеры услуг">
+            <!-- injected by JS -->
+          </div>
+        </section>
+
+        <!-- SCENE 3: WORKS (big preview + film strip) -->
+        <section class="scene s3" data-scene="works" aria-label="Работы">
+          <div class="leftCopy">
+            <div class="cap">SCENE 03</div>
+            <div class="h2">Работы.<br/>Не галерея.</div>
+            <div class="p">
+              На ПК — скраб как монтаж. Потом заменим плейсхолдеры на твои 16:9 скрины.
+            </div>
+
+            <div class="worksHint" aria-hidden="true">
+              <span class="chip">drag</span>
+              <span class="chip">wheel</span>
+              <span class="chip">click clip</span>
+            </div>
+          </div>
+
+          <div class="worksRig">
+            <div class="bigFrame" id="workViewer">
+              <img id="workImg" alt="Work preview" />
+              <div class="bigFrameUI" aria-hidden="true">
+                <span class="chip" id="workName">EVENT_01</span>
+                <span class="chip" id="workTime">00:00:00:00</span>
               </div>
-              <div class="f-bot">
-                <span class="f-badge" id="frameTag">PLACEHOLDER</span>
-                <span class="f-badge dim" id="frameNote">replace with your 16:9 screenshot</span>
-              </div>
             </div>
 
-            <!-- soft mask scratches -->
-            <div class="frame-matte" aria-hidden="true"></div>
-          </div>
-
-          <!-- EP1 controls (appear only in reel segment) -->
-          <div class="reel-ui" id="reelUI" aria-label="Управление шоурилом">
-            <button class="tape-btn" type="button" id="btnPlay">Play</button>
-            <button class="tape-btn ghost" type="button" id="btnSound">Sound: OFF</button>
-            <div class="reel-hint">звук включится только по клику</div>
-          </div>
-        </div>
-
-        <!-- EP0 intro collage -->
-        <div class="layer ep ep0" data-ep="0">
-          <div class="poster">
-            <div class="poster-k">INTERACTIVE VIDEO PRODUCTION</div>
-            <div class="poster-h">
-              <span class="p1">STREET</span>
-              <span class="p2">CUTS</span>
-              <span class="p3">—</span>
-              <span class="p4">CLEAN</span>
-              <span class="p5">SOUND</span>
-            </div>
-            <div class="poster-t">
-              Мы снимаем и собираем видео как сериал: сцены, ритм, смысл.
-              <span class="t-accent">Скролл — это монтаж.</span>
-            </div>
-            <div class="poster-ops">
-              <button class="tape-btn" type="button" data-ch="1">Смотреть шоурил</button>
-              <button class="tape-btn ghost" type="button" data-ch="3">Открыть работы</button>
-            </div>
-          </div>
-
-          <div class="stickers" aria-hidden="true">
-            <div class="st s1">LIVE</div>
-            <div class="st s2">EDIT</div>
-            <div class="st s3">LIGHT</div>
-            <div class="st s4">AI+3D</div>
-            <div class="st s5">DELIVER</div>
-          </div>
-        </div>
-
-        <!-- EP1 reel -->
-        <div class="layer ep ep1" data-ep="1">
-          <div class="sidecopy left">
-            <div class="cap">EP1 / SHOWREEL</div>
-            <h2 class="h">Свет.<br/>Звук.<br/>Ритм.</h2>
-            <p class="p">Нажми Play — звук включится. Уйдёшь дальше по странице — ролик остановится.</p>
-            <div class="mini">
-              <span class="mk">mode</span> <span class="mv" id="reelMode">standby</span>
-            </div>
-          </div>
-
-          <div class="sidecopy right">
-            <div class="cap">deliverables</div>
-            <div class="list">
-              <div>master + версии</div>
-              <div>вертикаль / shorts</div>
-              <div>субтитры (AI+QA)</div>
-              <div>архив проекта</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- EP2 services -->
-        <div class="layer ep ep2" data-ep="2">
-          <div class="services-collage">
-            <div class="cap">EP2 / SERVICES</div>
-            <h2 class="h">Модули.<br/>Собираем<br/>под задачу.</h2>
-
-            <div class="svc-deck" id="svcDeck" aria-label="Услуги (стикеры)">
-              <!-- items injected by JS -->
-            </div>
-
-            <div class="svc-read">
-              <div class="svc-k">Выбрано</div>
-              <div class="svc-v" id="svcName">Продюсирование</div>
-              <div class="svc-t" id="svcDesc">Концепт → команда → контроль → мастер.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- EP3 works -->
-        <div class="layer ep ep3" data-ep="3">
-          <div class="works-wrap" id="works">
-            <div class="cap">EP3 / WORKS</div>
-            <h2 class="h">Работы<br/>как<br/>таймлайн.</h2>
-            <p class="p">На ПК — скраб по дорожкам. На телефоне — Media Pool. Сейчас плейсхолдеры.</p>
-
-            <div class="timeline" id="timeline" aria-label="Таймлайн">
+            <div class="timeline" id="timeline">
               <div class="ruler" id="ruler"></div>
               <div class="tracks" id="tracks">
                 <div class="playhead" id="playhead" aria-hidden="true"></div>
               </div>
             </div>
 
-            <div class="bin" id="bin" aria-label="Media Pool (мобилка)">
-              <div class="bin-head">
-                <span class="bin-title">Media Pool</span>
-                <span class="bin-note">tap to preview</span>
+            <div class="bin" id="bin">
+              <div class="binHead">
+                <span class="binTitle">Media Pool</span>
+                <span class="binNote">tap to preview</span>
               </div>
-              <div class="bin-grid" id="binGrid"></div>
+              <div class="binGrid" id="binGrid"></div>
             </div>
           </div>
-        </div>
+        </section>
 
-        <!-- EP4 price teaser -->
-        <div class="layer ep ep4" data-ep="4">
-          <div class="price-card">
-            <div class="cap">EP4 / PRICE</div>
-            <h2 class="h">Сколько<br/>стоит<br/>видео</h2>
-            <p class="p">
-              Все проекты индивидуальны. Цена зависит от формата, длительности, локации, сценария,
-              выездов, кастинга, графики и т. д. Точную стоимость считаем по брифу.
-            </p>
-            <button class="tape-btn" type="button" data-scrollto="#price">Читать подробнее</button>
+        <!-- SCENE 4: PRICE -->
+        <section class="scene s4" data-scene="price" aria-label="Стоимость">
+          <div class="priceBlock">
+            <div class="cap">SCENE 04</div>
+            <div class="h2">Сколько стоит видеоролик</div>
+            <div class="p wide">
+              Все проекты — индивидуальны. Цена рассчитывается по брифу и ТЗ.
+              Влияет формат, длительность, локация, сценарий, выезд, кастинг, графика, звук и т. д.
+            </div>
+
+            <div class="priceGrid">
+              <div class="card">
+                <div class="ck">Обычно влияет</div>
+                <div class="cv">формат · сроки · объём · графика · звук</div>
+              </div>
+              <div class="card">
+                <div class="ck">Быстро</div>
+                <div class="cv">хайлайты · нарезки · вертикаль · субтитры</div>
+              </div>
+            </div>
+
+            <button class="btnTape" type="button" data-goto="contact">Запросить смету</button>
           </div>
-        </div>
+        </section>
 
-        <!-- EP5 contact teaser -->
-        <div class="layer ep ep5" data-ep="5">
-          <div class="final-card">
-            <div class="cap">EP5 / CONTACT</div>
-            <h2 class="h">Сделаем<br/>проект.</h2>
-            <p class="p">Короткий бриф: формат, площадка, сроки. Ответим структурно.</p>
-            <div class="final-ops">
-              <button class="tape-btn" type="button" data-scrollto="#contact">Запросить смету</button>
-              <a class="tape-btn ghost" href="mailto:hello@individnistudio.ru">hello@individnistudio.ru</a>
+        <!-- SCENE 5: CONTACT -->
+        <section class="scene s5" data-scene="contact" aria-label="Контакты">
+          <div class="contactGrid">
+            <div class="contactLeft">
+              <div class="cap">SCENE 05</div>
+              <div class="h2">Давай сделаем проект</div>
+              <div class="p">
+                Напиши короткий бриф: формат, площадка, сроки. Ответим структурно.
+              </div>
+
+              <div class="contactChips" aria-hidden="true">
+                <span class="chip">master + версии</span>
+                <span class="chip">вертикаль</span>
+                <span class="chip">субтитры</span>
+                <span class="chip">архив</span>
+              </div>
+
+              <div class="contactBtns">
+                <a class="btnTape" href="mailto:hello@individnistudio.ru">hello@individnistudio.ru</a>
+                <a class="btnTape ghost" href="https://t.me/" target="_blank" rel="noreferrer">Telegram</a>
+              </div>
+            </div>
+
+            <div class="contactRight">
+              <form class="sheet" onsubmit="return false;">
+                <div class="sheetTop">
+                  <div class="sheetK">CALL SHEET</div>
+                  <div class="sheetTC" id="sheetTC">00:00:00:00</div>
+                </div>
+
+                <div class="sheetRow">
+                  <label class="f">
+                    <span class="fk">Имя</span>
+                    <input class="fi" placeholder="Как к вам обращаться" />
+                  </label>
+                  <label class="f">
+                    <span class="fk">Контакт</span>
+                    <input class="fi" placeholder="Telegram / Email" />
+                  </label>
+                </div>
+
+                <label class="f">
+                  <span class="fk">Задача</span>
+                  <textarea class="fi ta" rows="5" placeholder="Формат, сроки, площадка, референсы, бюджет (если комфортно)"></textarea>
+                </label>
+
+                <div class="sheetOps">
+                  <button class="btnTape" type="button">Отправить (позже подключим)</button>
+                  <div class="sheetNote">Форма — макет. Подключим отправку, когда решим куда.</div>
+                </div>
+              </form>
             </div>
           </div>
-        </div>
+        </section>
 
       </div><!-- /stage -->
     </section>
-
-    <!-- PRICE (quiet episode, readable) -->
-    <section class="quiet" id="price">
-      <div class="quiet-grid">
-        <div class="q-title">
-          <div class="q-cap">PRICE / TEXT</div>
-          <h2 class="q-h">Сколько стоит видеоролик</h2>
-        </div>
-
-        <div class="q-body">
-          <p class="q-p">
-            Все проекты — индивидуальны. Наша команда создает уникальные видео для каждого заказчика.
-            Точная цена рассчитывается на основании брифа и технического задания.
-            Стоимость зависит от формата видео, его длительности, съемочной локации, необходимости в разработке сценария,
-            выезде в другой город, кастинге моделей и т. д.
-          </p>
-
-          <div class="q-splits">
-            <div class="qs">
-              <div class="qs-k">Обычно влияет</div>
-              <div class="qs-v">формат · сроки · объём съёмки · графика · звук</div>
-            </div>
-            <div class="qs">
-              <div class="qs-k">Быстро</div>
-              <div class="qs-v">хайлайты · нарезки · вертикаль · субтитры</div>
-            </div>
-          </div>
-
-          <button class="tape-btn" type="button" data-scrollto="#contact">Запросить смету</button>
-        </div>
-
-        <div class="q-wall" aria-hidden="true">
-          <div class="tag">бриф</div><div class="tag">смета</div><div class="tag">камера</div><div class="tag">свет</div>
-          <div class="tag">звук</div><div class="tag">монтаж</div><div class="tag">цвет</div><div class="tag">vfx</div>
-          <div class="tag">AI</div><div class="tag">3D</div><div class="tag">live</div><div class="tag">курс</div>
-          <div class="tag">подкаст</div><div class="tag">реклама</div><div class="tag">клип</div><div class="tag">репортаж</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CONTACT (call sheet) -->
-    <section class="contact" id="contact">
-      <div class="contact-grid">
-        <div class="c-left">
-          <div class="q-cap">CONTACT</div>
-          <h2 class="q-h">Давай сделаем проект</h2>
-          <p class="q-p">Напиши короткий бриф. Мы предложим пайплайн и смету.</p>
-
-          <div class="c-badges">
-            <span class="badge">master + версии</span>
-            <span class="badge">вертикаль</span>
-            <span class="badge">субтитры</span>
-            <span class="badge dim">архив</span>
-          </div>
-
-          <div class="c-links">
-            <a class="tape-btn" href="mailto:hello@individnistudio.ru">hello@individnistudio.ru</a>
-            <a class="tape-btn ghost" href="https://t.me/" target="_blank" rel="noreferrer">Telegram</a>
-          </div>
-        </div>
-
-        <div class="c-right">
-          <form class="sheet" onsubmit="return false;">
-            <div class="sheet-top">
-              <div class="sheet-k">CALL SHEET</div>
-              <div class="sheet-tc" id="sheetTC">00:00:00:00</div>
-            </div>
-
-            <div class="sheet-row">
-              <label class="f">
-                <span class="fk">Имя</span>
-                <input class="fi" placeholder="Как к вам обращаться" />
-              </label>
-              <label class="f">
-                <span class="fk">Контакт</span>
-                <input class="fi" placeholder="Telegram / Email" />
-              </label>
-            </div>
-
-            <label class="f">
-              <span class="fk">Задача</span>
-              <textarea class="fi ta" rows="5" placeholder="Формат, сроки, площадка, референсы, бюджетный диапазон (если комфортно)"></textarea>
-            </label>
-
-            <div class="sheet-ops">
-              <button class="tape-btn" type="button">Отправить (позже подключим)</button>
-              <div class="sheet-note">Форма — макет. Подключим отправку, когда решим куда.</div>
-            </div>
-          </form>
-
-          <div class="footerline">
-            <div class="fl">INDIVIDNI STUDIO</div>
-            <div class="fs">video production · night work · remote-ready</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <footer class="end">
-      <div class="end-in">
-        <span>© 2026</span>
-        <span class="sep"></span>
-        <span>индивидуальные проекты</span>
-        <span class="sep"></span>
-        <span>GitHub Pages</span>
-      </div>
-    </footer>
   </main>
 
+  <!-- Mobile experience (different mechanic: snap episodes) -->
+  <main class="mob">
+    <section class="mSnap" id="mSnap">
+      <section class="mPanel" data-m="intro">
+        <div class="mBig">СНИМАЕМ<br><span class="ol">ЖИВО</span></div>
+        <div class="mP">Скролл на телефоне — как листать серию сцен. Тап — интерактив.</div>
+        <div class="mBtns">
+          <button class="btnTape" type="button" data-mgoto="reel">Шоурил</button>
+          <button class="btnTape ghost" type="button" data-mgoto="services">Услуги</button>
+        </div>
+      </section>
+
+      <section class="mPanel" data-m="reel">
+        <div class="mHead">
+          <div class="cap">MOBILE / SHOWREEL</div>
+          <div class="mTitle">Play + звук</div>
+        </div>
+        <div class="mViewer">
+          <video id="mShowreel" playsinline muted preload="none">
+            <source data-src="assets/showreel.mp4" type="video/mp4" />
+          </video>
+        </div>
+        <div class="mBtns">
+          <button class="btnTape" type="button" id="mPlay">Play</button>
+          <button class="btnTape ghost" type="button" id="mSound">Sound: OFF</button>
+        </div>
+      </section>
+
+      <section class="mPanel" data-m="services">
+        <div class="mHead">
+          <div class="cap">MOBILE / SERVICES</div>
+          <div class="mTitle">Свайпай модули</div>
+        </div>
+        <div class="mCarousel" id="mSvc"></div>
+        <button class="btnTape" type="button" data-mgoto="contact">Запросить смету</button>
+      </section>
+
+      <section class="mPanel" data-m="works">
+        <div class="mHead">
+          <div class="cap">MOBILE / WORKS</div>
+          <div class="mTitle">Media Pool</div>
+        </div>
+        <div class="mPreview">
+          <img id="mWorkImg" alt="Work preview" />
+        </div>
+        <div class="mGrid" id="mWorkGrid"></div>
+      </section>
+
+      <section class="mPanel" data-m="price">
+        <div class="mHead">
+          <div class="cap">MOBILE / PRICE</div>
+          <div class="mTitle">Стоимость</div>
+        </div>
+        <div class="mP">
+          Цена считается по брифу. Влияют формат, длительность, локация, сценарий, выезд, графика, звук.
+        </div>
+        <button class="btnTape" type="button" data-mgoto="contact">Запросить смету</button>
+      </section>
+
+      <section class="mPanel" data-m="contact" id="mContact">
+        <div class="mHead">
+          <div class="cap">MOBILE / CONTACT</div>
+          <div class="mTitle">Напиши нам</div>
+        </div>
+        <a class="btnTape" href="mailto:hello@individnistudio.ru">hello@individnistudio.ru</a>
+        <a class="btnTape ghost" href="https://t.me/" target="_blank" rel="noreferrer">Telegram</a>
+      </section>
+    </section>
+  </main>
+
+  <!-- GSAP for cinematic scroll (desktop only) -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
   <script defer src="js/main.js"></script>
 </body>
 </html>
