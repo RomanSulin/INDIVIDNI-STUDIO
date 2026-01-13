@@ -1,5 +1,5 @@
 /* ============================================================================================================================
-  SERIAL v6 — TOON CREW / STREET MOTION 
+  SERIAL v6 — TOON CREW / STREET MOTION
   - Desktop: GSAP pinned scenes, cinematic transitions, controlled decor motion, characters react per scene
   - Mobile: snap panels, own controls, lazy-load showreel
   - Works: placeholder frames + timeline scrub (desktop) + media pool (mobile)
@@ -9,6 +9,10 @@
 
 (() => {
   const root = document.documentElement;
+
+  const canHover = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+  document.body.classList.toggle('canHover', canHover);
+
 
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const lerp  = (a, b, t) => a + (b - a) * t;
@@ -55,6 +59,10 @@
   if (menu) menu.addEventListener('click', (e) => {
     if (e.target === menu) closeMenu();
   });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && menu && !menu.hidden) closeMenu();
+  });
+
 
   // Menu link jumps
   document.querySelectorAll('[data-goto]').forEach((btn) => {
@@ -145,6 +153,22 @@
     reelLoaded = true;
   }
 
+  // lazy-load + pause offscreen (desktop)
+  if (showreel) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((ent) => {
+        if (ent.isIntersecting) {
+          ensureReelLoaded();
+        } else {
+          if (!showreel.paused) showreel.pause();
+        }
+      });
+    }, { root: null, threshold: 0.15 });
+
+    io.observe(showreel);
+  }
+
+
   function setReelAudio(on) {
     reelAudio = !!on;
     if (!showreel) return;
@@ -193,6 +217,22 @@
     loadVideo(mShowreel);
     mLoaded = true;
   }
+
+  // lazy-load + pause offscreen (mobile)
+  if (mShowreel) {
+    const ioM = new IntersectionObserver((entries) => {
+      entries.forEach((ent) => {
+        if (ent.isIntersecting) {
+          ensureMReelLoaded();
+        } else {
+          if (!mShowreel.paused) mShowreel.pause();
+        }
+      });
+    }, { root: null, threshold: 0.15 });
+
+    ioM.observe(mShowreel);
+  }
+
 
   function setMAudio(on) {
     mAudio = !!on;
@@ -632,5 +672,39 @@
     // Mobile: pause desktop reel if exists
     pauseReelIfNeeded();
   }
+
+
+
+  // ---------------------------------
+  // Evidence strip: wheel scroll + arrows (no duplicates)
+  function setupEvidenceStrip(){
+    const row = document.getElementById('evidenceRow');
+    const prev = document.getElementById('evPrev');
+    const next = document.getElementById('evNext');
+    if(!row) return;
+
+    const step = () => Math.max(260, row.clientWidth * 0.62);
+
+    if(prev) prev.addEventListener('click', () => row.scrollBy({ left: -step(), behavior:'smooth' }));
+    if(next) next.addEventListener('click', () => row.scrollBy({ left:  step(), behavior:'smooth' }));
+
+    // Wheel -> horizontal
+    row.addEventListener('wheel', (e) => {
+      // allow trackpad horizontal too
+      const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      if (Math.abs(d) < 1) return;
+      e.preventDefault();
+      row.scrollLeft += d;
+    }, { passive:false });
+
+    // Keyboard support when focused
+    row.addEventListener('keydown', (e) => {
+      if(e.key === 'ArrowLeft'){ e.preventDefault(); row.scrollBy({ left: -step(), behavior:'smooth' }); }
+      if(e.key === 'ArrowRight'){ e.preventDefault(); row.scrollBy({ left:  step(), behavior:'smooth' }); }
+    });
+  }
+
+
+  setupEvidenceStrip();
 
 })();
