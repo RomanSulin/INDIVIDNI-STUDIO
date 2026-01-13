@@ -1,1154 +1,539 @@
-document.documentElement.classList.add('js');
-
-/* =========================
-   Header height var + scroll bg
-========================= */
-const header = document.getElementById('header');
-
-function setHeaderHeightVar() {
-  if (!header) return;
-  document.documentElement.style.setProperty('--header-h', `${header.offsetHeight}px`);
-}
-setHeaderHeightVar();
-window.addEventListener('resize', setHeaderHeightVar, { passive: true });
-
-function onHeaderScroll() {
-  if (!header) return;
-  header.classList.toggle('scrolled', window.scrollY > 24);
-}
-onHeaderScroll();
-window.addEventListener('scroll', onHeaderScroll, { passive: true });
-
-/* =========================
-   Mobile menu
-========================= */
-const navToggle = document.querySelector('.nav-toggle');
-const navList = document.getElementById('nav-list');
-
-if (header && navToggle && navList) {
-  const closeMenu = () => {
-    header.classList.remove('nav-open');
-    navToggle.setAttribute('aria-expanded', 'false');
-  };
-
-  navToggle.addEventListener('click', () => {
-    const isOpen = header.classList.contains('nav-open');
-    header.classList.toggle('nav-open', !isOpen);
-    navToggle.setAttribute('aria-expanded', String(!isOpen));
-  });
-
-  navList.addEventListener('click', (e) => {
-    if (e.target.closest('a')) closeMenu();
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeMenu();
-  });
-
-  document.addEventListener('click', (e) => {
-    if (!header.classList.contains('nav-open')) return;
-    if (!header.contains(e.target)) closeMenu();
-  });
-}
-
-/* =========================
-   Reveal sections
-========================= */
-const revealItems = document.querySelectorAll('.reveal');
-
-if (revealItems.length && 'IntersectionObserver' in window) {
-  const io = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-          io.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.12 }
-  );
-  revealItems.forEach((el) => io.observe(el));
-} else {
-  revealItems.forEach((el) => el.classList.add('is-visible'));
-}
-
-/* =========================
-   Footer year
-========================= */
-const yearEl = document.getElementById('year');
-if (yearEl) yearEl.textContent = String(new Date().getFullYear());
-
-/* =========================
-   Ambient glow everywhere (smooth follow)
-========================= */
+/* INDIVIDNI STUDIO — Rebuild v1 (Night Edit Suite)
+   - Cursor light beam (desktop)
+   - HUD (title + tc)
+   - Scrubber (drag to scroll) + marks
+   - Logo reveal scan on pointer
+   - Showreel: lazy-load + pause offscreen + sound toggle + timecode
+   - Services: switchboard (hover only on canHover, click locks on mobile)
+   - Works: NLE timeline (desktop) + bin (mobile)
+*/
 (() => {
-  let mx = window.innerWidth * 0.5;
-  let my = window.innerHeight * 0.45;
-  let tx = mx, ty = my;
-  let raf = 0;
-
-  const lerp = (a, b, t) => a + (b - a) * t;
-
-  const tick = () => {
-    mx = lerp(mx, tx, 0.14);
-    my = lerp(my, ty, 0.14);
-    document.documentElement.style.setProperty('--mx', `${mx.toFixed(1)}px`);
-    document.documentElement.style.setProperty('--my', `${my.toFixed(1)}px`);
-    const moving = (Math.abs(mx - tx) + Math.abs(my - ty)) > 0.6;
-    raf = moving ? requestAnimationFrame(tick) : 0;
-  };
-
-  window.addEventListener('pointermove', (e) => {
-    tx = e.clientX;
-    ty = e.clientY;
-    if (!raf) raf = requestAnimationFrame(tick);
-  }, { passive: true });
-})();
-
-/* ===============================================================================================================================================================================
-   Custom cursor beam (only mouse devices)
-========================= */
-const cursor = document.getElementById('custom-cursor');
-const canUseCustomCursor =
-  cursor && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-
-if (canUseCustomCursor) {
-  document.body.classList.add('cursor-on');
-
-  let prevX = null, prevY = null;
-
-  // smooth position
-  let cx = 0, cy = 0;
-  let tx = 0, ty = 0;
-
-  // smooth angle with shortest path
-  let currentAngle = 0;
-  let targetAngle = 0;
-
-  const normalize180 = (a) => (((a + 180) % 360 + 360) % 360) - 180;
-  const shortestDelta = (from, to) => normalize180(to - from);
-  let raf = 0;
-  const tick = () => {
-    cx += (tx - cx) * 0.22;
-    cy += (ty - cy) * 0.22;
-    cursor.style.top = cy + 'px';
-    cursor.style.left = cx + 'px';
-
-    const d = shortestDelta(currentAngle, targetAngle);
-    currentAngle = normalize180(currentAngle + d * 0.12);
-    cursor.style.setProperty('--angle', currentAngle + 'deg');
-
-    const moving = (Math.abs(tx - cx) + Math.abs(ty - cy) > 0.35) || (Math.abs(d) > 0.25);
-    raf = moving ? requestAnimationFrame(tick) : 0;
-  };
-
-  document.addEventListener('mousemove', (e) => {
-    tx = e.clientX;
-    ty = e.clientY;
-     if (!raf) raf = requestAnimationFrame(tick);
-
-    if (prevX !== null && prevY !== null) {
-      const dx = e.clientX - prevX;
-      const dy = e.clientY - prevY;
-      if (Math.abs(dx) + Math.abs(dy) > 1) {
-        targetAngle = Math.atan2(dy, dx) * 180 / Math.PI;
-      }
-    }
-    prevX = e.clientX;
-    prevY = e.clientY;
-  }, { passive: true });
-
-  // boost on hover interactives
-  document.querySelectorAll('a, button, .btn').forEach((el) => {
-    el.addEventListener('mouseenter', () => document.body.classList.add('hovered'));
-    el.addEventListener('mouseleave', () => document.body.classList.remove('hovered'));
-  });
-}
-/* =========================
-   Showreel lazy load (load only when section is near)
-========================= */
-(() => {
-  const section = document.getElementById('showreel');
-  const video = document.getElementById('showreelVideo');
-  const btn = document.getElementById('soundToggle');
-  if (!section || !video) return;
-
-  const srcEl = video.querySelector('source[data-src]');
-  if (!srcEl) return;
-
-  if (btn) btn.disabled = true;
-
-  const load = () => {
-    if (video.dataset.loaded === '1') return;
-    const src = srcEl.dataset.src;
-    if (!src) return;
-
-    srcEl.src = src;
-    video.load();
-    video.dataset.loaded = '1';
-
-    // включаем кнопку, когда видео реально готово
-    const enable = () => { if (btn) btn.disabled = false; };
-    video.addEventListener('loadeddata', enable, { once: true });
-
-    // autoplay muted обычно разрешён
-    video.play().catch(() => {});
-  };
-
-  const io = new IntersectionObserver((entries) => {
-    if (entries[0]?.isIntersecting) {
-      load();
-      io.disconnect();
-    }
-  }, { threshold: 0.12, rootMargin: '300px 0px 300px 0px' });
-
-  io.observe(section);
-})();
-
-/* =========================
-   Showreel pause when offscreen
-========================= */
-(() => {
-  const section = document.getElementById('showreel');
-  const video = document.getElementById('showreelVideo');
-  if (!section || !video) return;
-
-  const io = new IntersectionObserver((entries) => {
-    const e = entries[0];
-    if (!e) return;
-
-    // когда ушли — пауза
-    if (!e.isIntersecting) {
-      video.pause();
-      return;
-    }
-
-    // когда вернулись — если уже загружено, продолжаем
-    if (video.dataset.loaded === '1') {
-      video.play().catch(() => {});
-    }
-  }, { threshold: 0.08 });
-
-  io.observe(section);
-})();
-
-/* ===============================================================================================================================================================================
-   Showreel sound toggle
-========================= */
-const v = document.getElementById('showreelVideo');
-const soundBtn = document.getElementById('soundToggle');
-
-if (v && soundBtn) {
-  const textEl = soundBtn.querySelector('.sound-blob__text');
-
-  const setUI = (isOn) => {
-    soundBtn.classList.toggle('is-on', isOn);
-    soundBtn.classList.toggle('is-off', !isOn);
-    soundBtn.setAttribute('aria-pressed', String(isOn));
-    if (textEl) textEl.textContent = isOn ? 'Выкл звук' : 'Вкл звук';
-
-    soundBtn.classList.remove('jelly');
-    void soundBtn.offsetWidth;
-    soundBtn.classList.add('jelly');
-  };
-
-  setUI(!v.muted);
-
-  soundBtn.addEventListener('click', async () => {
-    if (soundBtn.disabled) return;
-    const turningOn = v.muted;
-    v.muted = !turningOn;
-
-    if (turningOn) {
-      try { await v.play(); } catch (e) {}
-    }
-    setUI(turningOn);
-  });
-}
-
-/* ======================================================================================================================================================================================================================================================================================================================================
-   HERO: hover reveal (ТОЛЬКО логотип)
-========================== */
-(() => {
-  const stage = document.getElementById('heroStage');
-  const logo  = document.getElementById('heroLogo');
-  if (!stage || !logo) return;
-
-  const lerp  = (a, b, t) => a + (b - a) * t;
-  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-
-  let hoverActive = false;
-  let tx = 50, ty = 50;
-  let cx = 50, cy = 50;
-  let rAF = 0;
-
-  const tick = () => {
-    cx = lerp(cx, tx, 0.18);
-    cy = lerp(cy, ty, 0.18);
-    stage.style.setProperty('--reveal-x', `${cx.toFixed(2)}%`);
-    stage.style.setProperty('--reveal-y', `${cy.toFixed(2)}%`);
-if (!hoverActive) { rAF = 0; return; }
-const moving = (Math.abs(cx - tx) + Math.abs(cy - ty)) > 0.06;
-rAF = moving ? requestAnimationFrame(tick) : 0;
-  };
-
-  const insideLogo = (x, y) => {
-    const r = logo.getBoundingClientRect();
-    return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
-  };
-
-  const setTargetFromPoint = (x, y) => {
-    const r = logo.getBoundingClientRect();
-    const px = ((x - r.left) / r.width) * 100;
-    const py = ((y - r.top) / r.height) * 100;
-    tx = clamp(px, 0, 100);
-    ty = clamp(py, 0, 100);
-  };
-   
-  // стартовое значение (чтобы было красиво сразу)
-  stage.style.setProperty('--reveal-x', `50%`);
-  stage.style.setProperty('--reveal-y', `50%`);
-   
-window.addEventListener('pointermove', (e) => {
-  const inside = insideLogo(e.clientX, e.clientY);
-
-  if (inside && !hoverActive) {
-    hoverActive = true;
-    stage.classList.add('is-hover');
-    document.body.classList.add('glow-boost');
-    if (!rAF) rAF = requestAnimationFrame(tick);
-  }
-
-  if (!inside && hoverActive) {
-    hoverActive = false;
-    stage.classList.remove('is-hover');
-    document.body.classList.remove('glow-boost');
-    if (rAF) { cancelAnimationFrame(rAF); rAF = 0; }
-  }
-
-  if (hoverActive) {
-    setTargetFromPoint(e.clientX, e.clientY);
-    if (!rAF) rAF = requestAnimationFrame(tick);
-  }
-}, { passive: true });
-
-})();
-
-/* ======================================================================================================================================================================================================================================================================================================================================
-   CLAPPER: открывается, когда доскроллил
-========================== */
-(() => {
-  const clap = document.getElementById('clapButton');
-  const rig  = document.querySelector('.between-rig');
-  if (!clap || !rig) return;
-
-  const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
-  const setAngle = (deg) => clap.style.setProperty('--clapAngle', `${deg.toFixed(2)}deg`);
-
-  // всегда закрыта при загрузке
-  setAngle(0);
-
-  let pinned = false;
-  let armed = false;
-
-  // активируем только когда блок виден
-  if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver((entries) => {
-      if (entries.some(e => e.isIntersecting)) {
-        armed = true;
-        io.disconnect();
-        update();
-      }
-    }, { threshold: 0.2 });
-    io.observe(rig);
-  } else {
-    armed = true;
-  }
-
-  const update = () => {
-    if (!armed || pinned) return;
-    if (window.scrollY < 40) { setAngle(0); return; }
-
-    const r = rig.getBoundingClientRect();
-    const vh = window.innerHeight;
-
-    const start = vh * 0.92;
-    const end   = vh * 0.58;
-
-    const t = clamp((start - r.top) / (start - end), 0, 1);
-    setAngle(-72 * t);
-  };
-
-  let raf = 0;
-  const schedule = () => {
-    if (raf) return;
-    raf = requestAnimationFrame(() => {
-      raf = 0;
-      update();
-    });
-  };
-
-  window.addEventListener('scroll', schedule, { passive: true });
-  window.addEventListener('resize', schedule, { passive: true });
-
-  clap.addEventListener('click', () => {
-    pinned = !pinned;
-    if (pinned) setAngle(-72);
-    else update();
-  });
-
-})();
-
-/* ============================================================================================================================================================================================================================================================================================================
-   Service Deck: glare + tilt
-========================= */
-(() => {
-  const deck = document.querySelector('.service-deck');
-  if (!deck) return;
-
-  const cards = deck.querySelectorAll('.deck-card');
-
-  cards.forEach((card) => {
-    let raf = 0;
-
-    const update = (clientX, clientY) => {
-      const r = card.getBoundingClientRect();
-      const x = (clientX - r.left) / r.width;
-      const y = (clientY - r.top) / r.height;
-
-      const px = Math.max(0, Math.min(1, x)) * 100;
-      const py = Math.max(0, Math.min(1, y)) * 100;
-
-      // glare position
-      card.style.setProperty('--px', `${px.toFixed(2)}%`);
-      card.style.setProperty('--py', `${py.toFixed(2)}%`);
-
-      // tilt (subtle)
-      const tiltX = (0.5 - y) * 10;   // up/down
-      const tiltY = (x - 0.5) * 14;   // left/right
-      card.style.setProperty('--tilt-x', `${tiltX.toFixed(2)}deg`);
-      card.style.setProperty('--tilt-y', `${tiltY.toFixed(2)}deg`);
-    };
-
+  const root = document.documentElement;
+  const body = document.body;
+
+  // touch detect
+  const isTouch = matchMedia('(hover: none)').matches || 'ontouchstart' in window;
+  body.dataset.touch = isTouch ? 'true' : 'false';
+
+  // year
+  const y = document.getElementById('year');
+  if (y) y.textContent = String(new Date().getFullYear());
+
+  /* ---------------------------------
+     Cursor beam
+  --------------------------------- */
+  const beam = document.getElementById('beam');
+  if (beam && !isTouch) {
     const onMove = (e) => {
-      const p = e;
-      if (raf) cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => update(p.clientX, p.clientY));
+      const x = (e.clientX / innerWidth) * 100;
+      const y = (e.clientY / innerHeight) * 100;
+      beam.style.setProperty('--mx', `${x.toFixed(2)}%`);
+      beam.style.setProperty('--my', `${y.toFixed(2)}%`);
     };
-
-    const reset = () => {
-      card.style.setProperty('--tilt-x', `0deg`);
-      card.style.setProperty('--tilt-y', `0deg`);
-    };
-
-    card.addEventListener('pointermove', onMove);
-    card.addEventListener('pointerleave', reset);
-    card.addEventListener('pointerdown', reset);
-  });
-})();
-
-/* =====================================================================================================================================================================================================================================================================================================================================
-   Title Lamp: flicker when centered
-========================= */
-(() => {
-  const lamp = document.getElementById('deckTitleLamp');
-  if (!lamp) return;
-
-  const wrap = lamp.closest('.deck-title-imgwrap');
-
-  let fired = false;
-
-  const obs = new IntersectionObserver((entries) => {
-    const e = entries[0];
-    if (!e) return;
-
-    if (e.isIntersecting && !fired) {
-      fired = true;
-      lamp.classList.add('lamp-lit');
-      if (wrap) wrap.classList.add('lamp-lit');
-      obs.disconnect(); // один раз: загорелась и всё
-    }
-  }, {
-    root: null,
-    threshold: 0,
-    // срабатывает когда элемент попадает в центральную “полосу” экрана
-    rootMargin: '-45% 0px -45% 0px'
-  });
-
-  obs.observe(lamp);
-})();
-
-/* ===============================================================================================================================================================================
-   DOSSIER INDEX (hover = select, no pin, no revert)
-========================= */
-(() => {
-  const root = document.getElementById('dossierIndex');
-  if (!root) return;
-
-  const list = root.querySelector('.dx-list');
-  const items = Array.from(root.querySelectorAll('.dx-item'));
-  const view = root.querySelector('.dx-view');
-  const img = root.querySelector('.dx-view-img');
-  const thumbs = root.querySelector('.dx-thumbs');
-
-  const brief = {
-    req: root.querySelector('[data-k="req"]'),
-    evi: root.querySelector('[data-k="evi"]'),
-    op:  root.querySelector('[data-k="op"]'),
-    res: root.querySelector('[data-k="res"]'),
-  };
-
-  const copy = {
-    courses: {
-      req: "упаковать курс в сериал, который держит внимание",
-      evi: "70+ роликов / строгая структура / критичен звук",
-      op:  "каркас → съёмка/запись → монтаж ритмом → графика",
-      res: "единый стиль серии, готово к масштабированию",
-    },
-    broadcast: {
-      req: "ровный эфир без провалов + быстрые записи после события",
-      evi: "4+ часа / 10+ камер / меняющийся свет / звук непредсказуем",
-      op:  "схема камер → контроль звука → режиссура → титры/графика",
-      res: "дело закрыто за 24 часа: эфир + нарезки",
-    },
-    concert: {
-      req: "передать энергию сцены так, чтобы смотрелось как клип",
-      evi: "контровик / дым / скорость / толпа",
-      op:  "точки → динамика → монтаж по музыке → цвет/стаб/звук",
-      res: "темп держит, кадры цепляют с первых секунд",
-    },
-  };
-
-  const accentMap = {
-    cyan: "rgba(0,220,255,.85)",
-    amber: "rgba(255,190,90,.92)",
-    magenta: "rgba(255,90,190,.82)",
-  };
-
-  // проставим акцент каждому пункту один раз (чтобы подсветка работала всегда)
-  items.forEach((btn) => {
-    const key = btn.dataset.accent || "amber";
-    btn.style.setProperty('--ac', accentMap[key] || accentMap.amber);
-  });
-
-  const flashScan = () => {
-    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-    const scan = root.querySelector('.dx-scan');
-    if (!scan) return;
-    scan.style.transition = "none";
-    scan.style.opacity = "0.42";
-    requestAnimationFrame(() => {
-      scan.style.transition = "opacity .35s ease";
-      scan.style.opacity = "0.22";
-    });
-  };
-
-  const renderThumbs = (thumbList) => {
-    if (!thumbs) return;
-    thumbs.innerHTML = "";
-
-    thumbList.forEach((src) => {
-      const s = src.trim();
-      if (!s) return;
-
-      const b = document.createElement('button');
-      b.type = "button";
-      b.className = "dx-thumb";
-      b.setAttribute("aria-label", "Открыть улику");
-      b.innerHTML = `<img src="${s}" alt="evidence">`;
-
-      b.addEventListener('click', () => {
-        img.src = s;
-        flashScan();
-      });
-
-      thumbs.appendChild(b);
-    });
-  };
-
-  const apply = (btn) => {
-    if (!btn || !view || !img) return;
-
-    items.forEach(x => x.classList.remove('is-active'));
-    btn.classList.add('is-active');
-
-    const accentKey = btn.dataset.accent || "amber";
-    const accent = accentMap[accentKey] || accentMap.amber;
-
-    view.style.setProperty('--accent', accent);
-
-    // main image
-    img.src = btn.dataset.cover || img.src;
-
-    // thumbs
-    const raw = (btn.dataset.thumbs || "");
-    const t = raw.split(",").map(s => s.trim()).filter(Boolean);
-    renderThumbs(t.length ? t : [btn.dataset.cover].filter(Boolean));
-
-    // text
-    const key = btn.dataset.case;
-    const c = copy[key];
-    if (c) {
-      if (brief.req) brief.req.textContent = c.req;
-      if (brief.evi) brief.evi.textContent = c.evi;
-      if (brief.op)  brief.op.textContent  = c.op;
-      if (brief.res) brief.res.textContent = c.res;
-    }
-
-    flashScan();
-  };
-
-  // init
-  const initial = items.find(i => i.classList.contains('is-active')) || items[0];
-  apply(initial);
-
-  // hover/focus/click = select (без отката)
-const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-
-items.forEach((btn) => {
-  if (canHover) btn.addEventListener('pointerenter', () => apply(btn));
-  btn.addEventListener('focus', () => apply(btn));
-  btn.addEventListener('click', () => apply(btn));
-});
-
-
-  // УБРАЛИ: pointerleave-откат полностью
-})();
-
-/* ======================================================================================================================================================
-   Evidence strip arrows + wheel horizontal scroll
-========================= */
-(() => {
-  const strip = document.querySelector('.dx-strip');
-  const thumbs = document.querySelector('.dx-thumbs');
-  const leftBtn = document.querySelector('.dx-arrow-left');
-  const rightBtn = document.querySelector('.dx-arrow-right');
-
-  if (!strip || !thumbs) return;
-
-  // wheel -> horizontal scroll (only when hover on thumbs)
-  thumbs.addEventListener('wheel', (e) => {
-    const dominantVertical = Math.abs(e.deltaY) > Math.abs(e.deltaX);
-    if (!dominantVertical) return;
-    if (thumbs.scrollWidth <= thumbs.clientWidth) return;
-
-    e.preventDefault();
-    thumbs.scrollLeft += e.deltaY;
-  }, { passive: false });
-
-  const update = () => {
-    const max = thumbs.scrollWidth - thumbs.clientWidth;
-    strip.classList.toggle('has-left', thumbs.scrollLeft > 2);
-    strip.classList.toggle('has-right', thumbs.scrollLeft < max - 2);
-  };
-
-  const scrollByAmount = (dir) => {
-    // примерно 2 превью за раз
-    const step = Math.max(240, thumbs.clientWidth * 0.55);
-    thumbs.scrollBy({ left: dir * step, behavior: 'smooth' });
-  };
-
-  if (leftBtn) leftBtn.addEventListener('click', () => scrollByAmount(-1));
-  if (rightBtn) rightBtn.addEventListener('click', () => scrollByAmount(1));
-
-  thumbs.addEventListener('scroll', update, { passive: true });
-  window.addEventListener('resize', update);
-
-  // Когда меняется кейс, вы пересоздаёте превью (thumbs.innerHTML = ...),
-  // поэтому обновляем состояние стрелок чуть позже.
-  const mo = new MutationObserver(() => requestAnimationFrame(update));
-  mo.observe(thumbs, { childList: true });
-
-  update();
-})();
-
-/* =============================================================================================================================
-   SERVICES LAB (Desktop switchboard + Mobile tuner)
-============================================================================================================================= */
-(() => {
-  const section = document.getElementById('services');
-  if (!section) return;
-
-  const buttons = Array.from(section.querySelectorAll('.svc-item'));
-  if (!buttons.length) return;
-
-  const view = {
-    code: section.querySelector('[data-svc-code]'),
-    chip: section.querySelector('[data-svc-chip]'),
-    title: section.querySelector('[data-svc-title]'),
-    lead: section.querySelector('[data-svc-lead]'),
-    doList: section.querySelector('[data-svc-do]'),
-    getList: section.querySelector('[data-svc-get]'),
-    turnaround: section.querySelector('[data-svc-turnaround]'),
-    format: section.querySelector('[data-svc-format]'),
-  };
-
-  const pipeNodes = Array.from(section.querySelectorAll('.svc-node'));
-
-  // detail toggle (desktop) — keeps the panel clean
-  const glass = section.querySelector('.svc-glass');
-  const moreBtn = section.querySelector('[data-svc-more]');
-  const setExpanded = (on) => {
-    if (glass) glass.classList.toggle('is-expanded', !!on);
-    if (moreBtn) {
-      moreBtn.setAttribute('aria-expanded', on ? 'true' : 'false');
-      moreBtn.textContent = on ? 'Свернуть' : 'Подробнее';
-    }
-  };
-  if (moreBtn) {
-    moreBtn.addEventListener('click', () => {
-      const on = glass ? !glass.classList.contains('is-expanded') : false;
-      setExpanded(on);
-    });
+    window.addEventListener('pointermove', onMove, { passive: true });
   }
 
+  /* ---------------------------------
+     Scene observer (accent + HUD title)
+  --------------------------------- */
+  const hudTitle = document.getElementById('hudTitle');
+  const hudTC = document.getElementById('hudTC');
+  const sections = Array.from(document.querySelectorAll('.chapter[data-title]'));
 
-  const mobile = {
-    knob: section.querySelector('#tunerKnob'),
-    code: section.querySelector('[data-tuner-code]'),
-    chip: section.querySelector('[data-tuner-chip]'),
-    title: section.querySelector('[data-tuner-title]'),
-    lead: section.querySelector('[data-tuner-lead]'),
-    doList: section.querySelector('[data-tuner-do]'),
-    getList: section.querySelector('[data-tuner-get]'),
-    turnaround: section.querySelector('[data-tuner-turnaround]'),
-    format: section.querySelector('[data-tuner-format]'),
-    bar: section.querySelector('.tuner-bar'),
-    nav: Array.from(section.querySelectorAll('[data-tuner-dir]')),
+  const setAccent = (accentName) => {
+    // map name -> rgb
+    const map = {
+      amber: '255 197 72',
+      cyan: '102 255 198',
+      lime: '168 255 108',
+      violet: '184 132 255',
+      magenta: '255 118 214',
+    };
+    const v = map[accentName] || map.amber;
+    root.style.setProperty('--accent', v);
   };
 
-  // mobile tabs (keeps the card compact; no endless accordion)
-  const mobileTabs = {
-    btns: Array.from(section.querySelectorAll('[data-tuner-tab]')),
-    panels: Array.from(section.querySelectorAll('[data-tuner-panel]')),
-  };
-
-  const setMobileTab = (name) => {
-    if (!mobileTabs.btns.length || !mobileTabs.panels.length) return;
-
-    mobileTabs.btns.forEach((b) => {
-      const on = b.dataset.tunerTab === name;
-      b.classList.toggle('is-active', on);
-      b.setAttribute('aria-selected', on ? 'true' : 'false');
-      b.setAttribute('tabindex', on ? '0' : '-1');
-    });
-
-    mobileTabs.panels.forEach((p) => {
-      const on = p.dataset.tunerPanel === name;
-      p.classList.toggle('is-active', on);
-      if (on) p.scrollTop = 0;
-    });
-  };
-
-  const canHover = window.matchMedia('(hover: hover)').matches;
-
-  const splitList = (s) =>
-    String(s || '')
-      .split('|')
-      .map((x) => x.trim())
-      .filter(Boolean);
-
-  const fillList = (ul, items) => {
-    if (!ul) return;
-    ul.innerHTML = '';
-    items.forEach((t) => {
-      const li = document.createElement('li');
-      li.textContent = t;
-      ul.appendChild(li);
-    });
-  };
-
-  let currentIndex = Math.max(0, buttons.findIndex((b) => b.classList.contains('is-active')));
-  let locked = false;
-
-  const setLockedUI = () => section.classList.toggle('svc-locked', locked);
-
-  const setIndex = (idx, { fromHover = false } = {}) => {
-    if (!Number.isFinite(idx)) return;
-    const n = buttons.length;
-    idx = ((idx % n) + n) % n;
-
-    if (fromHover && locked) return;
-
-    currentIndex = idx;
-    const btn = buttons[idx];
-    if (!btn) return;
-
-    buttons.forEach((b, i) => {
-      b.classList.toggle('is-active', i === idx);
-      b.setAttribute('aria-selected', i === idx ? 'true' : 'false');
-      b.setAttribute('tabindex', i === idx ? '0' : '-1');
-    });
-
-    const d = btn.dataset;
-
-    // accent for whole section
-    section.dataset.accent = d.accent || 'amber';
-
-    // desktop view
-    if (view.code) view.code.textContent = d.code || '';
-    if (view.chip) view.chip.textContent = d.chip || '';
-    if (view.title) view.title.textContent = d.title || '';
-    if (view.lead) view.lead.textContent = d.lead || '';
-    if (view.turnaround) view.turnaround.textContent = d.turnaround || '';
-    if (view.format) view.format.textContent = d.format || '';
-
-    fillList(view.doList, splitList(d.do));
-    fillList(view.getList, splitList(d.get));
-
-    // collapse details on every switch (less visual noise)
-    setExpanded(false);
-
-    // pipeline highlight
-    const steps = new Set(
-      String(d.steps || '')
-        .split(',')
-        .map((s) => s.trim())
-        .filter(Boolean)
-    );
-    pipeNodes.forEach((node) => {
-      node.classList.toggle('is-on', steps.has(node.dataset.step));
-    });
-
-    // mobile view
-    if (mobile.code) mobile.code.textContent = d.code || '';
-    if (mobile.chip) mobile.chip.textContent = d.chip || '';
-    if (mobile.title) mobile.title.textContent = d.title || '';
-    if (mobile.lead) mobile.lead.textContent = d.lead || '';
-    if (mobile.turnaround) mobile.turnaround.textContent = d.turnaround || '';
-    if (mobile.format) mobile.format.textContent = (d.format || '').replace(/^Формат:\s*/i, '');
-
-    fillList(mobile.doList, splitList(d.do));
-    fillList(mobile.getList, splitList(d.get));
-
-    // reset mobile panel to 'brief' on every switch
-    setMobileTab('brief');
-
-    // tuner rotation + progress
-    if (mobile.knob) {
-      const seg = 360 / n;
-      mobile.knob.style.setProperty('--rot', `${(idx * seg).toFixed(2)}deg`);
-      mobile.knob.setAttribute('aria-valuenow', String(idx + 1));
-    }
-    if (mobile.bar) {
-      const pct = ((idx + 1) / n) * 100;
-      mobile.bar.style.width = `${pct.toFixed(2)}%`;
-    }
-  };
-
-  // init aria for tabs
-  buttons.forEach((btn, i) => {
-    btn.setAttribute('role', 'tab');
-    btn.setAttribute('tabindex', btn.classList.contains('is-active') ? '0' : '-1');
-    btn.setAttribute('aria-selected', btn.classList.contains('is-active') ? 'true' : 'false');
-
-    // click = lock (tap works on mobile too)
-    btn.addEventListener('click', () => {
-      if (currentIndex === i) {
-        locked = !locked;
-      } else {
-        locked = true;
-      }
-      setLockedUI();
-      setIndex(i);
-    });
-
-    // hover = select (only when not locked)
-    if (canHover) {
-      btn.addEventListener('mouseenter', () => setIndex(i, { fromHover: true }));
-      btn.addEventListener('focus', () => setIndex(i, { fromHover: true }));
-    }
-  });
-
-  setLockedUI();
-  setIndex(currentIndex);
-
-  // mobile tab interactions
-  if (mobileTabs.btns.length) {
-    mobileTabs.btns.forEach((b) => {
-      b.addEventListener('click', () => setMobileTab(b.dataset.tunerTab));
-    });
-    setMobileTab('brief');
-  }
-
-
-  // mobile prev/next
-  if (mobile.nav.length) {
-    mobile.nav.forEach((b) => {
-      b.addEventListener('click', () => {
-        const dir = Number(b.dataset.tunerDir || '0');
-        locked = false;
-        setLockedUI();
-        setIndex(currentIndex + dir);
-      });
-    });
-  }
-
-  // knob: drag to change service (mobile wow)
-  if (mobile.knob) {
-    const knob = mobile.knob;
-
-    const angleToIndex = (deg) => {
-      const n = buttons.length;
-      const seg = 360 / n;
-      return Math.round(deg / seg) % n;
-    };
-
-    const pointToDeg = (clientX, clientY) => {
-      const r = knob.getBoundingClientRect();
-      const cx = r.left + r.width / 2;
-      const cy = r.top + r.height / 2;
-      const a = Math.atan2(clientY - cy, clientX - cx) * 180 / Math.PI;
-      // normalize: 0° at top, clockwise
-      return (a + 450) % 360;
-    };
-
-    let dragging = false;
-
-    const onDown = (e) => {
-      dragging = true;
-      knob.classList.add('is-dragging');
-      try { knob.setPointerCapture(e.pointerId); } catch (_) {}
-      locked = false;
-      setLockedUI();
-      const deg = pointToDeg(e.clientX, e.clientY);
-      setIndex(angleToIndex(deg));
-    };
-
-    const onMove = (e) => {
-      if (!dragging) return;
-      const deg = pointToDeg(e.clientX, e.clientY);
-      setIndex(angleToIndex(deg));
-    };
-
-    const onUp = () => {
-      dragging = false;
-      knob.classList.remove('is-dragging');
-    };
-
-    knob.addEventListener('pointerdown', onDown);
-    knob.addEventListener('pointermove', onMove);
-    knob.addEventListener('pointerup', onUp);
-    knob.addEventListener('pointercancel', onUp);
-
-    // keyboard fallback
-    knob.addEventListener('keydown', (e) => {
-      const nextKeys = ['ArrowRight', 'ArrowDown'];
-      const prevKeys = ['ArrowLeft', 'ArrowUp'];
-      if (nextKeys.includes(e.key)) { e.preventDefault(); setIndex(currentIndex + 1); }
-      if (prevKeys.includes(e.key)) { e.preventDefault(); setIndex(currentIndex - 1); }
-    });
-  }
-})();
-
-/* =============================================================================================================================
-   WORKS — NLE TIMELINE (desktop) + MEDIA POOL (mobile)
-============================================================================================================================= */
-(() => {
-  const section = document.getElementById('works');
-  if (!section) return;
-
-  // ---------- Desktop timeline ----------
-  const nle = section.querySelector('[data-nle]');
-  if (nle) {
-    const scroll = nle.querySelector('[data-nle-scroll]');
-    const tracks = nle.querySelector('[data-nle-tracks]');
-    const playhead = nle.querySelector('[data-nle-playhead]');
-    const clips = Array.from(nle.querySelectorAll('.nle-clip'));
-
-    const ui = {
-      img: nle.querySelector('[data-nle-img]'),
-      tc: nle.querySelector('[data-nle-tc]'),
-      file: nle.querySelector('[data-nle-file]'),
-      badge: nle.querySelector('[data-nle-badge]'),
-      title: nle.querySelector('[data-nle-title]'),
-      desc: nle.querySelector('[data-nle-desc]'),
-      dur: nle.querySelector('[data-nle-time-mini]'),
-    };
-
-    const FPS = 25;
-    const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  // timecode helper
+  const tc = (seconds, fps = 24) => {
+    const s = Math.max(0, seconds);
+    const totalFrames = Math.floor(s * fps);
+    const ff = totalFrames % fps;
+    const totalSeconds = Math.floor(totalFrames / fps);
+    const ss = totalSeconds % 60;
+    const mm = Math.floor(totalSeconds / 60) % 60;
+    const hh = Math.floor(totalSeconds / 3600);
     const pad2 = (n) => String(n).padStart(2, '0');
+    return `${pad2(hh)}:${pad2(mm)}:${pad2(ss)}`;
+  };
 
-    const toTC = (sec) => {
-      const totalFrames = Math.max(0, Math.round(sec * FPS));
-      const frames = totalFrames % FPS;
-      const totalSec = Math.floor(totalFrames / FPS);
-      const s = totalSec % 60;
-      const m = Math.floor(totalSec / 60) % 60;
-      const h = Math.floor(totalSec / 3600);
-      return `${pad2(h)}:${pad2(m)}:${pad2(s)}:${pad2(frames)}`;
-    };
+  const updateHudTC = () => {
+    const progress = window.scrollY / Math.max(1, (document.documentElement.scrollHeight - innerHeight));
+    const pseudoTime = progress * 180; // 3 minutes "sequence"
+    if (hudTC) hudTC.textContent = tc(pseudoTime);
+  };
+  window.addEventListener('scroll', updateHudTC, { passive: true });
+  updateHudTC();
 
-    const parseNum = (x, fallback = 0) => {
-      const n = Number(x);
-      return Number.isFinite(n) ? n : fallback;
-    };
+  const io = new IntersectionObserver((entries) => {
+    const visible = entries
+      .filter((e) => e.isIntersecting)
+      .sort((a, b) => (b.intersectionRatio - a.intersectionRatio))[0];
+    if (!visible) return;
 
-    // compute duration
-    const total = Math.max(1, ...clips.map((c) => parseNum(c.dataset.end, 0)));
-    playhead?.setAttribute('aria-valuemax', String(total));
+    const el = visible.target;
+    if (hudTitle) hudTitle.textContent = el.dataset.title || '—';
+    setAccent(el.dataset.accent || 'amber');
+  }, { threshold: [0.35, 0.55, 0.75] });
 
-    // Layout clips as percentages
-    const layout = () => {
-      clips.forEach((c) => {
-        const s = parseNum(c.dataset.start, 0);
-        const e = parseNum(c.dataset.end, s + 1);
-        const x = (s / total) * 100;
-        const w = ((e - s) / total) * 100;
-        c.style.setProperty('--x', `${x.toFixed(4)}%`);
-        c.style.setProperty('--w', `${w.toFixed(4)}%`);
-      });
-    };
-    layout();
-    window.addEventListener('resize', layout, { passive: true });
+  sections.forEach((s) => io.observe(s));
 
-    let currentTime = 0;
-    let activeClip = null;
+  /* ---------------------------------
+     Burger / Drawer
+  --------------------------------- */
+  const burger = document.getElementById('burger');
+  const drawer = document.getElementById('drawer');
+  const drawerClose = document.getElementById('drawerClose');
 
-    const setActiveClip = (clip) => {
-      if (activeClip === clip) return;
-      activeClip?.classList.remove('is-hot');
-      activeClip = clip;
-      activeClip?.classList.add('is-hot');
+  const closeDrawer = () => {
+    if (!drawer) return;
+    drawer.classList.remove('is-open');
+    drawer.setAttribute('aria-hidden', 'true');
+  };
+  const openDrawer = () => {
+    if (!drawer) return;
+    drawer.classList.add('is-open');
+    drawer.setAttribute('aria-hidden', 'false');
+  };
 
-      const d = clip?.dataset;
-      if (!d) return;
+  if (burger) burger.addEventListener('click', openDrawer);
+  if (drawerClose) drawerClose.addEventListener('click', closeDrawer);
+  if (drawer) drawer.addEventListener('click', (e) => { if (e.target === drawer) closeDrawer(); });
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest?.('a');
+    if (a && drawer?.classList.contains('is-open')) closeDrawer();
+  });
 
-      if (ui.img && d.img) ui.img.src = d.img;
-      if (ui.tc) ui.tc.textContent = toTC(currentTime);
-      if (ui.file) ui.file.textContent = d.file || '';
-      if (ui.badge) ui.badge.textContent = d.badge || '';
-      if (ui.title) ui.title.textContent = d.title || '';
-      if (ui.desc) ui.desc.textContent = d.desc || '';
-      if (ui.dur) ui.dur.textContent = d.dur || '';
-    };
+  /* ---------------------------------
+     Scrubber (drag scroll) + marks
+  --------------------------------- */
+  const scrubTrack = document.getElementById('scrubTrack');
+  const scrubHead = document.getElementById('scrubHead');
+  const scrubMarks = document.getElementById('scrubMarks');
 
-    const getClipByTime = (t) => {
-      for (const c of clips) {
-        const s = parseNum(c.dataset.start, 0);
-        const e = parseNum(c.dataset.end, 0);
-        if (t >= s && t < e) return c;
-      }
-      return clips[0] || null;
-    };
+  const setScrubHead = (progress) => {
+    if (!scrubHead || !scrubTrack) return;
 
-    const pxToTime = (px) => {
-      const rect = tracks.getBoundingClientRect();
-      const w = rect.width;
-      const t = (px / w) * total;
-      return clamp(t, 0, total);
-    };
-
-    const timeToPx = (t) => {
-      const rect = tracks.getBoundingClientRect();
-      return (t / total) * rect.width;
-    };
-
-    const render = () => {
-      if (!tracks || !playhead) return;
-      const px = timeToPx(currentTime);
-      // +54px label gutter
-      playhead.style.left = `${54 + px}px`;
-      playhead.setAttribute('aria-valuenow', String(Math.round(currentTime)));
-      if (ui.tc) ui.tc.textContent = toTC(currentTime);
-
-      const c = getClipByTime(currentTime);
-      setActiveClip(c);
-    };
-
-    const setTimeFromEvent = (clientX) => {
-      const rect = tracks.getBoundingClientRect();
-      // x within tracks content (exclude label gutter)
-      const x = clamp(clientX - rect.left - 54, 0, rect.width - 54);
-      currentTime = pxToTime(x);
-      render();
-    };
-
-    // click on clip jumps to its start
-    clips.forEach((c) => {
-      c.addEventListener('click', () => {
-        currentTime = clamp(parseNum(c.dataset.start, 0), 0, total);
-        render();
-      });
-    });
-
-    // wheel -> horizontal scroll (street-style convenience)
-    if (scroll) {
-      scroll.addEventListener('wheel', (e) => {
-        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-          scroll.scrollLeft += e.deltaY;
-          e.preventDefault();
-        }
-      }, { passive: false });
+    const r = scrubTrack.getBoundingClientRect();
+    if (r.height > r.width) {
+      // vertical
+      const y = progress * r.height;
+      scrubHead.style.top = `${y}px`;
+      scrubHead.style.left = '50%';
+    } else {
+      // horizontal (mobile)
+      const x = progress * r.width;
+      scrubHead.style.left = `${x}px`;
+      scrubHead.style.top = '50%';
     }
+  };
 
-    // drag playhead
+  const getScrollProgress = () =>
+    window.scrollY / Math.max(1, (document.documentElement.scrollHeight - innerHeight));
+
+  const scrollToProgress = (p) => {
+    const prog = Math.min(1, Math.max(0, p));
+    const max = document.documentElement.scrollHeight - innerHeight;
+    window.scrollTo({ top: prog * max, behavior: 'auto' });
+  };
+
+  const updateScrub = () => setScrubHead(getScrollProgress());
+  window.addEventListener('scroll', updateScrub, { passive: true });
+  updateScrub();
+
+  if (scrubMarks) {
+    scrubMarks.innerHTML = '';
+    const labels = sections.map((s) => (s.id || '').toUpperCase());
+    labels.forEach((t, i) => {
+      const d = document.createElement('div');
+      d.className = 'm';
+      d.textContent = t || `S${i+1}`;
+      scrubMarks.appendChild(d);
+    });
+  }
+
+  if (scrubTrack) {
     let dragging = false;
 
-    const onDown = (e) => {
-      if (!tracks || !playhead) return;
-      dragging = true;
-      playhead.focus({ preventScroll: true });
-      try { playhead.setPointerCapture(e.pointerId); } catch (_) {}
-      setTimeFromEvent(e.clientX);
+    const posToProgress = (clientX, clientY) => {
+      const r = scrubTrack.getBoundingClientRect();
+      if (r.height > r.width) {
+        const y = (clientY - r.top) / r.height;
+        return y;
+      } else {
+        const x = (clientX - r.left) / r.width;
+        return x;
+      }
     };
 
+    const onDown = (e) => {
+      dragging = true;
+      scrubTrack.setPointerCapture?.(e.pointerId);
+      const p = posToProgress(e.clientX, e.clientY);
+      scrollToProgress(p);
+      setScrubHead(p);
+    };
     const onMove = (e) => {
       if (!dragging) return;
-      setTimeFromEvent(e.clientX);
+      const p = posToProgress(e.clientX, e.clientY);
+      scrollToProgress(p);
+      setScrubHead(p);
     };
-
     const onUp = () => { dragging = false; };
 
-    playhead?.addEventListener('pointerdown', onDown);
-    playhead?.addEventListener('pointermove', onMove);
-    playhead?.addEventListener('pointerup', onUp);
-    playhead?.addEventListener('pointercancel', onUp);
-
-    // click on timeline area sets time too
-    tracks?.addEventListener('pointerdown', (e) => {
-      if (e.target && (e.target.closest('.nle-clip') || e.target.closest('[data-nle-playhead]'))) return;
-      setTimeFromEvent(e.clientX);
-    });
-
-    // keyboard: left/right to scrub
-    playhead?.addEventListener('keydown', (e) => {
-      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-      e.preventDefault();
-      currentTime = clamp(currentTime + (e.key === 'ArrowRight' ? 1 : -1), 0, total);
-      render();
-    });
-
-    // init
-    activeClip = null;
-    currentTime = 0.2;
-    render();
+    scrubTrack.addEventListener('pointerdown', onDown);
+    window.addEventListener('pointermove', onMove, { passive: true });
+    window.addEventListener('pointerup', onUp, { passive: true });
+    window.addEventListener('pointercancel', onUp, { passive: true });
   }
 
-  // ---------- Mobile media pool ----------
-  const grid = section.querySelector('[data-bin-grid]');
-  if (grid) {
-    const items = Array.from(grid.querySelectorAll('.bin-item'));
-    const img = section.querySelector('[data-bin-img]');
-    const badge = section.querySelector('[data-bin-badge]');
-    const title = section.querySelector('[data-bin-title]');
-    const file = section.querySelector('[data-bin-file]');
-    const tc = section.querySelector('[data-bin-tc]');
+  /* ---------------------------------
+     Hero logo reveal (pointer spotlight)
+  --------------------------------- */
+  const heroLogo = document.getElementById('heroLogo');
+  if (heroLogo && !isTouch) {
+    const setPos = (e) => {
+      const r = heroLogo.getBoundingClientRect();
+      const x = ((e.clientX - r.left) / r.width) * 100;
+      const y = ((e.clientY - r.top) / r.height) * 100;
+      heroLogo.style.setProperty('--lx', `${x.toFixed(2)}%`);
+      heroLogo.style.setProperty('--ly', `${y.toFixed(2)}%`);
+    };
+    heroLogo.addEventListener('pointerenter', () => heroLogo.classList.add('is-hot'));
+    heroLogo.addEventListener('pointerleave', () => heroLogo.classList.remove('is-hot'));
+    heroLogo.addEventListener('pointermove', setPos, { passive: true });
+  }
 
-    const setActive = (item) => {
-      items.forEach((x) => x.classList.toggle('is-active', x === item));
-      const d = item.dataset;
-      if (img && d.img) img.src = d.img;
-      if (badge) badge.textContent = d.badge || '';
-      if (title) title.textContent = d.title || '';
-      if (file) file.textContent = d.file || '';
-      if (tc) tc.textContent = d.tc || '';
+  // clapper micro hit
+  const clap = document.getElementById('clapButton');
+  if (clap) {
+    clap.addEventListener('click', () => {
+      clap.classList.remove('is-hit');
+      // restart animation
+      void clap.offsetWidth;
+      clap.classList.add('is-hit');
+    });
+  }
+
+  /* ---------------------------------
+     Showreel video: lazy + pause offscreen + sound + timecode
+  --------------------------------- */
+  const video = document.getElementById('showreelVideo');
+  const soundBtn = document.getElementById('soundBtn');
+  const showreelTC = document.getElementById('showreelTC');
+
+  const ensureVideoLoaded = () => {
+    if (!video) return;
+    const source = video.querySelector('source[data-src]');
+    if (source && !source.src) {
+      source.src = source.dataset.src;
+      video.load();
+    }
+  };
+
+  if (video) {
+    // update showreel timecode
+    const tick = () => {
+      if (!video || !showreelTC) return;
+      showreelTC.textContent = tc(video.currentTime);
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+
+    const vObs = new IntersectionObserver((entries) => {
+      const e = entries[0];
+      if (!e) return;
+
+      if (e.isIntersecting) {
+        ensureVideoLoaded();
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+        // when offscreen — if sound was on, we keep state but video is paused
+      }
+    }, { threshold: 0.35 });
+
+    vObs.observe(video);
+
+    if (soundBtn) {
+      soundBtn.addEventListener('click', () => {
+        ensureVideoLoaded();
+
+        const willEnable = video.muted;
+        video.muted = !willEnable;
+
+        // if enabling sound, also set volume gently
+        if (!video.muted) video.volume = 0.9;
+
+        soundBtn.setAttribute('aria-pressed', String(!video.muted));
+      });
+    }
+  }
+
+  /* ---------------------------------
+     Services switchboard
+  --------------------------------- */
+  const svc = document.querySelector('[data-svc]');
+  if (svc) {
+    const canHover = matchMedia('(hover: hover)').matches;
+    const items = Array.from(svc.querySelectorAll('.svc-item'));
+    const out = {
+      code: svc.querySelector('[data-svc-code]'),
+      title: svc.querySelector('[data-svc-title]'),
+      lead: svc.querySelector('[data-svc-lead]'),
+      doList: svc.querySelector('[data-svc-do]'),
+      getList: svc.querySelector('[data-svc-get]'),
+      pipe: svc.querySelector('[data-svc-pipe]'),
     };
 
-    items.forEach((item) => item.addEventListener('click', () => setActive(item)));
-    const first = items.find((x) => x.classList.contains('is-active')) || items[0];
-    if (first) setActive(first);
+    const split = (s) => String(s || '').split('|').map(x => x.trim()).filter(Boolean);
+    const fill = (ul, arr) => {
+      if (!ul) return;
+      ul.innerHTML = '';
+      arr.forEach(t => {
+        const li = document.createElement('li');
+        li.textContent = t;
+        ul.appendChild(li);
+      });
+    };
+
+    const setPipe = (stepsStr) => {
+      if (!out.pipe) return;
+      out.pipe.innerHTML = '';
+      const steps = String(stepsStr || '').split(',').map(s => s.trim()).filter(Boolean);
+      steps.forEach(s => {
+        const el = document.createElement('span');
+        el.textContent = s;
+        out.pipe.appendChild(el);
+      });
+    };
+
+    let current = Math.max(0, items.findIndex(i => i.classList.contains('is-active')));
+    let locked = false;
+
+    const apply = (idx, fromHover=false) => {
+      if (fromHover && locked) return;
+      idx = Math.max(0, Math.min(items.length - 1, idx));
+      current = idx;
+
+      items.forEach((b, i) => b.classList.toggle('is-active', i === idx));
+
+      const d = items[idx].dataset;
+      if (out.code) out.code.textContent = d.code || '';
+      if (out.title) out.title.textContent = d.title || '';
+      if (out.lead) out.lead.textContent = d.lead || '';
+      fill(out.doList, split(d.do));
+      fill(out.getList, split(d.get));
+      setPipe(d.steps);
+    };
+
+    items.forEach((b, i) => {
+      b.addEventListener('click', () => {
+        if (current === i) locked = !locked;
+        else locked = true;
+        apply(i, false);
+      });
+
+      if (canHover) {
+        b.addEventListener('mouseenter', () => apply(i, true));
+        b.addEventListener('focus', () => apply(i, true));
+      }
+    });
+
+    apply(current);
   }
+
+  /* ---------------------------------
+     Works NLE timeline
+  --------------------------------- */
+  const nle = document.querySelector('[data-nle]');
+  if (nle) {
+    const preview = document.getElementById('nlePreview');
+    const seq = document.getElementById('nleSeq');
+    const nleTC = document.getElementById('nleTC');
+    const tracksEl = document.getElementById('nleTracks');
+    const timelineEl = document.getElementById('nleTimeline');
+    const playheadEl = document.getElementById('nlePlayhead');
+    const bin = document.getElementById('nleBin');
+
+    // timeline model: in "seconds" within 60 sec sequence
+    const fps = 25;
+    const seqLen = 60;
+    const pxPerSec = 36; // controls zoom feel
+    const padLeft = 120; // room for labels / safe
+
+    const clips = [
+      { name:'EVENT_01', start: 3,  dur: 12, track: 0, img:'https://picsum.photos/seed/individni_01/1280/720' },
+      { name:'COURSE_02', start: 18, dur: 18, track: 0, img:'https://picsum.photos/seed/individni_02/1280/720' },
+      { name:'LIVE_03',  start: 10, dur: 10, track: 1, img:'https://picsum.photos/seed/individni_03/1280/720' },
+      { name:'AD_04',    start: 32, dur: 15, track: 1, img:'https://picsum.photos/seed/individni_04/1280/720' },
+    ];
+
+    let t = 0;
+
+    const renderTimeline = () => {
+      if (!tracksEl) return;
+      tracksEl.innerHTML = '';
+      const trackNames = ['V1', 'V2', 'A1'];
+
+      const totalW = padLeft + seqLen * pxPerSec + 180;
+
+      trackNames.forEach((label, idx) => {
+        const track = document.createElement('div');
+        track.className = 'track';
+        track.style.width = `${totalW}px`;
+
+        const tl = document.createElement('div');
+        tl.className = 'track-label';
+        tl.textContent = label;
+        track.appendChild(tl);
+
+        tracksEl.appendChild(track);
+      });
+
+      // place clips
+      const trackEls = Array.from(tracksEl.querySelectorAll('.track'));
+
+      clips.forEach((c, i) => {
+        const el = document.createElement('div');
+        el.className = 'clip';
+        el.textContent = c.name;
+        el.style.left = `${padLeft + c.start * pxPerSec}px`;
+        el.style.width = `${Math.max(60, c.dur * pxPerSec)}px`;
+
+        el.addEventListener('click', () => {
+          setTime(c.start);
+          setActiveClip(i);
+          if (seq) seq.textContent = c.name;
+          if (preview) preview.src = c.img;
+        });
+
+        trackEls[c.track]?.appendChild(el);
+      });
+
+      // ruler ticks (simple)
+      const ruler = document.getElementById('nleRuler');
+      if (ruler) {
+        ruler.style.width = `${totalW}px`;
+        ruler.style.backgroundSize = `${pxPerSec * 5}px 100%`; // 5 sec spacing visual
+      }
+
+      // sync scroll with ruler/playhead
+      if (timelineEl) {
+        const scrollable = tracksEl;
+        scrollable.addEventListener('scroll', () => {
+          // keep playhead position visually aligned; it's absolute in container so ok
+        }, { passive: true });
+
+        // wheel -> horizontal scroll
+        scrollable.addEventListener('wheel', (e) => {
+          if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+            e.preventDefault();
+            scrollable.scrollLeft += e.deltaY;
+          }
+        }, { passive: false });
+      }
+    };
+
+    const setActiveClip = (idx) => {
+      const els = Array.from(nle.querySelectorAll('.clip'));
+      els.forEach((c, i) => c.classList.toggle('is-active', i === idx));
+      if (bin) {
+        const bins = Array.from(bin.querySelectorAll('.bin-item'));
+        bins.forEach((b) => b.classList.remove('is-active'));
+        const b = bin.querySelector(`.bin-item[data-clip="${idx}"]`);
+        if (b) b.classList.add('is-active');
+      }
+    };
+
+    const setTime = (sec) => {
+      t = Math.max(0, Math.min(seqLen, sec));
+      if (nleTC) nleTC.textContent = tc(t, fps);
+      if (playheadEl && tracksEl) {
+        const x = padLeft + t * pxPerSec;
+        // playhead is positioned relative to timeline container (not scroll content), so subtract scrollLeft
+        const scrollLeft = tracksEl.scrollLeft || 0;
+        playheadEl.style.left = `${x - scrollLeft}px`;
+      }
+    };
+
+    // drag playhead
+    const bindPlayheadDrag = () => {
+      if (!timelineEl || !tracksEl) return;
+      let dragging = false;
+
+      const pointToTime = (clientX) => {
+        const r = timelineEl.getBoundingClientRect();
+        const x = clientX - r.left;
+        const scrollLeft = tracksEl.scrollLeft || 0;
+        const worldX = x + scrollLeft;
+        const sec = (worldX - padLeft) / pxPerSec;
+        return sec;
+      };
+
+      const onDown = (e) => {
+        dragging = true;
+        timelineEl.setPointerCapture?.(e.pointerId);
+        setTime(pointToTime(e.clientX));
+      };
+      const onMove = (e) => {
+        if (!dragging) return;
+        setTime(pointToTime(e.clientX));
+      };
+      const onUp = () => { dragging = false; };
+
+      timelineEl.addEventListener('pointerdown', onDown);
+      window.addEventListener('pointermove', onMove, { passive: true });
+      window.addEventListener('pointerup', onUp, { passive: true });
+      window.addEventListener('pointercancel', onUp, { passive: true });
+    };
+
+    // mobile bin
+    if (bin) {
+      const buttons = Array.from(bin.querySelectorAll('.bin-item'));
+      buttons.forEach((b) => {
+        b.addEventListener('click', () => {
+          const idx = Number(b.dataset.clip || '0');
+          const clip = clips[idx];
+          if (!clip) return;
+          setActiveClip(idx);
+          if (seq) seq.textContent = clip.name;
+          if (preview) preview.src = clip.img;
+          setTime(clip.start);
+        });
+      });
+    }
+
+    renderTimeline();
+    bindPlayheadDrag();
+    setActiveClip(0);
+    setTime(clips[0].start);
+    if (seq) seq.textContent = clips[0].name;
+    if (preview) preview.src = clips[0].img;
+  }
+
+  /* ---------------------------------
+     Smooth anchor scroll (keeps it neat)
+  --------------------------------- */
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest?.('a[href^="#"]');
+    if (!a) return;
+    const href = a.getAttribute('href');
+    if (!href || href === '#') return;
+    const id = href.slice(1);
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    e.preventDefault();
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
 })();
