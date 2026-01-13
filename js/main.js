@@ -1,21 +1,20 @@
 /* ============================================================================================================================
-   INDIVIDNI — ART THEATRE v4
-   - Scene navigation with cursor-wipe
-   - Canvas "flying frames" (inspired by kinetic, airy motion; NOT paper)
-   - Showreel lazy-load + pause offscreen + audio on click
-   - Services node-map (hover on PC / tap on mobile)
-   - Works NLE scrub (desktop) + Media Pool (mobile)
+   SERIAL v5 — scroll as montage (no libraries)
+   - One sticky stage with layered episodes
+   - Controlled background motion (not chaotic)
+   - Ribbon transforms across episodes
+   - Showreel lazy-load + pause offstage + audio only on click
+   - Services sticker deck (hover on desktop, tap on mobile)
+   - Works timeline scrub (desktop) + media pool (mobile)
    ============================================================================================================================ */
 
 (() => {
   const root = document.documentElement;
-  const body = document.body;
 
-  // ------------------------------------------------------------------------------------------------
-  // Helpers
-  // ------------------------------------------------------------------------------------------------
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const lerp = (a, b, t) => a + (b - a) * t;
+  const smoothstep = (t) => t * t * (3 - 2 * t);
+  const remap = (v, a, b) => clamp((v - a) / (b - a), 0, 1);
 
   function formatTC(seconds, fps = 25) {
     const totalFrames = Math.floor(seconds * fps);
@@ -30,157 +29,150 @@
   }
 
   // ------------------------------------------------------------------------------------------------
-  // Cursor light (CSS vars)
+  // Cursor light vars
   // ------------------------------------------------------------------------------------------------
-  let mouseX = window.innerWidth * 0.5;
-  let mouseY = window.innerHeight * 0.5;
   window.addEventListener('pointermove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-    root.style.setProperty('--lx', `${mouseX}px`);
-    root.style.setProperty('--ly', `${mouseY}px`);
-    root.style.setProperty('--wipeX', `${mouseX}px`);
-    root.style.setProperty('--wipeY', `${mouseY}px`);
+    root.style.setProperty('--mx', `${e.clientX}px`);
+    root.style.setProperty('--my', `${e.clientY}px`);
   }, { passive: true });
 
   // ------------------------------------------------------------------------------------------------
-  // Scenes (theatre navigation)
+  // Serial elements
   // ------------------------------------------------------------------------------------------------
-  const stack = document.getElementById('stack');
-  const scenes = Array.from(document.querySelectorAll('.scene'));
-  scenes.forEach((s, i) => s.style.setProperty('--i', String(i)));
-
-  const hudLinks = Array.from(document.querySelectorAll('[data-go]'));
+  const serial = document.getElementById('serial');
+  const stage = document.getElementById('stage');
+  const layers = Array.from(document.querySelectorAll('.layer.ep'));
   const hudTC = document.getElementById('hudTC');
+  const hudScene = document.getElementById('hudScene');
+  const hudLabel = document.getElementById('hudLabel');
+  const railDots = Array.from(document.querySelectorAll('.rail-dot'));
 
-  const accents = {
-    violet: getComputedStyle(root).getPropertyValue('--violet').trim(),
-    cyan: getComputedStyle(root).getPropertyValue('--cyan').trim(),
-    amber: getComputedStyle(root).getPropertyValue('--amber').trim(),
-    lime: getComputedStyle(root).getPropertyValue('--lime').trim(),
-  };
+  // Episode ranges (0..1 progress inside the serial scroll)
+  const EP = [
+    { key: 'EP0', label: 'COLD OPEN', a: 0.00, b: 0.22, accent: '--vio' },
+    { key: 'EP1', label: 'SHOWREEL',  a: 0.18, b: 0.42, accent: '--cyn' },
+    { key: 'EP2', label: 'SERVICES',  a: 0.38, b: 0.62, accent: '--amb' },
+    { key: 'EP3', label: 'WORKS',     a: 0.58, b: 0.86, accent: '--lim' },
+    { key: 'EP4', label: 'PRICE',     a: 0.82, b: 0.94, accent: '--vio' },
+    { key: 'EP5', label: 'CONTACT',   a: 0.90, b: 1.00, accent: '--cyn' },
+  ];
 
-  let index = 0;
-  let isAnimating = false;
+  // Ribbon keyframes along the serial
+  const KF = [
+    { p: 0.00, x: 58, y: 60, r: -14, s: 1.10 },
+    { p: 0.28, x: 50, y: 52, r:   0, s: 1.05 },
+    { p: 0.54, x: 40, y: 54, r:   8, s: 0.90 },
+    { p: 0.78, x: 56, y: 40, r:  -3, s: 0.80 },
+    { p: 1.00, x: 62, y: 48, r:  10, s: 0.62 },
+  ];
 
-  function setAccentFromScene(i) {
-    const s = scenes[i];
-    const key = (s && s.dataset.accent) || 'violet';
-    const c = accents[key] || accents.violet;
-    root.style.setProperty('--accent', c);
+  function interpKF(p) {
+    p = clamp(p, 0, 1);
+    let i = 0;
+    for (; i < KF.length - 1; i++) {
+      if (p >= KF[i].p && p <= KF[i + 1].p) break;
+    }
+    const a = KF[i], b = KF[i + 1];
+    const t = remap(p, a.p, b.p);
+    const tt = smoothstep(t);
+    return {
+      x: lerp(a.x, b.x, tt),
+      y: lerp(a.y, b.y, tt),
+      r: lerp(a.r, b.r, tt),
+      s: lerp(a.s, b.s, tt),
+    };
   }
 
-  function setActiveButtons(i) {
-    hudLinks.forEach((b) => b.classList.toggle('is-active', Number(b.dataset.go) === i));
-    const dockBtns = Array.from(document.querySelectorAll('.dock-btn'));
-    dockBtns.forEach((b) => b.classList.toggle('is-active', Number(b.dataset.go) === i));
+  function getSerialProgress() {
+    if (!serial) return 0;
+    const r = serial.getBoundingClientRect();
+    const scrollable = r.height - window.innerHeight;
+    if (scrollable <= 1) return 0;
+    const scrolled = -r.top;
+    return clamp(scrolled / scrollable, 0, 1);
   }
-
-  function setActiveScene(i) {
-    scenes.forEach((s, k) => s.classList.toggle('is-active', k === i));
-    root.style.setProperty('--cam', String(i));
-    setAccentFromScene(i);
-    setActiveButtons(i);
-  }
-
-  function wipeTo(i) {
-    if (isAnimating) return;
-    if (i < 0 || i >= scenes.length) return;
-    if (i === index) return;
-
-    isAnimating = true;
-    body.classList.add('is-wiping');
-
-    // after wipe covers, switch scene
-    window.setTimeout(() => {
-      index = i;
-      setActiveScene(index);
-      // update TC as "chapter time"
-      if (hudTC) hudTC.textContent = formatTC(index * 18.2);
-    }, 260);
-
-    // remove wipe after transition
-    window.setTimeout(() => {
-      body.classList.remove('is-wiping');
-      isAnimating = false;
-    }, 640);
-  }
-
-  // buttons
-  hudLinks.forEach((b) => {
-    b.addEventListener('click', () => wipeTo(Number(b.dataset.go)));
-  });
-
-  // start accent
-  setActiveScene(index);
-  if (hudTC) hudTC.textContent = formatTC(0);
-
-  // wheel navigation (desktop)
-  let wheelLock = 0;
-  window.addEventListener('wheel', (e) => {
-    // allow normal wheel inside form inputs
-    const t = e.target;
-    const isField = t && (t.closest('input,textarea,select,details') || t.closest('.bin-grid'));
-    if (isField) return;
-
-    e.preventDefault();
-    const now = performance.now();
-    if (now - wheelLock < 520) return;
-    wheelLock = now;
-
-    const dir = Math.sign(e.deltaY);
-    if (dir > 0) wipeTo(index + 1);
-    else if (dir < 0) wipeTo(index - 1);
-  }, { passive: false });
-
-  // key navigation
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowDown' || e.key === 'PageDown') { e.preventDefault(); wipeTo(index + 1); }
-    if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); wipeTo(index - 1); }
-    if (e.key === 'Home') { e.preventDefault(); wipeTo(0); }
-    if (e.key === 'End') { e.preventDefault(); wipeTo(scenes.length - 1); }
-  });
-
-  // mobile swipe navigation (only when not interacting inside controls)
-  let touchStartY = 0;
-  let touchStartX = 0;
-  let touchId = null;
-  window.addEventListener('pointerdown', (e) => {
-    if (e.pointerType !== 'touch') return;
-    touchId = e.pointerId;
-    touchStartY = e.clientY;
-    touchStartX = e.clientX;
-  }, { passive: true });
-
-  window.addEventListener('pointerup', (e) => {
-    if (e.pointerType !== 'touch') return;
-    if (touchId !== e.pointerId) return;
-
-    const dy = e.clientY - touchStartY;
-    const dx = e.clientX - touchStartX;
-
-    // ignore horizontal drags (e.g. timeline bins)
-    if (Math.abs(dx) > Math.abs(dy)) return;
-
-    // ignore tiny swipes
-    if (Math.abs(dy) < 60) return;
-
-    // ignore when interacting in form
-    const el = document.elementFromPoint(e.clientX, e.clientY);
-    if (el && el.closest('input,textarea,select,.bin-grid,.map,.chip')) return;
-
-    if (dy < 0) wipeTo(index + 1);
-    else wipeTo(index - 1);
-  }, { passive: true });
 
   // ------------------------------------------------------------------------------------------------
-  // Showreel: lazy-load + pause offscreen + audio toggle
+  // Controlled floatfield motion (8 elements, not random)
   // ------------------------------------------------------------------------------------------------
-  const video = document.getElementById('showreelVideo');
-  const playBtn = document.getElementById('reelPlay');
-  const soundBtn = document.getElementById('reelSound');
+  const FF = [
+    { k: 0, ax: 42, ay: -26, ar: 18 },
+    { k: 1, ax: -36, ay:  18, ar: -14 },
+    { k: 2, ax:  24, ay:  28, ar: 12 },
+    { k: 3, ax: -22, ay: -18, ar: -10 },
+    { k: 4, ax:  18, ay:  20, ar: 8 },
+    { k: 5, ax: -26, ay:  30, ar: -12 },
+    { k: 6, ax:  30, ay: -14, ar: 10 },
+    { k: 7, ax: -18, ay: -24, ar: -8 },
+  ];
+
+  function setFF(p) {
+    const t = p * Math.PI * 2;
+    FF.forEach((f) => {
+      const sx = Math.sin(t + f.k * 0.9);
+      const cy = Math.cos(t * 0.85 + f.k * 1.2);
+      const x = (sx * f.ax) + (p - 0.5) * (f.ax * 0.9);
+      const y = (cy * f.ay) + (0.5 - p) * (f.ay * 0.9);
+      const r = (sx * f.ar) + (p - 0.5) * (f.ar * 0.6);
+      root.style.setProperty(`--ff${f.k}x`, `${x.toFixed(2)}px`);
+      root.style.setProperty(`--ff${f.k}y`, `${y.toFixed(2)}px`);
+      root.style.setProperty(`--ff${f.k}r`, `${r.toFixed(2)}deg`);
+    });
+  }
+
+  // ------------------------------------------------------------------------------------------------
+  // Episodes visibility, HUD, accents, rail active dot
+  // ------------------------------------------------------------------------------------------------
+  function setEpisodes(p) {
+    layers.forEach((layer) => {
+      const ep = Number(layer.dataset.ep);
+      const seg = EP[ep];
+      if (!seg) return;
+
+      // Soft overlap around edges
+      const inT = remap(p, seg.a - 0.06, seg.b);
+      const outT = remap(p, seg.b - 0.06, seg.b + 0.06);
+      const vis = clamp(inT * (1 - outT), 0, 1);
+
+      const y = (1 - vis) * 14; // subtle drift
+      layer.style.opacity = String(vis);
+      layer.style.transform = `translateY(${y.toFixed(2)}px)`;
+      layer.style.pointerEvents = vis > 0.25 ? 'auto' : 'none';
+    });
+
+    // Current episode index
+    let current = 0;
+    for (let i = 0; i < EP.length; i++) {
+      if (p >= EP[i].a) current = i;
+    }
+    const seg = EP[current];
+
+    // Accent
+    const accVar = getComputedStyle(root).getPropertyValue(seg.accent).trim();
+    if (accVar) root.style.setProperty('--accent', accVar);
+
+    // HUD
+    if (hudScene) hudScene.textContent = seg.key;
+    if (hudLabel) hudLabel.textContent = seg.label;
+
+    // Rail
+    railDots.forEach((d, i) => d.classList.toggle('is-active', i === current));
+    root.style.setProperty('--railP', String(p));
+  }
+
+  // ------------------------------------------------------------------------------------------------
+  // Showreel
+  // ------------------------------------------------------------------------------------------------
+  const frameImg  = document.getElementById('frameImg');
+  const frameTC   = document.getElementById('frameTC');
+  const frameMode = document.getElementById('frameMode');
+  const frameTag  = document.getElementById('frameTag');
+  const frameNote = document.getElementById('frameNote');
+
+  const video    = document.getElementById('reelVideo');
+  const btnPlay  = document.getElementById('btnPlay');
+  const btnSound = document.getElementById('btnSound');
   const reelMode = document.getElementById('reelMode');
-  const reelTC = document.getElementById('reelTC');
 
   let audioEnabled = false;
   let srcLoaded = false;
@@ -193,141 +185,115 @@
     srcLoaded = true;
   }
 
-  function updateReelTC() {
-    if (!video || !reelTC) return;
-    reelTC.textContent = formatTC(video.currentTime || 0);
+  function setAudio(on) {
+    audioEnabled = !!on;
+    if (!video) return;
+    video.muted = !audioEnabled;
+    if (btnSound) btnSound.textContent = audioEnabled ? 'Sound: ON' : 'Sound: OFF';
+    if (reelMode && !video.paused) reelMode.textContent = audioEnabled ? 'playing (audio)' : 'playing';
   }
 
-  if (video) {
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((en) => {
-        if (en.isIntersecting) {
-          loadVideoSources();
-          if (reelMode) reelMode.textContent = 'armed';
-        } else {
-          // pause when offscreen (or offscene)
-          try { video.pause(); } catch(_){}
-          if (reelMode) reelMode.textContent = 'standby';
-        }
-      });
-    }, { threshold: 0.25 });
-    io.observe(video);
-
-    video.addEventListener('timeupdate', updateReelTC);
-    video.addEventListener('pause', () => { if (reelMode) reelMode.textContent = 'paused'; });
-    video.addEventListener('play', () => { if (reelMode) reelMode.textContent = audioEnabled ? 'playing (audio)' : 'playing'; });
+  function updateVideoMode() {
+    if (!video || !reelMode) return;
+    if (video.paused) reelMode.textContent = 'paused';
+    else reelMode.textContent = audioEnabled ? 'playing (audio)' : 'playing';
   }
 
-  if (playBtn && video) {
-    playBtn.addEventListener('click', async () => {
+  if (btnPlay && video) {
+    btnPlay.addEventListener('click', async () => {
       loadVideoSources();
       try {
         if (video.paused) await video.play();
         else video.pause();
       } catch (_) {}
+      updateVideoMode();
     });
   }
 
-  function setAudio(on) {
-    audioEnabled = !!on;
-    if (!video) return;
-    video.muted = !audioEnabled;
-    if (soundBtn) soundBtn.textContent = audioEnabled ? 'Sound: ON' : 'Sound: OFF';
-    if (reelMode && !video.paused) reelMode.textContent = audioEnabled ? 'playing (audio)' : 'playing';
-  }
-  if (soundBtn && video) {
-    soundBtn.addEventListener('click', async () => {
+  if (btnSound && video) {
+    btnSound.addEventListener('click', async () => {
       loadVideoSources();
       setAudio(!audioEnabled);
-      if (!video.paused) return;
-      try { await video.play(); } catch(_) {}
+      if (audioEnabled && video.paused) {
+        try { await video.play(); } catch (_) {}
+      }
+      updateVideoMode();
     });
   }
+
   setAudio(false);
 
+  function setReelActive(isActive) {
+    if (stage) stage.classList.toggle('is-reel', isActive);
+    if (!video) return;
+
+    if (!isActive) {
+      try { video.pause(); } catch (_) {}
+      updateVideoMode();
+    } else {
+      loadVideoSources();
+      if (reelMode && video.paused) reelMode.textContent = 'armed';
+    }
+  }
+
   // ------------------------------------------------------------------------------------------------
-  // Services map (hover PC / tap mobile)
+  // Services — sticker deck
   // ------------------------------------------------------------------------------------------------
+  const svcDeck = document.getElementById('svcDeck');
   const svcName = document.getElementById('svcName');
   const svcDesc = document.getElementById('svcDesc');
-  const svcMap = document.getElementById('svcMap');
-
   const canHover = window.matchMedia('(hover: hover)').matches;
 
-  const svc = [
-    { t:'Продюсирование', d:'Концепт → команда → контроль → мастер.', a: 330 },
-    { t:'Мероприятия', d:'Репортаж, backstage, хайлайты 24–72h.', a: 20 },
-    { t:'Трансляции', d:'Multicam эфир + графика + backup.', a: 70 },
-    { t:'Курсы', d:'Съёмка сезонами. Система, не разовые уроки.', a: 120 },
-    { t:'Подкасты', d:'Чистый звук + 2–4 камеры + shorts.', a: 170 },
-    { t:'Клипы', d:'Свет, стиль, монтаж в бит, цвет.', a: 220 },
-    { t:'Реклама', d:'Сценарий, сториборд, мастера 16:9 + 9:16.', a: 260 },
-    { t:'Пост‑прод', d:'Монтаж, цвет, звук, субтитры.', a: 300 },
-    { t:'AI + 3D', d:'Motion, HUD, VFX‑штрихи, апскейл.', a: 40 },
+  const services = [
+    { k:'Продюсирование', d:'Идея → команда → контроль → мастер.' },
+    { k:'Мероприятия',    d:'Репортаж / backstage / хайлайты 24–72h.' },
+    { k:'Трансляции',     d:'Multicam эфир + графика + backup.' },
+    { k:'Курсы',          d:'Сезоны, структура, единый стиль.' },
+    { k:'Подкасты',       d:'Чистый звук + 2–4 камеры + shorts.' },
+    { k:'Клипы',          d:'Свет, стиль, монтаж в бит, цвет.' },
+    { k:'Реклама',        d:'Сценарий, сториборд, masters 16:9 + 9:16.' },
+    { k:'Пост-прод',      d:'Монтаж, цвет, звук, субтитры.' },
+    { k:'AI + 3D',        d:'Motion, HUD, VFX-штрихи, апскейл.' },
   ];
 
-  function polarToXY(angleDeg, radius, cx, cy) {
-    const a = (angleDeg * Math.PI) / 180;
-    return { x: cx + Math.cos(a) * radius, y: cy + Math.sin(a) * radius };
-  }
-
   function setSvc(i) {
-    const s = svc[i];
+    const s = services[i];
     if (!s) return;
-    if (svcName) svcName.textContent = s.t;
+    if (svcName) svcName.textContent = s.k;
     if (svcDesc) svcDesc.textContent = s.d;
-    const nodes = Array.from(document.querySelectorAll('.node'));
-    nodes.forEach((n) => n.classList.toggle('is-active', Number(n.dataset.idx) === i));
+
+    const items = Array.from(document.querySelectorAll('.svc-sticker'));
+    items.forEach((el) => el.classList.toggle('is-active', Number(el.dataset.idx) === i));
   }
 
-  if (svcMap) {
-    const rect = () => svcMap.getBoundingClientRect();
-    const build = () => {
-      // remove old nodes
-      Array.from(svcMap.querySelectorAll('.node')).forEach((n) => n.remove());
-      const r = rect();
-      const cx = r.width/2, cy = r.height/2;
+  if (svcDeck) {
+    svcDeck.innerHTML = '';
+    services.forEach((s, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'svc-sticker';
+      b.dataset.idx = String(i);
+      b.innerHTML = `<div class="sk">${s.k}</div><div class="sd">${s.d}</div>`;
 
-      svc.forEach((s, i) => {
-        const ring = i % 3; // spread across rings
-        const rr = r.width * (ring === 0 ? 0.33 : ring === 1 ? 0.25 : 0.18);
-        const p = polarToXY(s.a, rr, cx, cy);
+      if (canHover) {
+        b.addEventListener('mouseenter', () => setSvc(i));
+        b.addEventListener('focus', () => setSvc(i));
+      }
+      b.addEventListener('click', () => setSvc(i));
 
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'node';
-        btn.dataset.idx = String(i);
-        btn.style.left = `${(p.x / r.width) * 100}%`;
-        btn.style.top  = `${(p.y / r.height) * 100}%`;
-        btn.innerHTML = `<span class="node-dot" aria-hidden="true"></span><span class="node-t">${s.t}</span>`;
-
-        if (canHover) {
-          btn.addEventListener('mouseenter', () => setSvc(i));
-          btn.addEventListener('focus', () => setSvc(i));
-        }
-        btn.addEventListener('click', () => setSvc(i));
-
-        svcMap.appendChild(btn);
-      });
-    };
-
-    build();
-    window.addEventListener('resize', () => build(), { passive: true });
+      svcDeck.appendChild(b);
+    });
     setSvc(0);
   }
 
   // ------------------------------------------------------------------------------------------------
-  // Works: NLE — placeholders, timeline, scrub
+  // Works — placeholders + timeline + media pool
   // ------------------------------------------------------------------------------------------------
-  const nle = document.getElementById('nle');
-  const nleFrame = document.getElementById('nleFrame');
-  const nleTC = document.getElementById('nleTC');
   const ruler = document.getElementById('ruler');
   const tracksEl = document.getElementById('tracks');
   const playhead = document.getElementById('playhead');
   const binGrid = document.getElementById('binGrid');
 
-  // simple SVG placeholders (no external assets)
   function makePlaceholder(label, hue = 210) {
     const svg = `
       <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720">
@@ -358,48 +324,46 @@
   }
 
   const shots = [
-    { name: 'EVENT_01', len: 6.4, img: makePlaceholder('EVENT_01', 195) },
-    { name: 'LIVE_02',  len: 5.2, img: makePlaceholder('LIVE_02', 165) },
-    { name: 'COURSE_03',len: 7.1, img: makePlaceholder('COURSE_03', 245) },
-    { name: 'PODCAST_04',len: 4.8, img: makePlaceholder('PODCAST_04', 285) },
-    { name: 'AD_05',    len: 6.0, img: makePlaceholder('AD_05', 35) },
-    { name: 'MV_06',    len: 8.0, img: makePlaceholder('MV_06', 310) },
+    { name: 'EVENT_01',   len: 6.4, img: makePlaceholder('EVENT_01', 195) },
+    { name: 'LIVE_02',    len: 5.2, img: makePlaceholder('LIVE_02', 165) },
+    { name: 'COURSE_03',  len: 7.1, img: makePlaceholder('COURSE_03', 245) },
+    { name: 'PODCAST_04', len: 4.8, img: makePlaceholder('PODCAST_04', 285) },
+    { name: 'AD_05',      len: 6.0, img: makePlaceholder('AD_05', 35) },
+    { name: 'MV_06',      len: 8.0, img: makePlaceholder('MV_06', 310) },
   ];
 
-  let totalLen = shots.reduce((a, s) => a + s.len, 0);
-  let playheadT = 0; // 0..1
+  const totalLen = shots.reduce((a, s) => a + s.len, 0);
+  let playheadT = 0;
 
   function setFrameByT(t) {
     t = clamp(t, 0, 1);
     playheadT = t;
 
     const seconds = t * totalLen;
-    if (nleTC) nleTC.textContent = formatTC(seconds);
+    if (frameTC) frameTC.textContent = formatTC(seconds);
 
-    // choose shot
+    // choose shot based on time
     let acc = 0;
     let pick = shots[0];
     for (const s of shots) {
       if (seconds >= acc && seconds < acc + s.len) { pick = s; break; }
       acc += s.len;
     }
-    if (nleFrame && nleFrame.src !== pick.img) nleFrame.src = pick.img;
 
-    if (playhead && tracksEl) {
-      const x = `${(t * 100).toFixed(3)}%`;
-      playhead.style.left = x;
-    }
+    if (frameImg && frameImg.src !== pick.img) frameImg.src = pick.img;
+    if (frameTag) frameTag.textContent = pick.name;
+    if (playhead) playhead.style.left = `${(t * 100).toFixed(3)}%`;
   }
 
   function buildRuler() {
     if (!ruler) return;
     ruler.innerHTML = '';
     const ticks = 10;
-    for (let i=0;i<=ticks;i++){
+    for (let i = 0; i <= ticks; i++) {
       const el = document.createElement('div');
       el.className = 'tick';
-      el.style.left = `${(i/ticks)*100}%`;
-      const sec = (totalLen/ticks)*i;
+      el.style.left = `${(i / ticks) * 100}%`;
+      const sec = (totalLen / ticks) * i;
       el.textContent = formatTC(sec).slice(3, 11); // mm:ss:ff
       ruler.appendChild(el);
     }
@@ -407,8 +371,7 @@
 
   function buildTracks() {
     if (!tracksEl) return;
-    // clear all tracks except playhead
-    Array.from(tracksEl.querySelectorAll('.track')).forEach((t)=>t.remove());
+    Array.from(tracksEl.querySelectorAll('.track')).forEach((t) => t.remove());
 
     const mkTrack = (label, clips, topIndex) => {
       const track = document.createElement('div');
@@ -420,46 +383,51 @@
       let x = 0;
       clips.forEach((c) => {
         const w = (c.len / totalLen) * 100;
+
         const clip = document.createElement('div');
         clip.className = `clip ${c.dim ? 'dim' : ''}`;
         clip.style.left = `${x}%`;
         clip.style.width = `${w}%`;
-        clip.dataset.t = String((c.start / totalLen));
+
         clip.innerHTML = `<span class="clip-name">${c.name}</span><span class="clip-len">${c.len.toFixed(1)}s</span>`;
         clip.addEventListener('click', () => setFrameByT(c.start / totalLen));
+
         row.appendChild(clip);
-        x += w + 1.2; // small gap
+        x += w + 1.2; // tiny gap
       });
 
       tracksEl.appendChild(track);
     };
 
-    // build clip schedule
     let start = 0;
     const primary = shots.map((s) => {
-      const o = { ...s, start, dim:false };
+      const o = { ...s, start, dim: false };
       start += s.len;
       return o;
     });
 
     mkTrack('V1', primary, 0);
 
-    // secondary track with fewer "b-roll" clips (dim)
-    const broll = [primary[1], primary[3], primary[5]].map((s) => ({ ...s, name: s.name.replace('_', '_B'), dim:true }));
+    const broll = [primary[1], primary[3], primary[5]].map((s) => ({
+      ...s,
+      name: s.name.replace('_', '_B'),
+      dim: true
+    }));
     mkTrack('V2', broll, 1);
 
-    // audio track as long clip
     const a = document.createElement('div');
     a.className = 'track';
     a.style.top = `${2 * 44}px`;
     a.innerHTML = `<span class="track-label">A1</span><div class="cliprow"></div>`;
     const row = a.querySelector('.cliprow');
+
     const audio = document.createElement('div');
     audio.className = 'clip dim';
     audio.style.left = '0%';
     audio.style.width = '98%';
     audio.innerHTML = `<span class="clip-name">MIXDOWN</span><span class="clip-len">${totalLen.toFixed(1)}s</span>`;
     row.appendChild(audio);
+
     tracksEl.appendChild(a);
   }
 
@@ -470,12 +438,21 @@
       const t = document.createElement('div');
       t.className = 'bin-thumb';
       t.innerHTML = `<img alt="${s.name}" src="${s.img}"><div class="bin-cap">${s.name}</div>`;
-      t.addEventListener('click', () => setFrameByT((shots.slice(0,i).reduce((a,x)=>a+x.len,0)) / totalLen));
+      t.addEventListener('click', () => {
+        const start = shots.slice(0, i).reduce((a, x) => a + x.len, 0);
+        setFrameByT(start / totalLen);
+      });
       binGrid.appendChild(t);
     });
   }
 
-  if (nleFrame && !nleFrame.src) nleFrame.src = shots[0].img;
+  // initial placeholder
+  if (frameImg && !frameImg.src) {
+    frameImg.src = shots[0].img;
+    if (frameTag) frameTag.textContent = shots[0].name;
+    if (frameNote) frameNote.textContent = 'replace with your 16:9 screenshot';
+  }
+
   buildRuler();
   buildTracks();
   buildBin();
@@ -483,7 +460,6 @@
 
   // timeline interactions (desktop)
   if (tracksEl && playhead) {
-    // horizontal wheel feel by dragging the playhead
     let dragging = false;
 
     const pxToT = (clientX) => {
@@ -492,8 +468,8 @@
     };
 
     tracksEl.addEventListener('pointerdown', (e) => {
-      // avoid on mobile where timeline hidden
-      if (getComputedStyle(document.querySelector('.timeline') || tracksEl).display === 'none') return;
+      const tl = document.getElementById('timeline');
+      if (tl && getComputedStyle(tl).display === 'none') return; // mobile
       dragging = true;
       tracksEl.setPointerCapture?.(e.pointerId);
       setFrameByT(pxToT(e.clientX));
@@ -506,7 +482,6 @@
 
     window.addEventListener('pointerup', () => { dragging = false; }, { passive:true });
 
-    // wheel to scrub time (horizontal feel)
     tracksEl.addEventListener('wheel', (e) => {
       e.preventDefault();
       const delta = (e.deltaY || e.deltaX) * 0.00035;
@@ -515,163 +490,112 @@
   }
 
   // ------------------------------------------------------------------------------------------------
-  // Canvas FX: "flying frames" (kinetic / airy)
+  // Navigation (rail + buttons)
   // ------------------------------------------------------------------------------------------------
-  const canvas = document.getElementById('fx');
-  const ctx = canvas?.getContext('2d', { alpha: true });
+  const chapterToP = [0.02, 0.28, 0.50, 0.72, 0.90, 0.98];
 
-  const prefersReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!canvas || !ctx || prefersReduce) return;
-
-  const DPR = () => Math.min(2, window.devicePixelRatio || 1);
-  function resize() {
-    const dpr = DPR();
-    canvas.width = Math.floor(window.innerWidth * dpr);
-    canvas.height = Math.floor(window.innerHeight * dpr);
-    canvas.style.width = `${window.innerWidth}px`;
-    canvas.style.height = `${window.innerHeight}px`;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-  resize();
-  window.addEventListener('resize', resize, { passive:true });
-
-  // small deterministic "noise" without libs
-  function n2(t, seed) {
-    return Math.sin(t * 0.7 + seed) * 0.6 + Math.sin(t * 1.31 + seed * 1.7) * 0.4;
+  function scrollToSerialP(p) {
+    if (!serial) return;
+    const rect = serial.getBoundingClientRect();
+    const top = window.scrollY + rect.top;
+    const maxScroll = rect.height - window.innerHeight;
+    const y = top + maxScroll * clamp(p, 0, 1);
+    window.scrollTo({ top: y, behavior: 'smooth' });
   }
 
-  function hexToRgb(hex){
-    const m = hex.replace('#','').trim();
-    const full = m.length===3 ? m.split('').map(x=>x+x).join('') : m;
-    const n = parseInt(full, 16);
-    return { r:(n>>16)&255, g:(n>>8)&255, b:n&255 };
-  }
-
-  const max = window.innerWidth < 980 ? 18 : 28;
-  const frames = Array.from({ length: max }, (_, i) => {
-    const d = 0.25 + Math.random() * 0.9; // depth
-    return {
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight,
-      vx: (Math.random() - 0.5) * 0.35,
-      vy: (Math.random() - 0.5) * 0.35,
-      a: Math.random() * Math.PI * 2,
-      va: (Math.random() - 0.5) * 0.004,
-      w: (60 + Math.random() * 140) * d,
-      h: (34 + Math.random() * 90) * d,
-      r: (10 + Math.random() * 22) * d,
-      d,
-      s: i * 13.37,
-    };
+  railDots.forEach((d) => {
+    d.addEventListener('click', () => {
+      const ch = Number(d.dataset.ch || '0');
+      scrollToSerialP(chapterToP[ch] ?? 0);
+    });
   });
 
-  let t0 = performance.now();
-
-  function drawRoundedRect(x, y, w, h, r) {
-    const rr = Math.min(r, w/2, h/2);
-    ctx.beginPath();
-    ctx.moveTo(x+rr, y);
-    ctx.arcTo(x+w, y, x+w, y+h, rr);
-    ctx.arcTo(x+w, y+h, x, y+h, rr);
-    ctx.arcTo(x, y+h, x, y, rr);
-    ctx.arcTo(x, y, x+w, y, rr);
-    ctx.closePath();
-  }
-
-  function tick(now) {
-    const dt = Math.min(32, now - t0);
-    t0 = now;
-
-    const w = window.innerWidth;
-    const h = window.innerHeight;
-
-    // fade background very lightly (no heavy trails)
-    ctx.clearRect(0,0,w,h);
-
-    // accent colors
-    const acc = getComputedStyle(root).getPropertyValue('--accent').trim() || '#a58cff';
-    const { r, g, b } = hexToRgb(acc);
-
-    // subtle vignette
-    const vg = ctx.createRadialGradient(w*0.5, h*0.5, 100, w*0.5, h*0.5, Math.max(w,h)*0.72);
-    vg.addColorStop(0, 'rgba(0,0,0,0)');
-    vg.addColorStop(1, 'rgba(0,0,0,0.48)');
-    ctx.fillStyle = vg;
-    ctx.fillRect(0,0,w,h);
-
-    // frames
-    const time = now * 0.001;
-    frames.forEach((f) => {
-      // drift (noise-like)
-      const driftX = n2(time, f.s) * 0.12;
-      const driftY = n2(time + 2.4, f.s) * 0.12;
-
-      f.vx += driftX;
-      f.vy += driftY;
-
-      // mouse repulsion (like air)
-      const dx = (f.x - mouseX);
-      const dy = (f.y - mouseY);
-      const dist = Math.hypot(dx, dy);
-      const reach = 240 * f.d;
-      if (dist < reach) {
-        const p = (1 - dist / reach);
-        const force = 0.55 * p;
-        f.vx += (dx / (dist + 0.001)) * force;
-        f.vy += (dy / (dist + 0.001)) * force;
-        f.va += ((dx * 0.000002) - (dy * 0.000002)) * p;
-      }
-
-      // damping
-      f.vx *= 0.985;
-      f.vy *= 0.985;
-      f.va *= 0.992;
-
-      // integrate
-      f.x += f.vx * dt;
-      f.y += f.vy * dt;
-      f.a += f.va * dt;
-
-      // wrap
-      const pad = 180;
-      if (f.x < -pad) f.x = w + pad;
-      if (f.x > w + pad) f.x = -pad;
-      if (f.y < -pad) f.y = h + pad;
-      if (f.y > h + pad) f.y = -pad;
-
-      // draw
-      ctx.save();
-      ctx.translate(f.x, f.y);
-      ctx.rotate(f.a);
-
-      const alpha = 0.11 + (1 - f.d) * 0.06;
-      const fill = `rgba(${r},${g},${b},${alpha})`;
-      const edge = `rgba(255,255,255,${0.12 + (1 - f.d) * 0.08})`;
-
-      // gradient fill
-      const grad = ctx.createLinearGradient(-f.w/2, -f.h/2, f.w/2, f.h/2);
-      grad.addColorStop(0, `rgba(${r},${g},${b},${alpha})`);
-      grad.addColorStop(1, `rgba(${Math.min(255,r+60)},${Math.min(255,g+60)},${Math.min(255,b+60)},${alpha*0.65})`);
-
-      ctx.fillStyle = grad;
-      ctx.strokeStyle = edge;
-      ctx.lineWidth = 1;
-
-      drawRoundedRect(-f.w/2, -f.h/2, f.w, f.h, f.r);
-      ctx.fill();
-      ctx.stroke();
-
-      // inner "frame"
-      ctx.strokeStyle = `rgba(0,0,0,0.35)`;
-      ctx.lineWidth = 1;
-      drawRoundedRect(-f.w/2 + 10*f.d, -f.h/2 + 10*f.d, f.w - 20*f.d, f.h - 20*f.d, Math.max(6*f.d, f.r*0.6));
-      ctx.stroke();
-
-      ctx.restore();
+  document.querySelectorAll('[data-ch]').forEach((el) => {
+    el.addEventListener('click', () => {
+      const ch = Number(el.getAttribute('data-ch'));
+      scrollToSerialP(chapterToP[ch] ?? 0);
     });
+  });
 
-    requestAnimationFrame(tick);
+  document.querySelectorAll('[data-scrollto]').forEach((el) => {
+    el.addEventListener('click', () => {
+      const sel = el.getAttribute('data-scrollto');
+      const target = document.querySelector(sel);
+      if (!target) return;
+      const y = window.scrollY + target.getBoundingClientRect().top - 12;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    });
+  });
+
+  // ------------------------------------------------------------------------------------------------
+  // Render loop
+  // ------------------------------------------------------------------------------------------------
+  let raf = 0;
+
+  function render() {
+    raf = 0;
+
+    const p = getSerialProgress();
+    root.style.setProperty('--serialP', String(p));
+    root.style.setProperty('--railP', String(p));
+
+    // timecode across serial (~100 sec)
+    if (hudTC) hudTC.textContent = formatTC(p * 100);
+
+    // ribbon interpolation
+    const k = interpKF(p);
+    root.style.setProperty('--rbx', `${k.x.toFixed(2)}vw`);
+    root.style.setProperty('--rby', `${k.y.toFixed(2)}vh`);
+    root.style.setProperty('--rrot', `${k.r.toFixed(2)}deg`);
+    root.style.setProperty('--rsc', `${k.s.toFixed(3)}`);
+
+    // episode visibility + accents
+    setEpisodes(p);
+
+    // reel active segment
+    const isReel = (p >= 0.18 && p <= 0.42);
+    setReelActive(isReel);
+
+    // frame mode label
+    if (frameMode) {
+      frameMode.textContent = isReel ? 'SHOWREEL' : (p >= 0.58 ? 'WORKS' : 'STANDBY');
+    }
+
+    // background controlled drift
+    setFF(p);
+
+    // if video is playing, sync TC
+    if (isReel && video && !video.paused) {
+      if (frameTC) frameTC.textContent = formatTC(video.currentTime || 0);
+    }
   }
 
-  requestAnimationFrame(tick);
+  function requestRender() {
+    if (raf) return;
+    raf = requestAnimationFrame(render);
+  }
+
+  window.addEventListener('scroll', requestRender, { passive: true });
+  window.addEventListener('resize', requestRender, { passive: true });
+
+  if (video) {
+    video.addEventListener('timeupdate', () => {
+      if (stage && stage.classList.contains('is-reel')) {
+        if (frameTC) frameTC.textContent = formatTC(video.currentTime || 0);
+      }
+    });
+    video.addEventListener('play', updateVideoMode);
+    video.addEventListener('pause', updateVideoMode);
+  }
+
+  // sheet TC mirrors HUD TC
+  const sheetTC = document.getElementById('sheetTC');
+  if (sheetTC) {
+    const sync = () => { sheetTC.textContent = hudTC ? hudTC.textContent : formatTC(0); };
+    window.addEventListener('scroll', sync, { passive: true });
+    sync();
+  }
+
+  // first render
+  render();
 })();
