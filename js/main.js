@@ -1,5 +1,5 @@
 /* ============================================================================================================================
-  SERIAL v6 — TOON CREW / STREET MOTION
+  SERIAL v6 — TOON CREW / STREET MOTION 
   - Desktop: GSAP pinned scenes, cinematic transitions, controlled decor motion, characters react per scene
   - Mobile: snap panels, own controls, lazy-load showreel
   - Works: placeholder frames + timeline scrub (desktop) + media pool (mobile)
