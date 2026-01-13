@@ -18,10 +18,18 @@
 
   <!-- minimal corners (no classic header) -->
   <div class="corners" aria-hidden="true">
-    <div class="corner tl"><span class="c-tag">REC</span><span class="c-dot"></span><span class="c-text">INDIVIDNI STUDIO</span></div>
-    <div class="corner tr"><span class="c-text">VIDEO OPS</span><span class="c-sep"></span><span class="c-text" id="hudTC">00:00:00:00</span></div>
-    <div class="corner bl"><span class="c-text" id="hudScene">EP0</span><span class="c-sep"></span><span class="c-text" id="hudLabel">COLD OPEN</span></div>
-    <div class="corner br"><button class="cta-stamp" type="button" data-scrollto="#contact">Запросить смету</button></div>
+    <div class="corner tl">
+      <span class="c-tag">REC</span><span class="c-dot"></span><span class="c-text">INDIVIDNI STUDIO</span>
+    </div>
+    <div class="corner tr">
+      <span class="c-text">VIDEO OPS</span><span class="c-sep"></span><span class="c-text" id="hudTC">00:00:00:00</span>
+    </div>
+    <div class="corner bl">
+      <span class="c-text" id="hudScene">EP0</span><span class="c-sep"></span><span class="c-text" id="hudLabel">COLD OPEN</span>
+    </div>
+    <div class="corner br">
+      <button class="cta-stamp" type="button" data-scrollto="#contact">Запросить смету</button>
+    </div>
   </div>
 
   <!-- chapter rail -->
@@ -79,6 +87,7 @@
               </div>
             </div>
 
+            <!-- soft mask scratches -->
             <div class="frame-matte" aria-hidden="true"></div>
           </div>
 
@@ -130,6 +139,7 @@
               <span class="mk">mode</span> <span class="mv" id="reelMode">standby</span>
             </div>
           </div>
+
           <div class="sidecopy right">
             <div class="cap">deliverables</div>
             <div class="list">
@@ -147,7 +157,9 @@
             <div class="cap">EP2 / SERVICES</div>
             <h2 class="h">Модули.<br/>Собираем<br/>под задачу.</h2>
 
-            <div class="svc-deck" id="svcDeck" aria-label="Услуги (стикеры)"></div>
+            <div class="svc-deck" id="svcDeck" aria-label="Услуги (стикеры)">
+              <!-- items injected by JS -->
+            </div>
 
             <div class="svc-read">
               <div class="svc-k">Выбрано</div>
@@ -207,10 +219,10 @@
           </div>
         </div>
 
-      </div>
+      </div><!-- /stage -->
     </section>
 
-    <!-- PRICE -->
+    <!-- PRICE (quiet episode, readable) -->
     <section class="quiet" id="price">
       <div class="quiet-grid">
         <div class="q-title">
@@ -249,7 +261,7 @@
       </div>
     </section>
 
-    <!-- CONTACT -->
+    <!-- CONTACT (call sheet) -->
     <section class="contact" id="contact">
       <div class="contact-grid">
         <div class="c-left">
