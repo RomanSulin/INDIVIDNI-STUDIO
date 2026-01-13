@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="ru">
-<head> 
+<head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="color-scheme" content="dark" />
@@ -110,7 +110,13 @@
             <button class="btnTape" type="button" data-goto="reel">Смотреть шоурил</button>
             <button class="btnTape ghost" type="button" data-goto="works">Открыть работы</button>
           </div>
-        </section>
+        
+  <div class="heroStickers" aria-hidden="true">
+    <div class="stkr sA">NOIR MODE</div>
+    <div class="stkr sB">STREET CUTS</div>
+    <div class="stkr sC">RAW SOUND</div>
+  </div>
+</section>
 
         <!-- SCENE 1: SHOWREEL -->
         <section class="scene s1" data-scene="reel" aria-label="Шоурил">
@@ -209,7 +215,40 @@
               <div class="binGrid" id="binGrid"></div>
             </div>
           </div>
-        </section>
+        
+  <div class="evidenceWrap" aria-label="Evidence strip">
+    <div class="evidenceHead">
+      <div class="cap">EVIDENCE STRIP</div>
+      <div class="evidenceHint">wheel / swipe</div>
+      <div class="evidenceArrows">
+        <button class="evArrow" id="evPrev" type="button" aria-label="Предыдущее">←</button>
+        <button class="evArrow" id="evNext" type="button" aria-label="Следующее">→</button>
+      </div>
+    </div>
+    <div class="evidenceRow" id="evidenceRow" tabindex="0">
+      <div class="evCard">
+        <div class="evTop"><div class="evLabel">CUT</div><div class="evCode">EVD_01</div></div>
+        <div class="evTitle">Музыкальный клип</div>
+        <div class="evMeta"><span class="chip">4K</span><span class="chip">1 день</span><span class="chip">street</span></div>
+      </div>
+      <div class="evCard">
+        <div class="evTop"><div class="evLabel">SHOT</div><div class="evCode">EVD_02</div></div>
+        <div class="evTitle">Интервью / брендинг</div>
+        <div class="evMeta"><span class="chip">light</span><span class="chip">sound</span><span class="chip">edit</span></div>
+      </div>
+      <div class="evCard">
+        <div class="evTop"><div class="evLabel">VFX</div><div class="evCode">EVD_03</div></div>
+        <div class="evTitle">CGI / 3D вставки</div>
+        <div class="evMeta"><span class="chip">3D</span><span class="chip">comp</span><span class="chip">clean</span></div>
+      </div>
+      <div class="evCard">
+        <div class="evTop"><div class="evLabel">ADS</div><div class="evCode">EVD_04</div></div>
+        <div class="evTitle">Рекламный ролик</div>
+        <div class="evMeta"><span class="chip">15s</span><span class="chip">vertical</span><span class="chip">fast</span></div>
+      </div>
+    </div>
+  </div>
+</section>
 
         <!-- SCENE 4: PRICE -->
         <section class="scene s4" data-scene="price" aria-label="Стоимость">
