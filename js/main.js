@@ -5,30 +5,20 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 const menu = document.getElementById("menu");
 const btnMenu = document.getElementById("btnMenu");
 
-function openMenu(){
-  menu.classList.add("isOpen");
-  menu.setAttribute("aria-hidden","false");
-}
-function closeMenu(){
-  menu.classList.remove("isOpen");
-  menu.setAttribute("aria-hidden","true");
-}
-btnMenu?.addEventListener("click", () => {
-  menu.classList.contains("isOpen") ? closeMenu() : openMenu();
-});
-menu?.addEventListener("click", (e) => {
-  if (e.target.closest("[data-close]")) closeMenu();
-});
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") closeMenu();
-});
+function openMenu(){ menu.classList.add("isOpen"); menu.setAttribute("aria-hidden","false"); }
+function closeMenu(){ menu.classList.remove("isOpen"); menu.setAttribute("aria-hidden","true"); }
 
-/* ---------------- Red stroke (scroll-draw, but NOT fixed) ---------------- */
-const strokePath = document.getElementById("strokePath");
-const flowEl = document.getElementById("flow");
-const worksEl = document.getElementById("works");
+btnMenu?.addEventListener("click", () => menu.classList.contains("isOpen") ? closeMenu() : openMenu());
+menu?.addEventListener("click", (e) => { if (e.target.closest("[data-close]")) closeMenu(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeMenu(); });
 
+/* ---------------- Helpers ---------------- */
 const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
+
+/* ---------------- Stroke draw (starts earlier, continues past reel to works) ---------------- */
+const strokePath = document.getElementById("strokePath");
+const introEl = document.getElementById("intro");
+const worksEl = document.getElementById("works");
 const strokeLen = 100;
 
 if (strokePath){
@@ -37,17 +27,17 @@ if (strokePath){
 }
 
 function updateStroke(){
-  if (!strokePath || !flowEl || !worksEl) return;
+  if (!strokePath || !introEl || !worksEl) return;
 
   const vh = window.innerHeight;
-  const start = flowEl.offsetTop - vh * 0.15;     // старт раньше, чем студия
-  const end   = worksEl.offsetTop - vh * 0.10;    // до работ
+  const start = introEl.offsetTop + introEl.offsetHeight * 0.35;   // начинается раньше (ещё до studio)
+  const end   = worksEl.offsetTop - vh * 0.15;                      // заканчивается у работ
 
   const t = clamp((window.scrollY - start) / (end - start), 0, 1);
   strokePath.style.strokeDashoffset = `${strokeLen * (1 - t)}`;
 }
 
-/* ---------------- Reel (left small -> expand to RAIL) ---------------- */
+/* ---------------- Reel (16:9, expands to RAIL width, меньше пустоты) ---------------- */
 const reelPin = document.getElementById("reelPin");
 const reelSticky = document.getElementById("reelSticky");
 const reelFrame = document.getElementById("reelFrame");
@@ -74,27 +64,27 @@ function updateReel(){
 
   const p = clamp((window.scrollY - pinTop) / (pinH - vh), 0, 1);
 
-  // 0..0.62 раскрываем
-  const openT = clamp(p / 0.62, 0, 1);
-  const e = easeOutCubic(openT);
+  // раскрытие 0..0.65
+  const e = easeOutCubic(clamp(p / 0.65, 0, 1));
 
-  // end sizes = ширина RAIL контейнера
+  // end = ширина rail
   const railW = reelSticky.querySelector(".rail")?.clientWidth || reelSticky.clientWidth;
   const endW = railW;
-  const endH = Math.min(vh * 0.62, 520);
 
-  // start sizes как у Lusion: компактный левый блок
-  const startW = Math.min(760, endW * 0.62);
-  const startH = Math.min(320, vh * 0.36);
+  // start = маленький слева
+  const startW = Math.min(860, endW * 0.60);
 
+  // width lerp
   const w = startW + (endW - startW) * e;
-  const h = startH + (endH - startH) * e;
+
+  // 16:9
+  const h = Math.min(w * 9/16, vh * 0.66);
 
   const r = 28 - e * 14;
   const ty = (1 - e) * 10;
 
-  const ov = 1 - clamp((p - 0.46) / 0.18, 0, 1);
-  const vid = clamp((p - 0.56) / 0.18, 0, 1);
+  const ov = 1 - clamp((p - 0.48) / 0.18, 0, 1);
+  const vid = clamp((p - 0.58) / 0.18, 0, 1);
 
   reelFrame.style.setProperty("--w", `${w.toFixed(1)}px`);
   reelFrame.style.setProperty("--h", `${h.toFixed(1)}px`);
@@ -103,12 +93,11 @@ function updateReel(){
   reelFrame.style.setProperty("--ov", ov.toFixed(3));
   reelFrame.style.setProperty("--vid", vid.toFixed(3));
 
-  if (!reelPlayed && p > 0.64) playReel();
+  if (!reelPlayed && p > 0.62) playReel();
 }
 
-/* ---------------- Works hover: wave ONLY on hover + flash blur 100ms ---------------- */
+/* ---------------- Works hover: wave only on hover + micro blur flash ---------------- */
 const cards = Array.from(document.querySelectorAll(".workCard"));
-
 function dispNode(i){ return document.querySelector(`#disp${i} feDisplacementMap`); }
 function turbNode(i){ return document.querySelector(`#disp${i} feTurbulence`); }
 
@@ -125,15 +114,16 @@ cards.forEach((card) => {
   card.addEventListener("mouseenter", () => {
     hoverIdx = idx;
 
-    // flash blur (очень коротко)
+    // flash blur на 100мс
     card.classList.add("isFlash");
     setTimeout(() => card.classList.remove("isFlash"), 110);
 
-    // включаем filter только на hover
+    // wave filter включаем только на hover
     img.style.filter = `url(#disp${idx})`;
 
+    // стартовая сила
     const disp = dispNode(idx);
-    if (disp) disp.setAttribute("scale","22");
+    if (disp) disp.setAttribute("scale","18");
   });
 
   card.addEventListener("mouseleave", () => {
@@ -143,9 +133,11 @@ cards.forEach((card) => {
     if (disp) disp.setAttribute("scale","0");
     if (turb) turb.setAttribute("baseFrequency","0.010");
 
-    // важно: убрать фильтр полностью
+    // полностью убрать filter → никаких “залипаний”
     img.style.filter = "";
     card.style.transform = "";
+    card.classList.remove("isFlash");
+
     hoverIdx = -1;
   });
 
@@ -172,7 +164,7 @@ function tickWave(){
       turb.setAttribute("baseFrequency", `${fx.toFixed(4)} ${fy.toFixed(4)}`);
     }
     if (disp){
-      const sc = 18 + (Math.sin(tWave*2.0)*6);
+      const sc = 16 + (Math.sin(tWave*2.0)*7);
       disp.setAttribute("scale", String(sc.toFixed(1)));
     }
   }
@@ -180,7 +172,7 @@ function tickWave(){
 }
 tickWave();
 
-/* ---------------- 3D Hero (cursor reaction) ---------------- */
+/* ---------------- 3D Hero (чуть сильнее реакция, крупнее объект) ---------------- */
 const canvas = document.getElementById("hero3d");
 if (canvas){
   const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:false });
@@ -188,17 +180,17 @@ if (canvas){
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-  camera.position.set(0, 0.2, 6.0);
+  const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100); // чуть меньше FOV -> крупнее
+  camera.position.set(0, 0.2, 5.6); // ближе -> крупнее
 
   const pmrem = new THREE.PMREMGenerator(renderer);
   scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
 
-  const key = new THREE.DirectionalLight(0xffffff, 2.0);
+  const key = new THREE.DirectionalLight(0xffffff, 2.1);
   key.position.set(3, 4, 4);
   scene.add(key);
 
-  const fill = new THREE.DirectionalLight(0x2b49ff, 1.4);
+  const fill = new THREE.DirectionalLight(0x2b49ff, 1.5);
   fill.position.set(-4, 1, 2);
   scene.add(fill);
 
@@ -216,7 +208,6 @@ if (canvas){
 
     const hole = new THREE.CylinderGeometry(0.10, 0.10, 0.4, 18);
     const cap = new THREE.Mesh(hole, matBlack); cap.rotation.z = Math.PI/2; cap.position.set(0.75, 0, 0); g.add(cap);
-
     const c2 = cap.clone(); c2.position.set(-0.75,0,0); g.add(c2);
     const c3 = cap.clone(); c3.rotation.z = 0; c3.position.set(0,0.75,0); g.add(c3);
     const c4 = cap.clone(); c4.rotation.z = 0; c4.position.set(0,-0.75,0); g.add(c4);
@@ -231,7 +222,7 @@ if (canvas){
     const obj = makeCross(mats[i % mats.length]);
     obj.position.set((Math.random()-0.5)*5.2, (Math.random()-0.5)*3.0, (Math.random()-0.5)*2.6);
     obj.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI);
-    obj.scale.setScalar(0.75 + Math.random()*0.60);
+    obj.scale.setScalar(0.78 + Math.random()*0.65);
     root.add(obj);
   }
 
@@ -253,11 +244,12 @@ if (canvas){
 
   let rx=0, ry=0, cx=0, cy=0;
   let tt = 0;
+
   function tick(){
     tt += 0.01;
 
-    const trx = (-pointer.y) * 0.55;
-    const tryy = (pointer.x) * 0.75;
+    const trx = (-pointer.y) * 0.62;
+    const tryy = (pointer.x) * 0.88;
 
     rx += (trx - rx) * 0.06;
     ry += (tryy - ry) * 0.06;
@@ -265,8 +257,8 @@ if (canvas){
     root.rotation.x = rx + Math.sin(tt*0.6)*0.06;
     root.rotation.y = ry + tt*0.14;
 
-    const tcx = pointer.x * 0.60;
-    const tcy = 0.2 - pointer.y * 0.35;
+    const tcx = pointer.x * 0.72;
+    const tcy = 0.2 - pointer.y * 0.40;
     cx += (tcx - cx) * 0.08;
     cy += (tcy - cy) * 0.08;
 
