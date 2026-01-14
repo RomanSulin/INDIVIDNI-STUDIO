@@ -40,7 +40,8 @@
 
       <nav class="menuList">
         <a href="#intro" data-close>Главная</a>
-        <a href="#flow" data-close>Studio / Reel / Work</a>
+        <a href="#about" data-close>О нас</a>
+        <a href="#reel" data-close>Шоурил</a>
         <a href="#works" data-close>Проекты</a>
         <a href="#contact" data-close>Контакт</a>
       </nav>
@@ -79,58 +80,83 @@
       </div>
     </section>
 
-    <!-- FLOW block: здесь живет линия (не fixed), и здесь же Studio + Reel -->
+    <!-- ABOUT + REEL (как в lusion.co): линия живёт внутри секции и рисуется по скроллу -->
     <section class="flow" id="flow">
       <div class="flowStroke" aria-hidden="true">
-        <svg class="strokeSvg" viewBox="0 0 1400 900" preserveAspectRatio="none">
+        <svg class="strokeSvg" viewBox="0 0 1400 1600" preserveAspectRatio="none">
           <path id="strokePath"
-            d="M -140 520
-               C 200 160, 420 800, 610 520
-               S 920 200, 1040 520
-               S 940 820, 720 660
-               S 400 460, 340 760
-               S 650 980, 1540 640"
-            fill="none" stroke="var(--red)" stroke-width="36"
+            d="M 60 -220
+               C 40 120, 160 260, 320 380
+               S 610 600, 730 420
+               S 980 160, 1180 360
+               S 1240 760, 980 760
+               S 460 720, 420 1040
+               S 700 1500, 1540 1180"
+            fill="none" stroke="var(--blue)" stroke-width="54"
             stroke-linecap="round" stroke-linejoin="round" pathLength="100"
           />
         </svg>
       </div>
 
-      <!-- STUDIO word (как на скрине) -->
-      <div class="flowStudio" id="studio">
+      <!-- ABOUT block -->
+      <section class="about" id="about">
         <div class="rail">
-          <div class="studioWord">
-            <div class="studioSmall">STUDIO</div>
-            <div class="studioBig">INDIVIDNI</div>
-          </div>
-        </div>
-      </div>
+          <div class="aboutGrid">
+            <div class="aboutMedia" aria-hidden="true">
+              <video class="aboutVideo" autoplay muted loop playsinline preload="metadata">
+                <source src="./assets/showreel.mp4" type="video/mp4" />
+              </video>
+            </div>
 
-      <!-- REEL pinned zone -->
-      <div class="flowReel" id="reel">
+            <div class="aboutText">
+              <p class="aboutPara">
+                INDIVIDNI — видеопродакшн-студия, которая помогает брендам превращать идеи
+                в визуально сильные ролики и интерактивные истории. Мы берём на себя полный цикл:
+                от концепта до поста — и делаем результат, который реально цепляет.
+              </p>
+            </div>
+          </div>
+
+          <a class="aboutBtn" href="#works">
+            <span class="aboutDot" aria-hidden="true"></span>
+            О НАС
+          </a>
+        </div>
+      </section>
+
+      <!-- REEL pinned zone (поведение как в lusion: раскрытие + fade overlay + autoplay) -->
+      <section class="flowReel" id="reel">
         <div class="reelPin" id="reelPin">
           <div class="reelSticky" id="reelSticky">
             <div class="rail">
-              <div class="reelFrame" id="reelFrame">
-                <div class="reelOverlay" id="reelOverlay">
-                  <div class="reelPlayWord">PLAY</div>
-                  <button class="reelBtn" id="reelBtn" type="button" aria-label="Play Reel">▶</button>
-                  <div class="reelPlayWord">REEL</div>
+              <div class="reelWrap">
+                <div class="reelMarks reelMarks--top" aria-hidden="true">
+                  <span>+</span><span>+</span><span>+</span><span>+</span><span>+</span>
+                </div>
+                <div class="reelMarks reelMarks--bottom" aria-hidden="true">
+                  <span>+</span><span>+</span><span>+</span><span>+</span><span>+</span>
                 </div>
 
-                <video id="reelVideo" class="reelVideo" playsinline muted preload="metadata">
-                  <source src="./assets/showreel.mp4" type="video/mp4" />
-                </video>
+                <div class="reelFrame" id="reelFrame">
+                  <div class="reelOverlay" id="reelOverlay">
+                    <div class="reelPlayWord">PLAY</div>
+                    <button class="reelBtn" id="reelBtn" type="button" aria-label="Play Reel">
+                      <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M9 7l10 5-10 5V7z" fill="currentColor" />
+                      </svg>
+                    </button>
+                    <div class="reelPlayWord">REEL</div>
+                  </div>
 
-                <div class="frameMarks" aria-hidden="true">
-                  <span>+</span><span>+</span><span>+</span><span>+</span>
+                  <video id="reelVideo" class="reelVideo" playsinline muted preload="metadata">
+                    <source src="./assets/showreel.mp4" type="video/mp4" />
+                  </video>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-
+      </section>
     </section>
 
     <!-- FEATURED WORK -->
@@ -214,6 +240,7 @@
     </defs>
   </svg>
 
-  <script type="module" src="./js/main.js"></script>
+  <!-- важно: путь должен совпадать с твоей структурой репозитория -->
+  <script type="module" src="./main.js"></script>
 </body>
 </html>
