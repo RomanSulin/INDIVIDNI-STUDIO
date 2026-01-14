@@ -6,7 +6,6 @@
   <title>INDIVIDNI STUDIO</title>
   <link rel="stylesheet" href="./style.css" />
 
-  <!-- importmap: нужен для three/addons -->
   <script type="importmap">
   {
     "imports": {
@@ -18,7 +17,7 @@
 </head>
 
 <body>
-  <!-- Top UI (пилюли) -->
+  <!-- Top UI -->
   <header class="top">
     <div class="brand">INDIVIDNI</div>
 
@@ -58,42 +57,50 @@
     </div>
   </aside>
 
-  <!-- HERO (во всю ширину) -->
+  <!-- Global red stroke overlay (идёт через несколько блоков) -->
+  <div class="strokeOverlay" aria-hidden="true">
+    <svg class="strokeGlobal" viewBox="0 0 1200 900" preserveAspectRatio="none">
+      <path id="strokePath"
+        d="M -120 520
+           C 180 220, 320 760, 520 520
+           S 820 220, 980 520
+           S 860 820, 640 650
+           S 320 400, 260 740
+           S 520 980, 1320 640"
+        fill="none" stroke="var(--red)" stroke-width="34"
+        stroke-linecap="round" stroke-linejoin="round"
+        pathLength="100"
+      />
+    </svg>
+  </div>
+
   <main>
+    <!-- HERO -->
     <section class="hero" id="intro">
-      <div class="heroTop">
+      <div class="rail">
         <h1 class="heroH1">
-          Мы помогаем брендам создавать видео, которое соединяет
-          с их аудиторией
+          Мы помогаем брендам создавать видео, которое соединяет с их аудиторией
         </h1>
       </div>
 
-      <div class="heroFrameWrap">
-        <div class="heroFrame">
-          <canvas id="hero3d"></canvas>
-        </div>
+      <div class="rail">
+        <div class="heroFrameWrap">
+          <div class="heroFrame">
+            <canvas id="hero3d"></canvas>
+          </div>
 
-        <div class="heroMarks">
-          <span class="plus p1">+</span><span class="plus p2">+</span>
-          <span class="plus p3">+</span><span class="plus p4">+</span>
-          <div class="scrollNote">SCROLL TO EXPLORE</div>
+          <div class="heroMarks">
+            <span class="plus p1">+</span><span class="plus p2">+</span>
+            <span class="plus p3">+</span><span class="plus p4">+</span>
+            <div class="scrollNote">SCROLL TO EXPLORE</div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- STUDIO + красная линия по скроллу -->
+    <!-- STUDIO -->
     <section class="studio" id="studio">
-      <div class="studioStage">
-        <svg class="stroke" viewBox="0 0 1200 600" preserveAspectRatio="none" aria-hidden="true">
-          <path id="strokePath"
-            d="M -50 260
-               C 260 60, 420 560, 610 320
-               S 930 120, 1280 380"
-            fill="none" stroke="var(--red)" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"
-            pathLength="100"
-          />
-        </svg>
-
+      <div class="rail">
         <div class="studioWord">
           <div class="studioSmall">STUDIO</div>
           <div class="studioBig">INDIVIDNI</div>
@@ -101,10 +108,10 @@
       </div>
     </section>
 
-    <!-- REEL: старт маленьким слева → по скроллу раскрывается + autoplay -->
+    <!-- REEL: left small -> expand -->
     <section class="reel" id="reel">
       <div class="reelPin" id="reelPin">
-        <div class="reelSticky">
+        <div class="reelSticky" id="reelSticky">
           <div class="reelFrame" id="reelFrame">
             <div class="reelOverlay" id="reelOverlay">
               <div class="reelPlayWord">PLAY</div>
@@ -112,7 +119,6 @@
               <div class="reelPlayWord">REEL</div>
             </div>
 
-            <!-- ВАЖНО: у тебя файл лежит тут -->
             <video id="reelVideo" class="reelVideo" playsinline muted preload="metadata">
               <source src="./assets/showreel.mp4" type="video/mp4" />
             </video>
@@ -121,60 +127,76 @@
       </div>
     </section>
 
-    <!-- Featured Work: 6 карточек с ФОТО -->
+    <!-- FEATURED WORK -->
     <section class="works" id="works">
-      <div class="worksHead">
-        <h2 class="worksTitle">Featured Work</h2>
-        <p class="worksDesc">
-          Наведи курсор — волна/деформация + лёгкий tilt.
-          Клик — новая страница проекта (пока заглушка).
-        </p>
-      </div>
+      <div class="rail">
+        <div class="worksHead">
+          <h2 class="worksTitle">Featured Work</h2>
+          <p class="worksDesc">
+            Подборка работ. Hover — волна + лёгкий tilt, как у Lusion.
+          </p>
+        </div>
 
-      <div class="worksGrid">
-        <a class="workCard" href="./project.html" data-w="0">
-          <div class="thumb"><img class="thumbMedia" alt="" src="https://images.unsplash.com/photo-1524253482453-3fed8d2fe12b?auto=format&fit=crop&w=1600&q=80"></div>
-          <div class="cap"><b>Кейс 01</b><span>Реклама</span></div>
-        </a>
+        <div class="worksGrid">
+          <a class="workCard" href="./project.html" data-w="0">
+            <div class="workMedia">
+              <img class="workImg" alt="" src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=2000&q=80">
+            </div>
+            <div class="workMeta">VIDEO • PRODUCTION • POST</div>
+            <div class="workName">Кейс 01</div>
+          </a>
 
-        <a class="workCard" href="./project.html" data-w="1">
-          <div class="thumb"><img class="thumbMedia" alt="" src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1600&q=80"></div>
-          <div class="cap"><b>Кейс 02</b><span>Имидж</span></div>
-        </a>
+          <a class="workCard" href="./project.html" data-w="1">
+            <div class="workMedia">
+              <img class="workImg" alt="" src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=2000&q=80">
+            </div>
+            <div class="workMeta">VIDEO • INTERVIEW • SOUND</div>
+            <div class="workName">Кейс 02</div>
+          </a>
 
-        <a class="workCard" href="./project.html" data-w="2">
-          <div class="thumb"><img class="thumbMedia" alt="" src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=1600&q=80"></div>
-          <div class="cap"><b>Кейс 03</b><span>Интервью</span></div>
-        </a>
+          <a class="workCard" href="./project.html" data-w="2">
+            <div class="workMedia">
+              <img class="workImg" alt="" src="https://images.unsplash.com/photo-1524253482453-3fed8d2fe12b?auto=format&fit=crop&w=2000&q=80">
+            </div>
+            <div class="workMeta">VIDEO • EVENT • EDIT</div>
+            <div class="workName">Кейс 03</div>
+          </a>
 
-        <a class="workCard" href="./project.html" data-w="3">
-          <div class="thumb"><img class="thumbMedia" alt="" src="https://images.unsplash.com/photo-1514924013411-cbf25faa35bb?auto=format&fit=crop&w=1600&q=80"></div>
-          <div class="cap"><b>Кейс 04</b><span>Event</span></div>
-        </a>
+          <a class="workCard" href="./project.html" data-w="3">
+            <div class="workMedia">
+              <img class="workImg" alt="" src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=2000&q=80">
+            </div>
+            <div class="workMeta">VIDEO • BRAND • COLOR</div>
+            <div class="workName">Кейс 04</div>
+          </a>
 
-        <a class="workCard" href="./project.html" data-w="4">
-          <div class="thumb"><img class="thumbMedia" alt="" src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=1600&q=80"></div>
-          <div class="cap"><b>Кейс 05</b><span>Соцсети</span></div>
-        </a>
+          <a class="workCard" href="./project.html" data-w="4">
+            <div class="workMedia">
+              <img class="workImg" alt="" src="https://images.unsplash.com/photo-1526948128573-703ee1aeb6fa?auto=format&fit=crop&w=2000&q=80">
+            </div>
+            <div class="workMeta">VIDEO • SOCIAL • CUTS</div>
+            <div class="workName">Кейс 05</div>
+          </a>
 
-        <a class="workCard" href="./project.html" data-w="5">
-          <div class="thumb"><img class="thumbMedia" alt="" src="https://images.unsplash.com/photo-1526948128573-703ee1aeb6fa?auto=format&fit=crop&w=1600&q=80"></div>
-          <div class="cap"><b>Кейс 06</b><span>Motion</span></div>
-        </a>
-      </div>
-
-      <div class="worksPlusRow" aria-hidden="true">
-        <span>+</span><span>+</span><span>+</span><span>+</span><span>+</span>
+          <a class="workCard" href="./project.html" data-w="5">
+            <div class="workMedia">
+              <img class="workImg" alt="" src="https://images.unsplash.com/photo-1514924013411-cbf25faa35bb?auto=format&fit=crop&w=2000&q=80">
+            </div>
+            <div class="workMeta">VIDEO • MOTION • TITLES</div>
+            <div class="workName">Кейс 06</div>
+          </a>
+        </div>
       </div>
     </section>
 
-    <!-- стопаемся -->
     <section class="contactStub" id="contact">
-      <div class="contactStubInner">Контакт доделаем позже.</div>
+      <div class="rail">
+        <div class="contactStubInner">Контакт доделаем позже.</div>
+      </div>
     </section>
   </main>
 
-  <!-- SVG filters for wave hover -->
+  <!-- SVG wave filters -->
   <svg width="0" height="0" style="position:absolute; left:-9999px; top:-9999px;" aria-hidden="true">
     <defs>
       <filter id="disp0"><feTurbulence type="fractalNoise" baseFrequency="0.010" numOctaves="2" seed="1" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
