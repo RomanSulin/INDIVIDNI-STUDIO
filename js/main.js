@@ -41,10 +41,10 @@ const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 220);
 camera.position.set(0, 1.35, 7.2);
 
 /* ---------- Lights (Black / Blue / Red) ---------- */
-scene.add(new THREE.AmbientLight(0xffffff, 0.28));
+scene.add(new THREE.AmbientLight(0xffffff, 0.60));
 
-const blueKey = new THREE.SpotLight(0x2b6bff, 1.25, 90, Math.PI / 7, 0.55, 1.0);
-blueKey.position.set(0, 6.2, 6.8);
+const blueKey = new THREE.SpotLight(0x2b6bff, 2.2, 140, Math.PI / 3.3, 0.75, 1.0);
+blueKey.position.set(0, 6.5, 0);
 blueKey.target.position.set(0, 1.4, 0);
 scene.add(blueKey, blueKey.target);
 
