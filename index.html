@@ -2,11 +2,11 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>INDIVIDNI — Video Production</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>INDIVIDNI</title>
   <link rel="stylesheet" href="./style.css" />
 
-  <!-- ВАЖНО: importmap нужен, чтобы examples работали без ошибок -->
+  <!-- Чтобы three/addons работали без ошибки "Failed to resolve module specifier 'three'" -->
   <script type="importmap">
   {
     "imports": {
@@ -18,147 +18,124 @@
 </head>
 
 <body>
-  <!-- WebGL background -->
-  <div id="glWrap">
+  <!-- Preloader -->
+  <div id="preloader" class="preloader" aria-hidden="true">
+    <div class="preloader__inner">
+      <div class="preloader__logo">INDIVIDNI</div>
+      <div class="preloader__line">
+        <div id="preloaderBar" class="preloader__bar"></div>
+      </div>
+      <div id="preloaderPct" class="preloader__pct">0%</div>
+    </div>
+  </div>
+
+  <!-- WebGL canvas background -->
+  <div class="gl">
     <canvas id="gl"></canvas>
   </div>
 
-  <!-- Minimal top UI (почти как у Lusion: тихо, без карточек) -->
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand__logo">INDIVIDNI</div>
-      <div class="brand__sub">Видеопродакшн: съёмка • монтаж • пост</div>
+  <!-- Minimal UI -->
+  <header class="top">
+    <div class="top__brand">
+      <div class="top__logo">INDIVIDNI</div>
+      <div class="top__sub">Видеопродакшн • съёмка / монтаж / пост</div>
     </div>
-    <nav class="nav">
-      <a href="#reel">Шоурил</a>
+
+    <nav class="top__nav">
       <a href="#works">Работы</a>
       <a href="#services">Услуги</a>
-      <a href="#contact" class="nav__accent">Контакт</a>
+      <a href="#contact" class="top__navAccent">Контакт</a>
     </nav>
   </header>
 
-  <!-- Content -->
-  <main>
-    <section class="section hero" id="intro" data-scene="intro">
+  <main class="content">
+    <section class="sec hero" id="intro" data-scene="intro">
       <div class="hero__grid">
-        <h1 class="hero__title">
-          Свет.<br />
-          Ритм.<br />
-          Звук.<br />
+        <h1 class="hero__h1">
+          Свет.<br>
+          Ритм.<br>
+          Звук.<br>
           Смысл.
         </h1>
 
         <div class="hero__side">
-          <p class="hero__lead">
-            Мы собираем видео как сцены: чисто, точно, без суеты. Дальше — только то, что работает.
+          <p class="hero__p">
+            Киношный тон без пафоса. Чистая сборка под задачу и площадку.
           </p>
 
-          <!-- CTA без кнопок: “жест/маркер” -->
-          <a class="ctaTape" href="#reel">
-            <span class="ctaTape__label">Потянуть ленту — к шоурилу</span>
-            <span class="ctaTape__line"></span>
+          <!-- CTA без кнопок: линия/жест -->
+          <a class="cta" href="#works">
+            <span>Скролл — чтобы исследовать</span>
+            <i></i>
           </a>
 
-          <div class="hint">Скролл — чтобы исследовать</div>
+          <div class="micro">
+            Чёрный → синий → красный. Белый — воздух.
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="section reel" id="reel" data-scene="reel">
-      <div class="block">
-        <div class="kicker">Шоурил</div>
-        <h2 class="h2">Коротко. По делу. В кадре.</h2>
-        <p class="p">
-          Видео запускается по клику (звук тоже). Это нормально и правильно — без автоплея.
-        </p>
-
-        <!-- Пока плейсхолдер. Потом подставим твой showreel.mp4 -->
-        <div class="reelBox">
-          <button class="reelBox__play" id="playReel" type="button">
-            ▶ Смотреть
-          </button>
-
-          <video id="reelVideo" class="reelBox__video" playsinline preload="metadata" controls>
-            <!-- потом положишь assets/showreel.mp4 -->
-          </video>
-
-          <div class="reelBox__note">Сейчас пусто — просто механика блока.</div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section works" id="works" data-scene="works">
-      <div class="block">
+    <section class="sec" id="works" data-scene="works">
+      <div class="wrap">
         <div class="kicker">Работы</div>
-        <h2 class="h2">Портфолио без шума.</h2>
-        <p class="p">
-          Тут будет сетка кейсов. Пока — заглушки. Сцена на фоне подстроится под раздел.
-        </p>
+        <h2 class="h2">Кейсы. Коротко. В кадре.</h2>
+        <p class="p">Пока заглушки — здесь будет твой контент и превью.</p>
 
-        <div class="worksGrid">
-          <a class="workCard" href="#contact">
-            <div class="workCard__t">Кейс 01</div>
-            <div class="workCard__s">Реклама • 30s</div>
-          </a>
-          <a class="workCard" href="#contact">
-            <div class="workCard__t">Кейс 02</div>
-            <div class="workCard__s">Интервью • 2–3 мин</div>
-          </a>
-          <a class="workCard" href="#contact">
-            <div class="workCard__t">Кейс 03</div>
-            <div class="workCard__s">Event • highlight</div>
-          </a>
-          <a class="workCard" href="#contact">
-            <div class="workCard__t">Кейс 04</div>
-            <div class="workCard__s">Имидж • бренд</div>
-          </a>
+        <div class="grid">
+          <a class="card" href="#contact"><b>Кейс 01</b><span>Реклама • 30s</span></a>
+          <a class="card" href="#contact"><b>Кейс 02</b><span>Имидж • бренд</span></a>
+          <a class="card" href="#contact"><b>Кейс 03</b><span>Интервью • 2–3 мин</span></a>
+          <a class="card" href="#contact"><b>Кейс 04</b><span>Event • highlight</span></a>
         </div>
       </div>
     </section>
 
-    <section class="section services" id="services" data-scene="services">
-      <div class="block">
+    <section class="sec" id="services" data-scene="services">
+      <div class="wrap">
         <div class="kicker">Услуги</div>
         <h2 class="h2">Полный цикл — или точечно.</h2>
 
         <div class="tags">
-          <div class="tag">Съёмка</div>
-          <div class="tag">Монтаж</div>
-          <div class="tag">Саунд</div>
-          <div class="tag">Motion / титры</div>
-          <div class="tag">Вертикалки</div>
-          <div class="tag">Реклама</div>
+          <span class="tag">Съёмка</span>
+          <span class="tag">Монтаж</span>
+          <span class="tag">Саунд-дизайн</span>
+          <span class="tag">Титры / motion</span>
+          <span class="tag">Вертикалки</span>
+          <span class="tag">Пакеты “от”</span>
         </div>
       </div>
     </section>
 
-    <section class="section contact" id="contact" data-scene="contact">
-      <div class="block">
+    <section class="sec" id="contact" data-scene="contact">
+      <div class="wrap">
         <div class="kicker">Контакт</div>
-        <h2 class="h2">Сначала — 3 ответа.</h2>
+        <h2 class="h2">Три ответа — и я соберу смету.</h2>
 
-        <form class="brief" onsubmit="return false;">
+        <form class="form" onsubmit="return false;">
           <label class="field">
             <span>Формат</span>
             <input placeholder="Реклама / интервью / event / соцсети" />
           </label>
+
           <label class="field">
-            <span>Сроки</span>
+            <span>Срок</span>
             <input placeholder="Например: до 20-го" />
           </label>
+
           <label class="field">
             <span>Ссылка / реф</span>
-            <input placeholder="Можно просто ссылку" />
+            <input placeholder="Любая ссылка" />
           </label>
 
-          <button class="submit" type="button">Запросить смету</button>
+          <button class="send" type="button">Запросить смету</button>
           <div class="small">Дальше подключим Telegram/почту.</div>
         </form>
       </div>
     </section>
 
-    <footer class="footer">
-      <div>INDIVIDNI • Video production</div>
+    <footer class="foot">
+      <div>© INDIVIDNI</div>
     </footer>
   </main>
 
