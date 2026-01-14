@@ -3,63 +3,72 @@ import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
 
-/* ---------------------------
-   Helpers
---------------------------- */
-const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-const lerp = (a, b, t) => a + (b - a) * t;
-const damp = (current, target, lambda, dt) => lerp(current, target, 1 - Math.exp(-lambda * dt));
-
-/* ---------------------------
-   DOM / Sections
---------------------------- */
 const canvas = document.getElementById("gl");
 const sections = Array.from(document.querySelectorAll("[data-scene]"));
 
-const playBtn = document.getElementById("playReel");
-const reelVideo = document.getElementById("reelVideo");
+const pre = document.getElementById("preloader");
+const preBar = document.getElementById("preloaderBar");
+const prePct = document.getElementById("preloaderPct");
 
-playBtn?.addEventListener("click", () => {
-  // позже подставишь файл: assets/showreel.mp4
-  if (!reelVideo.querySelector("source")) {
-    const s = document.createElement("source");
-    s.src = "./assets/showreel.mp4";
-    s.type = "video/mp4";
-    reelVideo.appendChild(s);
-    reelVideo.load();
-  }
-  reelVideo.style.display = "block";
-  reelVideo.play().catch(() => {});
-});
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const damp = (cur, tar, lam, dt) => lerp(cur, tar, 1 - Math.exp(-lam * dt));
 
-/* ---------------------------
-   Three.js: Renderer / Scene / Camera
---------------------------- */
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+/* ---------- Three base ---------- */
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setClearColor(0x07090f, 1);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.18;
+renderer.toneMappingExposure = 1.15;
 
 const scene = new THREE.Scene();
 scene.fog = new THREE.Fog(0x07090f, 18, 120);
 
 const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 200);
-camera.position.set(0, 1.25, 7.0);
+camera.position.set(0, 1.15, 7.2);
 
-/* Lights */
 scene.add(new THREE.AmbientLight(0xffffff, 0.55));
 
-const blueKey = new THREE.SpotLight(0x2b6bff, 1.35, 120, Math.PI / 3.2, 0.75, 1.0);
-blueKey.position.set(0, 6.2, 0);
-blueKey.target.position.set(0, 1.3, 0);
+const blueKey = new THREE.SpotLight(0x2b6bff, 1.25, 140, Math.PI / 3.1, 0.80, 1.0);
+blueKey.position.set(0, 6.4, 0);
+blueKey.target.position.set(0, 1.2, 0);
 scene.add(blueKey, blueKey.target);
 
-const rim = new THREE.DirectionalLight(0xffffff, 0.18);
+const rim = new THREE.DirectionalLight(0xffffff, 0.16);
 rim.position.set(-3, 4, -8);
 scene.add(rim);
 
-/* Floor / subtle walls */
+/* ---------- Hero object (не постеры): “лента/связь/ритм” ---------- */
+const group = new THREE.Group();
+scene.add(group);
+
+function makeRibbon() {
+  // Кривая “ленты”
+  const curve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(-2.2, 1.0, 0.2),
+    new THREE.Vector3(-1.2, 1.6, -0.3),
+    new THREE.Vector3( 0.0, 1.2, -0.9),
+    new THREE.Vector3( 1.2, 1.8, -0.4),
+    new THREE.Vector3( 2.2, 1.1, 0.1),
+  ], false, "catmullrom", 0.35);
+
+  const geo = new THREE.TubeGeometry(curve, 220, 0.07, 10, false);
+  const mat = new THREE.MeshStandardMaterial({
+    color: 0xf2f4ff,          // белый как “воздух”
+    roughness: 0.25,
+    metalness: 0.15,
+    emissive: new THREE.Color(0x081224),
+    emissiveIntensity: 0.35
+  });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.position.z = -0.2;
+  return mesh;
+}
+
+const ribbon = makeRibbon();
+group.add(ribbon);
+
+// “сцена” (тонкий пол, чтобы не было пустоты)
 const floor = new THREE.Mesh(
   new THREE.PlaneGeometry(80, 80),
   new THREE.MeshStandardMaterial({ color: 0x05060a, roughness: 1, metalness: 0 })
@@ -68,95 +77,44 @@ floor.rotation.x = -Math.PI / 2;
 floor.position.y = 0;
 scene.add(floor);
 
-/* ---------------------------
-   Posters cluster (hero object)
-   Один “герой-объект”, который меняет состояния по разделам.
---------------------------- */
-const group = new THREE.Group();
-scene.add(group);
-
-const posterGeo = new THREE.PlaneGeometry(2.1, 2.8, 1, 1);
-let posterTex = null;
-
-const mat = new THREE.MeshStandardMaterial({
-  color: 0xf2f4ff,
-  roughness: 0.92,
-  metalness: 0.0
-});
-
-const texLoader = new THREE.TextureLoader();
-texLoader.load("./assets/poster.jpg", (t) => {
-  t.colorSpace = THREE.SRGBColorSpace;
-  t.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
-  posterTex = t;
-  mat.map = posterTex;
-  mat.needsUpdate = true;
-});
-
-function makePoster(x, y, z, ry, rz, s=1){
-  const m = new THREE.Mesh(posterGeo, mat);
-  m.position.set(x, y, z);
-  m.rotation.set(0, ry, rz);
-  m.scale.setScalar(s);
-  group.add(m);
-  return m;
-}
-
-// 5 плоскостей: ощущение стопки/коллекции без длинной сцены
-makePoster( 0.0, 1.55, -0.2,  0.10, -0.02, 1.02);
-makePoster(-0.45, 1.50, -0.35, 0.20,  0.03, 0.98);
-makePoster( 0.55, 1.45, -0.55, -0.18, -0.03, 0.96);
-makePoster(-0.10, 1.35, -0.85, 0.12,  0.02, 0.92);
-makePoster( 0.15, 1.25, -1.10, -0.10, 0.01, 0.90);
-
-/* ---------------------------
-   Postprocessing: mild bloom
---------------------------- */
+/* ---------- Postprocessing ---------- */
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
-const bloom = new UnrealBloomPass(new THREE.Vector2(1,1), 0.22, 0.85, 0.90);
+const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.20, 0.85, 0.92);
 composer.addPass(bloom);
 
-/* ---------------------------
-   Scene states (Lusion-lite)
-   Не “cut сцены”, а 4 понятных состояния.
---------------------------- */
+/* ---------- States per section ---------- */
 const STATES = {
-  intro:    { cam: { x: 0.00, y: 1.25, z: 7.00 }, look: { x: 0.00, y: 1.35, z: 0.0 }, grp: { x:0, y:0, z:0, ry:0 } },
-  reel:     { cam: { x: -0.55, y: 1.20, z: 6.40 }, look: { x: 0.20, y: 1.35, z: -0.4 }, grp: { x:0.15, y:0, z:-0.15, ry: 0.12 } },
-  works:    { cam: { x: 0.55, y: 1.25, z: 6.80 }, look: { x: -0.10, y: 1.35, z: -0.7 }, grp: { x:-0.20, y:0, z:-0.25, ry:-0.10 } },
-  services: { cam: { x: 0.10, y: 1.25, z: 7.20 }, look: { x: 0.00, y: 1.35, z: -0.6 }, grp: { x:0.10, y:0, z:-0.30, ry: 0.06 } },
-  contact:  { cam: { x: 0.00, y: 1.25, z: 7.60 }, look: { x: 0.00, y: 1.35, z: -0.5 }, grp: { x:0.00, y:0, z:-0.35, ry: 0.00 } }
+  intro:    { cam:[0.00,1.15,7.20], look:[0.00,1.25,0.00], rot:[0.00, 0.00] },
+  works:    { cam:[0.35,1.10,6.90], look:[-0.20,1.25,-0.30], rot:[0.10, 0.18] },
+  services: { cam:[-0.30,1.15,7.10], look:[0.15,1.25,-0.35], rot:[-0.08,-0.12] },
+  contact:  { cam:[0.00,1.10,7.55], look:[0.00,1.25,-0.25], rot:[0.00, 0.00] },
 };
 
-let activeScene = "intro";
+let active = "intro";
 
-/* choose active section near viewport center */
-function pickActiveScene(){
+/* pick active section near viewport mid */
+function pickScene() {
   const mid = window.innerHeight * 0.55;
   let best = { id: "intro", d: Infinity };
-
   for (const s of sections) {
     const r = s.getBoundingClientRect();
     const cy = r.top + r.height * 0.5;
     const d = Math.abs(cy - mid);
     if (d < best.d) best = { id: s.dataset.scene, d };
   }
-  activeScene = best.id || "intro";
+  active = best.id || "intro";
 }
+window.addEventListener("scroll", pickScene, { passive: true });
 
-/* ---------------------------
-   Pointer parallax (дорогое ощущение “живого”)
---------------------------- */
-const pointer = { x: 0, y: 0 };
+/* pointer parallax */
+const ptr = { x:0, y:0 };
 window.addEventListener("pointermove", (e) => {
-  pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
-  pointer.y = (e.clientY / window.innerHeight) * 2 - 1;
+  ptr.x = (e.clientX / window.innerWidth) * 2 - 1;
+  ptr.y = (e.clientY / window.innerHeight) * 2 - 1;
 }, { passive:true });
 
-/* ---------------------------
-   Resize
---------------------------- */
+/* resize */
 function resize(){
   const w = window.innerWidth;
   const h = window.innerHeight;
@@ -168,51 +126,58 @@ function resize(){
   bloom.setSize(w, h);
 }
 window.addEventListener("resize", resize, { passive:true });
-window.addEventListener("scroll", pickActiveScene, { passive:true });
 
+/* ---------- Preloader (fake but clean) ---------- */
+let p = 0;
+const preInt = setInterval(() => {
+  p = Math.min(1, p + 0.08);
+  preBar.style.width = `${Math.round(p * 100)}%`;
+  prePct.textContent = `${Math.round(p * 100)}%`;
+  if (p >= 1) {
+    clearInterval(preInt);
+    pre.style.opacity = "0";
+    setTimeout(() => pre.remove(), 450);
+  }
+}, 60);
+
+/* ---------- Loop ---------- */
 resize();
-pickActiveScene();
+pickScene();
 
-/* ---------------------------
-   Loop
---------------------------- */
 let last = performance.now();
 let cam = { x: camera.position.x, y: camera.position.y, z: camera.position.z };
-let look = { x: 0, y: 1.35, z: 0 };
-let g = { x: group.position.x, y: group.position.y, z: group.position.z, ry: group.rotation.y };
+let look = { x:0, y:1.25, z:0 };
+let rot = { x:0, y:0 };
 
 function tick(now){
-  const dt = Math.min(0.05, (now - last)/1000);
+  const dt = Math.min(0.05, (now - last) / 1000);
   last = now;
 
-  const st = STATES[activeScene] || STATES.intro;
+  const st = STATES[active] || STATES.intro;
 
-  // camera target + slight pointer sway
-  const swayX = pointer.x * 0.18;
-  const swayY = pointer.y * 0.07;
+  // camera target + pointer sway
+  const swayX = ptr.x * 0.22;
+  const swayY = ptr.y * 0.08;
 
-  cam.x = damp(cam.x, st.cam.x + swayX, 6.5, dt);
-  cam.y = damp(cam.y, st.cam.y + swayY, 6.5, dt);
-  cam.z = damp(cam.z, st.cam.z + Math.abs(swayX)*0.06, 6.5, dt);
+  cam.x = damp(cam.x, st.cam[0] + swayX, 6.5, dt);
+  cam.y = damp(cam.y, st.cam[1] + swayY, 6.5, dt);
+  cam.z = damp(cam.z, st.cam[2] + Math.abs(swayX) * 0.06, 6.5, dt);
 
-  look.x = damp(look.x, st.look.x, 7.0, dt);
-  look.y = damp(look.y, st.look.y, 7.0, dt);
-  look.z = damp(look.z, st.look.z, 7.0, dt);
+  look.x = damp(look.x, st.look[0], 7.0, dt);
+  look.y = damp(look.y, st.look[1], 7.0, dt);
+  look.z = damp(look.z, st.look[2], 7.0, dt);
 
   camera.position.set(cam.x, cam.y, cam.z);
   camera.lookAt(look.x, look.y, look.z);
 
-  // group target
-  g.x = damp(g.x, st.grp.x, 7.0, dt);
-  g.y = damp(g.y, st.grp.y, 7.0, dt);
-  g.z = damp(g.z, st.grp.z, 7.0, dt);
-  g.ry = damp(g.ry, st.grp.ry, 7.0, dt);
+  // object motion (subtle)
+  rot.x = damp(rot.x, st.rot[0], 6.5, dt);
+  rot.y = damp(rot.y, st.rot[1], 6.5, dt);
+  group.rotation.x = rot.x + ptr.y * 0.03;
+  group.rotation.y = rot.y + ptr.x * 0.04;
 
-  group.position.set(g.x, g.y, g.z);
-  group.rotation.y = g.ry + pointer.x * 0.035; // микро-жизнь
-
-  // light “breathing” super subtle
-  blueKey.intensity = 1.25 + Math.sin(now * 0.0012) * 0.07;
+  // breathe light
+  blueKey.intensity = 1.18 + Math.sin(now * 0.0012) * 0.06;
 
   composer.render();
   requestAnimationFrame(tick);
