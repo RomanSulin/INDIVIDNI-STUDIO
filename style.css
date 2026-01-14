@@ -255,3 +255,9 @@ body{
 #stage::after{
   display:none !important;
 }
+
+/* DEBUG: временно выключаем виньетку и зерно */
+#stage::before,
+#stage::after{
+  display:none !important;
+}
