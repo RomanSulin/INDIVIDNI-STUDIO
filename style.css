@@ -250,3 +250,8 @@ body{
   100%{ transform: translate3d(0,0,0); }
 }
 
+/* DEBUG: убрать все оверлеи */
+#stage::before,
+#stage::after{
+  display:none !important;
+}
