@@ -225,7 +225,7 @@ body{
     radial-gradient(1200px 700px at 50% 40%,
       rgba(0,0,0,0) 0%,
       rgba(0,0,0,.18) 55%,
-      rgba(0,0,0,.45) 100%);
+      rgba(0,0,0,.28) 100%);
   mix-blend-mode: multiply;
 }
 
