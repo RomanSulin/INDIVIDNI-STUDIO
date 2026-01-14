@@ -5,242 +5,150 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>INDIVIDNI STUDIO</title>
   <link rel="stylesheet" href="./style.css" />
-
-  <script type="importmap">
-  {
-    "imports": {
-      "three": "https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js",
-      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"
-    }
-  }
-  </script>
 </head>
 
 <body>
+  <!-- Top nav (Lusion-like) -->
   <header class="top">
     <div class="brand">INDIVIDNI</div>
 
     <div class="topActions">
-      <button class="pill pill--icon" id="btnWave" type="button" title="Wave">∿</button>
-      <a class="pill pill--cta" href="#contact">ОБСУДИТЬ</a>
-      <button class="pill pill--menu" id="btnMenu" type="button">
-        МЕНЮ <span class="dots">•••</span>
-      </button>
+      <button class="pill pill--icon" id="btnWave" type="button" aria-label="Wave">∿</button>
+      <a class="pill pill--cta" href="#contact">LET'S TALK <span class="dot"></span></a>
+      <button class="pill pill--menu" id="btnMenu" type="button">MENU <span class="dots">•••</span></button>
     </div>
   </header>
 
-  <!-- Black menu overlay -->
+  <!-- Menu overlay -->
   <aside class="menu" id="menu" aria-hidden="true">
     <div class="menuBackdrop" data-close></div>
-    <div class="menuPanel">
+    <div class="menuPanel" role="dialog" aria-modal="true" aria-label="Site menu">
       <div class="menuHead">
-        <div class="menuTitle">МЕНЮ</div>
-        <button class="menuClose" data-close type="button">ЗАКРЫТЬ</button>
+        <div class="menuTitle">MENU</div>
+        <button class="menuClose" data-close type="button">CLOSE</button>
       </div>
-
       <nav class="menuList">
-        <a href="#intro" data-close>Главная</a>
-        <a href="#about" data-close>О нас</a>
-        <a href="#reel" data-close>Шоурил</a>
-        <a href="#works" data-close>Проекты</a>
-        <a href="#contact" data-close>Контакт</a>
+        <a href="#intro" data-close>Home</a>
+        <a href="#about" data-close>About</a>
+        <a href="#reel" data-close>Reel</a>
+        <a href="#contact" data-close>Contact</a>
       </nav>
-
-      <div class="menuCard">
-        <div class="menuCardTitle">Напиши — я отвечу</div>
-        <div class="menuCardRow">
-          <input class="menuInput" placeholder="Telegram / Email" />
-          <button class="menuGo" type="button">→</button>
-        </div>
-      </div>
     </div>
   </aside>
 
   <main>
-    <!-- HERO -->
+    <!-- 1) HERO -->
     <section class="hero" id="intro">
       <div class="rail">
-        <h1 class="heroH1">
-          Мы помогаем брендам создавать видео, которое соединяет с их аудиторией
-        </h1>
+        <div class="heroTop">
+          <div class="heroTopSpacer" aria-hidden="true"></div>
+          <h1 class="heroTitle">We help brands create digital experiences that connect with their audience</h1>
+        </div>
+
+        <div class="heroCard">
+          <video class="heroVideo" autoplay loop muted playsinline preload="metadata">
+            <source src="./assets/showreel.mp4" type="video/mp4" />
+          </video>
+        </div>
       </div>
 
-      <div class="rail">
-        <div class="heroFrameWrap">
-          <div class="heroFrame">
-            <canvas id="hero3d"></canvas>
-          </div>
-
-          <div class="heroMarks">
-            <span class="plus p1">+</span><span class="plus p2">+</span>
-            <span class="plus p3">+</span><span class="plus p4">+</span>
-            <div class="scrollNote">SCROLL TO EXPLORE</div>
-          </div>
-        </div>
+      <!-- marks bar under the hero video -->
+      <div class="marksBar marksBar--hero" aria-hidden="true">
+        <span class="mark">+</span>
+        <span class="mark">+</span>
+        <span class="mark mark--text">SCROLL TO EXPLORE</span>
+        <span class="mark">+</span>
+        <span class="mark">+</span>
       </div>
     </section>
 
-    <!-- ABOUT + REEL (как в lusion.co): линия живёт внутри секции и рисуется по скроллу -->
-    <section class="flow" id="flow">
-      <div class="flowStroke" aria-hidden="true">
-        <svg class="strokeSvg" viewBox="0 0 1400 1600" preserveAspectRatio="none">
+    <!-- 2) ABOUT + blue stroke -->
+    <section class="about" id="about">
+      <div class="aboutStroke" aria-hidden="true">
+        <svg class="strokeSvg" viewBox="0 0 1600 900" preserveAspectRatio="none">
           <path id="strokePath"
-            d="M 60 -220
-               C 40 120, 160 260, 320 380
-               S 610 600, 730 420
-               S 980 160, 1180 360
-               S 1240 760, 980 760
-               S 460 720, 420 1040
-               S 700 1500, 1540 1180"
-            fill="none" stroke="var(--blue)" stroke-width="54"
-            stroke-linecap="round" stroke-linejoin="round" pathLength="100"
-          />
+            d="M 290 -220
+               C 260 120, 270 300, 340 470
+               C 430 690, 700 760, 930 650
+               C 1120 560, 1240 420, 1180 280
+               C 1100 95, 840 150, 650 260
+               C 470 360, 410 520, 490 650
+               C 620 860, 1020 820, 1280 610
+               C 1420 500, 1520 460, 1700 520"
+            fill="none" stroke="var(--blue)" stroke-width="44"
+            stroke-linecap="round" stroke-linejoin="round" pathLength="100" />
         </svg>
       </div>
 
-      <!-- ABOUT block -->
-      <section class="about" id="about">
-        <div class="rail">
-          <div class="aboutGrid">
-            <div class="aboutMedia" aria-hidden="true">
-              <video class="aboutVideo" autoplay muted loop playsinline preload="metadata">
-                <source src="./assets/showreel.mp4" type="video/mp4" />
-              </video>
-            </div>
-
-            <div class="aboutText">
-              <p class="aboutPara">
-                INDIVIDNI — видеопродакшн-студия, которая помогает брендам превращать идеи
-                в визуально сильные ролики и интерактивные истории. Мы берём на себя полный цикл:
-                от концепта до поста — и делаем результат, который реально цепляет.
-              </p>
-            </div>
+      <div class="rail">
+        <div class="aboutGrid">
+          <div class="aboutMedia">
+            <video class="aboutVideo" autoplay loop muted playsinline preload="metadata">
+              <source src="./assets/showreel.mp4" type="video/mp4" />
+            </video>
+            <div class="aboutTint" aria-hidden="true"></div>
           </div>
 
-          <a class="aboutBtn" href="#works">
-            <span class="aboutDot" aria-hidden="true"></span>
-            О НАС
-          </a>
-        </div>
-      </section>
-
-      <!-- REEL pinned zone (поведение как в lusion: раскрытие + fade overlay + autoplay) -->
-      <section class="flowReel" id="reel">
-        <div class="reelPin" id="reelPin">
-          <div class="reelSticky" id="reelSticky">
-            <div class="rail">
-              <div class="reelWrap">
-                <div class="reelMarks reelMarks--top" aria-hidden="true">
-                  <span>+</span><span>+</span><span>+</span><span>+</span><span>+</span>
-                </div>
-                <div class="reelMarks reelMarks--bottom" aria-hidden="true">
-                  <span>+</span><span>+</span><span>+</span><span>+</span><span>+</span>
-                </div>
-
-                <div class="reelFrame" id="reelFrame">
-                  <div class="reelOverlay" id="reelOverlay">
-                    <div class="reelPlayWord">PLAY</div>
-                    <button class="reelBtn" id="reelBtn" type="button" aria-label="Play Reel">
-                      <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M9 7l10 5-10 5V7z" fill="currentColor" />
-                      </svg>
-                    </button>
-                    <div class="reelPlayWord">REEL</div>
-                  </div>
-
-                  <video id="reelVideo" class="reelVideo" playsinline muted preload="metadata">
-                    <source src="./assets/showreel.mp4" type="video/mp4" />
-                  </video>
-                </div>
-              </div>
-            </div>
+          <div class="aboutText">
+            <p>
+              IndivIdni is a digital production studio that brings your ideas to life through visually captivating designs and interactive experiences.
+              <br><br>
+              With our talented team, we push boundaries by solving complex problems, delivering tailored solutions that exceed expectations and engage audiences.
+            </p>
           </div>
         </div>
-      </section>
+
+        <button class="aboutPill" type="button">
+          <span class="pillDot" aria-hidden="true"></span>
+          ABOUT US
+        </button>
+      </div>
     </section>
 
-    <!-- FEATURED WORK -->
-    <section class="works" id="works">
+    <!-- 3) PLAY REEL -->
+    <section class="reel" id="reel">
+      <div class="marksBar marksBar--top" aria-hidden="true">
+        <span class="mark">+</span>
+        <span class="mark">+</span>
+        <span class="mark">+</span>
+        <span class="mark">+</span>
+        <span class="mark">+</span>
+      </div>
+
       <div class="rail">
-        <div class="worksHead">
-          <h2 class="worksTitle">Featured Work</h2>
-          <p class="worksDesc">
-            Hover — волна/деформация + лёгкий tilt (без залипания blur).
-          </p>
+        <div class="reelPin" id="reelPin">
+          <div class="reelSticky">
+            <div class="reelFrame" id="reelFrame">
+              <video id="reelVideo" class="reelVideo" muted playsinline preload="metadata">
+                <source src="./assets/showreel.mp4" type="video/mp4" />
+              </video>
+
+              <button class="reelOverlay" id="reelOverlay" type="button" aria-label="Play reel">
+                <span class="reelWord">PLAY</span>
+                <span class="reelPill"><span class="reelTri">▶</span></span>
+                <span class="reelWord">REEL</span>
+              </button>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <div class="worksGrid">
-          <a class="workCard" href="./project.html" data-w="0">
-            <div class="workMedia">
-              <img class="workImg" alt="" src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=2000&q=80">
-            </div>
-            <div class="workMeta">VIDEO • PRODUCTION • POST</div>
-            <div class="workName">Кейс 01</div>
-          </a>
-
-          <a class="workCard" href="./project.html" data-w="1">
-            <div class="workMedia">
-              <img class="workImg" alt="" src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=2000&q=80">
-            </div>
-            <div class="workMeta">VIDEO • INTERVIEW • SOUND</div>
-            <div class="workName">Кейс 02</div>
-          </a>
-
-          <a class="workCard" href="./project.html" data-w="2">
-            <div class="workMedia">
-              <img class="workImg" alt="" src="https://images.unsplash.com/photo-1524253482453-3fed8d2fe12b?auto=format&fit=crop&w=2000&q=80">
-            </div>
-            <div class="workMeta">VIDEO • EVENT • EDIT</div>
-            <div class="workName">Кейс 03</div>
-          </a>
-
-          <a class="workCard" href="./project.html" data-w="3">
-            <div class="workMedia">
-              <img class="workImg" alt="" src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=2000&q=80">
-            </div>
-            <div class="workMeta">VIDEO • BRAND • COLOR</div>
-            <div class="workName">Кейс 04</div>
-          </a>
-
-          <a class="workCard" href="./project.html" data-w="4">
-            <div class="workMedia">
-              <img class="workImg" alt="" src="https://images.unsplash.com/photo-1526948128573-703ee1aeb6fa?auto=format&fit=crop&w=2000&q=80">
-            </div>
-            <div class="workMeta">VIDEO • SOCIAL • CUTS</div>
-            <div class="workName">Кейс 05</div>
-          </a>
-
-          <a class="workCard" href="./project.html" data-w="5">
-            <div class="workMedia">
-              <img class="workImg" alt="" src="https://images.unsplash.com/photo-1514924013411-cbf25faa35bb?auto=format&fit=crop&w=2000&q=80">
-            </div>
-            <div class="workMeta">VIDEO • MOTION • TITLES</div>
-            <div class="workName">Кейс 06</div>
-          </a>
-        </div>
+      <div class="marksBar marksBar--bottom" aria-hidden="true">
+        <span class="mark">+</span>
+        <span class="mark">+</span>
+        <span class="mark">+</span>
+        <span class="mark">+</span>
+        <span class="mark">+</span>
       </div>
     </section>
 
     <section class="contactStub" id="contact">
       <div class="rail">
-        <div class="contactStubInner">Контакт доделаем позже.</div>
+        <div class="contactStubInner">Contact — позже.</div>
       </div>
     </section>
   </main>
 
-  <!-- SVG filters (wave) -->
-  <svg width="0" height="0" style="position:absolute; left:-9999px; top:-9999px;" aria-hidden="true">
-    <defs>
-      <filter id="disp0"><feTurbulence type="fractalNoise" baseFrequency="0.010" numOctaves="2" seed="1" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
-      <filter id="disp1"><feTurbulence type="fractalNoise" baseFrequency="0.010" numOctaves="2" seed="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
-      <filter id="disp2"><feTurbulence type="fractalNoise" baseFrequency="0.010" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
-      <filter id="disp3"><feTurbulence type="fractalNoise" baseFrequency="0.010" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
-      <filter id="disp4"><feTurbulence type="fractalNoise" baseFrequency="0.010" numOctaves="2" seed="5" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
-      <filter id="disp5"><feTurbulence type="fractalNoise" baseFrequency="0.010" numOctaves="2" seed="6" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
-    </defs>
-  </svg>
-
-  <!-- важно: путь должен совпадать с твоей структурой репозитория -->
-  <script type="module" src="./main.js"></script>
+  <script src="./main.js" defer></script>
 </body>
 </html>
