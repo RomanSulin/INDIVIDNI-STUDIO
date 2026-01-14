@@ -1,185 +1,286 @@
 import * as THREE from "three";
-import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
-import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
-import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 
-const canvas = document.getElementById("gl");
-const sections = Array.from(document.querySelectorAll("[data-scene]"));
+/* ---------------- Menu ---------------- */
+const menu = document.getElementById("menu");
+const btnMenu = document.getElementById("btnMenu");
 
-const pre = document.getElementById("preloader");
-const preBar = document.getElementById("preloaderBar");
-const prePct = document.getElementById("preloaderPct");
+function openMenu(){
+  menu.classList.add("isOpen");
+  menu.setAttribute("aria-hidden","false");
+}
+function closeMenu(){
+  menu.classList.remove("isOpen");
+  menu.setAttribute("aria-hidden","true");
+}
+btnMenu?.addEventListener("click", () => {
+  menu.classList.contains("isOpen") ? closeMenu() : openMenu();
+});
+menu?.addEventListener("click", (e) => {
+  if (e.target.closest("[data-close]")) closeMenu();
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeMenu();
+});
 
-const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-const lerp = (a, b, t) => a + (b - a) * t;
-const damp = (cur, tar, lam, dt) => lerp(cur, tar, 1 - Math.exp(-lam * dt));
+/* ---------------- Red stroke scroll draw ---------------- */
+const strokePath = document.getElementById("strokePath");
+const studio = document.getElementById("studio");
+const reel = document.getElementById("reel");
 
-/* ---------- Three base ---------- */
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-renderer.setClearColor(0x07090f, 1);
-renderer.outputColorSpace = THREE.SRGBColorSpace;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.15;
-
-const scene = new THREE.Scene();
-scene.fog = new THREE.Fog(0x07090f, 18, 120);
-
-const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 200);
-camera.position.set(0, 1.15, 7.2);
-
-scene.add(new THREE.AmbientLight(0xffffff, 0.55));
-
-const blueKey = new THREE.SpotLight(0x2b6bff, 1.25, 140, Math.PI / 3.1, 0.80, 1.0);
-blueKey.position.set(0, 6.4, 0);
-blueKey.target.position.set(0, 1.2, 0);
-scene.add(blueKey, blueKey.target);
-
-const rim = new THREE.DirectionalLight(0xffffff, 0.16);
-rim.position.set(-3, 4, -8);
-scene.add(rim);
-
-/* ---------- Hero object (не постеры): “лента/связь/ритм” ---------- */
-const group = new THREE.Group();
-scene.add(group);
-
-function makeRibbon() {
-  // Кривая “ленты”
-  const curve = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(-2.2, 1.0, 0.2),
-    new THREE.Vector3(-1.2, 1.6, -0.3),
-    new THREE.Vector3( 0.0, 1.2, -0.9),
-    new THREE.Vector3( 1.2, 1.8, -0.4),
-    new THREE.Vector3( 2.2, 1.1, 0.1),
-  ], false, "catmullrom", 0.35);
-
-  const geo = new THREE.TubeGeometry(curve, 220, 0.07, 10, false);
-  const mat = new THREE.MeshStandardMaterial({
-    color: 0xf2f4ff,          // белый как “воздух”
-    roughness: 0.25,
-    metalness: 0.15,
-    emissive: new THREE.Color(0x081224),
-    emissiveIntensity: 0.35
-  });
-  const mesh = new THREE.Mesh(geo, mat);
-  mesh.position.z = -0.2;
-  return mesh;
+let strokeLen = 100;
+if (strokePath){
+  // pathLength="100" already. We'll animate dashoffset 100→0
+  strokePath.style.strokeDasharray = `${strokeLen}`;
+  strokePath.style.strokeDashoffset = `${strokeLen}`;
 }
 
-const ribbon = makeRibbon();
-group.add(ribbon);
+function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
 
-// “сцена” (тонкий пол, чтобы не было пустоты)
-const floor = new THREE.Mesh(
-  new THREE.PlaneGeometry(80, 80),
-  new THREE.MeshStandardMaterial({ color: 0x05060a, roughness: 1, metalness: 0 })
-);
-floor.rotation.x = -Math.PI / 2;
-floor.position.y = 0;
-scene.add(floor);
+function updateStroke(){
+  if (!strokePath || !studio || !reel) return;
 
-/* ---------- Postprocessing ---------- */
-const composer = new EffectComposer(renderer);
-composer.addPass(new RenderPass(scene, camera));
-const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.20, 0.85, 0.92);
-composer.addPass(bloom);
+  const a = studio.getBoundingClientRect();
+  const b = reel.getBoundingClientRect();
 
-/* ---------- States per section ---------- */
-const STATES = {
-  intro:    { cam:[0.00,1.15,7.20], look:[0.00,1.25,0.00], rot:[0.00, 0.00] },
-  works:    { cam:[0.35,1.10,6.90], look:[-0.20,1.25,-0.30], rot:[0.10, 0.18] },
-  services: { cam:[-0.30,1.15,7.10], look:[0.15,1.25,-0.35], rot:[-0.08,-0.12] },
-  contact:  { cam:[0.00,1.10,7.55], look:[0.00,1.25,-0.25], rot:[0.00, 0.00] },
-};
+  // start when studio enters, end when reel is half passed
+  const start = window.innerHeight * 0.75;
+  const end = window.innerHeight * 0.20;
 
-let active = "intro";
+  const total = (a.height + (b.top - a.top));
+  const y = (start - a.top);
+  const t = clamp(y / (total * 0.9), 0, 1);
 
-/* pick active section near viewport mid */
-function pickScene() {
-  const mid = window.innerHeight * 0.55;
-  let best = { id: "intro", d: Infinity };
-  for (const s of sections) {
-    const r = s.getBoundingClientRect();
-    const cy = r.top + r.height * 0.5;
-    const d = Math.abs(cy - mid);
-    if (d < best.d) best = { id: s.dataset.scene, d };
+  strokePath.style.strokeDashoffset = `${strokeLen * (1 - t)}`;
+}
+window.addEventListener("scroll", updateStroke, { passive:true });
+window.addEventListener("resize", updateStroke, { passive:true });
+
+/* ---------------- Reel expand + autoplay on scroll ---------------- */
+const reelFrame = document.getElementById("reelFrame");
+const reelBtn = document.getElementById("reelBtn");
+const reelVideo = document.getElementById("reelVideo");
+let reelArmed = false;
+
+function setReelReady(){
+  if (!reelFrame || !reelVideo) return;
+  reelFrame.classList.add("isReady");
+}
+
+reelVideo?.addEventListener("canplay", setReelReady);
+
+function playReel(){
+  if (!reelFrame || !reelVideo) return;
+  reelFrame.classList.add("isPlaying");
+  reelVideo.muted = true;
+  reelVideo.play().catch(()=>{});
+}
+reelBtn?.addEventListener("click", () => {
+  reelArmed = true;
+  playReel();
+});
+
+function updateReel(){
+  if (!reelFrame) return;
+
+  const r = reelFrame.getBoundingClientRect();
+  const vh = window.innerHeight;
+
+  // progress 0..1 while passing center area
+  const t = clamp((vh * 0.85 - r.top) / (vh * 0.65), 0, 1);
+
+  // раскрытие: scale + radius
+  const scale = 1 + t * 0.08;
+  const radius = 28 - t * 14;
+  reelFrame.style.transform = `scale(${scale})`;
+  reelFrame.style.borderRadius = `${radius}px`;
+
+  // автозапуск, когда почти раскрылся
+  if (!reelArmed && t > 0.72){
+    reelArmed = true;
+    playReel();
   }
-  active = best.id || "intro";
 }
-window.addEventListener("scroll", pickScene, { passive: true });
+window.addEventListener("scroll", () => { updateStroke(); updateReel(); }, { passive:true });
+window.addEventListener("resize", () => { updateStroke(); updateReel(); }, { passive:true });
 
-/* pointer parallax */
-const ptr = { x:0, y:0 };
-window.addEventListener("pointermove", (e) => {
-  ptr.x = (e.clientX / window.innerWidth) * 2 - 1;
-  ptr.y = (e.clientY / window.innerHeight) * 2 - 1;
-}, { passive:true });
+/* ---------------- Works hover wave + tilt ---------------- */
+const cards = Array.from(document.querySelectorAll(".workCard"));
 
-/* resize */
-function resize(){
-  const w = window.innerWidth;
-  const h = window.innerHeight;
-  camera.aspect = w/h;
-  camera.updateProjectionMatrix();
-  renderer.setPixelRatio(Math.min(1.75, window.devicePixelRatio || 1));
-  renderer.setSize(w, h, false);
-  composer.setSize(w, h);
-  bloom.setSize(w, h);
+function getFilter(card){
+  const idx = Number(card.dataset.w || 0);
+  return document.querySelector(`#disp${idx} feDisplacementMap`);
 }
-window.addEventListener("resize", resize, { passive:true });
+function getTurb(card){
+  const idx = Number(card.dataset.w || 0);
+  return document.querySelector(`#disp${idx} feTurbulence`);
+}
 
-/* ---------- Preloader (fake but clean) ---------- */
-let p = 0;
-const preInt = setInterval(() => {
-  p = Math.min(1, p + 0.08);
-  preBar.style.width = `${Math.round(p * 100)}%`;
-  prePct.textContent = `${Math.round(p * 100)}%`;
-  if (p >= 1) {
-    clearInterval(preInt);
-    pre.style.opacity = "0";
-    setTimeout(() => pre.remove(), 450);
+cards.forEach((card) => {
+  const thumb = card.querySelector(".thumb");
+  if (!thumb) return;
+
+  const idx = Number(card.dataset.w || 0);
+  thumb.style.filter = `url(#disp${idx})`;
+
+  const disp = getFilter(card);
+  const turb = getTurb(card);
+
+  function onMove(e){
+    const r = card.getBoundingClientRect();
+    const mx = (e.clientX - r.left) / r.width;
+    const my = (e.clientY - r.top) / r.height;
+
+    // tilt
+    const rx = (0.5 - my) * 8;
+    const ry = (mx - 0.5) * 10;
+    card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-2px)`;
+
+    // wave strength
+    if (disp) disp.setAttribute("scale", String(18));
+    if (turb) turb.setAttribute("baseFrequency", `${0.006 + mx*0.010} ${0.010 + my*0.012}`);
   }
-}, 60);
 
-/* ---------- Loop ---------- */
-resize();
-pickScene();
+  function onEnter(){
+    card.classList.add("isHover");
+    if (disp) disp.setAttribute("scale", "18");
+  }
+  function onLeave(){
+    card.classList.remove("isHover");
+    card.style.transform = "";
+    if (disp) disp.setAttribute("scale", "0");
+    if (turb) turb.setAttribute("baseFrequency", "0.008");
+  }
 
-let last = performance.now();
-let cam = { x: camera.position.x, y: camera.position.y, z: camera.position.z };
-let look = { x:0, y:1.25, z:0 };
-let rot = { x:0, y:0 };
+  card.addEventListener("mousemove", onMove);
+  card.addEventListener("mouseenter", onEnter);
+  card.addEventListener("mouseleave", onLeave);
+});
 
-function tick(now){
-  const dt = Math.min(0.05, (now - last) / 1000);
-  last = now;
+/* ---------------- 3D Hero (курсором двигается как у Lusion) ---------------- */
+const canvas = document.getElementById("hero3d");
+if (canvas){
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:false });
+  renderer.setClearColor(0x101522, 1);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-  const st = STATES[active] || STATES.intro;
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+  camera.position.set(0, 0.2, 6.4);
 
-  // camera target + pointer sway
-  const swayX = ptr.x * 0.22;
-  const swayY = ptr.y * 0.08;
+  // Environment for glossy look
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
 
-  cam.x = damp(cam.x, st.cam[0] + swayX, 6.5, dt);
-  cam.y = damp(cam.y, st.cam[1] + swayY, 6.5, dt);
-  cam.z = damp(cam.z, st.cam[2] + Math.abs(swayX) * 0.06, 6.5, dt);
+  // Lights
+  const key = new THREE.DirectionalLight(0xffffff, 2.1);
+  key.position.set(3, 4, 4);
+  scene.add(key);
 
-  look.x = damp(look.x, st.look[0], 7.0, dt);
-  look.y = damp(look.y, st.look[1], 7.0, dt);
-  look.z = damp(look.z, st.look[2], 7.0, dt);
+  const fill = new THREE.DirectionalLight(0x2b49ff, 1.2);
+  fill.position.set(-4, 1, 2);
+  scene.add(fill);
 
-  camera.position.set(cam.x, cam.y, cam.z);
-  camera.lookAt(look.x, look.y, look.z);
+  const amb = new THREE.AmbientLight(0xffffff, 0.35);
+  scene.add(amb);
 
-  // object motion (subtle)
-  rot.x = damp(rot.x, st.rot[0], 6.5, dt);
-  rot.y = damp(rot.y, st.rot[1], 6.5, dt);
-  group.rotation.x = rot.x + ptr.y * 0.03;
-  group.rotation.y = rot.y + ptr.x * 0.04;
+  // Cross-like object (not copy): build from cylinders
+  const matBlue = new THREE.MeshPhysicalMaterial({ color:0x2b49ff, roughness:0.15, metalness:0.05, clearcoat:1, clearcoatRoughness:0.12 });
+  const matWhite = new THREE.MeshPhysicalMaterial({ color:0xe9ebf3, roughness:0.18, metalness:0.04, clearcoat:1, clearcoatRoughness:0.12 });
+  const matBlack = new THREE.MeshPhysicalMaterial({ color:0x0b0e14, roughness:0.22, metalness:0.03, clearcoat:1, clearcoatRoughness:0.14 });
 
-  // breathe light
-  blueKey.intensity = 1.18 + Math.sin(now * 0.0012) * 0.06;
+  function makeCross(material){
+    const g = new THREE.Group();
+    const cyl = new THREE.CylinderGeometry(0.32, 0.32, 1.5, 28);
+    const part1 = new THREE.Mesh(cyl, material);
+    part1.rotation.z = Math.PI/2;
+    g.add(part1);
 
-  composer.render();
-  requestAnimationFrame(tick);
+    const part2 = new THREE.Mesh(cyl, material);
+    g.add(part2);
+
+    // little caps (holes feel)
+    const hole = new THREE.CylinderGeometry(0.10, 0.10, 0.4, 18);
+    const cap1 = new THREE.Mesh(hole, matBlack);
+    cap1.position.set(0.75, 0, 0);
+    cap1.rotation.z = Math.PI/2;
+    g.add(cap1);
+
+    const cap2 = cap1.clone();
+    cap2.position.set(-0.75, 0, 0);
+    g.add(cap2);
+
+    const cap3 = cap1.clone();
+    cap3.position.set(0, 0.75, 0);
+    cap3.rotation.z = 0;
+    g.add(cap3);
+
+    const cap4 = cap3.clone();
+    cap4.position.set(0, -0.75, 0);
+    g.add(cap4);
+
+    return g;
+  }
+
+  const root = new THREE.Group();
+  scene.add(root);
+
+  // Create cluster
+  const mats = [matBlue, matWhite, matBlack, matWhite, matBlue, matBlack];
+  for (let i=0; i<34; i++){
+    const m = mats[i % mats.length];
+    const obj = makeCross(m);
+
+    obj.position.set(
+      (Math.random()-0.5)*4.8,
+      (Math.random()-0.5)*2.8,
+      (Math.random()-0.5)*2.4
+    );
+    obj.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI);
+    const s = 0.75 + Math.random()*0.55;
+    obj.scale.setScalar(s);
+    root.add(obj);
+  }
+
+  // pointer parallax
+  const pointer = { x:0, y:0 };
+  window.addEventListener("pointermove", (e) => {
+    const r = canvas.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width;
+    const y = (e.clientY - r.top) / r.height;
+    pointer.x = (x - 0.5) * 2;
+    pointer.y = (y - 0.5) * 2;
+  }, { passive:true });
+
+  function resize(){
+    const w = canvas.clientWidth;
+    const h = canvas.clientHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  window.addEventListener("resize", resize, { passive:true });
+  resize();
+
+  let t = 0;
+  function tick(){
+    t += 0.01;
+
+    // slow drift + pointer influence
+    root.rotation.y = t*0.18 + pointer.x * 0.18;
+    root.rotation.x = t*0.12 - pointer.y * 0.12;
+
+    // slight camera sway
+    camera.position.x = pointer.x * 0.35;
+    camera.position.y = 0.2 - pointer.y * 0.20;
+    camera.lookAt(0,0,0);
+
+    renderer.render(scene, camera);
+    requestAnimationFrame(tick);
+  }
+  tick();
 }
-requestAnimationFrame(tick);
+
+/* Init */
+updateStroke();
+updateReel();
