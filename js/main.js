@@ -17,8 +17,7 @@ const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
 
 /* ---------------- Stroke draw (starts earlier, continues past reel to works) ---------------- */
 const strokePath = document.getElementById("strokePath");
-const introEl = document.getElementById("intro");
-const worksEl = document.getElementById("works");
+const flowEl = document.getElementById("flow");
 const strokeLen = 100;
 
 if (strokePath){
@@ -27,12 +26,11 @@ if (strokePath){
 }
 
 function updateStroke(){
-  if (!strokePath || !introEl || !worksEl) return;
+  if (!strokePath || !flowEl) return;
 
   const vh = window.innerHeight;
-  const start = introEl.offsetTop + introEl.offsetHeight * 0.35;   // начинается раньше (ещё до studio)
-  const end   = worksEl.offsetTop - vh * 0.15;                      // заканчивается у работ
-
+  const start = flowEl.offsetTop - vh * 0.15;
+  const end   = flowEl.offsetTop + flowEl.offsetHeight - vh * 0.35;
   const t = clamp((window.scrollY - start) / (end - start), 0, 1);
   strokePath.style.strokeDashoffset = `${strokeLen * (1 - t)}`;
 }
@@ -46,10 +44,11 @@ const reelVideo = document.getElementById("reelVideo");
 
 let reelPlayed = false;
 function playReel(){
-  if (!reelVideo || reelPlayed) return;
-  reelPlayed = true;
+  if (!reelVideo) return;
+  reelFrame?.classList.add("isPlayed");
   reelVideo.muted = true;
   reelVideo.play().catch(()=>{});
+  reelPlayed = true;
 }
 reelBtn?.addEventListener("click", playReel);
 
@@ -62,38 +61,40 @@ function updateReel(){
   const pinH = reelPin.offsetHeight;
   const vh = window.innerHeight;
 
+  const railW = reelSticky.querySelector(".rail")?.clientWidth || reelSticky.clientWidth;
+
+  // Mobile (или если pin отключен) — просто нормальный 16:9 без расчётов по скроллу
+  if (window.matchMedia("(max-width: 980px)").matches || pinH <= vh + 2){
+    const w = railW;
+    const h = w * 9/16;
+    reelFrame.style.setProperty("--w", `${w.toFixed(1)}px`);
+    reelFrame.style.setProperty("--h", `${h.toFixed(1)}px`);
+    reelFrame.style.setProperty("--r", `34px`);
+    reelFrame.style.setProperty("--ty", `0px`);
+    return;
+  }
+
   const p = clamp((window.scrollY - pinTop) / (pinH - vh), 0, 1);
 
-  // раскрытие 0..0.65
-  const e = easeOutCubic(clamp(p / 0.65, 0, 1));
+  // раскрытие — мягко (как в рефе: почти full width)
+  const e = easeOutCubic(clamp(p / 0.75, 0, 1));
 
-  // end = ширина rail
-  const railW = reelSticky.querySelector(".rail")?.clientWidth || reelSticky.clientWidth;
   const endW = railW;
+  const startW = endW * 0.78;
 
-  // start = маленький слева
-  const startW = Math.min(860, endW * 0.60);
-
-  // width lerp
   const w = startW + (endW - startW) * e;
+  const h = Math.min(w * 9/16, vh * 0.74);
 
-  // 16:9
-  const h = Math.min(w * 9/16, vh * 0.66);
-
-  const r = 28 - e * 14;
-  const ty = (1 - e) * 10;
-
-  const ov = 1 - clamp((p - 0.48) / 0.18, 0, 1);
-  const vid = clamp((p - 0.58) / 0.18, 0, 1);
+  const r = 40 - e * 6;
+  const ty = (1 - e) * 12;
 
   reelFrame.style.setProperty("--w", `${w.toFixed(1)}px`);
   reelFrame.style.setProperty("--h", `${h.toFixed(1)}px`);
   reelFrame.style.setProperty("--r", `${r.toFixed(1)}px`);
   reelFrame.style.setProperty("--ty", `${ty.toFixed(1)}px`);
-  reelFrame.style.setProperty("--ov", ov.toFixed(3));
-  reelFrame.style.setProperty("--vid", vid.toFixed(3));
 
-  if (!reelPlayed && p > 0.62) playReel();
+  // как в lusion: видео оживает само, overlay уходит только по клику
+  if (!reelPlayed && p > 0.12) playReel();
 }
 
 /* ---------------- Works hover: wave only on hover + micro blur flash ---------------- */
