@@ -17,7 +17,6 @@
 </head>
 
 <body>
-  <!-- Top UI -->
   <header class="top">
     <div class="brand">INDIVIDNI</div>
 
@@ -41,8 +40,7 @@
 
       <nav class="menuList">
         <a href="#intro" data-close>Главная</a>
-        <a href="#studio" data-close>О студии</a>
-        <a href="#reel" data-close>Шоурил</a>
+        <a href="#flow" data-close>Studio / Reel / Work</a>
         <a href="#works" data-close>Проекты</a>
         <a href="#contact" data-close>Контакт</a>
       </nav>
@@ -56,23 +54,6 @@
       </div>
     </div>
   </aside>
-
-  <!-- Global red stroke overlay (идёт через несколько блоков) -->
-  <div class="strokeOverlay" aria-hidden="true">
-    <svg class="strokeGlobal" viewBox="0 0 1200 900" preserveAspectRatio="none">
-      <path id="strokePath"
-        d="M -120 520
-           C 180 220, 320 760, 520 520
-           S 820 220, 980 520
-           S 860 820, 640 650
-           S 320 400, 260 740
-           S 520 980, 1320 640"
-        fill="none" stroke="var(--red)" stroke-width="34"
-        stroke-linecap="round" stroke-linejoin="round"
-        pathLength="100"
-      />
-    </svg>
-  </div>
 
   <main>
     <!-- HERO -->
@@ -98,33 +79,58 @@
       </div>
     </section>
 
-    <!-- STUDIO -->
-    <section class="studio" id="studio">
-      <div class="rail">
-        <div class="studioWord">
-          <div class="studioSmall">STUDIO</div>
-          <div class="studioBig">INDIVIDNI</div>
-        </div>
+    <!-- FLOW block: здесь живет линия (не fixed), и здесь же Studio + Reel -->
+    <section class="flow" id="flow">
+      <div class="flowStroke" aria-hidden="true">
+        <svg class="strokeSvg" viewBox="0 0 1400 900" preserveAspectRatio="none">
+          <path id="strokePath"
+            d="M -140 520
+               C 200 160, 420 800, 610 520
+               S 920 200, 1040 520
+               S 940 820, 720 660
+               S 400 460, 340 760
+               S 650 980, 1540 640"
+            fill="none" stroke="var(--red)" stroke-width="36"
+            stroke-linecap="round" stroke-linejoin="round" pathLength="100"
+          />
+        </svg>
       </div>
-    </section>
 
-    <!-- REEL: left small -> expand -->
-    <section class="reel" id="reel">
-      <div class="reelPin" id="reelPin">
-        <div class="reelSticky" id="reelSticky">
-          <div class="reelFrame" id="reelFrame">
-            <div class="reelOverlay" id="reelOverlay">
-              <div class="reelPlayWord">PLAY</div>
-              <button class="reelBtn" id="reelBtn" type="button" aria-label="Play Reel">▶</button>
-              <div class="reelPlayWord">REEL</div>
-            </div>
-
-            <video id="reelVideo" class="reelVideo" playsinline muted preload="metadata">
-              <source src="./assets/showreel.mp4" type="video/mp4" />
-            </video>
+      <!-- STUDIO word (как на скрине) -->
+      <div class="flowStudio" id="studio">
+        <div class="rail">
+          <div class="studioWord">
+            <div class="studioSmall">STUDIO</div>
+            <div class="studioBig">INDIVIDNI</div>
           </div>
         </div>
       </div>
+
+      <!-- REEL pinned zone -->
+      <div class="flowReel" id="reel">
+        <div class="reelPin" id="reelPin">
+          <div class="reelSticky" id="reelSticky">
+            <div class="rail">
+              <div class="reelFrame" id="reelFrame">
+                <div class="reelOverlay" id="reelOverlay">
+                  <div class="reelPlayWord">PLAY</div>
+                  <button class="reelBtn" id="reelBtn" type="button" aria-label="Play Reel">▶</button>
+                  <div class="reelPlayWord">REEL</div>
+                </div>
+
+                <video id="reelVideo" class="reelVideo" playsinline muted preload="metadata">
+                  <source src="./assets/showreel.mp4" type="video/mp4" />
+                </video>
+
+                <div class="frameMarks" aria-hidden="true">
+                  <span>+</span><span>+</span><span>+</span><span>+</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </section>
 
     <!-- FEATURED WORK -->
@@ -133,7 +139,7 @@
         <div class="worksHead">
           <h2 class="worksTitle">Featured Work</h2>
           <p class="worksDesc">
-            Подборка работ. Hover — волна + лёгкий tilt, как у Lusion.
+            Hover — волна/деформация + лёгкий tilt (без залипания blur).
           </p>
         </div>
 
@@ -196,7 +202,7 @@
     </section>
   </main>
 
-  <!-- SVG wave filters -->
+  <!-- SVG filters (wave) -->
   <svg width="0" height="0" style="position:absolute; left:-9999px; top:-9999px;" aria-hidden="true">
     <defs>
       <filter id="disp0"><feTurbulence type="fractalNoise" baseFrequency="0.010" numOctaves="2" seed="1" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
