@@ -1,77 +1,167 @@
 <!doctype html>
-<html lang="ru"> 
+<html lang="ru">
 <head>
-  <meta charset="utf-8" /> 
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>INDIVIDNI — Wall Prototype</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>INDIVIDNI — Video Production</title>
+  <link rel="stylesheet" href="./style.css" />
+
+  <!-- ВАЖНО: importmap нужен, чтобы examples работали без ошибок -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"
+    }
+  }
+  </script>
 </head>
+
 <body>
-  <!-- WebGL scene -->
-  <div id="stage">
-    <canvas id="c"></canvas>
-
-    <!-- HUD -->
-    <header class="hud">
-      <div class="brand">
-        <div class="logo">INDIVIDNI</div>
-        <div class="sub">Видеопродакшн: съёмка • монтаж • пост</div>
-      </div>
-
-      <div class="hint">
-        <span class="chip blue">Скролл</span>
-        <span class="chip">Наведи → подсветка</span>
-        <span class="chip red">Клик → кейс</span>
-      </div>
-    </header>
-
-    <!-- Case overlay -->
-    <div id="overlay" class="overlay" hidden>
-      <div class="overlay__backdrop" data-close></div>
-      <div class="overlay__panel" role="dialog" aria-modal="true">
-        <button class="overlay__close" type="button" title="Закрыть" data-close>✕</button>
-
-        <div class="case">
-          <div class="case__meta">
-            <div id="caseType" class="case__type"></div>
-            <div id="caseTitle" class="case__title"></div>
-            <div id="caseLine" class="case__line"></div>
-          </div>
-
-          <div class="case__grid">
-            <div class="case__block">
-              <div class="case__label">Задача</div>
-              <div id="caseTask" class="case__text"></div>
-            </div>
-            <div class="case__block">
-              <div class="case__label">Решение</div>
-              <div id="caseSolution" class="case__text"></div>
-            </div>
-            <div class="case__block">
-              <div class="case__label">Результат</div>
-              <div id="caseResult" class="case__text"></div>
-            </div>
-          </div>
-
-          <div class="case__actions">
-            <div class="stamp">ЗАПРОСИТЬ СМЕТУ</div>
-            <div class="note">Пока заглушка. Потом подключим бриф/телегу.</div>
-          </div>
-        </div>
-      </div>
-    </div>
+  <!-- WebGL background -->
+  <div id="glWrap">
+    <canvas id="gl"></canvas>
   </div>
 
-  <!-- Scroll spacer: height будет выставляться в JS -->
-  <div id="scroll-spacer" aria-hidden="true"></div>
-<script type="importmap">
-{
-  "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"
-  }
-}
-</script>
+  <!-- Minimal top UI (почти как у Lusion: тихо, без карточек) -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand__logo">INDIVIDNI</div>
+      <div class="brand__sub">Видеопродакшн: съёмка • монтаж • пост</div>
+    </div>
+    <nav class="nav">
+      <a href="#reel">Шоурил</a>
+      <a href="#works">Работы</a>
+      <a href="#services">Услуги</a>
+      <a href="#contact" class="nav__accent">Контакт</a>
+    </nav>
+  </header>
+
+  <!-- Content -->
+  <main>
+    <section class="section hero" id="intro" data-scene="intro">
+      <div class="hero__grid">
+        <h1 class="hero__title">
+          Свет.<br />
+          Ритм.<br />
+          Звук.<br />
+          Смысл.
+        </h1>
+
+        <div class="hero__side">
+          <p class="hero__lead">
+            Мы собираем видео как сцены: чисто, точно, без суеты. Дальше — только то, что работает.
+          </p>
+
+          <!-- CTA без кнопок: “жест/маркер” -->
+          <a class="ctaTape" href="#reel">
+            <span class="ctaTape__label">Потянуть ленту — к шоурилу</span>
+            <span class="ctaTape__line"></span>
+          </a>
+
+          <div class="hint">Скролл — чтобы исследовать</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section reel" id="reel" data-scene="reel">
+      <div class="block">
+        <div class="kicker">Шоурил</div>
+        <h2 class="h2">Коротко. По делу. В кадре.</h2>
+        <p class="p">
+          Видео запускается по клику (звук тоже). Это нормально и правильно — без автоплея.
+        </p>
+
+        <!-- Пока плейсхолдер. Потом подставим твой showreel.mp4 -->
+        <div class="reelBox">
+          <button class="reelBox__play" id="playReel" type="button">
+            ▶ Смотреть
+          </button>
+
+          <video id="reelVideo" class="reelBox__video" playsinline preload="metadata" controls>
+            <!-- потом положишь assets/showreel.mp4 -->
+          </video>
+
+          <div class="reelBox__note">Сейчас пусто — просто механика блока.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section works" id="works" data-scene="works">
+      <div class="block">
+        <div class="kicker">Работы</div>
+        <h2 class="h2">Портфолио без шума.</h2>
+        <p class="p">
+          Тут будет сетка кейсов. Пока — заглушки. Сцена на фоне подстроится под раздел.
+        </p>
+
+        <div class="worksGrid">
+          <a class="workCard" href="#contact">
+            <div class="workCard__t">Кейс 01</div>
+            <div class="workCard__s">Реклама • 30s</div>
+          </a>
+          <a class="workCard" href="#contact">
+            <div class="workCard__t">Кейс 02</div>
+            <div class="workCard__s">Интервью • 2–3 мин</div>
+          </a>
+          <a class="workCard" href="#contact">
+            <div class="workCard__t">Кейс 03</div>
+            <div class="workCard__s">Event • highlight</div>
+          </a>
+          <a class="workCard" href="#contact">
+            <div class="workCard__t">Кейс 04</div>
+            <div class="workCard__s">Имидж • бренд</div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section services" id="services" data-scene="services">
+      <div class="block">
+        <div class="kicker">Услуги</div>
+        <h2 class="h2">Полный цикл — или точечно.</h2>
+
+        <div class="tags">
+          <div class="tag">Съёмка</div>
+          <div class="tag">Монтаж</div>
+          <div class="tag">Саунд</div>
+          <div class="tag">Motion / титры</div>
+          <div class="tag">Вертикалки</div>
+          <div class="tag">Реклама</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section contact" id="contact" data-scene="contact">
+      <div class="block">
+        <div class="kicker">Контакт</div>
+        <h2 class="h2">Сначала — 3 ответа.</h2>
+
+        <form class="brief" onsubmit="return false;">
+          <label class="field">
+            <span>Формат</span>
+            <input placeholder="Реклама / интервью / event / соцсети" />
+          </label>
+          <label class="field">
+            <span>Сроки</span>
+            <input placeholder="Например: до 20-го" />
+          </label>
+          <label class="field">
+            <span>Ссылка / реф</span>
+            <input placeholder="Можно просто ссылку" />
+          </label>
+
+          <button class="submit" type="button">Запросить смету</button>
+          <div class="small">Дальше подключим Telegram/почту.</div>
+        </form>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div>INDIVIDNI • Video production</div>
+    </footer>
+  </main>
+
   <script type="module" src="./js/main.js"></script>
 </body>
 </html>
