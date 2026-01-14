@@ -6,7 +6,7 @@
   <title>INDIVIDNI STUDIO</title>
   <link rel="stylesheet" href="./style.css" />
 
-  <!-- Three importmap (чтобы addons работали без "Failed to resolve module specifier 'three'") -->
+  <!-- importmap: нужен для three/addons -->
   <script type="importmap">
   {
     "imports": {
@@ -18,7 +18,7 @@
 </head>
 
 <body>
-  <!-- Top UI (пилюли как в твоих скринах) -->
+  <!-- Top UI (пилюли) -->
   <header class="top">
     <div class="brand">INDIVIDNI</div>
 
@@ -58,41 +58,37 @@
     </div>
   </aside>
 
-  <!-- HERO (как скрин 1) -->
+  <!-- HERO (во всю ширину) -->
   <main>
     <section class="hero" id="intro">
-      <div class="heroGrid">
-        <div class="heroCopy">
-          <h1 class="heroH1">
-            Мы помогаем брендам создавать видео, которое
-            цепляет и соединяет с аудиторией
-          </h1>
+      <div class="heroTop">
+        <h1 class="heroH1">
+          Мы помогаем брендам создавать видео, которое соединяет
+          с их аудиторией
+        </h1>
+      </div>
+
+      <div class="heroFrameWrap">
+        <div class="heroFrame">
+          <canvas id="hero3d"></canvas>
         </div>
 
-        <div class="heroFrameWrap">
-          <div class="heroFrame">
-            <canvas id="hero3d"></canvas>
-          </div>
-
-          <div class="heroFrameMarks">
-            <span class="plus p1">+</span>
-            <span class="plus p2">+</span>
-            <span class="plus p3">+</span>
-            <span class="plus p4">+</span>
-            <div class="scrollNote">SCROLL TO EXPLORE</div>
-          </div>
+        <div class="heroMarks">
+          <span class="plus p1">+</span><span class="plus p2">+</span>
+          <span class="plus p3">+</span><span class="plus p4">+</span>
+          <div class="scrollNote">SCROLL TO EXPLORE</div>
         </div>
       </div>
     </section>
 
-    <!-- STUDIO block + красная линия (как скрин 3–6) -->
+    <!-- STUDIO + красная линия по скроллу -->
     <section class="studio" id="studio">
       <div class="studioStage">
-        <svg class="stroke" id="strokeSvg" viewBox="0 0 1200 600" preserveAspectRatio="none" aria-hidden="true">
+        <svg class="stroke" viewBox="0 0 1200 600" preserveAspectRatio="none" aria-hidden="true">
           <path id="strokePath"
-            d="M -50 250
-               C 220 50, 360 520, 560 300
-               S 900 80, 1280 360"
+            d="M -50 260
+               C 260 60, 420 560, 610 320
+               S 930 120, 1280 380"
             fill="none" stroke="var(--red)" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"
             pathLength="100"
           />
@@ -105,56 +101,64 @@
       </div>
     </section>
 
-    <!-- REEL (как скрин 7, + автоплей на “раскрытии”) -->
+    <!-- REEL: старт маленьким слева → по скроллу раскрывается + autoplay -->
     <section class="reel" id="reel">
-      <div class="reelWrap">
-        <div class="reelFrame" id="reelFrame">
-          <div class="reelOverlay" id="reelOverlay">
-            <div class="reelPlayWord">PLAY</div>
-            <button class="reelBtn" id="reelBtn" type="button" aria-label="Play Reel">▶</button>
-            <div class="reelPlayWord">REEL</div>
-          </div>
+      <div class="reelPin" id="reelPin">
+        <div class="reelSticky">
+          <div class="reelFrame" id="reelFrame">
+            <div class="reelOverlay" id="reelOverlay">
+              <div class="reelPlayWord">PLAY</div>
+              <button class="reelBtn" id="reelBtn" type="button" aria-label="Play Reel">▶</button>
+              <div class="reelPlayWord">REEL</div>
+            </div>
 
-          <video id="reelVideo" class="reelVideo" playsinline muted preload="metadata">
-            <source src="./assets/showreel.mp4" type="video/mp4" />
-          </video>
+            <!-- ВАЖНО: у тебя файл лежит тут -->
+            <video id="reelVideo" class="reelVideo" playsinline muted preload="metadata">
+              <source src="./assets/showreel.mp4" type="video/mp4" />
+            </video>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- FEATURED WORK (как скрин 7) -->
+    <!-- Featured Work: 6 карточек с ФОТО -->
     <section class="works" id="works">
       <div class="worksHead">
         <h2 class="worksTitle">Featured Work</h2>
         <p class="worksDesc">
-          Подборка работ. Наведи курсор — карточки “плывут” как поверхность.
-          Клик — отдельная страница проекта (сделаем позже).
+          Наведи курсор — волна/деформация + лёгкий tilt.
+          Клик — новая страница проекта (пока заглушка).
         </p>
       </div>
 
       <div class="worksGrid">
         <a class="workCard" href="./project.html" data-w="0">
-          <div class="thumb" style="--h:240;"></div>
+          <div class="thumb"><img class="thumbMedia" alt="" src="https://images.unsplash.com/photo-1524253482453-3fed8d2fe12b?auto=format&fit=crop&w=1600&q=80"></div>
           <div class="cap"><b>Кейс 01</b><span>Реклама</span></div>
         </a>
+
         <a class="workCard" href="./project.html" data-w="1">
-          <div class="thumb" style="--h:260;"></div>
+          <div class="thumb"><img class="thumbMedia" alt="" src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1600&q=80"></div>
           <div class="cap"><b>Кейс 02</b><span>Имидж</span></div>
         </a>
+
         <a class="workCard" href="./project.html" data-w="2">
-          <div class="thumb" style="--h:250;"></div>
+          <div class="thumb"><img class="thumbMedia" alt="" src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=1600&q=80"></div>
           <div class="cap"><b>Кейс 03</b><span>Интервью</span></div>
         </a>
+
         <a class="workCard" href="./project.html" data-w="3">
-          <div class="thumb" style="--h:270;"></div>
+          <div class="thumb"><img class="thumbMedia" alt="" src="https://images.unsplash.com/photo-1514924013411-cbf25faa35bb?auto=format&fit=crop&w=1600&q=80"></div>
           <div class="cap"><b>Кейс 04</b><span>Event</span></div>
         </a>
+
         <a class="workCard" href="./project.html" data-w="4">
-          <div class="thumb" style="--h:255;"></div>
+          <div class="thumb"><img class="thumbMedia" alt="" src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=1600&q=80"></div>
           <div class="cap"><b>Кейс 05</b><span>Соцсети</span></div>
         </a>
+
         <a class="workCard" href="./project.html" data-w="5">
-          <div class="thumb" style="--h:245;"></div>
+          <div class="thumb"><img class="thumbMedia" alt="" src="https://images.unsplash.com/photo-1526948128573-703ee1aeb6fa?auto=format&fit=crop&w=1600&q=80"></div>
           <div class="cap"><b>Кейс 06</b><span>Motion</span></div>
         </a>
       </div>
@@ -164,22 +168,21 @@
       </div>
     </section>
 
-    <!-- стопаемся тут, как ты просил -->
+    <!-- стопаемся -->
     <section class="contactStub" id="contact">
       <div class="contactStubInner">Контакт доделаем позже.</div>
     </section>
   </main>
 
-  <!-- SVG filters for “wave” hover -->
+  <!-- SVG filters for wave hover -->
   <svg width="0" height="0" style="position:absolute; left:-9999px; top:-9999px;" aria-hidden="true">
     <defs>
-      <!-- 6 filters (по одному на карточку) -->
-      <filter id="disp0"><feTurbulence type="fractalNoise" baseFrequency="0.008" numOctaves="2" seed="1" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
-      <filter id="disp1"><feTurbulence type="fractalNoise" baseFrequency="0.008" numOctaves="2" seed="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
-      <filter id="disp2"><feTurbulence type="fractalNoise" baseFrequency="0.008" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
-      <filter id="disp3"><feTurbulence type="fractalNoise" baseFrequency="0.008" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
-      <filter id="disp4"><feTurbulence type="fractalNoise" baseFrequency="0.008" numOctaves="2" seed="5" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
-      <filter id="disp5"><feTurbulence type="fractalNoise" baseFrequency="0.008" numOctaves="2" seed="6" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
+      <filter id="disp0"><feTurbulence type="fractalNoise" baseFrequency="0.010" numOctaves="2" seed="1" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
+      <filter id="disp1"><feTurbulence type="fractalNoise" baseFrequency="0.010" numOctaves="2" seed="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
+      <filter id="disp2"><feTurbulence type="fractalNoise" baseFrequency="0.010" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
+      <filter id="disp3"><feTurbulence type="fractalNoise" baseFrequency="0.010" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
+      <filter id="disp4"><feTurbulence type="fractalNoise" baseFrequency="0.010" numOctaves="2" seed="5" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
+      <filter id="disp5"><feTurbulence type="fractalNoise" baseFrequency="0.010" numOctaves="2" seed="6" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
     </defs>
   </svg>
 
