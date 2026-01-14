@@ -188,8 +188,8 @@ const FilmShader = {
   uniforms: {
     tDiffuse: { value: null },
     time: { value: 0 },
-    amount: { value: 0.02 },     // зерно
-    vignette: { value: 0.18 }     // виньетка
+    amount: { value: 0.0 },     // зерно
+    vignette: { value: 0.0 }     // виньетка
   },
   vertexShader: `
     varying vec2 vUv;
