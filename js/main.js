@@ -131,6 +131,13 @@ function buildPosters() {
     scene.add(mesh);
     posters.push({ mesh });
   }
+  // HERO: делаем первый постер главным
+const hero = posters[0]?.mesh;
+if (hero) {
+  hero.scale.set(1.35, 1.35, 1);  // больше
+  hero.position.z *= 0.8;         // ближе к камере
+  hero.rotation.y *= 0.6;         // ровнее (читаемость)
+}
 
   const lengthX = (count - 1) * posterGap;
   route.startX = -0.6;
