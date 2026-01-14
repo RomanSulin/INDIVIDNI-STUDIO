@@ -31,11 +31,11 @@ const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false
 renderer.setClearColor(0x07090f, 1);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.05;
+renderer.toneMappingExposure = 1.35;
 
 /* ---------- Scene / Camera ---------- */
 const scene = new THREE.Scene();
-scene.fog = new THREE.Fog(0x07090f, 12, 60);
+scene.fog = new THREE.Fog(0x07090f, 22, 110);
 
 const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 220);
 camera.position.set(0, 1.35, 7.2);
@@ -188,8 +188,8 @@ const FilmShader = {
   uniforms: {
     tDiffuse: { value: null },
     time: { value: 0 },
-    amount: { value: 0.045 },     // зерно
-    vignette: { value: 0.35 }     // виньетка
+    amount: { value: 0.02 },     // зерно
+    vignette: { value: 0.18 }     // виньетка
   },
   vertexShader: `
     varying vec2 vUv;
