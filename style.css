@@ -1,219 +1,321 @@
-<!doctype html>
-<html lang="ru">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>INDIVIDNI STUDIO</title>
-  <link rel="stylesheet" href="./style.css" />
+:root{
+  --paper:#eef0f6;
+  --ink:#0c0f14;
+  --blue:#2b49ff;
+  --red:#ff2b3a;
 
-  <script type="importmap">
-  {
-    "imports": {
-      "three": "https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js",
-      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"
-    }
-  }
-  </script>
-</head>
+  --pad:26px;
+  --topH:76px;
 
-<body>
-  <header class="top">
-    <div class="brand">INDIVIDNI</div>
+  /* Ключ к “не растягивается”: rail как у Lusion */
+  --rail: 1240px;
 
-    <div class="topActions">
-      <button class="pill pill--icon" id="btnWave" type="button" title="Wave">∿</button>
-      <a class="pill pill--cta" href="#contact">ОБСУДИТЬ</a>
-      <button class="pill pill--menu" id="btnMenu" type="button">
-        МЕНЮ <span class="dots">•••</span>
-      </button>
-    </div>
-  </header>
+  --radius: 28px;
+}
 
-  <!-- Black menu overlay -->
-  <aside class="menu" id="menu" aria-hidden="true">
-    <div class="menuBackdrop" data-close></div>
-    <div class="menuPanel">
-      <div class="menuHead">
-        <div class="menuTitle">МЕНЮ</div>
-        <button class="menuClose" data-close type="button">ЗАКРЫТЬ</button>
-      </div>
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  background: var(--paper);
+  color: var(--ink);
+  overflow-x:hidden;
+}
 
-      <nav class="menuList">
-        <a href="#intro" data-close>Главная</a>
-        <a href="#flow" data-close>Studio / Reel / Work</a>
-        <a href="#works" data-close>Проекты</a>
-        <a href="#contact" data-close>Контакт</a>
-      </nav>
+/* rail */
+.rail{
+  width:min(var(--rail), calc(100% - var(--pad)*2));
+  margin:0 auto;
+}
 
-      <div class="menuCard">
-        <div class="menuCardTitle">Напиши — я отвечу</div>
-        <div class="menuCardRow">
-          <input class="menuInput" placeholder="Telegram / Email" />
-          <button class="menuGo" type="button">→</button>
-        </div>
-      </div>
-    </div>
-  </aside>
+/* Top */
+.top{
+  position:fixed;
+  top:0; left:0; right:0;
+  z-index:50;
+  padding:22px var(--pad);
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  pointer-events:none;
+}
+.brand{
+  font-weight:800;
+  letter-spacing:.12em;
+  pointer-events:auto;
+}
+.topActions{
+  display:flex;
+  gap:10px;
+  pointer-events:auto;
+}
+.pill{
+  border:0;
+  background: rgba(0,0,0,.06);
+  color: var(--ink);
+  padding:10px 14px;
+  border-radius:999px;
+  font-size:12px;
+  letter-spacing:.08em;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+}
+.pill--cta{ background: rgba(0,0,0,.82); color:#fff; text-decoration:none; }
+.pill--icon{ width:44px; justify-content:center; }
+.dots{ opacity:.65; }
 
-  <main>
-    <!-- HERO -->
-    <section class="hero" id="intro">
-      <div class="rail">
-        <h1 class="heroH1">
-          Мы помогаем брендам создавать видео, которое соединяет с их аудиторией
-        </h1>
-      </div>
+/* Menu */
+.menu{ position:fixed; inset:0; z-index:80; pointer-events:none; opacity:0; transition:opacity .18s ease; }
+.menu.isOpen{ opacity:1; pointer-events:auto; }
+.menuBackdrop{ position:absolute; inset:0; background: rgba(0,0,0,.18); }
+.menuPanel{
+  position:absolute;
+  top:86px; right:var(--pad);
+  width:min(360px, calc(100% - var(--pad)*2));
+  background:#0b0e14; color:#fff;
+  border-radius:22px;
+  box-shadow:0 30px 80px rgba(0,0,0,.22);
+  overflow:hidden;
+  transform: translateY(-8px);
+  transition: transform .18s ease;
+}
+.menu.isOpen .menuPanel{ transform: translateY(0); }
+.menuHead{ display:flex; justify-content:space-between; align-items:center; padding:16px 16px 12px; }
+.menuTitle{ font-size:12px; letter-spacing:.18em; opacity:.75; }
+.menuClose{ border:0; background:rgba(255,255,255,.12); color:#fff; border-radius:999px; padding:10px 12px; font-size:12px; cursor:pointer; }
+.menuList{ display:grid; gap:2px; padding:6px 10px 12px; }
+.menuList a{ text-decoration:none; color:#fff; padding:14px 12px; border-radius:14px; font-size:18px; }
+.menuList a:hover{ background:rgba(255,255,255,.08); }
+.menuCard{ border-top:1px solid rgba(255,255,255,.10); padding:14px 14px 16px; }
+.menuCardTitle{ font-size:14px; opacity:.8; }
+.menuCardRow{ margin-top:12px; display:flex; gap:10px; }
+.menuInput{ flex:1; border-radius:14px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.06); color:#fff; padding:12px; outline:none; }
+.menuGo{ width:44px; border-radius:14px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.10); color:#fff; cursor:pointer; }
 
-      <div class="rail">
-        <div class="heroFrameWrap">
-          <div class="heroFrame">
-            <canvas id="hero3d"></canvas>
-          </div>
+/* HERO */
+.hero{
+  padding: calc(var(--topH) + 40px) 0 60px;
+}
+.heroH1{
+  margin:0;
+  font-size: clamp(28px, 3.2vw, 44px);
+  font-weight: 550;
+  line-height:1.1;
+  letter-spacing:-0.02em;
+  max-width: 760px;
+}
+.heroFrameWrap{ margin-top:26px; position:relative; }
+.heroFrame{
+  width:100%;
+  height: min(520px, 62vh);
+  border-radius: var(--radius);
+  overflow:hidden;
+  background:#101522;
+  box-shadow:0 30px 90px rgba(0,0,0,.12);
+}
+#hero3d{ width:100%; height:100%; display:block; }
 
-          <div class="heroMarks">
-            <span class="plus p1">+</span><span class="plus p2">+</span>
-            <span class="plus p3">+</span><span class="plus p4">+</span>
-            <div class="scrollNote">SCROLL TO EXPLORE</div>
-          </div>
-        </div>
-      </div>
-    </section>
+.heroMarks{ position:absolute; inset:0; pointer-events:none; }
+.plus{ position:absolute; font-size:22px; color:rgba(0,0,0,.70); }
+.p1{ left:-8px; top:50%; transform: translateY(-50%); }
+.p2{ right:-8px; top:50%; transform: translateY(-50%); }
+.p3{ left:50%; top:-10px; transform: translateX(-50%); }
+.p4{ left:50%; bottom:-12px; transform: translateX(-50%); }
+.scrollNote{
+  position:absolute; left:50%; bottom:-10px; transform: translateX(-50%);
+  font-size:12px; letter-spacing:.18em; text-transform:uppercase;
+  color:rgba(0,0,0,.72);
+  background: var(--paper); padding:0 10px;
+}
 
-    <!-- FLOW block: здесь живет линия (не fixed), и здесь же Studio + Reel -->
-    <section class="flow" id="flow">
-      <div class="flowStroke" aria-hidden="true">
-        <svg class="strokeSvg" viewBox="0 0 1400 900" preserveAspectRatio="none">
-          <path id="strokePath"
-            d="M -140 520
-               C 200 160, 420 800, 610 520
-               S 920 200, 1040 520
-               S 940 820, 720 660
-               S 400 460, 340 760
-               S 650 980, 1540 640"
-            fill="none" stroke="var(--red)" stroke-width="36"
-            stroke-linecap="round" stroke-linejoin="round" pathLength="100"
-          />
-        </svg>
-      </div>
+/* FLOW: линия живёт тут (скроллится вместе с блоком), но рисуется по скроллу */
+.flow{
+  position:relative;
+  padding: 10px 0 0;
+}
+.flowStroke{
+  position:absolute;
+  left:0; right:0;
+  top: 0;
+  height: 1800px;  /* линия занимает участок до работ */
+  pointer-events:none;
+  z-index:0;
+}
+.strokeSvg{ width:100%; height:100%; }
 
-      <!-- STUDIO word (как на скрине) -->
-      <div class="flowStudio" id="studio">
-        <div class="rail">
-          <div class="studioWord">
-            <div class="studioSmall">STUDIO</div>
-            <div class="studioBig">INDIVIDNI</div>
-          </div>
-        </div>
-      </div>
+/* Studio text sits above the line */
+.flowStudio{ position:relative; z-index:1; padding: 74px 0 10px; }
+.studioWord{ text-align:center; padding: 24px 0 14px; }
+.studioSmall{ font-size:14px; letter-spacing:.18em; text-transform:uppercase; opacity:.7; }
+.studioBig{
+  font-size: clamp(48px, 8vw, 110px);
+  font-weight:800;
+  letter-spacing:-0.04em;
+  line-height:0.95;
+}
 
-      <!-- REEL pinned zone -->
-      <div class="flowReel" id="reel">
-        <div class="reelPin" id="reelPin">
-          <div class="reelSticky" id="reelSticky">
-            <div class="rail">
-              <div class="reelFrame" id="reelFrame">
-                <div class="reelOverlay" id="reelOverlay">
-                  <div class="reelPlayWord">PLAY</div>
-                  <button class="reelBtn" id="reelBtn" type="button" aria-label="Play Reel">▶</button>
-                  <div class="reelPlayWord">REEL</div>
-                </div>
+/* REEL */
+.flowReel{ position:relative; z-index:1; }
 
-                <video id="reelVideo" class="reelVideo" playsinline muted preload="metadata">
-                  <source src="./assets/showreel.mp4" type="video/mp4" />
-                </video>
+.reelPin{ height: 200vh; position:relative; }
+.reelSticky{
+  position: sticky;
+  top: calc(var(--topH) + 18px);
+  height: calc(100vh - (var(--topH) + 18px));
+  padding: 18px 0;
+  display:flex;
+  align-items:flex-start;
+  justify-content:flex-start;
+}
 
-                <div class="frameMarks" aria-hidden="true">
-                  <span>+</span><span>+</span><span>+</span><span>+</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+.reelFrame{
+  /* ВАЖНО: end width = ширина rail (как у Lusion), не браузер */
+  width: var(--w, 720px);
+  height: var(--h, 300px);
+  border-radius: var(--r, 28px);
+  overflow:hidden;
+  background:#0b0e14;
+  box-shadow:0 30px 90px rgba(0,0,0,.14);
+  position:relative;
+  transform: translate3d(0, var(--ty, 0px), 0);
+  transform-origin:left top;
+  will-change: width, height, transform, border-radius;
+}
+.reelOverlay{
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  gap:26px;
+  z-index:3;
+  color:#fff;
+  opacity: var(--ov, 1);
+  transition: opacity .12s ease;
+}
+.reelPlayWord{
+  font-size: clamp(40px, 8vw, 92px);
+  letter-spacing:.06em;
+  font-weight:800;
+  opacity:.9;
+}
+.reelBtn{
+  width:84px; height:54px;
+  border-radius:999px;
+  border:0;
+  background:rgba(255,255,255,.92);
+  color:#000;
+  font-size:18px;
+  cursor:pointer;
+}
+.reelVideo{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover;
+  display:block;
+  z-index:2;
+  opacity: var(--vid, 0);
+  transition: opacity .18s ease;
+}
 
-    </section>
+/* + marks on reel frame corners */
+.frameMarks{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:4;
+  display:flex;
+  justify-content:space-between;
+  padding: 10px 14px;
+  font-size:22px;
+  color: rgba(255,255,255,.85);
+  mix-blend-mode: overlay;
+}
+.frameMarks span:nth-child(3),
+.frameMarks span:nth-child(4){
+  align-self:flex-end;
+}
 
-    <!-- FEATURED WORK -->
-    <section class="works" id="works">
-      <div class="rail">
-        <div class="worksHead">
-          <h2 class="worksTitle">Featured Work</h2>
-          <p class="worksDesc">
-            Hover — волна/деформация + лёгкий tilt (без залипания blur).
-          </p>
-        </div>
+/* WORKS */
+.works{ padding: 60px 0 70px; position:relative; z-index:2; }
+.worksHead{
+  display:grid;
+  grid-template-columns: 1fr 420px;
+  gap: 24px;
+  align-items:end;
+}
+.worksTitle{
+  margin:0;
+  font-size: clamp(52px, 6.4vw, 108px);
+  letter-spacing:-0.05em;
+  line-height:0.95;
+}
+.worksDesc{
+  margin:0;
+  color: rgba(0,0,0,.62);
+  line-height:1.55;
+  font-size:14px;
+}
 
-        <div class="worksGrid">
-          <a class="workCard" href="./project.html" data-w="0">
-            <div class="workMedia">
-              <img class="workImg" alt="" src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=2000&q=80">
-            </div>
-            <div class="workMeta">VIDEO • PRODUCTION • POST</div>
-            <div class="workName">Кейс 01</div>
-          </a>
+.worksGrid{
+  margin-top: 26px;
+  display:grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(22px, 3.2vw, 44px);
+  row-gap: clamp(44px, 5.6vw, 84px);
+}
 
-          <a class="workCard" href="./project.html" data-w="1">
-            <div class="workMedia">
-              <img class="workImg" alt="" src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=2000&q=80">
-            </div>
-            <div class="workMeta">VIDEO • INTERVIEW • SOUND</div>
-            <div class="workName">Кейс 02</div>
-          </a>
+.workCard{
+  text-decoration:none;
+  color: var(--ink);
+  display:block;
+  will-change: transform;
+  transform: translateZ(0);
+  transition: transform .18s ease;
+}
+.workMedia{
+  border-radius: 22px;
+  overflow:hidden;
+  background:#fff;
+  box-shadow: 0 18px 60px rgba(0,0,0,.10);
+}
+.workImg{
+  width:100%;
+  height: 320px;
+  display:block;
+  object-fit:cover;
+  transform: scale(1.02);
+  transition: transform .22s ease, filter .12s ease;
+  filter: none;
+}
+.workMeta{
+  margin-top: 14px;
+  font-size: 12px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: rgba(0,0,0,.58);
+}
+.workName{
+  margin-top: 10px;
+  font-size: clamp(30px, 3.2vw, 54px);
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+}
 
-          <a class="workCard" href="./project.html" data-w="2">
-            <div class="workMedia">
-              <img class="workImg" alt="" src="https://images.unsplash.com/photo-1524253482453-3fed8d2fe12b?auto=format&fit=crop&w=2000&q=80">
-            </div>
-            <div class="workMeta">VIDEO • EVENT • EDIT</div>
-            <div class="workName">Кейс 03</div>
-          </a>
+.workCard:hover .workImg{ transform: scale(1.06); }
+.workCard:hover{ transform: translateY(-2px); }
 
-          <a class="workCard" href="./project.html" data-w="3">
-            <div class="workMedia">
-              <img class="workImg" alt="" src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=2000&q=80">
-            </div>
-            <div class="workMeta">VIDEO • BRAND • COLOR</div>
-            <div class="workName">Кейс 04</div>
-          </a>
+/* micro “flash blur” on hover start (как у Lusion: мгновение и обратно) */
+.workCard.isFlash .workImg{ filter: blur(1px); }
 
-          <a class="workCard" href="./project.html" data-w="4">
-            <div class="workMedia">
-              <img class="workImg" alt="" src="https://images.unsplash.com/photo-1526948128573-703ee1aeb6fa?auto=format&fit=crop&w=2000&q=80">
-            </div>
-            <div class="workMeta">VIDEO • SOCIAL • CUTS</div>
-            <div class="workName">Кейс 05</div>
-          </a>
+.contactStub{ padding: 40px 0 80px; }
+.contactStubInner{ color: rgba(0,0,0,.55); font-size:14px; }
 
-          <a class="workCard" href="./project.html" data-w="5">
-            <div class="workMedia">
-              <img class="workImg" alt="" src="https://images.unsplash.com/photo-1514924013411-cbf25faa35bb?auto=format&fit=crop&w=2000&q=80">
-            </div>
-            <div class="workMeta">VIDEO • MOTION • TITLES</div>
-            <div class="workName">Кейс 06</div>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <section class="contactStub" id="contact">
-      <div class="rail">
-        <div class="contactStubInner">Контакт доделаем позже.</div>
-      </div>
-    </section>
-  </main>
-
-  <!-- SVG filters (wave) -->
-  <svg width="0" height="0" style="position:absolute; left:-9999px; top:-9999px;" aria-hidden="true">
-    <defs>
-      <filter id="disp0"><feTurbulence type="fractalNoise" baseFrequency="0.010" numOctaves="2" seed="1" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
-      <filter id="disp1"><feTurbulence type="fractalNoise" baseFrequency="0.010" numOctaves="2" seed="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
-      <filter id="disp2"><feTurbulence type="fractalNoise" baseFrequency="0.010" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
-      <filter id="disp3"><feTurbulence type="fractalNoise" baseFrequency="0.010" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
-      <filter id="disp4"><feTurbulence type="fractalNoise" baseFrequency="0.010" numOctaves="2" seed="5" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
-      <filter id="disp5"><feTurbulence type="fractalNoise" baseFrequency="0.010" numOctaves="2" seed="6" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
-    </defs>
-  </svg>
-
-  <script type="module" src="./js/main.js"></script>
-</body>
-</html>
+/* Mobile */
+@media (max-width: 980px){
+  .worksHead{ grid-template-columns: 1fr; }
+  .worksGrid{ grid-template-columns: 1fr; row-gap: 34px; }
+  .workImg{ height: 260px; }
+  .menuPanel{ right:12px; top:76px; width: min(360px, calc(100% - 24px)); }
+  .flowStroke{ height: 1500px; }
+}
