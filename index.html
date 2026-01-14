@@ -2,11 +2,11 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>INDIVIDNI</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>INDIVIDNI STUDIO</title>
   <link rel="stylesheet" href="./style.css" />
 
-  <!-- Чтобы three/addons работали без ошибки "Failed to resolve module specifier 'three'" -->
+  <!-- Three importmap (чтобы addons работали без "Failed to resolve module specifier 'three'") -->
   <script type="importmap">
   {
     "imports": {
@@ -18,126 +18,170 @@
 </head>
 
 <body>
-  <!-- Preloader -->
-  <div id="preloader" class="preloader" aria-hidden="true">
-    <div class="preloader__inner">
-      <div class="preloader__logo">INDIVIDNI</div>
-      <div class="preloader__line">
-        <div id="preloaderBar" class="preloader__bar"></div>
-      </div>
-      <div id="preloaderPct" class="preloader__pct">0%</div>
-    </div>
-  </div>
-
-  <!-- WebGL canvas background -->
-  <div class="gl">
-    <canvas id="gl"></canvas>
-  </div>
-
-  <!-- Minimal UI -->
+  <!-- Top UI (пилюли как в твоих скринах) -->
   <header class="top">
-    <div class="top__brand">
-      <div class="top__logo">INDIVIDNI</div>
-      <div class="top__sub">Видеопродакшн • съёмка / монтаж / пост</div>
-    </div>
+    <div class="brand">INDIVIDNI</div>
 
-    <nav class="top__nav">
-      <a href="#works">Работы</a>
-      <a href="#services">Услуги</a>
-      <a href="#contact" class="top__navAccent">Контакт</a>
-    </nav>
+    <div class="topActions">
+      <button class="pill pill--icon" id="btnWave" type="button" title="Wave">∿</button>
+      <a class="pill pill--cta" href="#contact">ОБСУДИТЬ</a>
+      <button class="pill pill--menu" id="btnMenu" type="button">
+        МЕНЮ <span class="dots">•••</span>
+      </button>
+    </div>
   </header>
 
-  <main class="content">
-    <section class="sec hero" id="intro" data-scene="intro">
-      <div class="hero__grid">
-        <h1 class="hero__h1">
-          Свет.<br>
-          Ритм.<br>
-          Звук.<br>
-          Смысл.
-        </h1>
+  <!-- Black menu overlay -->
+  <aside class="menu" id="menu" aria-hidden="true">
+    <div class="menuBackdrop" data-close></div>
+    <div class="menuPanel">
+      <div class="menuHead">
+        <div class="menuTitle">МЕНЮ</div>
+        <button class="menuClose" data-close type="button">ЗАКРЫТЬ</button>
+      </div>
 
-        <div class="hero__side">
-          <p class="hero__p">
-            Киношный тон без пафоса. Чистая сборка под задачу и площадку.
-          </p>
+      <nav class="menuList">
+        <a href="#intro" data-close>Главная</a>
+        <a href="#studio" data-close>О студии</a>
+        <a href="#reel" data-close>Шоурил</a>
+        <a href="#works" data-close>Проекты</a>
+        <a href="#contact" data-close>Контакт</a>
+      </nav>
 
-          <!-- CTA без кнопок: линия/жест -->
-          <a class="cta" href="#works">
-            <span>Скролл — чтобы исследовать</span>
-            <i></i>
-          </a>
+      <div class="menuCard">
+        <div class="menuCardTitle">Напиши — я отвечу</div>
+        <div class="menuCardRow">
+          <input class="menuInput" placeholder="Telegram / Email" />
+          <button class="menuGo" type="button">→</button>
+        </div>
+      </div>
+    </div>
+  </aside>
 
-          <div class="micro">
-            Чёрный → синий → красный. Белый — воздух.
+  <!-- HERO (как скрин 1) -->
+  <main>
+    <section class="hero" id="intro">
+      <div class="heroGrid">
+        <div class="heroCopy">
+          <h1 class="heroH1">
+            Мы помогаем брендам создавать видео, которое
+            цепляет и соединяет с аудиторией
+          </h1>
+        </div>
+
+        <div class="heroFrameWrap">
+          <div class="heroFrame">
+            <canvas id="hero3d"></canvas>
+          </div>
+
+          <div class="heroFrameMarks">
+            <span class="plus p1">+</span>
+            <span class="plus p2">+</span>
+            <span class="plus p3">+</span>
+            <span class="plus p4">+</span>
+            <div class="scrollNote">SCROLL TO EXPLORE</div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="sec" id="works" data-scene="works">
-      <div class="wrap">
-        <div class="kicker">Работы</div>
-        <h2 class="h2">Кейсы. Коротко. В кадре.</h2>
-        <p class="p">Пока заглушки — здесь будет твой контент и превью.</p>
+    <!-- STUDIO block + красная линия (как скрин 3–6) -->
+    <section class="studio" id="studio">
+      <div class="studioStage">
+        <svg class="stroke" id="strokeSvg" viewBox="0 0 1200 600" preserveAspectRatio="none" aria-hidden="true">
+          <path id="strokePath"
+            d="M -50 250
+               C 220 50, 360 520, 560 300
+               S 900 80, 1280 360"
+            fill="none" stroke="var(--red)" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"
+            pathLength="100"
+          />
+        </svg>
 
-        <div class="grid">
-          <a class="card" href="#contact"><b>Кейс 01</b><span>Реклама • 30s</span></a>
-          <a class="card" href="#contact"><b>Кейс 02</b><span>Имидж • бренд</span></a>
-          <a class="card" href="#contact"><b>Кейс 03</b><span>Интервью • 2–3 мин</span></a>
-          <a class="card" href="#contact"><b>Кейс 04</b><span>Event • highlight</span></a>
+        <div class="studioWord">
+          <div class="studioSmall">STUDIO</div>
+          <div class="studioBig">INDIVIDNI</div>
         </div>
       </div>
     </section>
 
-    <section class="sec" id="services" data-scene="services">
-      <div class="wrap">
-        <div class="kicker">Услуги</div>
-        <h2 class="h2">Полный цикл — или точечно.</h2>
+    <!-- REEL (как скрин 7, + автоплей на “раскрытии”) -->
+    <section class="reel" id="reel">
+      <div class="reelWrap">
+        <div class="reelFrame" id="reelFrame">
+          <div class="reelOverlay" id="reelOverlay">
+            <div class="reelPlayWord">PLAY</div>
+            <button class="reelBtn" id="reelBtn" type="button" aria-label="Play Reel">▶</button>
+            <div class="reelPlayWord">REEL</div>
+          </div>
 
-        <div class="tags">
-          <span class="tag">Съёмка</span>
-          <span class="tag">Монтаж</span>
-          <span class="tag">Саунд-дизайн</span>
-          <span class="tag">Титры / motion</span>
-          <span class="tag">Вертикалки</span>
-          <span class="tag">Пакеты “от”</span>
+          <video id="reelVideo" class="reelVideo" playsinline muted preload="metadata">
+            <source src="./assets/showreel.mp4" type="video/mp4" />
+          </video>
         </div>
       </div>
     </section>
 
-    <section class="sec" id="contact" data-scene="contact">
-      <div class="wrap">
-        <div class="kicker">Контакт</div>
-        <h2 class="h2">Три ответа — и я соберу смету.</h2>
+    <!-- FEATURED WORK (как скрин 7) -->
+    <section class="works" id="works">
+      <div class="worksHead">
+        <h2 class="worksTitle">Featured Work</h2>
+        <p class="worksDesc">
+          Подборка работ. Наведи курсор — карточки “плывут” как поверхность.
+          Клик — отдельная страница проекта (сделаем позже).
+        </p>
+      </div>
 
-        <form class="form" onsubmit="return false;">
-          <label class="field">
-            <span>Формат</span>
-            <input placeholder="Реклама / интервью / event / соцсети" />
-          </label>
+      <div class="worksGrid">
+        <a class="workCard" href="./project.html" data-w="0">
+          <div class="thumb" style="--h:240;"></div>
+          <div class="cap"><b>Кейс 01</b><span>Реклама</span></div>
+        </a>
+        <a class="workCard" href="./project.html" data-w="1">
+          <div class="thumb" style="--h:260;"></div>
+          <div class="cap"><b>Кейс 02</b><span>Имидж</span></div>
+        </a>
+        <a class="workCard" href="./project.html" data-w="2">
+          <div class="thumb" style="--h:250;"></div>
+          <div class="cap"><b>Кейс 03</b><span>Интервью</span></div>
+        </a>
+        <a class="workCard" href="./project.html" data-w="3">
+          <div class="thumb" style="--h:270;"></div>
+          <div class="cap"><b>Кейс 04</b><span>Event</span></div>
+        </a>
+        <a class="workCard" href="./project.html" data-w="4">
+          <div class="thumb" style="--h:255;"></div>
+          <div class="cap"><b>Кейс 05</b><span>Соцсети</span></div>
+        </a>
+        <a class="workCard" href="./project.html" data-w="5">
+          <div class="thumb" style="--h:245;"></div>
+          <div class="cap"><b>Кейс 06</b><span>Motion</span></div>
+        </a>
+      </div>
 
-          <label class="field">
-            <span>Срок</span>
-            <input placeholder="Например: до 20-го" />
-          </label>
-
-          <label class="field">
-            <span>Ссылка / реф</span>
-            <input placeholder="Любая ссылка" />
-          </label>
-
-          <button class="send" type="button">Запросить смету</button>
-          <div class="small">Дальше подключим Telegram/почту.</div>
-        </form>
+      <div class="worksPlusRow" aria-hidden="true">
+        <span>+</span><span>+</span><span>+</span><span>+</span><span>+</span>
       </div>
     </section>
 
-    <footer class="foot">
-      <div>© INDIVIDNI</div>
-    </footer>
+    <!-- стопаемся тут, как ты просил -->
+    <section class="contactStub" id="contact">
+      <div class="contactStubInner">Контакт доделаем позже.</div>
+    </section>
   </main>
+
+  <!-- SVG filters for “wave” hover -->
+  <svg width="0" height="0" style="position:absolute; left:-9999px; top:-9999px;" aria-hidden="true">
+    <defs>
+      <!-- 6 filters (по одному на карточку) -->
+      <filter id="disp0"><feTurbulence type="fractalNoise" baseFrequency="0.008" numOctaves="2" seed="1" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
+      <filter id="disp1"><feTurbulence type="fractalNoise" baseFrequency="0.008" numOctaves="2" seed="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
+      <filter id="disp2"><feTurbulence type="fractalNoise" baseFrequency="0.008" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
+      <filter id="disp3"><feTurbulence type="fractalNoise" baseFrequency="0.008" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
+      <filter id="disp4"><feTurbulence type="fractalNoise" baseFrequency="0.008" numOctaves="2" seed="5" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
+      <filter id="disp5"><feTurbulence type="fractalNoise" baseFrequency="0.008" numOctaves="2" seed="6" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
+    </defs>
+  </svg>
 
   <script type="module" src="./js/main.js"></script>
 </body>
