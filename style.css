@@ -1,12 +1,12 @@
 :root{
   --paper:#eef0f6;
   --ink:#0c0f14;
-  --muted:rgba(12,15,20,.62);
-
   --blue:#2b49ff;
   --red:#ff2b3a;
-
   --radius:28px;
+
+  --pad:26px;
+  --topH:76px;
 }
 
 *{ box-sizing:border-box; }
@@ -24,7 +24,7 @@ body{
   position:fixed;
   top:0; left:0; right:0;
   z-index:50;
-  padding:22px 26px;
+  padding:22px var(--pad);
   display:flex;
   justify-content:space-between;
   align-items:flex-start;
@@ -58,9 +58,6 @@ body{
   color:#fff;
   text-decoration:none;
 }
-.pill--menu{
-  background: rgba(0,0,0,.06);
-}
 .pill--icon{
   width:44px;
   justify-content:center;
@@ -76,10 +73,7 @@ body{
   opacity:0;
   transition: opacity .18s ease;
 }
-.menu.isOpen{
-  opacity:1;
-  pointer-events:auto;
-}
+.menu.isOpen{ opacity:1; pointer-events:auto; }
 .menuBackdrop{
   position:absolute;
   inset:0;
@@ -88,8 +82,8 @@ body{
 .menuPanel{
   position:absolute;
   top:86px;
-  right:26px;
-  width:min(360px, calc(100% - 26px - 26px));
+  right:var(--pad);
+  width:min(360px, calc(100% - var(--pad)*2));
   background: #0b0e14;
   color:#fff;
   border-radius: 22px;
@@ -130,23 +124,14 @@ body{
   padding:14px 12px;
   border-radius:14px;
   font-size:18px;
-  letter-spacing:.02em;
 }
 .menuList a:hover{ background: rgba(255,255,255,.08); }
-
 .menuCard{
   border-top:1px solid rgba(255,255,255,.10);
   padding:14px 14px 16px;
 }
-.menuCardTitle{
-  font-size:14px;
-  opacity:.8;
-}
-.menuCardRow{
-  margin-top:12px;
-  display:flex;
-  gap:10px;
-}
+.menuCardTitle{ font-size:14px; opacity:.8; }
+.menuCardRow{ margin-top:12px; display:flex; gap:10px; }
 .menuInput{
   flex:1;
   border-radius:14px;
@@ -167,11 +152,10 @@ body{
 
 /* HERO */
 .hero{
-  padding:120px 26px 70px;
+  padding: calc(var(--topH) + 40px) var(--pad) 70px;
 }
-.heroGrid{
-  width:min(1200px, 100%);
-  margin:0 auto;
+.heroTop{
+  width:100%;
 }
 .heroH1{
   margin:0;
@@ -179,29 +163,24 @@ body{
   font-weight: 550;
   line-height:1.1;
   letter-spacing:-0.02em;
-  max-width: 720px;
+  max-width: 760px;
 }
 .heroFrameWrap{
   margin-top:26px;
   position:relative;
+  width:100%;
 }
 .heroFrame{
+  width:100%;
   height: min(520px, 62vh);
   border-radius: var(--radius);
   overflow:hidden;
   background: #101522;
   box-shadow: 0 30px 90px rgba(0,0,0,.12);
 }
-#hero3d{
-  width:100%;
-  height:100%;
-  display:block;
-}
-.heroFrameMarks{
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-}
+#hero3d{ width:100%; height:100%; display:block; }
+
+.heroMarks{ position:absolute; inset:0; pointer-events:none; }
 .plus{
   position:absolute;
   font-size:22px;
@@ -225,20 +204,16 @@ body{
 }
 
 /* STUDIO + red stroke */
-.studio{
-  padding: 90px 0 60px;
-}
+.studio{ padding: 90px 0 40px; }
 .studioStage{
   position:relative;
-  width:min(1200px, 100%);
-  margin:0 auto;
+  width:100%;
   height: 420px;
 }
 .stroke{
   position:absolute;
   inset:-40px -30px;
   pointer-events:none;
-  opacity: 1;
 }
 .studioWord{
   position:absolute;
@@ -263,22 +238,35 @@ body{
   line-height:0.95;
 }
 
-/* REEL */
-.reel{
-  padding: 70px 26px 80px;
+/* REEL pin (левый угол → фулл) */
+.reel{ padding: 0; }
+.reelPin{
+  height: 220vh; /* зона, где идёт раскрытие и удержание */
+  position:relative;
 }
-.reelWrap{
-  width:min(1200px, 100%);
-  margin:0 auto;
+.reelSticky{
+  position: sticky;
+  top: calc(var(--topH) + 18px);
+  height: calc(100vh - (var(--topH) + 18px));
+  padding: 18px var(--pad);
+  display:flex;
+  align-items:flex-start;
+  justify-content:flex-start;
 }
 .reelFrame{
+  width: 100%;
   height: min(520px, 62vh);
   border-radius: var(--radius);
   overflow:hidden;
   background: #0b0e14;
   box-shadow: 0 30px 90px rgba(0,0,0,.14);
   position:relative;
-  transform-origin:center;
+
+  /* управляется из JS */
+  transform-origin: left top;
+  transform: translate3d(var(--tx,0px), var(--ty,0px), 0) scale(var(--s, .62));
+  border-radius: var(--r, 28px);
+  will-change: transform, border-radius;
 }
 .reelOverlay{
   position:absolute;
@@ -289,7 +277,8 @@ body{
   gap: 26px;
   z-index:3;
   color:#fff;
-  pointer-events:auto;
+  opacity: var(--ov, 1);
+  transition: opacity .15s ease;
 }
 .reelPlayWord{
   font-size: clamp(40px, 8vw, 92px);
@@ -315,19 +304,16 @@ body{
   object-fit:cover;
   display:block;
   z-index:2;
-  opacity:0;
-  transition: opacity .25s ease;
+  opacity: var(--vid, 0);
+  transition: opacity .22s ease;
 }
-.reelFrame.isReady .reelVideo{ opacity:1; }
-.reelFrame.isPlaying .reelOverlay{ opacity:0; pointer-events:none; transition: opacity .2s ease; }
 
 /* WORKS */
 .works{
-  padding: 60px 26px 70px;
+  padding: 60px var(--pad) 70px;
 }
 .worksHead{
-  width:min(1200px, 100%);
-  margin:0 auto;
+  width:100%;
   display:grid;
   grid-template-columns: 1fr 420px;
   gap: 24px;
@@ -345,9 +331,10 @@ body{
   line-height:1.55;
   font-size:14px;
 }
+
 .worksGrid{
-  width:min(1200px, 100%);
-  margin: 26px auto 0;
+  width:100%;
+  margin-top: 26px;
   display:grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
@@ -364,15 +351,21 @@ body{
   will-change: transform;
 }
 .thumb{
-  height: var(--h, 250px);
-  background:
-    radial-gradient(900px 300px at 20% 10%, rgba(43,73,255,.20), rgba(0,0,0,0)),
-    radial-gradient(900px 300px at 70% 80%, rgba(255,43,58,.10), rgba(0,0,0,0)),
-    linear-gradient(180deg, rgba(0,0,0,.04), rgba(0,0,0,.00));
-  filter: grayscale(1) contrast(1.05);
+  height: 320px;
+  background:#e9ebf3;
+  overflow:hidden;
+}
+.thumbMedia{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
   transform: scale(1.02);
   transition: transform .25s ease;
+  filter: none;
 }
+.workCard:hover .thumbMedia{ transform: scale(1.08); }
+
 .cap{
   padding:14px 14px 16px;
   display:flex;
@@ -383,11 +376,9 @@ body{
 .cap b{ font-size:16px; letter-spacing:.01em; }
 .cap span{ font-size:12px; opacity:.62; letter-spacing:.06em; text-transform:uppercase; }
 
-.workCard:hover .thumb{ transform: scale(1.08); }
-
 .worksPlusRow{
-  width:min(1200px, 100%);
-  margin: 30px auto 0;
+  width:100%;
+  margin-top: 30px;
   display:flex;
   justify-content:space-between;
   opacity:.55;
@@ -396,11 +387,10 @@ body{
 
 /* stop */
 .contactStub{
-  padding: 40px 26px 80px;
+  padding: 40px var(--pad) 80px;
 }
 .contactStubInner{
-  width:min(1200px, 100%);
-  margin:0 auto;
+  width:100%;
   color: rgba(0,0,0,.55);
   font-size:14px;
 }
@@ -409,5 +399,6 @@ body{
 @media (max-width: 980px){
   .worksHead{ grid-template-columns: 1fr; }
   .worksGrid{ grid-template-columns: 1fr; }
+  .thumb{ height: 260px; }
   .menuPanel{ right:12px; top:76px; width: min(360px, calc(100% - 24px)); }
 }
