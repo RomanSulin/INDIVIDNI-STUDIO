@@ -23,30 +23,31 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") closeMenu();
 });
 
-/* ---------------- Red stroke across page (earlier -> past reel -> works) ---------------- */
+/* ---------------- Red stroke (scroll-draw, but NOT fixed) ---------------- */
 const strokePath = document.getElementById("strokePath");
-const introEl = document.getElementById("intro");
+const flowEl = document.getElementById("flow");
 const worksEl = document.getElementById("works");
 
+const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
 const strokeLen = 100;
+
 if (strokePath){
   strokePath.style.strokeDasharray = `${strokeLen}`;
   strokePath.style.strokeDashoffset = `${strokeLen}`;
 }
-const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
 
 function updateStroke(){
-  if (!strokePath || !introEl || !worksEl) return;
+  if (!strokePath || !flowEl || !worksEl) return;
 
   const vh = window.innerHeight;
-  const start = introEl.offsetTop + vh * 0.20;     // раньше
-  const end   = worksEl.offsetTop - vh * 0.10;     // до работ
+  const start = flowEl.offsetTop - vh * 0.15;     // старт раньше, чем студия
+  const end   = worksEl.offsetTop - vh * 0.10;    // до работ
 
   const t = clamp((window.scrollY - start) / (end - start), 0, 1);
   strokePath.style.strokeDashoffset = `${strokeLen * (1 - t)}`;
 }
 
-/* ---------------- Reel: left small -> expand -> autoplay -> then release to works ---------------- */
+/* ---------------- Reel (left small -> expand to RAIL) ---------------- */
 const reelPin = document.getElementById("reelPin");
 const reelSticky = document.getElementById("reelSticky");
 const reelFrame = document.getElementById("reelFrame");
@@ -71,19 +72,19 @@ function updateReel(){
   const pinH = reelPin.offsetHeight;
   const vh = window.innerHeight;
 
-  // прогресс внутри pin зоны
   const p = clamp((window.scrollY - pinTop) / (pinH - vh), 0, 1);
 
-  // 0..0.60 раскрываем, 0.60..0.90 держим, 0.90..1 отпускаем (мягко)
-  const openT = clamp(p / 0.60, 0, 1);
+  // 0..0.62 раскрываем
+  const openT = clamp(p / 0.62, 0, 1);
   const e = easeOutCubic(openT);
 
-  // размеры: start (левый блок) -> end (полная ширина rail)
-  const maxW = reelSticky.clientWidth; // rail width (без паддинга rail)
-  const endW = maxW;
+  // end sizes = ширина RAIL контейнера
+  const railW = reelSticky.querySelector(".rail")?.clientWidth || reelSticky.clientWidth;
+  const endW = railW;
   const endH = Math.min(vh * 0.62, 520);
 
-  const startW = Math.min(720, endW * 0.64);
+  // start sizes как у Lusion: компактный левый блок
+  const startW = Math.min(760, endW * 0.62);
   const startH = Math.min(320, vh * 0.36);
 
   const w = startW + (endW - startW) * e;
@@ -92,9 +93,8 @@ function updateReel(){
   const r = 28 - e * 14;
   const ty = (1 - e) * 10;
 
-  // overlay fade and video appear
-  const ov = 1 - clamp((p - 0.45) / 0.18, 0, 1);
-  const vid = clamp((p - 0.55) / 0.18, 0, 1);
+  const ov = 1 - clamp((p - 0.46) / 0.18, 0, 1);
+  const vid = clamp((p - 0.56) / 0.18, 0, 1);
 
   reelFrame.style.setProperty("--w", `${w.toFixed(1)}px`);
   reelFrame.style.setProperty("--h", `${h.toFixed(1)}px`);
@@ -103,11 +103,10 @@ function updateReel(){
   reelFrame.style.setProperty("--ov", ov.toFixed(3));
   reelFrame.style.setProperty("--vid", vid.toFixed(3));
 
-  // autoplay ближе к раскрытию
-  if (!reelPlayed && p > 0.62) playReel();
+  if (!reelPlayed && p > 0.64) playReel();
 }
 
-/* ---------------- Works hover wave (NO постоянного blur) ---------------- */
+/* ---------------- Works hover: wave ONLY on hover + flash blur 100ms ---------------- */
 const cards = Array.from(document.querySelectorAll(".workCard"));
 
 function dispNode(i){ return document.querySelector(`#disp${i} feDisplacementMap`); }
@@ -126,11 +125,15 @@ cards.forEach((card) => {
   card.addEventListener("mouseenter", () => {
     hoverIdx = idx;
 
-    // ВКЛЮЧАЕМ фильтр только на hover (иначе картинка может “мылиться” всегда)
+    // flash blur (очень коротко)
+    card.classList.add("isFlash");
+    setTimeout(() => card.classList.remove("isFlash"), 110);
+
+    // включаем filter только на hover
     img.style.filter = `url(#disp${idx})`;
 
     const disp = dispNode(idx);
-    if (disp) disp.setAttribute("scale","26");
+    if (disp) disp.setAttribute("scale","22");
   });
 
   card.addEventListener("mouseleave", () => {
@@ -140,9 +143,8 @@ cards.forEach((card) => {
     if (disp) disp.setAttribute("scale","0");
     if (turb) turb.setAttribute("baseFrequency","0.010");
 
-    // УБИРАЕМ фильтр полностью — гарантированно возвращается “как было”
+    // важно: убрать фильтр полностью
     img.style.filter = "";
-
     card.style.transform = "";
     hoverIdx = -1;
   });
@@ -160,27 +162,25 @@ cards.forEach((card) => {
 
 function tickWave(){
   tWave += 0.012;
-
   if (hoverIdx >= 0){
     const turb = turbNode(hoverIdx);
     const disp = dispNode(hoverIdx);
 
     if (turb){
-      const fx = 0.008 + hoverMX * 0.010 + Math.sin(tWave) * 0.0012;
-      const fy = 0.010 + hoverMY * 0.012 + Math.cos(tWave*1.2) * 0.0012;
+      const fx = 0.008 + hoverMX * 0.010 + Math.sin(tWave) * 0.0010;
+      const fy = 0.010 + hoverMY * 0.012 + Math.cos(tWave*1.2) * 0.0010;
       turb.setAttribute("baseFrequency", `${fx.toFixed(4)} ${fy.toFixed(4)}`);
     }
     if (disp){
-      const sc = 22 + (Math.sin(tWave*2.0)*6);
+      const sc = 18 + (Math.sin(tWave*2.0)*6);
       disp.setAttribute("scale", String(sc.toFixed(1)));
     }
   }
-
   requestAnimationFrame(tickWave);
 }
 tickWave();
 
-/* ---------------- 3D Hero (сильнее как у Lusion, заметный курсор) ---------------- */
+/* ---------------- 3D Hero (cursor reaction) ---------------- */
 const canvas = document.getElementById("hero3d");
 if (canvas){
   const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:false });
@@ -211,17 +211,11 @@ if (canvas){
   function makeCross(material){
     const g = new THREE.Group();
     const cyl = new THREE.CylinderGeometry(0.32, 0.32, 1.5, 28);
-    const part1 = new THREE.Mesh(cyl, material);
-    part1.rotation.z = Math.PI/2;
-    g.add(part1);
-    const part2 = new THREE.Mesh(cyl, material);
-    g.add(part2);
+    const part1 = new THREE.Mesh(cyl, material); part1.rotation.z = Math.PI/2; g.add(part1);
+    const part2 = new THREE.Mesh(cyl, material); g.add(part2);
 
     const hole = new THREE.CylinderGeometry(0.10, 0.10, 0.4, 18);
-    const cap = new THREE.Mesh(hole, matBlack);
-    cap.rotation.z = Math.PI/2;
-    cap.position.set(0.75, 0, 0);
-    g.add(cap);
+    const cap = new THREE.Mesh(hole, matBlack); cap.rotation.z = Math.PI/2; cap.position.set(0.75, 0, 0); g.add(cap);
 
     const c2 = cap.clone(); c2.position.set(-0.75,0,0); g.add(c2);
     const c3 = cap.clone(); c3.rotation.z = 0; c3.position.set(0,0.75,0); g.add(c3);
@@ -259,7 +253,6 @@ if (canvas){
 
   let rx=0, ry=0, cx=0, cy=0;
   let tt = 0;
-
   function tick(){
     tt += 0.01;
 
@@ -287,13 +280,12 @@ if (canvas){
   tick();
 }
 
-/* Init */
+/* init */
 function onScroll(){
   updateStroke();
   updateReel();
 }
 window.addEventListener("scroll", onScroll, { passive:true });
 window.addEventListener("resize", onScroll, { passive:true });
-
 updateStroke();
 updateReel();
