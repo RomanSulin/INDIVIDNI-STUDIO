@@ -23,9 +23,9 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") closeMenu();
 });
 
-/* ---------------- Red stroke draw (Studio -> Reel -> Works) ---------------- */
+/* ---------------- Red stroke across page (earlier -> past reel -> works) ---------------- */
 const strokePath = document.getElementById("strokePath");
-const studioEl = document.getElementById("studio");
+const introEl = document.getElementById("intro");
 const worksEl = document.getElementById("works");
 
 const strokeLen = 100;
@@ -36,150 +36,142 @@ if (strokePath){
 const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
 
 function updateStroke(){
-  if (!strokePath || !studioEl || !worksEl) return;
+  if (!strokePath || !introEl || !worksEl) return;
 
-  const studioTop = studioEl.offsetTop;
-  const worksTop  = worksEl.offsetTop;
   const vh = window.innerHeight;
-
-  // начинаем чуть раньше и тянем до начала works
-  const start = studioTop - vh*0.2;
-  const end   = worksTop  - vh*0.15;
+  const start = introEl.offsetTop + vh * 0.20;     // раньше
+  const end   = worksEl.offsetTop - vh * 0.10;     // до работ
 
   const t = clamp((window.scrollY - start) / (end - start), 0, 1);
   strokePath.style.strokeDashoffset = `${strokeLen * (1 - t)}`;
 }
 
-/* ---------------- Reel: pin + expand + autoplay ---------------- */
+/* ---------------- Reel: left small -> expand -> autoplay -> then release to works ---------------- */
 const reelPin = document.getElementById("reelPin");
+const reelSticky = document.getElementById("reelSticky");
 const reelFrame = document.getElementById("reelFrame");
 const reelBtn = document.getElementById("reelBtn");
 const reelVideo = document.getElementById("reelVideo");
 
 let reelPlayed = false;
-
 function playReel(){
   if (!reelVideo || reelPlayed) return;
   reelPlayed = true;
   reelVideo.muted = true;
   reelVideo.play().catch(()=>{});
 }
-
-reelBtn?.addEventListener("click", () => {
-  playReel();
-});
+reelBtn?.addEventListener("click", playReel);
 
 function easeOutCubic(t){ return 1 - Math.pow(1 - t, 3); }
 
 function updateReel(){
-  if (!reelPin || !reelFrame) return;
+  if (!reelPin || !reelSticky || !reelFrame) return;
 
   const pinTop = reelPin.offsetTop;
   const pinH = reelPin.offsetHeight;
   const vh = window.innerHeight;
 
-  // прогресс внутри pin зоны: 0..1
+  // прогресс внутри pin зоны
   const p = clamp((window.scrollY - pinTop) / (pinH - vh), 0, 1);
 
-  // 0..0.65 раскрываемся, дальше держим
-  const k = clamp(p / 0.65, 0, 1);
-  const e = easeOutCubic(k);
+  // 0..0.60 раскрываем, 0.60..0.90 держим, 0.90..1 отпускаем (мягко)
+  const openT = clamp(p / 0.60, 0, 1);
+  const e = easeOutCubic(openT);
 
-  // старт: маленький слева (scale 0.62)
-  // конец: полный размер (scale 1)
-  const s = 0.62 + (1 - 0.62) * e;
+  // размеры: start (левый блок) -> end (полная ширина rail)
+  const maxW = reelSticky.clientWidth; // rail width (без паддинга rail)
+  const endW = maxW;
+  const endH = Math.min(vh * 0.62, 520);
 
-  // чуть уводим вниз/вправо, чтобы старт был “в левом углу”
-  const tx = 0;               // оставляем слева, как ты просил
-  const ty = (1 - e) * 8;     // лёгкий сдвиг
+  const startW = Math.min(720, endW * 0.64);
+  const startH = Math.min(320, vh * 0.36);
 
-  // радиус уменьшаем при раскрытии (как на примерах)
+  const w = startW + (endW - startW) * e;
+  const h = startH + (endH - startH) * e;
+
   const r = 28 - e * 14;
+  const ty = (1 - e) * 10;
 
-  // overlay исчезает ближе к концу раскрытия
+  // overlay fade and video appear
   const ov = 1 - clamp((p - 0.45) / 0.18, 0, 1);
-
-  // видео проявляется после раскрытия
   const vid = clamp((p - 0.55) / 0.18, 0, 1);
 
-  reelFrame.style.setProperty("--s", s.toFixed(4));
-  reelFrame.style.setProperty("--tx", `${tx}px`);
-  reelFrame.style.setProperty("--ty", `${ty}px`);
-  reelFrame.style.setProperty("--r", `${r}px`);
+  reelFrame.style.setProperty("--w", `${w.toFixed(1)}px`);
+  reelFrame.style.setProperty("--h", `${h.toFixed(1)}px`);
+  reelFrame.style.setProperty("--r", `${r.toFixed(1)}px`);
+  reelFrame.style.setProperty("--ty", `${ty.toFixed(1)}px`);
   reelFrame.style.setProperty("--ov", ov.toFixed(3));
   reelFrame.style.setProperty("--vid", vid.toFixed(3));
 
-  // автоплей когда почти раскрылся
+  // autoplay ближе к раскрытию
   if (!reelPlayed && p > 0.62) playReel();
 }
 
-/* ---------------- Works hover: wave + tilt (заметнее) ---------------- */
+/* ---------------- Works hover wave (NO постоянного blur) ---------------- */
 const cards = Array.from(document.querySelectorAll(".workCard"));
 
-function dispNode(i){
-  return document.querySelector(`#disp${i} feDisplacementMap`);
-}
-function turbNode(i){
-  return document.querySelector(`#disp${i} feTurbulence`);
-}
+function dispNode(i){ return document.querySelector(`#disp${i} feDisplacementMap`); }
+function turbNode(i){ return document.querySelector(`#disp${i} feTurbulence`); }
 
-let hovered = null;
 let hoverIdx = -1;
 let hoverMX = 0.5;
 let hoverMY = 0.5;
+let tWave = 0;
 
 cards.forEach((card) => {
   const idx = Number(card.dataset.w || 0);
-  const img = card.querySelector(".thumbMedia");
-  if (img) img.style.filter = `url(#disp${idx})`;
+  const img = card.querySelector(".workImg");
+  if (!img) return;
 
   card.addEventListener("mouseenter", () => {
-    hovered = card;
     hoverIdx = idx;
+
+    // ВКЛЮЧАЕМ фильтр только на hover (иначе картинка может “мылиться” всегда)
+    img.style.filter = `url(#disp${idx})`;
+
     const disp = dispNode(idx);
-    if (disp) disp.setAttribute("scale","32"); // сильнее
+    if (disp) disp.setAttribute("scale","26");
   });
 
   card.addEventListener("mouseleave", () => {
     const disp = dispNode(idx);
     const turb = turbNode(idx);
+
     if (disp) disp.setAttribute("scale","0");
     if (turb) turb.setAttribute("baseFrequency","0.010");
+
+    // УБИРАЕМ фильтр полностью — гарантированно возвращается “как было”
+    img.style.filter = "";
+
     card.style.transform = "";
-    hovered = null;
     hoverIdx = -1;
   });
 
   card.addEventListener("mousemove", (e) => {
     const r = card.getBoundingClientRect();
-    const mx = (e.clientX - r.left) / r.width;
-    const my = (e.clientY - r.top) / r.height;
+    hoverMX = (e.clientX - r.left) / r.width;
+    hoverMY = (e.clientY - r.top) / r.height;
 
-    hoverMX = mx;
-    hoverMY = my;
-
-    // tilt как у “дорогих” карточек
-    const rx = (0.5 - my) * 8;
-    const ry = (mx - 0.5) * 10;
+    const rx = (0.5 - hoverMY) * 6;
+    const ry = (hoverMX - 0.5) * 8;
     card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-2px)`;
   });
 });
 
-// анимация волны (чтобы эффект был виден постоянно при hover)
-let tWave = 0;
 function tickWave(){
   tWave += 0.012;
 
-  if (hovered && hoverIdx >= 0){
+  if (hoverIdx >= 0){
     const turb = turbNode(hoverIdx);
     const disp = dispNode(hoverIdx);
+
     if (turb){
-      const fx = 0.008 + hoverMX * 0.012 + Math.sin(tWave) * 0.0015;
-      const fy = 0.010 + hoverMY * 0.014 + Math.cos(tWave*1.2) * 0.0015;
+      const fx = 0.008 + hoverMX * 0.010 + Math.sin(tWave) * 0.0012;
+      const fy = 0.010 + hoverMY * 0.012 + Math.cos(tWave*1.2) * 0.0012;
       turb.setAttribute("baseFrequency", `${fx.toFixed(4)} ${fy.toFixed(4)}`);
     }
     if (disp){
-      const sc = 26 + (Math.sin(tWave*2.0)*6);
+      const sc = 22 + (Math.sin(tWave*2.0)*6);
       disp.setAttribute("scale", String(sc.toFixed(1)));
     }
   }
@@ -188,7 +180,7 @@ function tickWave(){
 }
 tickWave();
 
-/* ---------------- 3D Hero: движение от курсора должно быть видно ---------------- */
+/* ---------------- 3D Hero (сильнее как у Lusion, заметный курсор) ---------------- */
 const canvas = document.getElementById("hero3d");
 if (canvas){
   const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:false });
@@ -249,7 +241,6 @@ if (canvas){
     root.add(obj);
   }
 
-  // глобальный курсор (как у Lusion)
   const pointer = { x:0, y:0 };
   window.addEventListener("pointermove", (e) => {
     pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
@@ -266,14 +257,12 @@ if (canvas){
   window.addEventListener("resize", resize, { passive:true });
   resize();
 
-  // сглаживание, чтобы “дорого”
   let rx=0, ry=0, cx=0, cy=0;
-
   let tt = 0;
+
   function tick(){
     tt += 0.01;
 
-    // target from pointer
     const trx = (-pointer.y) * 0.55;
     const tryy = (pointer.x) * 0.75;
 
@@ -283,7 +272,6 @@ if (canvas){
     root.rotation.x = rx + Math.sin(tt*0.6)*0.06;
     root.rotation.y = ry + tt*0.14;
 
-    // camera parallax stronger (чтобы было видно)
     const tcx = pointer.x * 0.60;
     const tcy = 0.2 - pointer.y * 0.35;
     cx += (tcx - cx) * 0.08;
@@ -306,5 +294,6 @@ function onScroll(){
 }
 window.addEventListener("scroll", onScroll, { passive:true });
 window.addEventListener("resize", onScroll, { passive:true });
+
 updateStroke();
 updateReel();
