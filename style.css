@@ -179,57 +179,125 @@ body{
 /* FLOW (линия живёт здесь, НЕ fixed фоном) */
 .flow{
   position:relative;
-  padding: 0 0 0;
+  padding: 0;
 }
 
-/* линия занимает участок от Studio до перед Works */
+/* линия живёт ВНУТРИ flow: не fixed, не фон, идёт через About → Reel */
 .flowStroke{
   position:absolute;
-  left:0; right:0;
-  top: -180px;                 /* начинается раньше */
-  height: 2200px;              /* чтобы пройти мимо reel и до works */
+  inset: -240px 0 -240px 0;
   pointer-events:none;
   z-index:0;
 }
 .strokeSvg{ width:100%; height:100%; }
 
-/* STUDIO */
-.flowStudio{ position:relative; z-index:1; padding: 96px 0 12px; }
-.studioWord{ text-align:center; padding: 24px 0 18px; }
+/* ABOUT */
+.about{ position:relative; z-index:1; padding: 86px 0 40px; }
+.about .rail{ position:relative; }
 
-.studioSmall{
-  font-size:16px;
-  letter-spacing:.22em;
-  text-transform:uppercase;
-  opacity:.7;
+.aboutGrid{
+  display:grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: clamp(24px, 4vw, 64px);
+  align-items:start;
 }
 
-.studioBig{
-  font-size: clamp(74px, 9.2vw, 170px); /* сильно больше */
-  font-weight:900;
-  letter-spacing:-0.05em;
-  line-height:0.92;
+.aboutMedia{
+  position:relative;
+  margin-top: 44px; /* как в рефе — видео чуть ниже */
+  border-radius: 34px;
+  overflow:hidden;
+  height: min(420px, 46vh);
+  background:#0b0e14;
+  box-shadow:0 36px 110px rgba(0,0,0,.12);
+}
+
+.aboutMedia::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: rgba(43,73,255,.66);
+  mix-blend-mode:multiply;
+  opacity: 1;
+  pointer-events:none;
+}
+
+.aboutVideo{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover;
+  filter: contrast(1.05) brightness(1.05) saturate(0.9);
+}
+
+.aboutText{ padding-top: 10px; }
+
+.aboutPara{
+  margin:0;
+  font-size: clamp(18px, 1.55vw, 24px);
+  line-height: 1.52;
+  color: rgba(0,0,0,.86);
+  max-width: 620px;
+}
+
+.aboutBtn{
+  position:absolute;
+  left: 54%;
+  top: 62%;
+  transform: translate(-50%,-50%);
+  display:inline-flex;
+  align-items:center;
+  gap:12px;
+  padding: 16px 22px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.92);
+  color: #0c0f14;
+  text-decoration:none;
+  font-size: 13px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  box-shadow: 0 18px 60px rgba(0,0,0,.10);
+}
+
+.aboutDot{
+  width:8px; height:8px;
+  border-radius:999px;
+  background: #0c0f14;
+  display:inline-block;
 }
 
 /* REEL */
 .flowReel{ position:relative; z-index:1; }
 
-.reelPin{ height: 170vh; position:relative; } /* меньше пустого воздуха */
+.reelPin{ height: 155vh; position:relative; } /* как в рефе: есть pin, но без гигантской пустоты */
 .reelSticky{
   position: sticky;
   top: calc(var(--topH) + 22px);
   height: calc(100vh - (var(--topH) + 22px));
   padding: 18px 0;
   display:flex;
-  align-items:flex-start;
-  justify-content:flex-start;
+  align-items:center;
+  justify-content:center;
 }
+
+.reelWrap{ position:relative; width:100%; display:flex; justify-content:center; }
+
+.reelMarks{
+  position:absolute;
+  left:0; right:0;
+  display:flex;
+  justify-content:space-between;
+  font-size:24px;
+  color: rgba(0,0,0,.74);
+  pointer-events:none;
+}
+.reelMarks--top{ top:-28px; }
+.reelMarks--bottom{ bottom:-28px; }
 
 /* ключ: 16:9 и размеры растут до ширины rail */
 .reelFrame{
   width: var(--w, 760px);
   height: var(--h, 428px);   /* 16:9 */
-  border-radius: var(--r, 28px);
+  border-radius: var(--r, 34px);
   overflow:hidden;
   background:#0b0e14;
   box-shadow:0 34px 110px rgba(0,0,0,.14);
@@ -241,28 +309,31 @@ body{
 .reelOverlay{
   position:absolute; inset:0;
   display:flex; align-items:center; justify-content:center;
-  gap:30px;
+  gap:42px;
   z-index:3;
   color:#fff;
-  opacity: var(--ov, 1);
-  transition: opacity .12s ease;
+  opacity: 1;
+  transition: opacity .18s ease;
 }
 
 .reelPlayWord{
-  font-size: clamp(54px, 8.6vw, 120px); /* больше */
-  letter-spacing:.06em;
-  font-weight:900;
-  opacity:.92;
+  font-size: clamp(54px, 7.8vw, 120px);
+  letter-spacing:.22em;
+  font-weight:560;
+  opacity:.94;
 }
 
 .reelBtn{
-  width:104px; height:66px;  /* больше */
+  width: 160px; height: 92px;
   border-radius:999px;
   border:0;
-  background:rgba(255,255,255,.92);
-  color:#000;
-  font-size:20px;
+  background:rgba(255,255,255,.94);
+  color:#0c0f14;
   cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow: 0 22px 80px rgba(0,0,0,.22);
 }
 
 .reelVideo{
@@ -271,25 +342,10 @@ body{
   object-fit:cover;
   display:block;
   z-index:2;
-  opacity: var(--vid, 0);
-  transition: opacity .18s ease;
+  opacity: 1;
 }
 
-/* corner + marks around the reel like Lusion */
-.frameMarks{
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  z-index:4;
-  display:flex;
-  justify-content:space-between;
-  padding: 12px 18px;
-  font-size:24px;
-  color: rgba(255,255,255,.85);
-  mix-blend-mode: overlay;
-}
-.frameMarks span:nth-child(3),
-.frameMarks span:nth-child(4){ align-self:flex-end; }
+.reelFrame.isPlayed .reelOverlay{ opacity: 0; }
 
 /* WORKS */
 .works{ padding: 76px 0 90px; position:relative; z-index:2; }
@@ -384,6 +440,17 @@ body{
   .worksGrid{ grid-template-columns: 1fr; row-gap: 40px; }
   .workImg{ height: 300px; }
   .menuPanel{ right:12px; top:92px; width: min(420px, calc(100% - 24px)); }
-  .flowStroke{ height: 1700px; top: -120px; }
-  .reelPin{ height: 150vh; }
+
+  .flowStroke{ inset: -160px 0 -160px 0; }
+
+  .about{ padding: 64px 0 18px; }
+  .aboutGrid{ grid-template-columns: 1fr; }
+  .aboutMedia{ margin-top: 18px; height: min(320px, 38vh); }
+  .aboutBtn{ left: 50%; top: 62%; }
+
+  .reelPin{ height: auto; }
+  .reelSticky{ position:relative; top:auto; height:auto; padding: 22px 0 54px; }
+  .reelMarks--top{ top: -20px; }
+  .reelMarks--bottom{ bottom: -20px; }
+  .reelBtn{ width: 138px; height: 80px; }
 }
