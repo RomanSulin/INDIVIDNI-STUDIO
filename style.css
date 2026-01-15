@@ -2,10 +2,15 @@
   --paper:#eef0f6;
   --ink:#0c0f14;
   --blue:#2b49ff;
+  --red:#ff2b3a;
 
-  --pad: 44px;
+  /* делаем всё крупнее + больше воздуха */
+  --pad: 44px;     /* было ~26 */
+  --topH: 98px;    /* шапка выше */
+
+  /* рейл шире (как у Lusion), но НЕ растягивается на всю ширину */
   --rail: 1380px;
-  --topH: 104px;
+
   --radius: 28px;
 }
 
@@ -19,23 +24,40 @@ body{
   overflow-x:hidden;
 }
 
+/* cursor glow (subtle, like Lusion) */
+.cursorGlow{
+  position:fixed;
+  left:0; top:0;
+  width: 520px;
+  height: 520px;
+  transform: translate3d(-9999px,-9999px,0);
+  pointer-events:none;
+  z-index:5;
+  border-radius: 999px;
+  background: radial-gradient(circle at 50% 50%, rgba(43,73,255,.12), rgba(43,73,255,0) 58%);
+  filter: blur(6px);
+  mix-blend-mode: multiply;
+}
+
+/* rail */
 .rail{
   width:min(var(--rail), calc(100% - var(--pad)*2));
   margin:0 auto;
 }
 
-/* ---------------- Top nav ---------------- */
+/* Top */
 .top{
   position:fixed;
-  inset:0 0 auto 0;
+  top:0; left:0; right:0;
   z-index:50;
-  padding:34px var(--pad);
+  padding:34px var(--pad);      /* больше */
   display:flex;
   justify-content:space-between;
   align-items:flex-start;
   pointer-events:none;
 }
 
+/* ЛОГО: чуть ниже и правее + крупнее */
 .brand{
   pointer-events:auto;
   position:relative;
@@ -43,29 +65,28 @@ body{
   left: 10px;
   font-weight:900;
   letter-spacing:.18em;
-  font-size:18px;
+  font-size: 18px;              /* было мелко */
 }
 
 .topActions{
-  pointer-events:auto;
   display:flex;
   gap:14px;
-  align-items:center;
+  pointer-events:auto;
 }
 
+/* Пилюли в 2 раза крупнее */
 .pill{
   border:0;
   background: rgba(0,0,0,.06);
   color: var(--ink);
-  padding:14px 22px;
+  padding:14px 22px;            /* было 10 14 */
   border-radius:999px;
-  font-size:14px;
+  font-size:14px;               /* было 12 */
   letter-spacing:.10em;
   cursor:pointer;
   display:inline-flex;
   align-items:center;
   gap:12px;
-  user-select:none;
 }
 
 .pill--cta{
@@ -81,32 +102,17 @@ body{
 }
 
 .dots{ opacity:.65; }
-.dot{
-  width:6px; height:6px; border-radius:50%;
-  background:#fff;
-  display:inline-block;
-}
 
-/* ---------------- Menu overlay ---------------- */
-.menu{
-  position:fixed;
-  inset:0;
-  z-index:80;
-  pointer-events:none;
-  opacity:0;
-  transition: opacity .18s ease;
-}
+/* Menu */
+.menu{ position:fixed; inset:0; z-index:80; pointer-events:none; opacity:0; transition:opacity .18s ease; }
 .menu.isOpen{ opacity:1; pointer-events:auto; }
-
 .menuBackdrop{ position:absolute; inset:0; background: rgba(0,0,0,.18); }
 
 .menuPanel{
   position:absolute;
-  top:106px;
-  right:var(--pad);
-  width:min(420px, calc(100% - var(--pad)*2));
-  background:#0b0e14;
-  color:#fff;
+  top:106px; right:var(--pad);
+  width:min(420px, calc(100% - var(--pad)*2)); /* больше */
+  background:#0b0e14; color:#fff;
   border-radius:26px;
   box-shadow:0 30px 90px rgba(0,0,0,.22);
   overflow:hidden;
@@ -117,273 +123,311 @@ body{
 
 .menuHead{ display:flex; justify-content:space-between; align-items:center; padding:18px 18px 14px; }
 .menuTitle{ font-size:12px; letter-spacing:.20em; opacity:.75; }
+
 .menuClose{
-  border:0;
-  background:rgba(255,255,255,.12);
-  color:#fff;
-  border-radius:999px;
-  padding:12px 14px;
-  font-size:12px;
-  cursor:pointer;
+  border:0; background:rgba(255,255,255,.12); color:#fff;
+  border-radius:999px; padding:12px 14px;
+  font-size:12px; cursor:pointer;
 }
 
 .menuList{ display:grid; gap:4px; padding:8px 12px 14px; }
 .menuList a{
-  text-decoration:none;
-  color:#fff;
-  padding:16px 14px;
-  border-radius:16px;
+  text-decoration:none; color:#fff;
+  padding:16px 14px; border-radius:16px;
   font-size:20px;
 }
 .menuList a:hover{ background:rgba(255,255,255,.08); }
 
-/* ---------------- Marks bar (плюсы и текст) ---------------- */
-.marksBar{
-  width:100vw;
-  padding:0 calc(var(--pad) - 10px);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  color: rgba(0,0,0,.78);
-  user-select:none;
+.menuCard{ border-top:1px solid rgba(255,255,255,.10); padding:16px 16px 18px; }
+.menuCardTitle{ font-size:15px; opacity:.85; }
+.menuCardRow{ margin-top:12px; display:flex; gap:10px; }
+.menuInput{
+  flex:1; border-radius:16px; border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.06); color:#fff; padding:14px; outline:none;
+}
+.menuGo{
+  width:52px; border-radius:16px; border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.10); color:#fff; cursor:pointer;
 }
 
-.mark{
-  font-size:24px;
-  line-height:1;
-}
-
-.mark--text{
-  font-size:12px;
-  letter-spacing:.20em;
-  text-transform:uppercase;
-}
-
-/* ---------------- HERO ---------------- */
+/* HERO */
 .hero{
-  padding: calc(var(--topH) + 42px) 0 24px;
+  padding: calc(var(--topH) + 44px) 0 70px;
 }
 
-.heroTop{
-  display:grid;
-  grid-template-columns: 280px 1fr;
-  gap: 28px;
-  align-items:start;
-}
-
-.heroTitle{
+.heroH1{
   margin:0;
-  font-size: clamp(34px, 3.9vw, 66px);
-  font-weight: 520;
+  font-size: clamp(34px, 3.7vw, 56px); /* больше */
+  font-weight: 560;
   line-height:1.08;
   letter-spacing:-0.02em;
   max-width: 900px;
 }
 
-.heroCard{
-  margin-top:30px;
+.heroFrameWrap{ margin-top:30px; position:relative; }
+
+.heroFrame{
   width:100%;
-  height: min(640px, 66vh);
+  height: min(620px, 66vh);     /* больше */
   border-radius: 34px;
   overflow:hidden;
-  background:#0b0e14;
+  background:#101522;
   box-shadow:0 36px 110px rgba(0,0,0,.12);
 }
 
-.heroVideo{
-  width:100%;
-  height:100%;
-  display:block;
-  object-fit:cover;
+#hero3d{ width:100%; height:100%; display:block; }
+
+.heroMarks{ position:absolute; inset:0; pointer-events:none; }
+.plus{ position:absolute; font-size:24px; color:rgba(0,0,0,.70); }
+.p1{ left:-10px; top:50%; transform: translateY(-50%); }
+.p2{ right:-10px; top:50%; transform: translateY(-50%); }
+.p3{ left:50%; top:-12px; transform: translateX(-50%); }
+.p4{ left:50%; bottom:-14px; transform: translateX(-50%); }
+
+.scrollNote{
+  position:absolute; left:50%; bottom:-12px; transform: translateX(-50%);
+  font-size:12px; letter-spacing:.20em; text-transform:uppercase;
+  color:rgba(0,0,0,.72);
+  background: var(--paper); padding:0 12px;
 }
 
-.marksBar--hero{
-  margin-top: 18px;
-}
-
-/* ---------------- ABOUT ---------------- */
-.about{
+/* FLOW (линия живёт здесь, НЕ fixed фоном) */
+.flow{
   position:relative;
-  padding: 90px 0 140px;
-  overflow:hidden;
+  padding: 0 0 0;
 }
 
-.aboutStroke{
+/* линия занимает участок от Studio до перед Works */
+.flowStroke{
   position:absolute;
-  left:0;
-  right:0;
-  top:-170px;
-  height: 950px;
+  left:0; right:0;
+  top: -180px;                 /* начинается раньше */
+  height: 2200px;              /* чтобы пройти мимо reel и до works */
   pointer-events:none;
   z-index:0;
 }
-
 .strokeSvg{ width:100%; height:100%; }
 
-.about .rail{ position:relative; z-index:1; }
+/* STUDIO */
+.flowStudio{ position:relative; z-index:1; padding: 96px 0 12px; }
+.studioWord{ text-align:center; padding: 24px 0 18px; }
 
-.aboutGrid{
-  display:grid;
-  grid-template-columns: minmax(520px, 760px) 1fr;
-  gap: 86px;
-  align-items:start;
+.studioSmall{
+  font-size:16px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  opacity:.7;
 }
 
-.aboutMedia{
-  position:relative;
-  border-radius: 22px;
-  overflow:hidden;
-  background:#0b0e14;
-  box-shadow: 0 26px 90px rgba(0,0,0,.10);
-  width:100%;
-  aspect-ratio: 16 / 9;
+.studioBig{
+  font-size: clamp(74px, 9.2vw, 170px); /* сильно больше */
+  font-weight:900;
+  letter-spacing:-0.05em;
+  line-height:0.92;
 }
 
-.aboutVideo{
-  width:100%; height:100%;
-  display:block;
-  object-fit:cover;
-}
+/* REEL */
+.flowReel{ position:relative; z-index:1; }
 
-.aboutTint{
-  position:absolute;
-  inset:0;
-  background: rgba(43,73,255,.68);
-  mix-blend-mode: multiply;
-  pointer-events:none;
-}
-
-.aboutText p{
-  margin:0;
-  max-width: 620px;
-  font-size: 18px;
-  line-height:1.7;
-  color: rgba(0,0,0,.84);
-}
-
-.aboutPill{
-  position:absolute;
-  left: 59%;
-  top: 54%;
-  transform: translate(-50%,-50%);
-  border:0;
-  background:#fff;
-  color:#000;
-  padding: 18px 28px;
-  border-radius:999px;
-  box-shadow: 0 24px 70px rgba(0,0,0,.10);
-  letter-spacing:.16em;
-  font-size: 12px;
-  cursor:pointer;
-  display:inline-flex;
-  align-items:center;
-  gap: 12px;
-}
-
-.pillDot{
-  width:7px;
-  height:7px;
-  border-radius:50%;
-  background:#000;
-}
-
-/* ---------------- REEL ---------------- */
-.reel{ padding: 10px 0 80px; }
-
-.marksBar--top{ margin: 34px 0 22px; }
-.marksBar--bottom{ margin: 22px 0 0; }
-
-.reelPin{
-  height: 170vh; /* скролл-пространство */
-  position:relative;
-}
-
+.reelPin{ height: 170vh; position:relative; } /* меньше пустого воздуха */
 .reelSticky{
-  position:sticky;
-  top: calc(var(--topH) + 26px);
-  height: calc(100vh - (var(--topH) + 26px));
+  position: sticky;
+  top: calc(var(--topH) + 22px);
+  height: calc(100vh - (var(--topH) + 22px));
+  padding: 18px 0;
   display:flex;
   align-items:flex-start;
+  justify-content:flex-start;
 }
 
+/* ключ: 16:9 и размеры растут до ширины rail */
 .reelFrame{
   width: 100%;
   aspect-ratio: 16 / 9;
-  border-radius: var(--reelR, 28px);
+  border-radius: var(--reelR, 34px);
   overflow:hidden;
   background:#0b0e14;
   box-shadow:0 34px 110px rgba(0,0,0,.14);
   position:relative;
-  transform: translate3d(0, var(--reelY, 18px), 0) scale(var(--reelS, .92));
-  transform-origin: center top;
-  will-change: transform, border-radius;
+  transform-origin: 50% 0%;
+  transform: translate3d(0, var(--reelY, 0px), 0) scale(var(--reelS, 0.92));
+  will-change: transform, border-radius, clip-path;
 }
 
-.reelVideo{
+/* blue tint that fades while раскрывается */
+.reelFrame::before{
+  content:"";
   position:absolute;
   inset:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
+  background: rgba(43,73,255, var(--tint, 0));
+  pointer-events:none;
+  z-index:2;
 }
 
 .reelOverlay{
-  position:absolute;
-  inset:0;
-  border:0;
-  background:transparent;
-  cursor:pointer;
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  gap:30px;
   z-index:3;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap: 36px;
   color:#fff;
   opacity: var(--ov, 1);
-  transition: opacity .18s ease;
+  transition: opacity .12s ease;
 }
 
-.reelWord{
-  font-size: clamp(54px, 8.4vw, 124px);
-  letter-spacing: .14em;
-  font-weight: 520;
-  opacity: .92;
+.reelPlayWord{
+  font-size: clamp(54px, 8.6vw, 120px); /* больше */
+  letter-spacing:.06em;
+  font-weight:900;
+  opacity:.92;
 }
 
-.reelPill{
-  width: 168px;
-  height: 96px;
+.reelBtn{
+  width:104px; height:66px;  /* больше */
   border-radius:999px;
-  background: rgba(255,255,255,.94);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.reelTri{
+  border:0;
+  background:rgba(255,255,255,.92);
   color:#000;
-  font-size: 22px;
-  transform: translateX(2px);
+  font-size:20px;
+  cursor:pointer;
 }
 
-.reelFrame.isPlaying .reelOverlay{ opacity: 0; pointer-events:none; }
+.reelVideo{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover;
+  display:block;
+  z-index:1;
+}
 
-/* ---------------- Contact stub ---------------- */
-.contactStub{ padding: 80px 0 120px; }
+.reelFrame.isPlaying .reelOverlay{
+  opacity:0;
+  pointer-events:none;
+}
+
+/* corner + marks around the reel like Lusion */
+.frameMarks{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:4;
+  display:flex;
+  justify-content:space-between;
+  padding: 12px 18px;
+  font-size:24px;
+  color: rgba(255,255,255,.85);
+  mix-blend-mode: overlay;
+}
+.frameMarks span:nth-child(3),
+.frameMarks span:nth-child(4){ align-self:flex-end; }
+
+/* WORKS */
+.works{ padding: 76px 0 90px; position:relative; z-index:2; }
+
+.worksHead{
+  display:grid;
+  grid-template-columns: 1fr 520px; /* больше справа */
+  gap: 28px;
+  align-items:end;
+}
+
+.worksTitle{
+  margin:0;
+  font-size: clamp(86px, 8.4vw, 170px); /* как у Lusion крупно */
+  letter-spacing:-0.06em;
+  line-height:0.92;
+}
+
+.worksDesc{
+  margin:0;
+  color: rgba(0,0,0,.62);
+  line-height:1.55;
+  font-size:15px;
+}
+
+.worksGrid{
+  margin-top: 34px;
+  display:grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(26px, 3.6vw, 56px);
+  row-gap: clamp(60px, 6.2vw, 120px);
+}
+
+/* card style like Lusion */
+.workCard{
+  text-decoration:none;
+  color: var(--ink);
+  display:block;
+  will-change: transform;
+  transform: translateZ(0);
+  transition: transform .18s ease;
+}
+
+/* wave effect hook */
+.waveTarget{ filter:none; }
+.waveTarget.waveOn{ filter: url(#waveFilter); }
+
+/* parallax hook */
+[data-parallax]{
+  transform-style: preserve-3d;
+  transform: perspective(900px)
+    rotateX(var(--pRy, 0deg))
+    rotateY(var(--pRx, 0deg))
+    translate3d(var(--pTx, 0px), var(--pTy, 0px), 0);
+  transition: transform .12s ease;
+  will-change: transform;
+}
+
+.workMedia{
+  border-radius: 26px;
+  overflow:hidden;
+  background:#fff;
+  box-shadow: 0 18px 60px rgba(0,0,0,.10);
+}
+
+.workImg{
+  width:100%;
+  height: 420px;   /* больше */
+  display:block;
+  object-fit:cover;
+  transform: scale(1.02);
+  transition: transform .22s ease, filter .12s ease;
+  filter: none;
+}
+
+.workMeta{
+  margin-top: 16px;
+  font-size: 12px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgba(0,0,0,.58);
+}
+
+.workName{
+  margin-top: 12px;
+  font-size: clamp(42px, 4.2vw, 82px); /* больше */
+  letter-spacing: -0.04em;
+  line-height: 1.02;
+}
+
+/* hover */
+.workCard:hover .workImg{ transform: scale(1.06); }
+.workCard:hover{ transform: translateY(-2px); }
+
+/* мгновенный blur на 100мс (и обратно) */
+.workCard.isFlash .workImg{ filter: blur(1px); }
+
+/* stop */
+.contactStub{ padding: 50px 0 90px; }
 .contactStubInner{ color: rgba(0,0,0,.55); font-size:14px; }
 
-/* ---------------- Mobile ---------------- */
+/* Mobile */
 @media (max-width: 980px){
-  :root{ --pad: 22px; --topH: 92px; }
+  :root{ --pad: 22px; --topH: 86px; }
 
-  .heroTop{ grid-template-columns: 1fr; }
-  .heroCard{ height: min(560px, 60vh); border-radius: 26px; }
-
-  .aboutGrid{ grid-template-columns: 1fr; gap: 28px; }
-  .aboutPill{ left: 50%; top: 62%; }
-
+  .worksHead{ grid-template-columns: 1fr; }
+  .worksGrid{ grid-template-columns: 1fr; row-gap: 40px; }
+  .workImg{ height: 300px; }
   .menuPanel{ right:12px; top:92px; width: min(420px, calc(100% - 24px)); }
-  .marksBar{ padding:0 calc(var(--pad)); }
+  .flowStroke{ height: 1700px; top: -120px; }
   .reelPin{ height: 150vh; }
 }
