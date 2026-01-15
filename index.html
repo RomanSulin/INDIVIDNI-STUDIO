@@ -2,210 +2,330 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>INDIVIDNI STUDIO</title> 
-  <link rel="stylesheet" href="./style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#07070a" />
+  <title>NEBULA — интерактивные цифровые впечатления</title>
+  <meta name="description" content="NEBULA — студия, которая превращает идеи в интерактивные сайты и realtime‑визуал." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-  <!-- cursor-follow glow like Lusion -->
-  <div class="cursorGlow" aria-hidden="true"></div>
+  <a class="skip" href="#main">К контенту</a>
 
-  <header class="top">
-    <div class="brand">INDIVIDNI</div>
+  <!-- Background -->
+  <canvas id="bg" aria-hidden="true"></canvas>
+  <div class="grid" aria-hidden="true"></div>
+  <div class="noise" aria-hidden="true"></div>
 
-    <div class="topActions">
-      <button class="pill pill--icon" id="btnWave" type="button" title="Wave">∿</button>
-      <a class="pill pill--cta" href="#contact">ОБСУДИТЬ</a>
-      <button class="pill pill--menu" id="btnMenu" type="button">
-        <span id="menuText">MENU</span> <span class="dots">•••</span>
-      </button>
+  <!-- Custom cursor (auto отключится на touch / reduced motion) -->
+  <div class="cursor" aria-hidden="true"></div>
+  <div class="cursor-dot" aria-hidden="true"></div>
+
+  <header class="header" id="top">
+    <div class="header__inner">
+      <a class="logo magnetic" data-magnet="0.22" href="#top" aria-label="NEBULA, на главную">
+        <span class="logo__mark">◉</span>
+        <span class="logo__text">NEBULA</span>
+      </a>
+
+      <nav class="nav" aria-label="Основная навигация">
+        <a class="nav__link magnetic" data-magnet="0.18" href="#work">Работы</a>
+        <a class="nav__link magnetic" data-magnet="0.18" href="#services">Услуги</a>
+        <a class="nav__link magnetic" data-magnet="0.18" href="#process">Процесс</a>
+        <a class="nav__link magnetic" data-magnet="0.18" href="#about">О нас</a>
+      </nav>
+
+      <div class="header__cta">
+        <a class="btn btn--primary magnetic" data-magnet="0.25" href="#contact"><span>Обсудить проект</span></a>
+
+        <button class="menu-btn" id="menuBtn" aria-label="Открыть меню" aria-expanded="false">
+          <span></span><span></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div class="mobile-nav" id="mobileNav" aria-hidden="true">
+      <div class="mobile-nav__inner">
+        <a class="mobile-nav__link" href="#work">Работы</a>
+        <a class="mobile-nav__link" href="#services">Услуги</a>
+        <a class="mobile-nav__link" href="#process">Процесс</a>
+        <a class="mobile-nav__link" href="#about">О нас</a>
+
+        <a class="btn btn--primary" href="#contact"><span>Обсудить проект</span></a>
+
+        <div class="mobile-nav__meta">
+          <a href="mailto:hello@example.com">hello@example.com</a>
+          <span>Москва • удалённо</span>
+        </div>
+      </div>
     </div>
   </header>
 
-  <!-- Black menu overlay -->
-  <aside class="menu" id="menu" aria-hidden="true">
-    <div class="menuBackdrop" data-close></div>
-    <div class="menuPanel">
-      <div class="menuHead">
-        <div class="menuTitle">МЕНЮ</div>
-        <button class="menuClose" data-close type="button">ЗАКРЫТЬ</button>
-      </div>
-
-      <nav class="menuList">
-        <a href="#intro" data-close>Главная</a>
-        <a href="#flow" data-close>Studio / Reel / Work</a>
-        <a href="#works" data-close>Проекты</a>
-        <a href="#contact" data-close>Контакт</a>
-      </nav>
-
-      <div class="menuCard">
-        <div class="menuCardTitle">Напиши — я отвечу</div>
-        <div class="menuCardRow">
-          <input class="menuInput" placeholder="Telegram / Email" />
-          <button class="menuGo" type="button">→</button>
-        </div>
-      </div>
-    </div>
-  </aside>
-
-  <main>
+  <main id="main">
     <!-- HERO -->
-    <section class="hero" id="intro">
-      <div class="rail">
-        <h1 class="heroH1">
-          Мы помогаем брендам создавать видео, которое соединяет с их аудиторией
+    <section class="hero">
+      <div class="container hero__inner">
+        <p class="eyebrow reveal">Креатив • Веб • Realtime визуал</p>
+
+        <h1 class="hero__title reveal">
+          Делаем сайты, которые <span class="grad">двигаются</span> и запоминаются.
         </h1>
-      </div>
 
-      <div class="rail">
-        <div class="heroFrameWrap">
-          <div class="heroFrame">
-            <canvas id="hero3d"></canvas>
+        <p class="hero__lead reveal">
+          NEBULA — небольшая команда дизайнеров и разработчиков. Собираем интерактивные лендинги,
+          realtime‑фон и анимации без “шумных” шаблонов — только смысл и эффект.
+        </p>
+
+        <div class="hero__actions reveal">
+          <a class="btn btn--primary magnetic" data-magnet="0.28" href="#work"><span>Смотреть кейсы</span></a>
+          <a class="btn btn--ghost magnetic" data-magnet="0.28" href="#services"><span>Что умеем</span></a>
+        </div>
+
+        <div class="scroll-hint reveal" aria-hidden="true">
+          <span class="scroll-hint__line"></span>
+          <span class="scroll-hint__text">Листай вниз</span>
+        </div>
+
+        <div class="hero__meta reveal">
+          <div class="meta-card">
+            <div class="meta-card__n">12+</div>
+            <div class="meta-card__t">лет в интерактиве</div>
           </div>
-
-          <div class="heroMarks">
-            <span class="plus p1">+</span><span class="plus p2">+</span>
-            <span class="plus p3">+</span><span class="plus p4">+</span>
-            <div class="scrollNote">SCROLL TO EXPLORE</div>
+          <div class="meta-card">
+            <div class="meta-card__n">3D</div>
+            <div class="meta-card__t">WebGL / Canvas</div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-card__n">∞</div>
+            <div class="meta-card__t">экспериментов</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- FLOW block: здесь живет линия (не fixed), и здесь же Studio + Reel -->
-    <section class="flow" id="flow">
-      <div class="flowStroke" aria-hidden="true">
-        <svg class="strokeSvg" viewBox="0 0 1400 900" preserveAspectRatio="none">
-          <path id="flowPath"
-            d="M -140 520
-               C 200 160, 420 800, 610 520
-               S 920 200, 1040 520
-               S 940 820, 720 660
-               S 400 460, 340 760
-               S 650 980, 1540 640"
-            fill="none" stroke="var(--red)" stroke-width="36"
-            stroke-linecap="round" stroke-linejoin="round" pathLength="100"
-          />
-        </svg>
+    <!-- TICKER -->
+    <section class="ticker" aria-hidden="true">
+      <div class="ticker__track">
+        <span>web • design • development • motion • 3D • R&D •</span>
+        <span>web • design • development • motion • 3D • R&D •</span>
       </div>
+    </section>
 
-      <!-- STUDIO word (как на скрине) -->
-      <div class="flowStudio" id="studio">
-        <div class="rail">
-          <div class="studioWord">
-            <div class="studioSmall">STUDIO</div>
-            <div class="studioBig">INDIVIDNI</div>
-          </div>
-        </div>
-      </div>
+    <!-- WORK -->
+    <section class="section" id="work">
+      <div class="container">
+        <header class="section__head reveal">
+          <h2 class="h2">Избранные работы</h2>
+          <p class="muted">Карточки — заглушки. Замени названия/описания под свои кейсы.</p>
+        </header>
 
-      <!-- REEL pinned zone -->
-      <div class="flowReel" id="reel">
-        <div class="reelPin" id="reelPin">
-          <div class="reelSticky" id="reelSticky">
-            <div class="rail">
-              <div class="reelFrame waveTarget" data-parallax id="reelFrame">
-                <div class="reelOverlay" id="reelOverlay">
-                  <div class="reelPlayWord">PLAY</div>
-                  <button class="reelBtn" id="reelBtn" type="button" aria-label="Play Reel">▶</button>
-                  <div class="reelPlayWord">REEL</div>
-                </div>
-
-                <video id="reelVideo" class="reelVideo" playsinline muted preload="metadata">
-                  <source src="./assets/showreel.mp4" type="video/mp4" />
-                </video>
-
-                <div class="frameMarks" aria-hidden="true">
-                  <span>+</span><span>+</span><span>+</span><span>+</span>
-                </div>
+        <div class="cards">
+          <article class="card reveal" style="--h: 285;">
+            <div class="card__media" aria-hidden="true"></div>
+            <div class="card__body">
+              <div class="card__top">
+                <h3 class="card__title">Neon Atlas</h3>
+                <span class="pill">Web • 3D</span>
+              </div>
+              <p class="card__text">Интерактивная промо‑страница с “живым” фоном и микровзаимодействиями.</p>
+              <div class="card__bottom">
+                <span class="meta">UX/UI • Frontend</span>
+                <a class="link" href="#contact">Запросить демо →</a>
               </div>
             </div>
+          </article>
+
+          <article class="card reveal" style="--h: 198;">
+            <div class="card__media" aria-hidden="true"></div>
+            <div class="card__body">
+              <div class="card__top">
+                <h3 class="card__title">Sonic Product</h3>
+                <span class="pill">Motion</span>
+              </div>
+              <p class="card__text">Плавные reveal‑анимации, аккуратный UI, “магнитные” CTA‑кнопки.</p>
+              <div class="card__bottom">
+                <span class="meta">Art • Code</span>
+                <a class="link" href="#contact">Обсудить →</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="card reveal" style="--h: 42;">
+            <div class="card__media" aria-hidden="true"></div>
+            <div class="card__body">
+              <div class="card__top">
+                <h3 class="card__title">City Layers</h3>
+                <span class="pill">R&D</span>
+              </div>
+              <p class="card__text">Эксперимент: glow‑фон, сетка и “воздух” — всё управляется курсором.</p>
+              <div class="card__bottom">
+                <span class="meta">Prototype</span>
+                <a class="link" href="#contact">Хочу так же →</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section class="section" id="services">
+      <div class="container">
+        <header class="section__head reveal">
+          <h2 class="h2">Что мы делаем</h2>
+          <p class="muted">Классическая структура студийного лендинга: воздух, типографика, детали.</p>
+        </header>
+
+        <div class="services">
+          <div class="service reveal">
+            <h3>Дизайн интерфейсов</h3>
+            <p>Структура, сетки, типографика, компоненты, motion‑принципы.</p>
+            <ul>
+              <li>UX‑прототип</li>
+              <li>UI‑система</li>
+              <li>Анимационные состояния</li>
+            </ul>
+          </div>
+
+          <div class="service reveal">
+            <h3>Разработка лендингов</h3>
+            <p>Чистый HTML/CSS/JS — без сборки и зависимостей. Идеально для GitHub Pages.</p>
+            <ul>
+              <li>Адаптив + доступность</li>
+              <li>Оптимизация</li>
+              <li>Микро‑интерактив</li>
+            </ul>
+          </div>
+
+          <div class="service reveal">
+            <h3>Realtime‑визуал</h3>
+            <p>Фоны, частицы, glow‑эффекты, Canvas/WebGL (по задаче).</p>
+            <ul>
+              <li>Canvas 2D</li>
+              <li>Лёгкий WebGL</li>
+              <li>Эксперименты</li>
+            </ul>
           </div>
         </div>
       </div>
-
     </section>
 
-    <!-- FEATURED WORK -->
-    <section class="works" id="works">
-      <div class="rail">
-        <div class="worksHead">
-          <h2 class="worksTitle">Featured Work</h2>
-          <p class="worksDesc">
-            Hover — волна/деформация + лёгкий tilt (без залипания blur).
-          </p>
-        </div>
+    <!-- PROCESS -->
+    <section class="section" id="process">
+      <div class="container">
+        <header class="section__head reveal">
+          <h2 class="h2">Процесс</h2>
+          <p class="muted">Простой, понятный, но с местом для эксперимента.</p>
+        </header>
 
-        <div class="worksGrid">
-          <a class="workCard" href="./project.html" data-w="0">
-            <div class="workMedia waveTarget" data-parallax>
-              <img class="workImg" alt="" src="./assets/work-1.png">
+        <ol class="steps">
+          <li class="step reveal">
+            <div class="step__n">01</div>
+            <div class="step__c">
+              <h3>Погружение</h3>
+              <p>Цели, аудитория, референсы, ограничения по срокам/платформам.</p>
             </div>
-            <div class="workMeta">VIDEO • PRODUCTION • POST</div>
-            <div class="workName">Кейс 01</div>
-          </a>
+          </li>
+          <li class="step reveal">
+            <div class="step__n">02</div>
+            <div class="step__c">
+              <h3>Дизайн‑система</h3>
+              <p>Сетка, типографика, компоненты, правила для motion и “света”.</p>
+            </div>
+          </li>
+          <li class="step reveal">
+            <div class="step__n">03</div>
+            <div class="step__c">
+              <h3>Сборка и полировка</h3>
+              <p>Верстаем, добавляем анимации, тестируем производительность.</p>
+            </div>
+          </li>
+          <li class="step reveal">
+            <div class="step__n">04</div>
+            <div class="step__c">
+              <h3>Запуск</h3>
+              <p>GitHub Pages / домен / аналитика — и вперёд.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
 
-          <a class="workCard" href="./project.html" data-w="1">
-            <div class="workMedia waveTarget" data-parallax>
-              <img class="workImg" alt="" src="./assets/work-2.png">
-            </div>
-            <div class="workMeta">VIDEO • INTERVIEW • SOUND</div>
-            <div class="workName">Кейс 02</div>
-          </a>
+    <!-- ABOUT -->
+    <section class="section" id="about">
+      <div class="container">
+        <div class="about">
+          <div class="about__text reveal">
+            <h2 class="h2">Немного о подходе</h2>
+            <p class="muted">
+              Мы любим “тихий” премиум: контраст, воздух, детальные hover‑состояния и фон, который живёт.
+              Главное — не эффект ради эффекта, а впечатление, которое помогает задаче.
+            </p>
 
-          <a class="workCard" href="./project.html" data-w="2">
-            <div class="workMedia waveTarget" data-parallax>
-              <img class="workImg" alt="" src="./assets/work-3.png">
+            <div class="chips">
+              <span class="chip">Крупная типографика</span>
+              <span class="chip">Сетка + шум</span>
+              <span class="chip">Интерактивный фон</span>
+              <span class="chip">Плавные reveal</span>
             </div>
-            <div class="workMeta">VIDEO • EVENT • EDIT</div>
-            <div class="workName">Кейс 03</div>
-          </a>
+          </div>
 
-          <a class="workCard" href="./project.html" data-w="3">
-            <div class="workMedia waveTarget" data-parallax>
-              <img class="workImg" alt="" src="./assets/work-4.png">
+          <aside class="about__card reveal">
+            <p class="about__quote">“Сделаем так, чтобы сайт ощущался как продукт, а не как страница.”</p>
+            <div class="about__byline">
+              <span>NEBULA Studio</span>
+              <span class="dot">•</span>
+              <span>Design + Code</span>
             </div>
-            <div class="workMeta">VIDEO • BRAND • COLOR</div>
-            <div class="workName">Кейс 04</div>
-          </a>
-
-          <a class="workCard" href="./project.html" data-w="4">
-            <div class="workMedia waveTarget" data-parallax>
-              <img class="workImg" alt="" src="./assets/work-5.png">
-            </div>
-            <div class="workMeta">VIDEO • SOCIAL • CUTS</div>
-            <div class="workName">Кейс 05</div>
-          </a>
-
-          <a class="workCard" href="./project.html" data-w="5">
-            <div class="workMedia waveTarget" data-parallax>
-              <img class="workImg" alt="" src="./assets/work-6.png">
-            </div>
-            <div class="workMeta">VIDEO • MOTION • TITLES</div>
-            <div class="workName">Кейс 06</div>
-          </a>
+          </aside>
         </div>
       </div>
     </section>
 
-    <section class="contactStub" id="contact">
-      <div class="rail">
-        <div class="contactStubInner">Контакт доделаем позже.</div>
+    <!-- CONTACT -->
+    <section class="section cta" id="contact">
+      <div class="container">
+        <div class="cta__inner reveal">
+          <h2 class="h2">Готовы сделать смелый лендинг?</h2>
+          <p class="muted">Кнопка — mailto, чтобы работало на GitHub Pages без бэкенда.</p>
+
+          <div class="cta__actions">
+            <a class="btn btn--primary magnetic" data-magnet="0.30"
+               href="mailto:hello@example.com?subject=Проект%20NEBULA">
+              <span>hello@example.com</span>
+            </a>
+
+            <a class="btn btn--ghost magnetic" data-magnet="0.30" href="#work">
+              <span>Ещё раз кейсы</span>
+            </a>
+          </div>
+
+          <div class="cta__meta">
+            <a class="link" href="#">Instagram</a>
+            <a class="link" href="#">Behance</a>
+            <a class="link" href="#">Telegram</a>
+          </div>
+        </div>
       </div>
     </section>
   </main>
 
-  <!-- SVG filter for the "wave" hover effect -->
-  <svg width="0" height="0" style="position:absolute; left:-9999px; top:-9999px;" aria-hidden="true">
-    <defs>
-      <filter id="waveFilter">
-        <feTurbulence id="waveTurb" type="fractalNoise" baseFrequency="0.010 0.010" numOctaves="2" seed="2" result="noise" />
-        <feDisplacementMap id="waveDisp" in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G" />
-      </filter>
-    </defs>
-  </svg>
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__left">
+        <span class="logo__text">NEBULA</span>
+        <span class="muted">© <span id="year"></span> • HTML/CSS/JS • GitHub Pages</span>
+      </div>
+      <a class="link" href="#top">Наверх ↑</a>
+    </div>
+  </footer>
 
-  <script src="./assets/main.js" defer></script>
+  <script src="script.js" defer></script>
 </body>
 </html>
