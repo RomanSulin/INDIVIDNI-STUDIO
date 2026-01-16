@@ -1,6 +1,6 @@
 (() => {
   const html = document.documentElement;
-  const body = document.body;
+  const body = document.body; 
 
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const finePointer = window.matchMedia('(pointer: fine)').matches;
