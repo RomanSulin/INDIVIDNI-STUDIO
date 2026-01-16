@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#050507" />
+
+  <title>INDIVIDNI Studio — видеопродакшн полного цикла</title>
+  <meta name="description" content="INDIVIDNI Studio — видеопродакшн полного цикла: рекламные и имиджевые ролики, трансляции, интервью, подкасты, клипы. От идеи — до результата." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;600&family=Anton&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body data-page="home">
+  <a class="skip" href="#main">К контенту</a>
+
+  <!-- Background -->
+  <canvas id="bg" aria-hidden="true"></canvas>
+  <div class="grid" aria-hidden="true"></div>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="progress" aria-hidden="true"><span></span></div>
+
+  <!-- Custom cursor -->
+  <div class="cursor" aria-hidden="true"></div>
+  <div class="cursor-dot" aria-hidden="true"></div>
+
+  <header class="header" id="top">
+    <div class="header__inner">
+      <a class="logo magnetic" data-magnet="0.20" href="index.html" aria-label="INDIVIDNI Studio, на главную">
+        <span class="logo__mark">◉</span>
+        <span class="logo__text">INDIVIDNI STUDIO</span>
+      </a>
+
+      <nav class="nav" aria-label="Основная навигация">
+        <a class="nav__link magnetic" data-magnet="0.16" href="#projects">Кейсы</a>
+        <a class="nav__link magnetic" data-magnet="0.16" href="#services">Направления</a>
+        <a class="nav__link magnetic" data-magnet="0.16" href="#process">Процесс</a>
+        <a class="nav__link magnetic" data-magnet="0.16" href="#contact">Контакты</a>
+        <a class="nav__link magnetic" data-magnet="0.16" href="projects.html">Все проекты</a>
+      </nav>
+
+      <div class="header__cta">
+        <a class="btn btn--primary magnetic" data-magnet="0.22" href="#contact"><span>Бесплатная консультация</span></a>
+
+        <button class="menu-btn" id="menuBtn" aria-label="Открыть меню" aria-expanded="false">
+          <span></span><span></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div class="mobile-nav" id="mobileNav" aria-hidden="true">
+      <div class="mobile-nav__inner">
+        <a class="mobile-nav__link" href="#projects">Кейсы</a>
+        <a class="mobile-nav__link" href="#services">Направления</a>
+        <a class="mobile-nav__link" href="#process">Процесс</a>
+        <a class="mobile-nav__link" href="#contact">Контакты</a>
+        <a class="mobile-nav__link" href="projects.html">Все проекты</a>
+
+        <a class="btn btn--primary" href="#contact"><span>Обсудить проект</span></a>
+
+        <div class="mobile-nav__meta">
+          <a href="mailto:hello@individni.studio">hello@individni.studio</a>
+          <span>Москва • выездные съёмки • удалённый постпродакшн</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container hero__grid">
+        <div class="hero__copy">
+          <p class="kicker reveal">ВИДЕОПРОДАКШН • LIVE • POST</p>
+
+          <h1 class="h1 reveal">Видеопродакшн полного цикла</h1>
+
+          <p class="hero__lead reveal">
+            От идеи — до результата. Снимаем рекламные и имиджевые ролики, делаем многокамерные трансляции,
+            записываем интервью и подкасты, создаём клипы и арт‑проекты.
+          </p>
+
+          <div class="hero__actions reveal">
+            <a class="btn btn--primary magnetic" data-magnet="0.24" href="#projects"><span>Смотреть кейсы</span></a>
+            <a class="btn magnetic" data-magnet="0.24" href="mailto:hello@individni.studio?subject=Запрос%20сметы%20INDIVIDNI"><span>Запросить смету</span></a>
+          </div>
+
+          <div class="hero__meta reveal" aria-label="Ключевые принципы">
+            <div class="meta-card">
+              <div class="meta-card__n">IDEA</div>
+              <div class="meta-card__t">Концепция и сценарий</div>
+            </div>
+            <div class="meta-card">
+              <div class="meta-card__n">TEAM</div>
+              <div class="meta-card__t">Состав под задачу</div>
+            </div>
+            <div class="meta-card">
+              <div class="meta-card__n">PIPELINE</div>
+              <div class="meta-card__t">RAW → Color → Sound</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero__frame reveal" aria-label="Шоурил (заглушка)">
+          <video class="showreel" autoplay muted loop playsinline preload="metadata"
+                 poster="https://picsum.photos/seed/individni-showreel/1400/900"
+                 src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4">
+          </video>
+
+          <div class="hero__frameCaption">
+            <div class="hero__tag"><span class="hero__tagDot"></span> SHOWREEL</div>
+            <a class="play magnetic" data-magnet="0.18" href="#projects" aria-label="Перейти к кейсам">
+              <span class="tri">▶</span>
+              <span>Открыть проекты</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INDEX -->
+    <section class="index" aria-label="Содержание">
+      <div class="container">
+        <div class="indexBox reveal">
+          <div class="indexRow">
+            <a href="#projects"><span class="indexNo">I.</span> <span class="indexLabel">Кейсы</span></a>
+            <span class="indexHint">3 формата работ</span>
+          </div>
+          <div class="indexRow">
+            <a href="#services"><span class="indexNo">II.</span> <span class="indexLabel">Направления</span></a>
+            <span class="indexHint">что снимаем</span>
+          </div>
+          <div class="indexRow">
+            <a href="#approach"><span class="indexNo">III.</span> <span class="indexLabel">Подход</span></a>
+            <span class="indexHint">точность и контроль</span>
+          </div>
+          <div class="indexRow">
+            <a href="#process"><span class="indexNo">IV.</span> <span class="indexLabel">Процесс</span></a>
+            <span class="indexHint">5 шагов</span>
+          </div>
+          <div class="indexRow">
+            <a href="#contact"><span class="indexNo">V.</span> <span class="indexLabel">Контакты</span></a>
+            <span class="indexHint">20‑мин консультация</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- PROJECTS -->
+    <section class="section" id="projects">
+      <div class="container">
+        <header class="section__head reveal">
+          <h2 class="h2">Кейсы</h2>
+          <p class="muted">Здесь — примеры страниц проектов. Фото и тексты можно заменить на ваши. Клик по карточке открывает отдельную страницу кейса.</p>
+        </header>
+
+        <div class="projects">
+          <a class="project reveal magnetic" data-magnet="0.18" href="case.html?slug=aurora" aria-label="Открыть кейс AURORA">
+            <img class="project__img" src="https://picsum.photos/seed/individni-aurora/1600/1000" alt="Кадр из бренд-фильма (заглушка)" loading="lazy" />
+            <div class="project__overlay" aria-hidden="true"></div>
+            <div class="project__arrow" aria-hidden="true">↗</div>
+            <div class="project__body">
+              <div class="project__top">
+                <h3 class="project__title">AURORA</h3>
+                <span class="pill">Branded Film</span>
+              </div>
+              <p class="project__text">Бренд‑фильм + нарезки 9:16 / 1:1 для соцсетей.</p>
+            </div>
+          </a>
+
+          <a class="project reveal magnetic" data-magnet="0.18" href="case.html?slug=forum" aria-label="Открыть кейс NOVA FORUM">
+            <img class="project__img" src="https://picsum.photos/seed/individni-forum/1600/1000" alt="Кадр с мероприятия (заглушка)" loading="lazy" />
+            <div class="project__overlay" aria-hidden="true"></div>
+            <div class="project__arrow" aria-hidden="true">↗</div>
+            <div class="project__body">
+              <div class="project__top">
+                <h3 class="project__title">NOVA FORUM</h3>
+                <span class="pill">Live / Event</span>
+              </div>
+              <p class="project__text">Многокамерная трансляция + aftermovie и хайлайты.</p>
+            </div>
+          </a>
+
+          <a class="project reveal magnetic" data-magnet="0.18" href="case.html?slug=nightdrive" aria-label="Открыть кейс NIGHT DRIVE">
+            <img class="project__img" src="https://picsum.photos/seed/individni-night/1600/1000" alt="Кадр из музыкального клипа (заглушка)" loading="lazy" />
+            <div class="project__overlay" aria-hidden="true"></div>
+            <div class="project__arrow" aria-hidden="true">↗</div>
+            <div class="project__body">
+              <div class="project__top">
+                <h3 class="project__title">NIGHT DRIVE</h3>
+                <span class="pill">Music Video</span>
+              </div>
+              <p class="project__text">Клип + тизеры и BTS для релиза.</p>
+            </div>
+          </a>
+        </div>
+
+        <div class="reveal" style="margin-top:18px;">
+          <a class="link" href="projects.html">Смотреть все проекты →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICES / DIRECTIONS -->
+    <section class="section" id="services">
+      <div class="container">
+        <header class="section__head reveal">
+          <h2 class="h2">Направления</h2>
+          <p class="muted">Снимаем для бизнеса, событий и творчества. В каждом проекте держим фокус на задаче и конечном результате.</p>
+        </header>
+
+        <div class="services">
+          <div class="service reveal">
+            <h3 class="h3">Бренды</h3>
+            <p>Рекламные и имиджевые ролики, контент под запуск продукта и кампании.</p>
+            <ul>
+              <li>Branded film / promo</li>
+              <li>Reels / Shorts / YouTube</li>
+              <li>Съёмка для сайта</li>
+            </ul>
+          </div>
+
+          <div class="service reveal">
+            <h3 class="h3">События</h3>
+            <p>Живое общение и динамика: трансляции, конференции, репортажи.</p>
+            <ul>
+              <li>Многокамерные эфиры</li>
+              <li>Aftermovie / highlights</li>
+              <li>Интервью спикеров</li>
+            </ul>
+          </div>
+
+          <div class="service reveal">
+            <h3 class="h3">Обучение</h3>
+            <p>Студийное качество для знаний: курсы, лекции, мастер‑классы.</p>
+            <ul>
+              <li>Онлайн‑курсы</li>
+              <li>Лекции / вебинары</li>
+              <li>Съёмка экранов + графика</li>
+            </ul>
+          </div>
+
+          <div class="service reveal">
+            <h3 class="h3">Искусство</h3>
+            <p>Клипы, короткометражки, арт‑проекты. Режиссура, свет, атмосфера.</p>
+            <ul>
+              <li>Music video</li>
+              <li>Short film</li>
+              <li>Арт‑визуал</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHILOSOPHY + APPROACH -->
+    <section class="section" id="approach">
+      <div class="container">
+        <header class="section__head reveal">
+          <h2 class="h2">Подход</h2>
+          <p class="muted">Профессионализм и точность. Сначала — понимание цели, затем — производство. Контроль качества на всех этапах.</p>
+        </header>
+
+        <div class="split">
+          <div class="panel reveal">
+            <p>
+              Мы создаём видео, которые запоминаются. Наша цель — передать историю, эмоцию и смысл.
+              В основе каждого проекта: чёткая концепция, команда под задачу и современный пайплайн.
+            </p>
+          </div>
+
+          <ul class="list reveal" aria-label="Принципы">
+            <li class="item">
+              <div class="item__n">01</div>
+              <div class="item__c">
+                <h3 class="h3">Анализ задачи</h3>
+                <p>Погружаемся в контекст, аудиторию и KPI — чтобы видео работало, а не просто выглядело.</p>
+              </div>
+            </li>
+            <li class="item">
+              <div class="item__n">02</div>
+              <div class="item__c">
+                <h3 class="h3">Команда под проект</h3>
+                <p>Оператор, режиссёр, монтажёр, colorist, звук — собираем оптимальный состав.</p>
+              </div>
+            </li>
+            <li class="item">
+              <div class="item__n">03</div>
+              <div class="item__c">
+                <h3 class="h3">Сроки и бюджет</h3>
+                <p>Чёткий план, прозрачная смета, без скрытых платежей и “внезапных” переносов.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="split" style="margin-top:14px;">
+          <div class="panel reveal">
+            <p>
+              <strong class="muted2">Технический арсенал:</strong> мы не ограничены собственным парком.
+              Под каждый проект формируем идеальный комплект оборудования — ровно под вашу задачу.
+            </p>
+          </div>
+
+          <ul class="list reveal" aria-label="Техника и пайплайн">
+            <li class="item">
+              <div class="item__n">A</div>
+              <div class="item__c">
+                <h3 class="h3">Доступ к проф. парку</h3>
+                <p>Вы получаете именно ту технику, которая нужна: камера, оптика, свет, звук, стаб, дрон.</p>
+              </div>
+            </li>
+            <li class="item">
+              <div class="item__n">B</div>
+              <div class="item__c">
+                <h3 class="h3">Экспертный подбор</h3>
+                <p>Операторы и продюсеры подбирают комплект, который закроет идею без переплаты.</p>
+              </div>
+            </li>
+            <li class="item">
+              <div class="item__n">C</div>
+              <div class="item__c">
+                <h3 class="h3">Полный контроль качества</h3>
+                <p>От съёмки RAW до финальной цветокоррекции и звука — единый профессиональный пайплайн.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+
+
+    <!-- FRAMES (placeholders) -->
+    <section class="section section--tight" id="frames">
+      <div class="container">
+        <header class="section__head reveal">
+          <h2 class="h2">Кадры</h2>
+          <p class="muted">Набор визуальных заглушек в стиле “тихий премиум”. Заменим на твои кадры — структура уже готова.</p>
+        </header>
+
+        <div class="split">
+          <div class="panel reveal">
+            <p>
+              Под продакшн важно не только “красиво”, но и <strong class="muted2">системно</strong>:
+              кадры должны собираться в историю и быть удобными для адаптаций (16:9 / 9:16 / 1:1).
+            </p>
+
+            <div class="tags" style="margin-top:14px;">
+              <span class="tag">LIGHT</span>
+              <span class="tag">TEXTURE</span>
+              <span class="tag">MOTION</span>
+              <span class="tag">SOUND</span>
+            </div>
+          </div>
+
+          <div class="panel reveal">
+            <div class="gallery" aria-label="Превью кадров" style="margin-top:0;">
+              <img src="https://picsum.photos/seed/individni-frame-1/1400/900" alt="Превью кадра 1 (заглушка)" loading="lazy" />
+              <img src="https://picsum.photos/seed/individni-frame-2/1400/900" alt="Превью кадра 2 (заглушка)" loading="lazy" />
+              <img src="https://picsum.photos/seed/individni-frame-3/1400/900" alt="Превью кадра 3 (заглушка)" loading="lazy" />
+              <img src="https://picsum.photos/seed/individni-frame-4/1400/900" alt="Превью кадра 4 (заглушка)" loading="lazy" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROCESS -->
+    <section class="section" id="process">
+      <div class="container">
+        <header class="section__head reveal">
+          <h2 class="h2">Процесс работы</h2>
+          <p class="muted">5 шагов — чтобы всё было прогнозируемо: от брифа до сдачи материалов в нужных форматах.</p>
+        </header>
+
+        <ol class="steps">
+          <li class="step reveal">
+            <div class="step__n">ШАГ 1</div>
+            <div class="step__c">
+              <h3 class="h3">Бриф</h3>
+              <p>Анализ задачи, целей и аудитории. Формируем ТЗ — основу всего проекта.</p>
+            </div>
+          </li>
+          <li class="step reveal">
+            <div class="step__n">ШАГ 2</div>
+            <div class="step__c">
+              <h3 class="h3">Концепция / смета / договор</h3>
+              <p>Разработка идеи, плана и точной сметы. Фиксируем договорённости в договоре и согласованном ТЗ.</p>
+            </div>
+          </li>
+          <li class="step reveal">
+            <div class="step__n">ШАГ 3</div>
+            <div class="step__c">
+              <h3 class="h3">Подготовка (pre‑production)</h3>
+              <p>Подбор локации, команда, заказ техники, план‑график и контроль деталей.</p>
+            </div>
+          </li>
+          <li class="step reveal">
+            <div class="step__n">ШАГ 4</div>
+            <div class="step__c">
+              <h3 class="h3">Съёмка (production)</h3>
+              <p>Реализация проекта на локациях с подобранной техникой. Контролируем каждый этап.</p>
+            </div>
+          </li>
+          <li class="step reveal">
+            <div class="step__n">ШАГ 5</div>
+            <div class="step__c">
+              <h3 class="h3">Постпродакшн и сдача</h3>
+              <p>Монтаж, цвет, звук, графика. Согласование версий. Сдача материалов в оговорённых форматах.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- CLIENTS -->
+    <section class="section section--tight" aria-label="Клиенты (заглушки)">
+      <div class="container">
+        <header class="section__head reveal">
+          <h2 class="h2">Клиенты</h2>
+          <p class="muted">Здесь стоят заглушки. Заменим на ваши логотипы / названия.</p>
+        </header>
+
+        <div class="logos reveal">
+          <div class="logoBox">BRAND</div>
+          <div class="logoBox">AGENCY</div>
+          <div class="logoBox">STARTUP</div>
+          <div class="logoBox">EVENT</div>
+          <div class="logoBox">ARTIST</div>
+          <div class="logoBox">EDU</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="section section--tight" aria-label="Отзывы">
+      <div class="container">
+        <header class="section__head reveal">
+          <h2 class="h2">Отзывы</h2>
+          <p class="muted">Текст — заглушки. Но структура готова: коротко, по делу, без воды.</p>
+        </header>
+
+        <div class="quotes">
+          <div class="quote reveal">
+            <p>«Собрали команду под задачу, быстро согласовали концепцию и выдали результат в срок. Картинка — чистая, звук — ровный.»</p>
+            <div class="who">бренд / маркетинг</div>
+          </div>
+          <div class="quote reveal">
+            <p>«Трансляция прошла без сбоев: грамотный план камер, чёткий режиссёрский пульт, отличные хайлайты для соцсетей.»</p>
+            <div class="who">организатор события</div>
+          </div>
+          <div class="quote reveal">
+            <p>«В клипе понравилась режиссура и свет. Сторителлинг и визуал попали в настроение трека.»</p>
+            <div class="who">артист</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT / CTA -->
+    <section class="cta" id="contact">
+      <div class="container">
+        <div class="ctaBox reveal">
+          <h2 class="h2">С чего начать?</h2>
+          <p class="muted" style="margin-top:10px;">
+            Готовы обсудить проект? Опишите задачу, идею или просто отправьте референс.
+            Мы проведём бесплатную 20‑минутную консультацию и подготовим коммерческое предложение.
+          </p>
+
+          <div class="ctaActions">
+            <a class="btn btn--primary magnetic" data-magnet="0.26" href="mailto:hello@individni.studio?subject=Запрос%20проекта%20INDIVIDNI"><span>Написать на почту</span></a>
+            <a class="btn magnetic" data-magnet="0.26" href="tel:+79608800060"><span>Позвонить</span></a>
+            <a class="btn btn--ghost magnetic" data-magnet="0.26" href="projects.html"><span>Смотреть проекты</span></a>
+          </div>
+
+          <div class="contactGrid" aria-label="Контакты">
+            <div class="contactCard">
+              <div class="label">Телефон</div>
+              <a href="tel:+79608800060">+7 960 880‑00‑60</a>
+            </div>
+            <div class="contactCard">
+              <div class="label">Email</div>
+              <a href="mailto:hello@individni.studio">hello@individni.studio</a>
+            </div>
+            <div class="contactCard">
+              <div class="label">Сайт</div>
+              <span>individni.studio</span>
+            </div>
+          </div>
+
+          <div style="margin-top:18px; display:flex; gap:16px; flex-wrap:wrap;">
+            <a class="link" href="https://instagram.com/individni_studio" target="_blank" rel="noopener">Instagram</a>
+            <a class="link" href="https://behance.net/individni" target="_blank" rel="noopener">Behance</a>
+            <a class="link" href="https://t.me/individni" target="_blank" rel="noopener">Telegram</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__left">
+        <span class="logo__text">INDIVIDNI STUDIO</span>
+        <span class="muted">© <span id="year"></span> • HTML/CSS/JS • GitHub Pages</span>
+      </div>
+      <a class="link" href="#top">Наверх ↑</a>
+    </div>
+  </footer>
+
+  <script src="main.js" defer></script>
+</body>
+</html>
