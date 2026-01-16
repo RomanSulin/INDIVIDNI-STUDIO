@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#050506" />
+
+  <title>Case 01 — Brand Film — INDIVIDNI Studio</title>
+  <meta name="description" content="Кейс: брендвидео. Препродакшн, съёмка, постпродакшн (монтаж, цвет, звук, графика)." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@300;400;600&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <a class="skip" href="#main">К контенту</a>
+
+  <canvas id="bg" aria-hidden="true"></canvas>
+  <div class="grid" aria-hidden="true"></div>
+  <div class="noise" aria-hidden="true"></div>
+
+  <div class="progress" aria-hidden="true"><span class="progress__bar"></span></div>
+
+  <div class="cursor" aria-hidden="true"><span class="cursor__label"></span></div>
+  <div class="cursor-dot" aria-hidden="true"></div>
+
+  <header class="header" id="top">
+    <div class="header__inner">
+      <a class="brand" href="index.html" aria-label="INDIVIDNI Studio, на главную">
+        <span class="brand__name">INDIVIDNI</span>
+        <span class="brand__tag">VIDEO PRODUCTION STUDIO</span>
+      </a>
+
+      <div class="header__right">
+        <a class="header__talk" href="contact.html" data-cursor="TALK">Let’s talk</a>
+        <button class="menu-btn" id="menuBtn" aria-label="Открыть меню" aria-expanded="false">
+          <span>Menu</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="menu" id="menu" aria-hidden="true">
+      <div class="menu__inner">
+        <div class="menu__top">
+          <span class="menu__k">Menu</span>
+          <button class="menu__close" id="menuClose" aria-label="Закрыть меню">Close</button>
+        </div>
+
+        <nav class="menu__nav" aria-label="Навигация">
+          <a class="menu__link" href="index.html">Home</a>
+          <a class="menu__link" href="projects.html">Projects</a>
+          <a class="menu__link" href="services.html">Services</a>
+          <a class="menu__link" href="contact.html">Contact</a>
+        </nav>
+
+        <div class="menu__footer">
+          <div class="menu__col">
+            <div class="menu__label">New business</div>
+            <a class="menu__value" href="mailto:hello@individni.studio">hello@individni.studio</a>
+          </div>
+          <div class="menu__col">
+            <div class="menu__label">Phone</div>
+            <a class="menu__value" href="tel:+79608800060">+7 (960) 880‑00‑60</a>
+          </div>
+          <div class="menu__col">
+            <div class="menu__label">Social</div>
+            <div class="menu__row">
+              <a class="menu__value" href="#">Instagram</a>
+              <a class="menu__value" href="#">Telegram</a>
+              <a class="menu__value" href="#">YouTube</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="main">
+    <section class="case-hero">
+      <div class="container">
+        <div class="case-hero__top">
+          <div class="kicker">Case 01</div>
+          <div class="case-hero__meta">Brand film • 2025</div>
+        </div>
+        <h1 class="case-hero__title reveal">BRAND FILM</h1>
+        <p class="case-hero__lead reveal">
+          Имиджевое видео для бренда: концепция, препродакшн, съёмка и полный пост.
+          Это демо‑кейс — заменишь названием/клиентом и кадрами.
+        </p>
+
+        <div class="case-hero__media reveal">
+          <img src="assets/img/case-01-cover.jpg" alt="Обложка кейса" loading="eager" />
+        </div>
+
+        <div class="case-hero__actions reveal">
+          <a class="btn btn--ghost" href="projects.html" data-cursor="BACK">← Все проекты</a>
+          <button class="btn btn--primary" id="infoBtn" type="button" data-cursor="INFO">
+            Info
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-body">
+      <div class="container grid12">
+        <article class="case-article">
+          <div class="case-section reveal">
+            <h2 class="h2">Задача</h2>
+            <p class="p">
+              Снять короткое брендвидео, которое передаёт эмоцию и позиционирование.
+              Требования: кинематографичность, чёткий сценарный ритм, 1 мастер и несколько cut‑down версий.
+            </p>
+          </div>
+
+          <div class="case-section reveal">
+            <h2 class="h2">Решение</h2>
+            <p class="p">
+              Собрали концепт, раскадровку и список кадров. Съёмка в 1 смену: свет, операторская группа,
+              контроль экспозиции и чистоты фона. Пост: монтаж, цвет, звук, титры.
+            </p>
+          </div>
+
+          <div class="case-section reveal">
+            <h2 class="h2">Результат</h2>
+            <p class="p">
+              Финальный ролик + версии под соцсети (9:16 / 1:1 / 16:9) и набор кадров (stills) для дальнейших материалов.
+            </p>
+          </div>
+
+          <div class="case-gallery reveal">
+            <div class="case-gallery__item"><img src="assets/img/case-01-01.jpg" alt="Кадр проекта" loading="lazy" /></div>
+            <div class="case-gallery__item"><img src="assets/img/case-01-02.jpg" alt="Кадр проекта" loading="lazy" /></div>
+            <div class="case-gallery__item"><img src="assets/img/case-01-03.jpg" alt="Кадр проекта" loading="lazy" /></div>
+          </div>
+
+          <div class="case-nav reveal">
+            <a class="case-nav__prev" href="case-03.html" data-cursor="PREV">← Prev case</a>
+            <a class="case-nav__next" href="case-02.html" data-cursor="NEXT">Next case →</a>
+          </div>
+        </article>
+
+        <aside class="side-info" aria-label="Информация о проекте">
+          <div class="side-info__head">
+            <div>
+              <div class="side-info__k">INFO</div>
+              <div class="side-info__t">Brand film</div>
+            </div>
+            <button class="side-info__close" id="infoClose" type="button" aria-label="Закрыть" data-cursor="CLOSE">✕</button>
+          </div>
+
+          <div class="side-info__block">
+            <div class="side-info__row"><span>Client</span><strong>Demo brand</strong></div>
+            <div class="side-info__row"><span>Year</span><strong>2025</strong></div>
+            <div class="side-info__row"><span>Format</span><strong>16:9 / 9:16 / 1:1</strong></div>
+            <div class="side-info__row"><span>Deliverables</span><strong>Master + cut‑downs</strong></div>
+          </div>
+
+          <div class="side-info__block">
+            <div class="side-info__k">Services</div>
+            <div class="tags">
+              <span class="tag">Concept</span>
+              <span class="tag">Production</span>
+              <span class="tag">Edit</span>
+              <span class="tag">Color</span>
+              <span class="tag">Sound</span>
+              <span class="tag">Titles</span>
+            </div>
+          </div>
+
+          <div class="side-info__block">
+            <div class="side-info__k">Credits</div>
+            <div class="credits">
+              <div class="credits__row"><span>Producer</span><strong>INDIVIDNI</strong></div>
+              <div class="credits__row"><span>Director</span><strong>—</strong></div>
+              <div class="credits__row"><span>DOP</span><strong>—</strong></div>
+              <div class="credits__row"><span>Editor</span><strong>—</strong></div>
+            </div>
+            <p class="note">Заменишь имена и роли на реальные.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section section--tight">
+      <div class="container">
+        <div class="cta-card reveal">
+          <h2 class="h2">Хочешь такой же результат?</h2>
+          <p class="muted">Опиши задачу — мы предложим концепт, смету и план работ. 20 минут консультации — бесплатно.</p>
+          <div class="cta-card__actions">
+            <a class="btn btn--primary" href="contact.html" data-cursor="TALK"><span>Связаться</span></a>
+            <a class="btn btn--ghost" href="projects.html"><span>Смотреть проекты</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="info-backdrop" id="infoBackdrop" aria-hidden="true"></div>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__left">
+        <span class="footer__brand">INDIVIDNI</span>
+        <span class="muted">© <span id="year"></span> • Video production</span>
+      </div>
+      <a class="link" href="#top">Наверх ↑</a>
+    </div>
+  </footer>
+
+  <div class="hover-preview" aria-hidden="true"><img alt="" /></div>
+
+  <script src="assets/js/main.js" defer></script>
+</body>
+</html>

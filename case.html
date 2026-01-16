@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#050506" />
+
+  <title>Кейсы — INDIVIDNI Studio</title>
+  <meta name="description" content="Выберите кейс INDIVIDNI Studio." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@300;400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <a class="skip" href="#main">К контенту</a>
+
+  <canvas id="bg" aria-hidden="true"></canvas>
+  <div class="grid" aria-hidden="true"></div>
+  <div class="noise" aria-hidden="true"></div>
+
+  <div class="cursor" aria-hidden="true"><span class="cursor__label"></span></div>
+  <div class="cursor-dot" aria-hidden="true"></div>
+
+  <div class="progress" aria-hidden="true"><span class="progress__bar"></span></div>
+
+  <header class="header" id="top">
+    <div class="header__inner">
+      <a class="brand" href="index.html" aria-label="INDIVIDNI Studio">
+        <span class="brand__dot" aria-hidden="true"></span>
+        <span class="brand__text">INDIVIDNI STUDIO</span>
+      </a>
+
+      <div class="header__right">
+        <a class="talk" href="contact.html">Let’s talk</a>
+        <button class="menu-btn" id="menuBtn" aria-label="Открыть меню" aria-expanded="false">
+          <span class="menu-btn__line"></span>
+          <span class="menu-btn__line"></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="menu" id="menu" aria-hidden="true">
+      <div class="menu__inner">
+        <nav class="menu__nav" aria-label="Меню">
+          <a class="menu__link" href="index.html">Home</a>
+          <a class="menu__link" href="projects.html">Projects</a>
+          <a class="menu__link" href="services.html">Services</a>
+          <a class="menu__link" href="contact.html">Contact</a>
+        </nav>
+
+        <div class="menu__meta">
+          <div>
+            <div class="menu__k">Телефон</div>
+            <a class="menu__v" href="tel:+79608800060">8 (960) 880‑00‑60</a>
+          </div>
+          <div>
+            <div class="menu__k">Email</div>
+            <a class="menu__v" href="mailto:hello@individni.studio">hello@individni.studio</a>
+          </div>
+          <div>
+            <div class="menu__k">Social</div>
+            <div class="menu__row">
+              <a class="menu__v" href="#">Instagram</a>
+              <a class="menu__v" href="#">Telegram</a>
+              <a class="menu__v" href="#">YouTube</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="page">
+    <section class="page-hero">
+      <div class="container">
+        <div class="page-hero__top reveal">
+          <div class="kicker">КЕЙСЫ</div>
+          <div class="line" aria-hidden="true"></div>
+        </div>
+
+        <h1 class="page-title reveal">Выберите кейс</h1>
+        <p class="page-lead reveal">Это демо‑наполнение. Мы заменим на ваши проекты и реальные кадры.</p>
+
+        <div class="projects-list projects-list--cards" style="margin-top:34px">
+          <a class="project-card reveal" href="case-01.html" data-cursor="VIEW" data-preview="assets/img/case-01-cover.jpg">
+            <div class="project-card__media" style="background-image:url('assets/img/case-01-cover.jpg')"></div>
+            <div class="project-card__body">
+              <div class="project-card__title">Case 01 — Brand Film</div>
+              <div class="project-card__meta">Concept • Shoot • Post</div>
+            </div>
+          </a>
+
+          <a class="project-card reveal" href="case-02.html" data-cursor="VIEW" data-preview="assets/img/case-02-cover.jpg">
+            <div class="project-card__media" style="background-image:url('assets/img/case-02-cover.jpg')"></div>
+            <div class="project-card__body">
+              <div class="project-card__title">Case 02 — Multi‑cam Live</div>
+              <div class="project-card__meta">Live • Sound • Graphics</div>
+            </div>
+          </a>
+
+          <a class="project-card reveal" href="case-03.html" data-cursor="VIEW" data-preview="assets/img/case-03-cover.jpg">
+            <div class="project-card__media" style="background-image:url('assets/img/case-03-cover.jpg')"></div>
+            <div class="project-card__body">
+              <div class="project-card__title">Case 03 — Music Video</div>
+              <div class="project-card__meta">Art • Lighting • Grade</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <div class="hover-preview" aria-hidden="true"><img alt="" /></div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__left">
+        <span class="footer__brand">INDIVIDNI STUDIO</span>
+        <span class="footer__muted">© <span id="year"></span> • Video production</span>
+      </div>
+      <a class="footer__link" href="#top">Наверх ↑</a>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js" defer></script>
+</body>
+</html>
