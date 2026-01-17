@@ -5,7 +5,7 @@
    - red path draws on scroll
    - showreel sticky reveal + play
    - card hover tilt + wave distortion (SVG filter injected)
-*/
+*/ 
 
 (() => {
   const $ = (s, r = document) => r.querySelector(s);
