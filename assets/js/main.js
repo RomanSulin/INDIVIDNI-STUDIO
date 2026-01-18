@@ -59,9 +59,8 @@
 })();
 
 // =========================================== SHOWREEL Laptop: open/close on scroll + play/pause + sound =================================================================
-
 (function () {
-  const section = document.querySelector("[data-sr]");
+  const section = document.querySelector("[data-sr-demo]");
   if (!section) return;
 
   const video = section.querySelector("[data-sr-video]");
@@ -85,30 +84,20 @@
 
   syncBtn();
 
-  // точнее чем IntersectionObserver для sticky-сцен:
+  // sticky-сцены лучше детектить через "середина экрана внутри секции"
   let raf = null;
-  function updatePlayback() {
+  function update() {
     raf = null;
     const r = section.getBoundingClientRect();
-    const vh = window.innerHeight;
+    const mid = window.innerHeight * 0.5;
+    const inView = r.top < mid && r.bottom > mid;
 
-    // "в блоке" если середина экрана находится внутри секции
-    const mid = vh * 0.5;
-    const inSection = r.top < mid && r.bottom > mid;
-
-    if (inSection) {
-      video.play().catch(() => {});
-    } else {
-      video.pause();
-    }
+    if (inView) video.play().catch(() => {});
+    else video.pause();
   }
 
-  function requestUpdate() {
-    if (raf) return;
-    raf = requestAnimationFrame(updatePlayback);
-  }
-
-  window.addEventListener("scroll", requestUpdate, { passive: true });
-  window.addEventListener("resize", requestUpdate, { passive: true });
-  updatePlayback();
+  function req() { if (!raf) raf = requestAnimationFrame(update); }
+  window.addEventListener("scroll", req, { passive: true });
+  window.addEventListener("resize", req, { passive: true });
+  update();
 })();
