@@ -74,14 +74,14 @@
 </section>
 
 <!-- SHOWREEL LAPTOP (clean) ------------------------------------------------------------------------------------------------>
-<section class="sr" id="showreel">
-  <div class="container sr__head">
-    <div class="sr__line1">ВИДЕОПРОДАКШН</div>
-    <div class="sr__line2">полного цикла</div>
+<section class="sr-demo" id="showreel">
+  <div class="container sr-demo__head">
+    <div class="sr-demo__line1">ВИДЕОПРОДАКШН</div>
+    <div class="sr-demo__line2">полного цикла</div>
   </div>
 
-  <div class="scroll-section laptop sr__laptop" data-sr>
-    <section class="sr__sticky">
+  <div class="scroll-section laptop sr-demo__laptop" data-sr-demo>
+    <section>
       <div class="scene__zoom">
         <div class="scene">
           <div class="scene__rock">
@@ -91,29 +91,30 @@
                   <div class="scene__flip">
 
                     <div class="jbook">
-                      <!-- TOP (screen) -->
                       <div class="jbook__shell shell shell--top">
-                        <!-- SCREEN (VIDEO) -->
-                        <div class="sr__screen">
+
+                        <!-- REPLACE screen-bear with VIDEO -->
+                        <div class="sr-demo__screen">
                           <video
-                            class="sr__video"
+                            class="sr-demo__video"
                             data-sr-video
                             playsinline
                             webkit-playsinline
                             muted
                             preload="metadata"
+                            loop
                           >
                             <source src="./assets/ui/showreel.mp4" type="video/mp4" />
                           </video>
 
                           <button
-                            class="sr__sound"
+                            class="sr-demo__sound"
                             type="button"
                             data-sr-sound
                             aria-label="Включить звук"
                             aria-pressed="false"
                           >
-                            <span class="sr__sound-icon" aria-hidden="true"></span>
+                            <span class="sr-demo__sound-icon" aria-hidden="true"></span>
                           </button>
                         </div>
 
@@ -122,14 +123,17 @@
                           <div class="cuboid__side"></div>
                           <div class="cuboid__side"></div>
                           <div class="cuboid__side"></div>
+
+                          <!-- side 5 (WAS shell-bear) — оставляем, но пустую -->
                           <div class="cuboid__side"></div>
+
                           <div class="cuboid__side"></div>
                         </div>
                       </div>
 
-                      <!-- BOTTOM (base) -->
                       <div class="jbook__shell shell shell--bottom">
-                        <!-- ВСТАВЬ СЮДА ТВОЙ ОГРОМНЫЙ SVG КЛАВЫ ИЗ ДЕМКИ -->
+
+                        <!-- ВСТАВЬ СЮДА ТВОЙ SVG КЛАВИАТУРЫ ИЗ ДЕМКИ 1-в-1 -->
                         <!-- <svg class="laptop-keyboard" ...>...</svg> -->
 
                         <div class="cuboid">
@@ -153,8 +157,6 @@
     </section>
   </div>
 </section>
-
-
 
     <!-- INTRO ---------------------------------------------------------------------------------------------------------------------------------------------------------->
     <section class="intro">
