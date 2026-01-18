@@ -760,3 +760,54 @@ body.menu-open .drawer{ display:block; }
 }
 
 /* если видео вдруг вверх ногами — поменяй на rotate:0deg */
+
+/* ===== SHOWREEL: stop "broken" demo phases (keep design, keep open+zoom) ===== */
+.sr-demo .scene__spin,
+.sr-demo .scene__flip,
+.sr-demo .scene__jump{
+  animation: none !important;
+  transform: none !important;
+}
+
+/* Можно оставить тень, но без мерцания */
+.sr-demo .scene__shadow::after{
+  animation: none !important;
+  opacity: 0.55;
+}
+
+/* Уменьшаем зум, чтобы "почти фулл", но не в край */
+@keyframes srDemoZoom {
+  0% { scale: 1; }
+  100% { scale: 7.2; }  /* было 9 в демке */
+}
+.sr-demo .scene__zoom{
+  animation-name: srDemoZoom !important;
+}
+
+/* Убрать JFDI если вдруг остался */
+.sr-demo .shell--top .cuboid__side:nth-of-type(5)::after{
+  content: none !important;
+}
+
+/* Экран-видео: гарантированно поверх */
+.sr-demo .shell--top{ position: relative; }
+.sr-demo__screen{
+  position: absolute;
+  width: 72%;
+  aspect-ratio: 16 / 9;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  rotate: 180deg; /* как у screen-bear; если вверх ногами — поставь 0deg */
+  border-radius: 1.2vmin;
+  overflow: hidden;
+  background: #000;
+  border: 0.35vmin solid rgba(255,255,255,0.08);
+  z-index: 50;
+  pointer-events: none; /* клики только на кнопке */
+}
+.sr-demo__video{ width:100%; height:100%; display:block; object-fit:cover; }
+.sr-demo__sound{
+  pointer-events: auto;
+  z-index: 60;
+}
