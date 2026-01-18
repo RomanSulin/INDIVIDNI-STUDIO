@@ -1,245 +1,40 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>INDIVIDNI — studio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>INDIVIDNI — Liquid</title>
 
-  <!-- Fonts (как в твоем примере) -->
+  <!-- Fonts (как у тебя) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=Bebas+Neue&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Styles -->
-  <link rel="stylesheet" href="./styles.css?v=1" />
-
-  <!-- Three.js for Liquid Gradient (нужен ДО main.js) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
-  <!-- App -->
-  <script defer src="./main.js?v=1"></script>
+  <link rel="stylesheet" href="./assets/css/style.css" />
 </head>
 
 <body>
-  <main id="main">
+  <!-- LIQUID HERO -->
+  <section class="liquid-hero" aria-label="INDIVIDNI liquid hero">
+    <div id="liquid-bg" aria-hidden="true"></div>
 
-    <!-- =========================
-         HERO (Liquid Gradient only here)
-         ========================= -->
-    <section class="hero" id="top">
-      <!-- Liquid background layer -->
-      <div class="hero__liquid" aria-hidden="true">
-        <!-- JS will mount canvas here -->
-        <div id="webGLApp"></div>
-        <div class="hero__liquidOverlay"></div>
-      </div>
+    <div class="liquid-title">
+      <div class="liquid-sub">studio</div>
+      <div class="liquid-main">INDIVIDNI</div>
+    </div>
+  </section>
 
-      <div class="container hero__container">
+  <!-- Ниже просто заглушки, чтобы проверить скролл (можешь удалить) -->
+  <section class="after-hero">
+    <div class="container">
+      <h2>Next section</h2>
+      <p>Scroll works. Liquid stays only in hero.</p>
+    </div>
+  </section>
 
-        <!-- Top pill nav (как в макете) -->
-        <header class="topPill">
-          <nav class="topPill__navLeft" aria-label="Primary">
-            <a class="topPill__link" href="#projects">Projects</a>
-            <a class="topPill__link" href="#about">About</a>
-            <a class="topPill__link" href="#team">Team</a>
-            <a class="topPill__link" href="#contact">Contact</a>
-          </nav>
-
-          <nav class="topPill__navRight" aria-label="Secondary">
-            <a class="topPill__link" href="#services">Services</a>
-            <a class="topPill__cta" href="#contact">Get in touch</a>
-          </nav>
-        </header>
-
-        <!-- Hero title (как ты попросил: studio small, INDIVIDNI big) -->
-        <div class="hero__titleBlock">
-          <div class="hero__studio">studio</div>
-          <h1 class="hero__title">INDIVIDNI</h1>
-        </div>
-
-        <!-- Hero media ribbon (как в макете — “пленка/лента”)
-             ПОДКЛЮЧИМ в CSS/JS маской + одним видео из /artlist (чтобы не плодить 10 видео).
-        -->
-        <div class="heroRibbon" aria-hidden="true">
-          <div class="heroRibbon__videoWrap">
-            <!-- можно менять на любой из твоих файлов: 6410389.mp4 / 563719.mp4 / 51048.mp4 -->
-            <video class="heroRibbon__video" src="./artlist/6410389.mp4" autoplay muted loop playsinline preload="metadata"></video>
-          </div>
-          <div class="heroRibbon__mask"></div>
-        </div>
-
-        <!-- About text + tags (как в макете: слева текст, справа метки) -->
-        <section class="heroAbout" id="about">
-          <p class="heroAbout__text">
-            We are passionate about creating visually stunning and functional solutions that communicate effectively.
-            We have a keen eye for detail and a deep understanding of visual storytelling.
-          </p>
-
-          <ul class="heroAbout__tags" aria-label="Meta">
-            <li class="tag">© INDIVIDNI</li>
-            <li class="tag">Berlin</li>
-            <li class="tag">Production</li>
-            <li class="tag">Post</li>
-            <li class="tag">4K</li>
-            <li class="tag">AI</li>
-          </ul>
-        </section>
-
-        <!-- Services list (как в макете) -->
-        <section class="block" id="services">
-          <div class="block__title">Our Services</div>
-
-          <div class="serviceList" role="list">
-            <div class="serviceRow" role="listitem">
-              <div class="serviceRow__left">
-                <span class="serviceRow__icon"></span>
-                <span class="serviceRow__name">Live streaming</span>
-              </div>
-              <span class="serviceRow__plus">+</span>
-            </div>
-
-            <div class="serviceRow" role="listitem">
-              <div class="serviceRow__left">
-                <span class="serviceRow__icon"></span>
-                <span class="serviceRow__name">Video production</span>
-              </div>
-              <span class="serviceRow__plus">+</span>
-            </div>
-
-            <div class="serviceRow" role="listitem">
-              <div class="serviceRow__left">
-                <span class="serviceRow__icon"></span>
-                <span class="serviceRow__name">Ads / Commercials</span>
-              </div>
-              <span class="serviceRow__plus">+</span>
-            </div>
-
-            <div class="serviceRow" role="listitem">
-              <div class="serviceRow__left">
-                <span class="serviceRow__icon"></span>
-                <span class="serviceRow__name">Editing / Post</span>
-              </div>
-              <span class="serviceRow__plus">+</span>
-            </div>
-
-            <div class="serviceRow" role="listitem">
-              <div class="serviceRow__left">
-                <span class="serviceRow__icon"></span>
-                <span class="serviceRow__name">Motion / Graphics / AI</span>
-              </div>
-              <span class="serviceRow__plus">+</span>
-            </div>
-          </div>
-        </section>
-
-        <!-- Recent Work grid (как в макете 2x2) -->
-        <section class="block" id="projects">
-          <div class="block__titleRow">
-            <div class="block__title">Recent Work</div>
-            <a class="block__link" href="#projects">View all work →</a>
-          </div>
-
-          <div class="workGrid">
-            <article class="workCard">
-              <div class="workCard__media">
-                <video class="workCard__video" src="./artlist/563719.mp4" autoplay muted loop playsinline preload="metadata"></video>
-              </div>
-              <div class="workCard__label">Case 01</div>
-            </article>
-
-            <article class="workCard">
-              <div class="workCard__media">
-                <video class="workCard__video" src="./artlist/51048.mp4" autoplay muted loop playsinline preload="metadata"></video>
-              </div>
-              <div class="workCard__label">Case 02</div>
-            </article>
-
-            <article class="workCard">
-              <div class="workCard__media">
-                <video class="workCard__video" src="./artlist/6413305.mp4" autoplay muted loop playsinline preload="metadata"></video>
-              </div>
-              <div class="workCard__label">Case 03</div>
-            </article>
-
-            <article class="workCard">
-              <div class="workCard__media">
-                <video class="workCard__video" src="./artlist/6588075.mp4" autoplay muted loop playsinline preload="metadata"></video>
-              </div>
-              <div class="workCard__label">Case 04</div>
-            </article>
-          </div>
-        </section>
-
-        <!-- Team (как в макете) -->
-        <section class="block" id="team">
-          <div class="block__title">Our Team</div>
-
-          <div class="teamIntro">
-            <h2 class="teamIntro__title">We are passionate about creating visually stunning and functional solutions that communicate effectively.</h2>
-          </div>
-
-          <div class="teamGrid">
-            <!-- placeholders (фото заменишь на свои в /assets) -->
-            <article class="member">
-              <img class="member__photo" src="./assets/team-1.jpg" alt="" />
-              <div class="member__name">Stanislav</div>
-              <div class="member__role">Managing Director</div>
-            </article>
-            <article class="member">
-              <img class="member__photo" src="./assets/team-2.jpg" alt="" />
-              <div class="member__name">Member</div>
-              <div class="member__role">Producer</div>
-            </article>
-            <article class="member">
-              <img class="member__photo" src="./assets/team-3.jpg" alt="" />
-              <div class="member__name">Member</div>
-              <div class="member__role">DP</div>
-            </article>
-            <article class="member">
-              <img class="member__photo" src="./assets/team-4.jpg" alt="" />
-              <div class="member__name">Member</div>
-              <div class="member__role">Editor</div>
-            </article>
-            <article class="member">
-              <img class="member__photo" src="./assets/team-5.jpg" alt="" />
-              <div class="member__name">Member</div>
-              <div class="member__role">Motion</div>
-            </article>
-            <article class="member">
-              <img class="member__photo" src="./assets/team-6.jpg" alt="" />
-              <div class="member__name">Member</div>
-              <div class="member__role">Assistant</div>
-            </article>
-          </div>
-
-          <a class="block__link block__link--center" href="#team">See all members →</a>
-        </section>
-
-        <!-- CTA (как в макете) -->
-        <section class="cta" id="contact">
-          <div class="cta__bg" aria-hidden="true">
-            <video class="cta__video" src="./artlist/6410389.mp4" autoplay muted loop playsinline preload="metadata"></video>
-            <video class="cta__grain" src="./artlist/225707.mp4" autoplay muted loop playsinline preload="metadata"></video>
-            <div class="cta__overlay"></div>
-          </div>
-
-          <div class="cta__content">
-            <h2 class="cta__title">Have an idea?<br/>Let’s talk.</h2>
-            <p class="cta__text">Visually attractive design from concept to final result. We create solutions that are bold and forward-looking.</p>
-            <a class="cta__button" href="#contact">Free Consultation</a>
-          </div>
-        </section>
-
-        <!-- Footer pill (как в макете) -->
-        <footer class="footerPill">
-          <div class="footerPill__left">Projects&nbsp;&nbsp;About&nbsp;&nbsp;Team&nbsp;&nbsp;Contact</div>
-          <div class="footerPill__center">Services&nbsp;&nbsp;© 2026 INDIVIDNI</div>
-          <a class="footerPill__right" href="mailto:hello@individni.studio">hello@individni.studio</a>
-        </footer>
-
-      </div>
-    </section>
-
-  </main>
+  <!-- Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- Liquid App -->
+  <script src="./assets/js/liquid.js" defer></script>
 </body>
 </html>
