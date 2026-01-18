@@ -58,7 +58,7 @@
   });
 })();
 
-// === SHOWREEL Laptop: open/close on scroll + play/pause + sound ===
+// =========================================== SHOWREEL Laptop: open/close on scroll + play/pause + sound =================================================================
 (function () {
   const section = document.querySelector("[data-showreel]");
   if (!section) return;
