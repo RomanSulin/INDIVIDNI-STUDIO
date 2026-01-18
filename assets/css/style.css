@@ -422,22 +422,30 @@ body.menu-open .drawer{ display:block; }
 
 /* === SHOWREEL LAPTOP  ============================================================================================================ */
 
-.sr{
-  --sr-black: #05060f;
-  --sr-grey:  #1a1d2b;
-  --sr-border: rgba(255,255,255,0.12);
+.sr-demo{
+  --black: hsl(0 0% 2%);
+  --white: hsl(0 0% 98%);
+  --accent: hsl(10 90% 50%);
 
-  padding: 18px 0 28px;
+  /* demo ranges */
+  --jump: cover 15% cover 45%;
+  --spin: cover 15% cover 45%;
+  --flip: cover 15% cover 45%;
+  --open: cover 15% cover 45%;
+  --straighten: contain 25% contain 65%;
+  --zoom: contain 25% exit -20%;
+
+  padding: 18px 0 24px;
   border-bottom: 1px solid var(--border);
 }
 
-.sr__head{
+.sr-demo__head{
   padding: 18px 0 10px;
   text-align: center;
   user-select: none;
 }
 
-.sr__line1{
+.sr-demo__line1{
   font-family: "Syne", sans-serif;
   font-weight: 700;
   font-size: clamp(14px, 1.6vw, 16px);
@@ -446,7 +454,7 @@ body.menu-open .drawer{ display:block; }
   color: rgba(255,255,255,0.78);
 }
 
-.sr__line2{
+.sr-demo__line2{
   margin-top: 6px;
   font-family: "Inter", sans-serif;
   font-weight: 500;
@@ -455,15 +463,22 @@ body.menu-open .drawer{ display:block; }
   color: rgba(255,255,255,0.55);
 }
 
-/* scroll space */
-.sr__laptop{
-  height: 360vh;            /* можно уменьшить потом */
-  view-timeline: --sr-laptop;
+/* Laptop section (from demo) */
+.sr-demo .laptop *,
+.sr-demo .laptop *:before,
+.sr-demo .laptop *:after {
+  transform-style: preserve-3d;
+  box-sizing: border-box;
+}
+
+.sr-demo .laptop {
+  height: 500vh;
+  view-timeline: --laptop;
   position: relative;
   z-index: 2;
 }
 
-.sr__sticky{
+.sr-demo .laptop section {
   width: 100%;
   position: sticky;
   top: 0;
@@ -473,193 +488,248 @@ body.menu-open .drawer{ display:block; }
   height: 100vh;
 }
 
-/* preserve 3D */
-.sr .laptop *,.sr .laptop *::before,.sr .laptop *::after{
-  transform-style: preserve-3d;
-  box-sizing: border-box;
+.sr-demo .laptop .scene {
+  transform: rotateX(-24deg) rotateY(-32deg) rotateX(90deg) translate3d(0, 0, -20vmin);
 }
 
-/* timelines (как в твоей демке) */
-.sr{
-  --jump: cover 15% cover 45%;
-  --spin: cover 15% cover 45%;
-  --flip: cover 15% cover 45%;
-  --open: cover 15% cover 45%;
-  --straighten: contain 25% contain 65%;
-  --zoom: contain 25% exit -20%;
-}
-
-.sr .scene__jump{
-  animation: sr-book-jump both ease-in-out;
-  animation-timeline: --sr-laptop;
+/* Animations (from demo) */
+.sr-demo .scene__jump {
+  animation: book-jump both ease-in-out;
+  animation-timeline: --laptop;
   animation-range: var(--jump);
 }
+@keyframes book-jump { 50% { transform: translate3d(0, 0, 40vmin); } }
 
-@keyframes sr-book-jump{
-  50% { transform: translate3d(0,0,40vmin); }
-}
-
-.sr .scene__spin{
-  animation: sr-book-spin both ease-in-out;
-  animation-timeline: --sr-laptop;
+.sr-demo .scene__spin {
+  animation: book-spin both ease-in-out;
+  animation-timeline: --laptop;
   animation-range: var(--spin);
 }
-@keyframes sr-book-spin{ to{ transform: rotateZ(-360deg); } }
+@keyframes book-spin { to { transform: rotateZ(-360deg); } }
 
-.sr .scene__flip{
-  animation: sr-book-flip both ease-in-out;
-  animation-timeline: --sr-laptop;
+.sr-demo .scene__flip {
+  animation: book-flip both ease-in-out;
+  animation-timeline: --laptop;
   animation-range: var(--flip);
 }
-@keyframes sr-book-flip{
-  0%,20%{ transform: rotateX(0deg); }
-  80%,100%{ transform: rotateX(360deg); }
+@keyframes book-flip {
+  0%, 20% { transform: rotateX(0deg); }
+  80%, 100% { transform: rotateX(360deg); }
 }
 
-/* ВАЖНО: это ключевой трансформ из твоей демки */
-.sr .scene{
-  animation: sr-scale-to-view both linear;
-  animation-timeline: --sr-laptop;
+.sr-demo .scene {
+  animation: scale-to-view both linear;
+  animation-timeline: --laptop;
   animation-range: var(--straighten);
-  transform: rotateX(-24deg) rotateY(-32deg) rotateX(90deg) translate3d(0,0,-20vmin);
+  transform: translate3d(0, 0, 100vmin);
+}
+@keyframes scale-to-view {
+  0% { transform: rotateX(-24deg) rotateY(-32deg) rotateX(90deg) translate3d(0, 0, -20vmin); }
+  to { transform: rotateX(0) rotateY(0) rotateX(90deg) translate3d(0, 0, -12vmin); }
 }
 
-@keyframes sr-scale-to-view{
-  0%{
-    transform: rotateX(-24deg) rotateY(-32deg) rotateX(90deg) translate3d(0,0,-20vmin);
-  }
-  100%{
-    transform: rotateX(0) rotateY(0) rotateX(90deg) translate3d(0,0,-12vmin);
-  }
-}
-
-.sr .scene__zoom{
-  animation: sr-scene-zoom both linear;
-  animation-timeline: --sr-laptop;
+.sr-demo .scene__zoom {
+  animation: scene-zoom both linear;
+  animation-timeline: --laptop;
   animation-range: var(--zoom);
 }
-@keyframes sr-scene-zoom{
-  0% { scale: 1; }
-  100% { scale: 9; } /* почти во весь экран */
+@keyframes scene-zoom { 0% { scale: 1; } to { scale: 9; } }
+
+/* Shadow (from demo) */
+.sr-demo .scene__shadow { position: relative; }
+.sr-demo .scene__shadow:after {
+  background: hsl(0 0% 0% / 0.5);
+  content: "";
+  position: absolute;
+  inset: 5%;
+  filter: blur(10px);
+  animation: shadow-in-out both linear;
+  animation-timeline: --laptop;
+  animation-range: var(--jump);
+}
+@keyframes shadow-in-out {
+  0%, 5%, 95%, 100% { opacity: 1; }
+  35%, 65% { opacity: 0; }
 }
 
-/* model */
-.sr .jbook{
+/* Model (from demo) */
+.sr-demo .jbook {
   width: 30vmin;
-  aspect-ratio: 16/12;
+  aspect-ratio: 16 / 12;
   position: relative;
-  transform: translate3d(0,0,2vmin);
+  transform: translate3d(0, 0, 2vmin);
 }
 
-.sr .shell{ position:absolute; inset:0; }
+.sr-demo .shell { position: absolute; inset: 0; }
 
-.sr .shell--top{
+.sr-demo .shell--top {
   --depth: 2;
-  --color: var(--sr-black);
-  background: var(--sr-black);
+  --color: hsl(0 0% 80%);
+  background: var(--black);
+  transform: rotateX(0deg);
   transform-origin: 50% 0;
-  animation: sr-open-top both linear;
-  animation-timeline: --sr-laptop;
+  animation: book-open-top both linear;
+  animation-timeline: --laptop;
   animation-range: var(--open);
 }
-.sr .shell--top::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  border: 1vmin solid rgba(255,255,255,0.07);
+.sr-demo .shell--top:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1vmin solid hsl(0 0% 10%);
+}
+@keyframes book-open-top {
+  0%, 30% { transform: rotateX(0deg); }
+  40% { transform: rotateX(120deg); }
+  75%, 100% { transform: rotateX(90deg); }
 }
 
-@keyframes sr-open-top{
-  0%,30%{ transform: rotateX(0deg); }
-  40%{ transform: rotateX(120deg); }
-  75%,100%{ transform: rotateX(90deg); }
-}
-
-.sr .shell--bottom{
+.sr-demo .shell--bottom {
   --depth: 2;
-  --color: var(--sr-grey);
-  background: var(--sr-grey);
+  --color: hsl(0 0% 80%);
+  background: hsl(0 0% 50%);
   transform-origin: 50% 0;
-  animation: sr-open-bottom both linear;
-  animation-timeline: --sr-laptop;
+  animation: book-open-bottom both linear;
+  animation-timeline: --laptop;
   animation-range: var(--open);
 }
-@keyframes sr-open-bottom{
-  0%,45%{ transform: rotateX(0deg); }
-  65%{ transform: rotateX(50deg); }
-  100%{ transform: rotateX(0deg); }
+@keyframes book-open-bottom {
+  0%, 45% { transform: rotateX(0deg); }
+  65% { transform: rotateX(50deg); }
+  100% { transform: rotateX(0deg); }
 }
 
-/* keyboard svg (вставишь свой) */
-.sr .laptop-keyboard{
+/* keyboard placement (from demo) */
+.sr-demo .laptop-keyboard {
   width: 90%;
   position: absolute;
   top: 50%;
   left: 50%;
   translate: -50% -80%;
-  opacity: .92;
 }
 
-/* shadow */
-.sr .scene__shadow{ position: relative; }
-.sr .scene__shadow::after{
-  background: rgba(0,0,0,0.55);
-  content:"";
-  position:absolute;
-  inset: 5%;
-  filter: blur(10px);
-  animation: sr-shadow both linear;
-  animation-timeline: --sr-laptop;
-  animation-range: var(--jump);
+/* bottom extra (from demo) */
+.sr-demo .shell--bottom:after {
+  content: "";
+  width: 32%;
+  aspect-ratio: 4 / 3;
+  background: hsl(0 0% 40%);
+  position: absolute;
+  bottom: 5%;
+  left: 50%;
+  translate: -50% 0;
+  border-radius: 0.5vmin;
 }
-@keyframes sr-shadow{
-  0%,5%,95%,100%{ opacity: 1; }
-  35%,65%{ opacity: 0; }
-}
-
-/* screen with video (замена медведя) */
-.sr__screen{
-  position:absolute;
-  inset: 8%;
-  border-radius: 1.4vmin;
-  overflow:hidden;
-  background:#000;
-  border: 1px solid rgba(255,255,255,0.10);
-  rotate: 180deg; /* как в твоей демке у screen-bear */
+.sr-demo .shell--bottom .cuboid__side:nth-of-type(6) { --b: 0.8; }
+.sr-demo .shell--bottom .cuboid__side:nth-of-type(2):after {
+  content: "";
+  position: absolute;
+  width: 50%;
+  aspect-ratio: 1 / 3;
+  background: var(--black);
+  left: 50%;
+  top: 10%;
+  translate: -50% 0;
 }
 
-.sr__video{
-  width:100%;
-  height:100%;
-  display:block;
-  object-fit:cover;
+.sr-demo .shell--top .cuboid {
+  transform: translate3d(0, 0, calc(1vmin + 1px));
+}
+.sr-demo .shell--bottom .cuboid {
+  transform: translate3d(0, 0, calc(-1vmin - 1px));
 }
 
-/* sound button */
-.sr__sound{
-  position:absolute;
-  right: 12px;
-  bottom: 12px;
+/* Cuboid boilerplate (from demo) */
+.sr-demo .cuboid { width: 100%; height: 100%; position: relative; }
+.sr-demo .cuboid__side { background: var(--color); filter: brightness(var(--b, 1)); position: absolute; }
+.sr-demo .cuboid__side:nth-of-type(1) {
+  --b: 1.1; height: calc(var(--depth, 20) * 1vmin); width: 100%;
+  top: 0; transform: translate(0, -50%) rotateX(90deg);
+}
+.sr-demo .cuboid__side:nth-of-type(2) {
+  --b: 0.9; height: 100%; width: calc(var(--depth, 20) * 1vmin);
+  top: 50%; right: 0; transform: translate(50%, -50%) rotateY(90deg);
+}
+.sr-demo .cuboid__side:nth-of-type(3) {
+  --b: 0.5; width: 100%; height: calc(var(--depth, 20) * 1vmin);
+  bottom: 0; transform: translate(0%, 50%) rotateX(90deg);
+}
+.sr-demo .cuboid__side:nth-of-type(4) {
+  --b: 1; height: 100%; width: calc(var(--depth, 20) * 1vmin);
+  left: 0; top: 50%; transform: translate(-50%, -50%) rotateY(90deg);
+}
+.sr-demo .cuboid__side:nth-of-type(5) {
+  --b: 0.8; height: 100%; width: 100%;
+  transform: translate3d(0, 0, calc(var(--depth, 20) * 0.5vmin));
+  top: 0; left: 0;
+}
+.sr-demo .cuboid__side:nth-of-type(6) {
+  --b: 1.2; height: 100%; width: 100%;
+  transform: translate3d(0, 0, calc(var(--depth, 20) * -0.5vmin)) rotateY(180deg);
+  top: 0; left: 0;
+}
+
+/* ========== OUR VIDEO ON SCREEN (new) ========== */
+/* делаем как screen-bear, но больше */
+.sr-demo .shell--top { position: relative; }
+
+.sr-demo__screen{
+  position: absolute;
+  width: 72%;
+  aspect-ratio: 16 / 9;
+
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+
+  rotate: 180deg; /* как в демке */
+  overflow: hidden;
+  border-radius: 1.2vmin;
+  background: #000;
+
+  border: 0.35vmin solid rgba(255,255,255,0.08);
+  z-index: 2;
+}
+
+.sr-demo__video{
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+/* sound btn */
+.sr-demo__sound{
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
   width: 52px;
   height: 52px;
   border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.14);
-  background: rgba(0,0,0,0.35);
+
+  border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(0,0,0,0.40);
   backdrop-filter: blur(12px);
-  display:grid;
-  place-items:center;
-  cursor:pointer;
+
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  z-index: 3;
+
   transition: transform .2s ease, background .2s ease, border-color .2s ease;
 }
-.sr__sound:hover{
+.sr-demo__sound:hover{
   transform: scale(1.05);
-  border-color: rgba(255,255,255,0.24);
-  background: rgba(0,0,0,0.48);
+  background: rgba(0,0,0,0.55);
+  border-color: rgba(255,255,255,0.26);
 }
-.sr__sound-icon{
-  width:18px; height:18px; position:relative;
+
+.sr-demo__sound-icon{
+  width: 18px;
+  height: 18px;
+  position: relative;
 }
-.sr__sound-icon::before{
+.sr-demo__sound-icon::before{
   content:"";
   position:absolute;
   left:0; top:50%;
@@ -668,7 +738,7 @@ body.menu-open .drawer{ display:block; }
   border-radius:2px;
   background: rgba(255,255,255,0.9);
 }
-.sr__sound-icon::after{
+.sr-demo__sound-icon::after{
   content:"";
   position:absolute;
   left:7px; top:50%;
@@ -679,96 +749,14 @@ body.menu-open .drawer{ display:block; }
   border-radius:2px;
 }
 
-.sr__sound:not(.is-on){ animation: srSoundPulse 1.6s ease-in-out infinite; }
-.sr__sound.is-on{ animation:none; }
-@keyframes srSoundPulse{
+.sr-demo__sound:not(.is-on){
+  animation: srDemoPulse 1.6s ease-in-out infinite;
+}
+.sr-demo__sound.is-on{ animation:none; }
+
+@keyframes srDemoPulse{
   0%,100%{ box-shadow: 0 0 0 0 rgba(255,255,255,0.0); }
   50%{ box-shadow: 0 0 0 12px rgba(255,255,255,0.03); }
 }
 
-/* cuboid boilerplate */
-.sr .cuboid{ width:100%; height:100%; position:relative; }
-.sr .cuboid__side{ background: var(--color); filter: brightness(var(--b, 1)); position:absolute; }
-.sr .cuboid__side:nth-of-type(1){
-  --b:1.1; height: calc(var(--depth,20) * 1vmin); width:100%;
-  top:0; transform: translate(0,-50%) rotateX(90deg);
-}
-.sr .cuboid__side:nth-of-type(2){
-  --b:0.9; height:100%; width: calc(var(--depth,20) * 1vmin);
-  top:50%; right:0; transform: translate(50%,-50%) rotateY(90deg);
-}
-.sr .cuboid__side:nth-of-type(3){
-  --b:0.5; width:100%; height: calc(var(--depth,20) * 1vmin);
-  bottom:0; transform: translate(0,50%) rotateX(90deg);
-}
-.sr .cuboid__side:nth-of-type(4){
-  --b:1; height:100%; width: calc(var(--depth,20) * 1vmin);
-  left:0; top:50%; transform: translate(-50%,-50%) rotateY(90deg);
-}
-.sr .cuboid__side:nth-of-type(5){
-  --b:0.8; height:100%; width:100%;
-  transform: translate3d(0,0,calc(var(--depth,20) * 0.5vmin));
-  top:0; left:0;
-}
-.sr .cuboid__side:nth-of-type(6){
-  --b:1.2; height:100%; width:100%;
-  transform: translate3d(0,0,calc(var(--depth,20) * -0.5vmin)) rotateY(180deg);
-  top:0; left:0;
-}
-
-@media (max-width: 860px){
-  .sr__laptop{ height: 260vh; }
-  @keyframes sr-scene-zoom{ 0%{ scale:1; } 100%{ scale: 6; } }
-}
-
-/* === SHOWREEL Laptop FIX PATCH === */
-
-/* ноут крупнее (не такой “тесный”) */
-.sr .jbook{
-  width: 36vmin;            /* было 30vmin */
-}
-
-/* корпус темнее, меньше “серости” */
-.sr .shell--top{
-  background: #05060f;
-}
-.sr .shell--bottom{
-  background: #0b0f1f;
-}
-
-/* рамку крышки потоньше, чтобы экран казался больше */
-.sr .shell--top::after{
-  border-width: 0.7vmin;    /* было 1vmin */
-  border-color: rgba(255,255,255,0.06);
-}
-
-/* КРИТИЧНО: экран поверх cuboid (а не под ним) */
-.sr .shell--top{
-  position: relative;
-}
-.sr .shell--top .cuboid{
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-}
-
-/* экран поднимаем “вперёд” и ставим выше по слоям */
-.sr__screen{
-  inset: 5%;                /* было 8% → экран больше */
-  z-index: 5;
-  transform: translateZ(3vmin);
-  rotate: 0deg;             /* если видео вдруг вверх ногами — поменяй обратно на 180deg */
-}
-
-/* кнопка звука точно поверх видео */
-.sr__sound{
-  z-index: 10;
-}
-
-/* клавиатура поверх базы и нормально читается */
-.sr .laptop-keyboard{
-  z-index: 6;
-  opacity: 0.95;
-  filter: contrast(1.1) brightness(1.05);
-}
-
+/* если видео вдруг вверх ногами — поменяй на rotate:0deg */
