@@ -73,52 +73,76 @@
   </div>
 </section>
 
-    <!-- SHOWREEL (Laptop) -------------------------------------------------------------------------------------------------------------------------------->
-<section class="showreel-laptop" id="showreel">
-  <div class="container showreel-laptop__head">
-    <div class="showreel-laptop__label">
-      <div class="showreel-laptop__line1">ВИДЕОПРОДАКШН</div>
-      <div class="showreel-laptop__line2">полного цикла</div>
-    </div>
+<!-- SHOWREEL LAPTOP --------------------------------------------------------------------------------->
+<section class="sr" id="showreel">
+  <div class="container sr__head">
+    <div class="sr__line1">ВИДЕОПРОДАКШН</div>
+    <div class="sr__line2">полного цикла</div>
   </div>
 
-  <div class="showreel-laptop__scroll" data-showreel>
-    <div class="showreel-laptop__sticky">
-      <div class="laptop3d" data-laptop>
-        <!-- Lid / Screen -->
-        <div class="laptop3d__lid" data-lid>
-          <div class="laptop3d__bezel">
-            <div class="laptop3d__screen">
-              <video
-                class="laptop3d__video"
-                data-showreel-video
-                playsinline
-                webkit-playsinline
-                muted
-                preload="metadata"
-              >
-                <source src="./assets/ui/showreel.mp4" type="video/mp4" />
-              </video>
+  <div class="sr__wrap">
+    <div class="sr__laptop laptop" data-sr-laptop>
+      <section class="sr__sticky">
+        <div class="scene__zoom">
+          <div class="scene">
+            <div class="jbook">
 
-              <button
-                class="sound-toggle"
-                type="button"
-                data-sound-toggle
-                aria-label="Включить звук"
-                aria-pressed="false"
-              >
-                <span class="sound-icon" aria-hidden="true"></span>
-              </button>
+              <!-- TOP (screen) -->
+              <div class="jbook__shell shell shell--top">
+                <!-- SCREEN CONTENT (VIDEO) -->
+                <div class="sr__screen">
+                  <video
+                    class="sr__video"
+                    data-sr-video
+                    playsinline
+                    webkit-playsinline
+                    muted
+                    preload="metadata"
+                  >
+                    <source src="./assets/ui/showreel.mp4" type="video/mp4" />
+                  </video>
+
+                  <button
+                    class="sr__sound"
+                    type="button"
+                    data-sr-sound
+                    aria-label="Включить звук"
+                    aria-pressed="false"
+                  >
+                    <span class="sr__sound-icon" aria-hidden="true"></span>
+                  </button>
+                </div>
+
+                <!-- keep cuboid for thickness -->
+                <div class="cuboid">
+                  <div class="cuboid__side"></div>
+                  <div class="cuboid__side"></div>
+                  <div class="cuboid__side"></div>
+                  <div class="cuboid__side"></div>
+                  <div class="cuboid__side"></div>
+                  <div class="cuboid__side"></div>
+                </div>
+              </div>
+
+              <!-- BOTTOM (base) -->
+              <div class="jbook__shell shell shell--bottom">
+                <!-- ВАЖНО: сюда вставь СВОЙ laptop-keyboard SVG из демки БЕЗ изменений -->
+                <!-- <svg class="laptop-keyboard" ...> ... </svg> -->
+
+                <div class="cuboid">
+                  <div class="cuboid__side"></div>
+                  <div class="cuboid__side"></div>
+                  <div class="cuboid__side"></div>
+                  <div class="cuboid__side"></div>
+                  <div class="cuboid__side"></div>
+                  <div class="cuboid__side"></div>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
-
-        <!-- Base -->
-        <div class="laptop3d__base">
-          <div class="laptop3d__keyboard"></div>
-          <div class="laptop3d__trackpad"></div>
-        </div>
-      </div>
+      </section>
     </div>
   </div>
 </section>
