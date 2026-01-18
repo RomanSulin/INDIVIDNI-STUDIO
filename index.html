@@ -4,139 +4,210 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#0b0f14" />
-  <title>studio INDIVIDNI — видеопродакшн полного цикла</title>
-  <meta name="description" content="studio INDIVIDNI — видеопродакшн полного цикла: трансляции, видеосъёмка, реклама, подкасты, клипы, интервью, репортаж, монтаж, AI, графика." />
+  <title>INDIVIDNI — Edition ’26</title>
+  <meta name="description" content="studio INDIVIDNI — видеопродакшн полного цикла." />
 
-  <!-- IMPORTANT: относительный путь для GitHub Pages -->
+  <!-- GitHub Pages friendly -->
   <link rel="stylesheet" href="./styles.css?v=1" />
   <script defer src="./main.js?v=1"></script>
 
   <!-- OG -->
-  <meta property="og:title" content="studio INDIVIDNI" />
+  <meta property="og:title" content="INDIVIDNI — Edition ’26" />
   <meta property="og:description" content="Видеопродакшн полного цикла." />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="./assets/og.jpg" />
 </head>
 
-<body class="theme-winter26">
+<body class="edition theme-renaissance">
   <a class="skip" href="#main">Перейти к контенту</a>
 
-  <!-- TOP MENU (не как у рефа) -->
-  <header class="topbar" id="topbar">
-    <div class="container topbar__inner">
-      <a class="brand" href="#top" aria-label="На главную">
-        <span class="brand__mark" aria-hidden="true"></span>
-        <span class="brand__text">INDIVIDNI</span>
-      </a>
+  <!-- =========================
+       HEADER (Editions-like)
+       ========================= -->
+  <header class="header" id="top">
+    <!-- Top utility row (Edition switcher + Search + CTA) -->
+    <div class="header__top">
+      <div class="container header__topInner">
+        <a class="brand" href="#top" aria-label="INDIVIDNI Editions">
+          <span class="brand__mark" aria-hidden="true"></span>
+          <span class="brand__name">INDIVIDNI</span>
+          <span class="brand__sub">Editions</span>
+        </a>
 
-      <nav class="nav" aria-label="Навигация">
-        <a class="nav__link" href="#showreel">Шоурил</a>
-        <a class="nav__link" href="#services">Услуги</a>
-        <a class="nav__link" href="#cases">Кейсы</a>
-        <a class="nav__link" href="#process">Процесс</a>
-        <a class="nav__link" href="#partners">Партнёры</a>
-        <a class="nav__link" href="#pricing">Цены</a>
-        <a class="nav__link" href="#brief">Бриф</a>
-      </nav>
+        <div class="header__controls">
+          <!-- Editions dropdown trigger -->
+          <button class="ctl ctl--ghost" id="editionBtn" type="button" aria-expanded="false" aria-controls="editionMenu">
+            Edition ’26
+            <span class="ctl__chev" aria-hidden="true">▾</span>
+          </button>
 
-      <div class="topbar__actions">
-        <a class="btn btn--ghost" href="#brief">Связаться</a>
-        <button class="burger" id="burger" aria-label="Открыть меню" aria-expanded="false">☰</button>
+          <!-- Search trigger (overlay) -->
+          <button class="ctl ctl--ghost" id="searchBtn" type="button" aria-expanded="false" aria-controls="searchOverlay">
+            Search
+          </button>
+
+          <a class="ctl ctl--primary" href="#brief">Заполнить бриф</a>
+
+          <!-- Mobile menu trigger (black dropdown) -->
+          <button class="ctl ctl--ghost ctl--burger" id="burger" type="button" aria-expanded="false" aria-controls="mobileMenu">
+            ☰
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- MOBILE: раскрывающийся ЧЁРНЫЙ блок -->
-    <div class="mnav" id="mnav" aria-hidden="true">
-      <div class="mnav__panel" role="dialog" aria-label="Мобильное меню">
-        <div class="mnav__head">
-          <div class="mnav__title">Меню</div>
-          <button class="mnav__close" id="mnavClose" aria-label="Закрыть меню">✕</button>
-        </div>
+    <!-- Chapters row (horizontal scroll like Editions) -->
+    <nav class="header__chapters" aria-label="Оглавление">
+      <div class="container chapters">
+        <a class="chapters__link" href="#showreel">Showreel</a>
+        <a class="chapters__link" href="#services">Services</a>
+        <a class="chapters__link" href="#case-01">Case 01</a>
+        <a class="chapters__link" href="#case-02">Case 02–03</a>
+        <a class="chapters__link" href="#process">Process</a>
+        <a class="chapters__link" href="#partners">Partners</a>
+        <a class="chapters__link" href="#pricing">Pricing</a>
+        <a class="chapters__link" href="#brief">Brief</a>
+      </div>
+    </nav>
 
-        <div class="mnav__links">
-          <a class="mnav__link" href="#showreel">Шоурил</a>
-          <a class="mnav__link" href="#services">Услуги</a>
-          <a class="mnav__link" href="#cases">Кейсы</a>
-          <a class="mnav__link" href="#process">Процесс</a>
-          <a class="mnav__link" href="#partners">Партнёры</a>
-          <a class="mnav__link" href="#pricing">Цены</a>
-          <a class="mnav__link" href="#brief">Бриф / Контакты</a>
+    <!-- Editions menu (overlay dropdown) -->
+    <div class="overlay overlay--menu" id="editionMenu" aria-hidden="true">
+      <div class="overlay__panel" role="dialog" aria-label="Выбор Edition">
+        <div class="overlay__head">
+          <div class="overlay__title">Editions</div>
+          <button class="overlay__close" id="editionClose" type="button" aria-label="Закрыть">✕</button>
         </div>
-
-        <div class="mnav__cta">
-          <a class="btn btn--primary btn--wide" href="#brief">Заполнить бриф</a>
+        <div class="overlay__list">
+          <a class="overlay__item is-active" href="#top">Winter ’26 — INDIVIDNI</a>
+          <a class="overlay__item" href="#top">Summer ’26 — (скоро)</a>
+          <a class="overlay__item" href="#top">Winter ’25 — (архив)</a>
         </div>
       </div>
-      <div class="mnav__backdrop" id="mnavBackdrop" aria-hidden="true"></div>
+      <div class="overlay__backdrop" id="editionBackdrop" aria-hidden="true"></div>
+    </div>
+
+    <!-- Search overlay -->
+    <div class="overlay overlay--search" id="searchOverlay" aria-hidden="true">
+      <div class="overlay__panel" role="dialog" aria-label="Поиск по странице">
+        <div class="overlay__head">
+          <div class="overlay__title">Search</div>
+          <button class="overlay__close" id="searchClose" type="button" aria-label="Закрыть">✕</button>
+        </div>
+
+        <label class="search">
+          <span class="search__label">Введите запрос</span>
+          <input class="search__input" id="searchInput" type="search" placeholder="Например: монтаж, трансляция, клипы..." autocomplete="off" />
+        </label>
+
+        <div class="search__hint">
+          <span class="muted">Подсказка:</span> поиск подсветит совпадения в заголовках и карточках.
+        </div>
+      </div>
+      <div class="overlay__backdrop" id="searchBackdrop" aria-hidden="true"></div>
+    </div>
+
+    <!-- Mobile menu (black dropdown, separate from Editions) -->
+    <div class="overlay overlay--mobile" id="mobileMenu" aria-hidden="true">
+      <div class="overlay__panel overlay__panel--black" role="dialog" aria-label="Мобильное меню">
+        <div class="overlay__head">
+          <div class="overlay__title">Menu</div>
+          <button class="overlay__close" id="mobileClose" type="button" aria-label="Закрыть">✕</button>
+        </div>
+        <div class="overlay__list">
+          <a class="overlay__item" href="#showreel">Showreel</a>
+          <a class="overlay__item" href="#services">Services</a>
+          <a class="overlay__item" href="#case-01">Case 01</a>
+          <a class="overlay__item" href="#case-02">Case 02–03</a>
+          <a class="overlay__item" href="#process">Process</a>
+          <a class="overlay__item" href="#partners">Partners</a>
+          <a class="overlay__item" href="#pricing">Pricing</a>
+          <a class="overlay__item" href="#brief">Brief</a>
+        </div>
+        <div class="overlay__cta">
+          <a class="ctl ctl--primary ctl--wide" href="#brief">Заполнить бриф</a>
+        </div>
+      </div>
+      <div class="overlay__backdrop" id="mobileBackdrop" aria-hidden="true"></div>
     </div>
   </header>
 
+  <!-- =========================
+       MAIN
+       ========================= -->
   <main id="main">
-    <!-- HERO: как у Winter ’26 Editions — обложка + список якорей, но под тебя -->
-    <section class="hero" id="top" aria-label="Обложка">
-      <!-- арт/фон (в рефе это ключевой вайб; тут ставь своё видео/рендер) -->
+    <!-- HERO (Edition cover) -->
+    <section class="hero" aria-label="Обложка Edition">
       <div class="hero__bg" aria-hidden="true">
+        <!-- Put your Renaissance-style background (video recommended) -->
         <video class="hero__bgVideo" src="./assets/hero-bg.mp4" autoplay muted loop playsinline preload="metadata"></video>
         <img class="hero__bgFallback" src="./assets/hero-bg.jpg" alt="" />
         <div class="hero__bgOverlay"></div>
       </div>
 
-      <div class="container hero__content">
-        <div class="heroCard" data-reveal>
-          <div class="heroCard__left">
-            <div class="eyebrow">studio</div>
-            <h1 class="h1">INDIVIDNI</h1>
-            <p class="lead">
-              Видеопродакшн полного цикла: съёмка, трансляции, монтаж, графика и AI — под задачи брендов и артистов.
+      <div class="container hero__inner">
+        <div class="hero__meta" data-reveal>
+          <div class="kicker">The INDIVIDNI Edition</div>
+          <div class="editionLine">
+            <span class="editionLine__tag">Winter ’26</span>
+            <span class="editionLine__dot" aria-hidden="true">•</span>
+            <span class="editionLine__tag">Berlin / EU</span>
+          </div>
+        </div>
+
+        <div class="hero__grid">
+          <div class="hero__copy" data-reveal>
+            <h1 class="hero__title">
+              studio <span class="hero__titleStrong">INDIVIDNI</span>
+            </h1>
+            <p class="hero__lead">
+              Видеопродакшн полного цикла: трансляции, съёмка, монтаж, графика и AI.
+              Чётко по задаче. Сильный визуал. Быстрый продакшн.
             </p>
 
-            <div class="heroCard__actions">
-              <a class="btn btn--primary" href="#showreel">Смотреть шоурил</a>
-              <a class="btn btn--ghost" href="#services">Что делаем</a>
+            <div class="hero__actions">
+              <a class="ctl ctl--primary" href="#showreel">Play showreel</a>
+              <a class="ctl ctl--ghost" href="#services">Explore services</a>
             </div>
 
-            <div class="metaRow">
-              <span class="chip">Berlin / EU</span>
-              <span class="chip">Production + Post</span>
-              <span class="chip">Fast turnaround</span>
+            <!-- Editions-like “table of contents” block -->
+            <div class="toc" data-reveal>
+              <div class="toc__title">On this Edition</div>
+              <div class="toc__grid">
+                <a class="toc__item" href="#showreel"><span class="toc__num">01</span>Showreel</a>
+                <a class="toc__item" href="#services"><span class="toc__num">02</span>Services</a>
+                <a class="toc__item" href="#case-01"><span class="toc__num">03</span>Case 01</a>
+                <a class="toc__item" href="#case-02"><span class="toc__num">04</span>Case 02–03</a>
+                <a class="toc__item" href="#process"><span class="toc__num">05</span>Process</a>
+                <a class="toc__item" href="#partners"><span class="toc__num">06</span>Partners</a>
+                <a class="toc__item" href="#pricing"><span class="toc__num">07</span>Pricing</a>
+                <a class="toc__item" href="#brief"><span class="toc__num">08</span>Brief</a>
+              </div>
             </div>
           </div>
 
-          <!-- АНИМИРУЮЩАЯСЯ ОБЛОЖКА ПО ДВИЖЕНИЮ (JS будет цепляться за id) -->
-          <div class="heroCard__right">
-            <div class="cover" id="cover" data-tilt>
-              <!-- Можно заменить на видео-луп (лучше) -->
+          <!-- Interactive cover (mousemove tilt) -->
+          <div class="hero__cover" data-reveal>
+            <figure class="cover" id="cover" data-tilt aria-label="Обложка по движению">
+              <!-- Replace with your art / 3D render / looping clip -->
               <img class="cover__media" src="./assets/cover.jpg" alt="" />
               <div class="cover__sheen" aria-hidden="true"></div>
               <div class="cover__frame" aria-hidden="true"></div>
 
-              <div class="cover__label">
-                <div class="cover__labelTop">creative</div>
-                <div class="cover__labelBottom">video production</div>
-              </div>
-            </div>
+              <figcaption class="cover__caption">
+                <div class="cover__capTop">creative</div>
+                <div class="cover__capBottom">video production</div>
+              </figcaption>
+            </figure>
           </div>
         </div>
-
-        <!-- “Список разделов” как на рефе (в Winter ’26 это Sidekick/Agentic/...) -->
-        <nav class="chapters" aria-label="Разделы лендинга" data-reveal>
-          <a class="chapters__link" href="#manifest">Манифест</a>
-          <a class="chapters__link" href="#showreel">Шоурил</a>
-          <a class="chapters__link" href="#services">Услуги</a>
-          <a class="chapters__link" href="#cases">Кейсы</a>
-          <a class="chapters__link" href="#process">Процесс</a>
-          <a class="chapters__link" href="#partners">Партнёры</a>
-          <a class="chapters__link" href="#pricing">Цены</a>
-          <a class="chapters__link" href="#brief">Бриф</a>
-        </nav>
       </div>
     </section>
 
-    <!-- BLOCK 2: ВИДЕОПРОДАКШН полного цикла (анимация по скроллу) -->
-    <section class="manifest" id="manifest" aria-label="Манифест">
+    <!-- STATEMENT (big editorial title like Editions) -->
+    <section class="statement" id="statement" aria-label="Заявление">
       <div class="container">
         <div class="chapterHead" data-reveal>
-          <div class="chapterKicker">chapter 01</div>
+          <div class="chapterKicker">chapter 00</div>
           <h2 class="big split" data-split="chars">ВИДЕОПРОДАКШН</h2>
           <div class="subbig split" data-split="words">полного цикла</div>
           <p class="muted">
@@ -146,19 +217,22 @@
       </div>
     </section>
 
-    <!-- SHOWREEL: “переход в фон”, autoplay, sound toggle, stop on leave -->
-    <section class="showreel" id="showreel" aria-label="Шоурил">
+    <!-- =========================
+         CHAPTER 01 — SHOWREEL
+         Editions-like: big media + “Play video”
+         ========================= -->
+    <section class="chapter" id="showreel" aria-label="Showreel">
       <div class="container">
-        <div class="chapterHead" data-reveal>
-          <div class="chapterKicker">chapter 02</div>
-          <h2 class="h2">Шоурил</h2>
-          <p class="muted">Скролл управляет переходом: видео “раскрывается” и уходит в фон.</p>
-        </div>
+        <header class="chapterHead" data-reveal>
+          <div class="chapterKicker">chapter 01</div>
+          <h2 class="chapterTitle">Showreel</h2>
+          <p class="chapterDesc">Автовоспроизведение (muted). Звук включается кнопкой. При уходе с секции — стоп.</p>
+        </header>
       </div>
 
-      <!-- Скролл-область для трансформаций -->
+      <!-- Scroll stage (video morph into background) -->
       <div class="reelStage" id="reelStage">
-        <div class="reelSticky" id="reelSticky">
+        <div class="reelSticky">
           <div class="reelFrame" id="reelFrame">
             <video
               id="showreelVideo"
@@ -171,70 +245,74 @@
             ></video>
 
             <div class="reelUI">
-              <button class="reelBtn" id="soundToggle" aria-label="Включить звук">
+              <button class="reelBtn" id="soundToggle" type="button" aria-label="Включить звук">
                 <span class="reelBtn__icon" aria-hidden="true">🔇</span>
                 <span class="reelBtn__text">Sound</span>
               </button>
-
-              <div class="reelTag">INDIVIDNI / showreel</div>
+              <div class="reelTag">Play Video</div>
             </div>
           </div>
         </div>
       </div>
 
       <div class="container">
-        <div class="afterReel" data-reveal>
-          <div class="miniGrid">
-            <div class="miniCard">Съёмка</div>
-            <div class="miniCard">Пост</div>
-            <div class="miniCard">Графика</div>
-            <div class="miniCard">AI</div>
-          </div>
+        <div class="chapterGrid" data-reveal>
+          <article class="item">
+            <h3 class="item__title">Production</h3>
+            <p class="item__text">Съёмочные смены, свет, операторка, постановка, звук.</p>
+          </article>
+          <article class="item">
+            <h3 class="item__title">Post</h3>
+            <p class="item__text">Монтаж, ритм, саунд-дизайн, цвет, версии.</p>
+          </article>
+          <article class="item">
+            <h3 class="item__title">GFX + AI</h3>
+            <p class="item__text">Титры, пак, 2D/3D, AI-ускорения там, где это уместно.</p>
+          </article>
         </div>
+        <a class="backNav" href="#top">Back to top ↑</a>
       </div>
     </section>
 
-    <!-- SERVICES: описание + табы -->
-    <section class="services" id="services" aria-label="Услуги">
+    <!-- =========================
+         CHAPTER 02 — SERVICES (tabs later in JS/CSS)
+         ========================= -->
+    <section class="chapter" id="services" aria-label="Services">
       <div class="container">
-        <div class="chapterHead" data-reveal>
-          <div class="chapterKicker">chapter 03</div>
-          <h2 class="h2">Что мы делаем</h2>
-          <p class="muted">Табы: трансляции, видеосъёмка, реклама, подкасты, клипы, интервью, репортаж, монтаж, AI, графика.</p>
-        </div>
+        <header class="chapterHead" data-reveal>
+          <div class="chapterKicker">chapter 02</div>
+          <h2 class="chapterTitle">Services</h2>
+          <p class="chapterDesc">Трансляции, видеосъёмка, реклама, подкасты, клипы, интервью, репортаж, монтаж, AI, графика.</p>
+        </header>
 
         <div class="tabs" data-tabs data-reveal>
           <div class="tabs__list" role="tablist" aria-label="Услуги">
-            <button class="tabs__tab is-active" role="tab" aria-selected="true" data-tab="live">Трансляции</button>
-            <button class="tabs__tab" role="tab" aria-selected="false" data-tab="shoot">Видеосъёмка</button>
-            <button class="tabs__tab" role="tab" aria-selected="false" data-tab="ads">Реклама</button>
-            <button class="tabs__tab" role="tab" aria-selected="false" data-tab="pod">Подкасты</button>
-            <button class="tabs__tab" role="tab" aria-selected="false" data-tab="clips">Клипы</button>
-            <button class="tabs__tab" role="tab" aria-selected="false" data-tab="interview">Интервью</button>
-            <button class="tabs__tab" role="tab" aria-selected="false" data-tab="report">Репортаж</button>
-            <button class="tabs__tab" role="tab" aria-selected="false" data-tab="edit">Монтаж</button>
-            <button class="tabs__tab" role="tab" aria-selected="false" data-tab="ai">AI</button>
-            <button class="tabs__tab" role="tab" aria-selected="false" data-tab="gfx">Графика</button>
+            <button class="tabs__tab is-active" type="button" role="tab" aria-selected="true" data-tab="live">Трансляции</button>
+            <button class="tabs__tab" type="button" role="tab" aria-selected="false" data-tab="shoot">Видеосъёмка</button>
+            <button class="tabs__tab" type="button" role="tab" aria-selected="false" data-tab="ads">Реклама</button>
+            <button class="tabs__tab" type="button" role="tab" aria-selected="false" data-tab="pod">Подкасты</button>
+            <button class="tabs__tab" type="button" role="tab" aria-selected="false" data-tab="clips">Клипы</button>
+            <button class="tabs__tab" type="button" role="tab" aria-selected="false" data-tab="interview">Интервью</button>
+            <button class="tabs__tab" type="button" role="tab" aria-selected="false" data-tab="report">Репортаж</button>
+            <button class="tabs__tab" type="button" role="tab" aria-selected="false" data-tab="edit">Монтаж</button>
+            <button class="tabs__tab" type="button" role="tab" aria-selected="false" data-tab="ai">AI</button>
+            <button class="tabs__tab" type="button" role="tab" aria-selected="false" data-tab="gfx">Графика</button>
           </div>
 
           <div class="tabs__panes">
-            <!-- pane template -->
             <div class="pane is-active" role="tabpanel" data-pane="live">
               <div class="pane__grid">
                 <div class="pane__copy">
-                  <div class="pane__title">Трансляции</div>
+                  <h3 class="pane__title">Трансляции</h3>
                   <ul class="pane__list">
                     <li>Мультикамерная съёмка</li>
                     <li>Звук / микшер / контроль</li>
                     <li>Графика и титры в эфире</li>
                     <li>Запись + клипы после</li>
                   </ul>
-                  <div class="pane__cta">
-                    <a class="link" href="#brief">Запросить смету</a>
-                  </div>
                 </div>
                 <div class="pane__visual">
-                  <div class="visualBox">Live preview</div>
+                  <div class="visualBox">Image / Demo</div>
                 </div>
               </div>
             </div>
@@ -242,236 +320,239 @@
             <div class="pane" role="tabpanel" data-pane="shoot">
               <div class="pane__grid">
                 <div class="pane__copy">
-                  <div class="pane__title">Видеосъёмка</div>
+                  <h3 class="pane__title">Видеосъёмка</h3>
                   <ul class="pane__list">
                     <li>Имидж / промо / бренд-контент</li>
                     <li>Свет, постановка, операторка</li>
                     <li>Понятные сроки и этапы</li>
                   </ul>
-                  <div class="pane__cta"><a class="link" href="#cases">Смотреть кейсы</a></div>
                 </div>
-                <div class="pane__visual"><div class="visualBox">Shoot preview</div></div>
+                <div class="pane__visual"><div class="visualBox">Image / Demo</div></div>
               </div>
             </div>
 
             <div class="pane" role="tabpanel" data-pane="ads">
               <div class="pane__grid">
                 <div class="pane__copy">
-                  <div class="pane__title">Реклама</div>
+                  <h3 class="pane__title">Реклама</h3>
                   <ul class="pane__list">
                     <li>Сценарий + оффер + хук</li>
-                    <li>Съёмка под performance-форматы</li>
+                    <li>Съёмка под performance</li>
                     <li>Пакет адаптаций</li>
                   </ul>
-                  <div class="pane__cta"><a class="link" href="#brief">Обсудить задачу</a></div>
                 </div>
-                <div class="pane__visual"><div class="visualBox">Ads preview</div></div>
+                <div class="pane__visual"><div class="visualBox">Image / Demo</div></div>
               </div>
             </div>
 
             <div class="pane" role="tabpanel" data-pane="pod">
               <div class="pane__grid">
                 <div class="pane__copy">
-                  <div class="pane__title">Подкасты</div>
+                  <h3 class="pane__title">Подкасты</h3>
                   <ul class="pane__list">
                     <li>2–3 камеры + чистый свет</li>
                     <li>Звук в приоритете</li>
                     <li>Клипы + обложки</li>
                   </ul>
                 </div>
-                <div class="pane__visual"><div class="visualBox">Podcast preview</div></div>
+                <div class="pane__visual"><div class="visualBox">Image / Demo</div></div>
               </div>
             </div>
 
             <div class="pane" role="tabpanel" data-pane="clips">
               <div class="pane__grid">
                 <div class="pane__copy">
-                  <div class="pane__title">Клипы</div>
+                  <h3 class="pane__title">Клипы</h3>
                   <ul class="pane__list">
                     <li>Концепт и препрод</li>
                     <li>Съёмка + пост</li>
                     <li>Стиль, цвет, графика</li>
                   </ul>
                 </div>
-                <div class="pane__visual"><div class="visualBox">Music video preview</div></div>
+                <div class="pane__visual"><div class="visualBox">Image / Demo</div></div>
               </div>
             </div>
 
             <div class="pane" role="tabpanel" data-pane="interview">
               <div class="pane__grid">
                 <div class="pane__copy">
-                  <div class="pane__title">Интервью</div>
+                  <h3 class="pane__title">Интервью</h3>
                   <ul class="pane__list">
                     <li>Свет: чисто и дорого</li>
                     <li>Плотный звук</li>
                     <li>Монтаж + графика + клипы</li>
                   </ul>
                 </div>
-                <div class="pane__visual"><div class="visualBox">Interview preview</div></div>
+                <div class="pane__visual"><div class="visualBox">Image / Demo</div></div>
               </div>
             </div>
 
             <div class="pane" role="tabpanel" data-pane="report">
               <div class="pane__grid">
                 <div class="pane__copy">
-                  <div class="pane__title">Репортаж</div>
+                  <h3 class="pane__title">Репортаж</h3>
                   <ul class="pane__list">
                     <li>Быстро и надёжно</li>
                     <li>История, а не “нарезка”</li>
-                    <li>Срочные ролики “в день события”</li>
+                    <li>Срочно “в день события”</li>
                   </ul>
                 </div>
-                <div class="pane__visual"><div class="visualBox">Reportage preview</div></div>
+                <div class="pane__visual"><div class="visualBox">Image / Demo</div></div>
               </div>
             </div>
 
             <div class="pane" role="tabpanel" data-pane="edit">
               <div class="pane__grid">
                 <div class="pane__copy">
-                  <div class="pane__title">Монтаж</div>
+                  <h3 class="pane__title">Монтаж</h3>
                   <ul class="pane__list">
                     <li>Ритм, драматургия, музыка</li>
-                    <li>Версии, субтитры, адаптации</li>
+                    <li>Версии, субтитры</li>
                     <li>Цвет/звук по задаче</li>
                   </ul>
                 </div>
-                <div class="pane__visual"><div class="visualBox">Edit preview</div></div>
+                <div class="pane__visual"><div class="visualBox">Image / Demo</div></div>
               </div>
             </div>
 
             <div class="pane" role="tabpanel" data-pane="ai">
               <div class="pane__grid">
                 <div class="pane__copy">
-                  <div class="pane__title">AI</div>
+                  <h3 class="pane__title">AI</h3>
                   <ul class="pane__list">
-                    <li>Идеи, референсы, раскадровка</li>
+                    <li>Идеи и раскадровка</li>
                     <li>Ускорение поста</li>
                     <li>Эксперименты</li>
                   </ul>
                 </div>
-                <div class="pane__visual"><div class="visualBox">AI preview</div></div>
+                <div class="pane__visual"><div class="visualBox">Image / Demo</div></div>
               </div>
             </div>
 
             <div class="pane" role="tabpanel" data-pane="gfx">
               <div class="pane__grid">
                 <div class="pane__copy">
-                  <div class="pane__title">Графика</div>
+                  <h3 class="pane__title">Графика</h3>
                   <ul class="pane__list">
                     <li>Титры / пак / 2D</li>
                     <li>3D вставки (если надо)</li>
-                    <li>Обложки / key visual</li>
+                    <li>Key visual</li>
                   </ul>
                 </div>
-                <div class="pane__visual"><div class="visualBox">GFX preview</div></div>
+                <div class="pane__visual"><div class="visualBox">Image / Demo</div></div>
               </div>
             </div>
           </div>
         </div>
 
-        <a class="backNav" href="#top">Back to navigation ↑</a>
+        <a class="backNav" href="#top">Back to top ↑</a>
       </div>
     </section>
 
-    <!-- VISUAL INTERLUDE (вставка “вау” между блоками) -->
-    <section class="interlude" aria-label="Визуальная вставка">
-      <div class="interlude__bg" aria-hidden="true">
-        <video class="interlude__video" src="./assets/interlude.mp4" autoplay muted loop playsinline preload="metadata"></video>
-        <div class="interlude__overlay"></div>
-      </div>
-      <div class="container interlude__content">
-        <div class="interlude__quote" data-reveal>Сильное видео — это понятно, точно и в нужном ритме.</div>
-        <div class="interlude__meta muted" data-reveal>INDIVIDNI / creative direction</div>
-      </div>
-    </section>
-
-    <!-- CASES -->
-    <section class="cases" id="cases" aria-label="Кейсы">
+    <!-- =========================
+         CHAPTER 03 — CASE 01
+         ========================= -->
+    <section class="chapter" id="case-01" aria-label="Case 01">
       <div class="container">
-        <div class="chapterHead" data-reveal>
-          <div class="chapterKicker">chapter 04</div>
-          <h2 class="h2">Кейсы</h2>
-          <p class="muted">1 главный кейс + ещё 2 кейса.</p>
-        </div>
+        <header class="chapterHead" data-reveal>
+          <div class="chapterKicker">chapter 03</div>
+          <h2 class="chapterTitle">Case 01</h2>
+          <p class="chapterDesc">Главный кейс (лучше всего — короткий loop + результат/метрики).</p>
+        </header>
 
-        <!-- Кейс 1 -->
-        <article class="caseBig" id="case1" data-reveal>
+        <article class="caseBig" data-reveal>
           <div class="caseBig__media">
             <video class="caseBig__video" src="./assets/case1.mp4" muted playsinline loop preload="metadata"></video>
           </div>
           <div class="caseBig__copy">
-            <div class="caseTag">Кейс 01</div>
-            <div class="caseTitle">Название проекта / бренд</div>
-            <p class="muted">Задача → решение → результат. (Тут лучше цифры/сроки.)</p>
+            <div class="caseTag">Project</div>
+            <h3 class="caseTitle">Название / бренд</h3>
+            <p class="muted">Задача → решение → результат (цифры/сроки).</p>
             <div class="caseMeta">
               <span class="pill">Production</span>
               <span class="pill">Post</span>
               <span class="pill">GFX</span>
             </div>
             <div class="caseLinks">
-              <a class="link" href="#">Смотреть</a>
-              <a class="link" href="#brief">Хочу так же</a>
+              <a class="link" href="#brief">Запросить смету</a>
+              <a class="link" href="#showreel">Смотреть шоурил</a>
             </div>
           </div>
         </article>
 
-        <!-- Кейс 2 + 3 -->
-        <div class="caseGrid">
-          <article class="caseCard" data-reveal>
+        <a class="backNav" href="#top">Back to top ↑</a>
+      </div>
+    </section>
+
+    <!-- =========================
+         CHAPTER 04 — CASE 02–03
+         ========================= -->
+    <section class="chapter" id="case-02" aria-label="Case 02–03">
+      <div class="container">
+        <header class="chapterHead" data-reveal>
+          <div class="chapterKicker">chapter 04</div>
+          <h2 class="chapterTitle">Case 02–03</h2>
+          <p class="chapterDesc">Два дополнительных кейса.</p>
+        </header>
+
+        <div class="caseGrid" data-reveal>
+          <article class="caseCard">
             <div class="caseCard__media">
               <video class="caseCard__video" src="./assets/case2.mp4" muted playsinline loop preload="metadata"></video>
             </div>
             <div class="caseCard__copy">
-              <div class="caseTag">Кейс 02</div>
-              <div class="caseTitle">Проект / формат</div>
-              <p class="muted small">1–2 строки. Что сделали и зачем.</p>
+              <div class="caseTag">Case 02</div>
+              <h3 class="caseTitle">Проект / формат</h3>
+              <p class="muted small">1–2 строки: что сделали и зачем.</p>
             </div>
           </article>
 
-          <article class="caseCard" data-reveal>
+          <article class="caseCard">
             <div class="caseCard__media">
               <video class="caseCard__video" src="./assets/case3.mp4" muted playsinline loop preload="metadata"></video>
             </div>
             <div class="caseCard__copy">
-              <div class="caseTag">Кейс 03</div>
-              <div class="caseTitle">Проект / формат</div>
-              <p class="muted small">1–2 строки. Что сделали и зачем.</p>
+              <div class="caseTag">Case 03</div>
+              <h3 class="caseTitle">Проект / формат</h3>
+              <p class="muted small">1–2 строки: что сделали и зачем.</p>
             </div>
           </article>
         </div>
 
-        <a class="backNav" href="#top">Back to navigation ↑</a>
+        <a class="backNav" href="#top">Back to top ↑</a>
       </div>
     </section>
 
-    <!-- PROCESS -->
-    <section class="process" id="process" aria-label="Процесс">
+    <!-- =========================
+         CHAPTER 05 — PROCESS
+         ========================= -->
+    <section class="chapter" id="process" aria-label="Process">
       <div class="container">
-        <div class="chapterHead" data-reveal>
+        <header class="chapterHead" data-reveal>
           <div class="chapterKicker">chapter 05</div>
-          <h2 class="h2">Как работаем</h2>
-          <p class="muted">Прозрачно. По этапам. Без сюрпризов.</p>
-        </div>
+          <h2 class="chapterTitle">Process</h2>
+          <p class="chapterDesc">Прозрачно. По этапам. Без сюрпризов.</p>
+        </header>
 
         <div class="steps" data-reveal>
           <div class="step">
             <div class="step__num">01</div>
             <div class="step__body">
               <div class="step__title">Бриф и цель</div>
-              <div class="muted">Что сообщаем, кому, где живёт видео, KPI.</div>
+              <div class="muted">KPI, аудитория, площадки, сроки.</div>
             </div>
           </div>
           <div class="step">
             <div class="step__num">02</div>
             <div class="step__body">
               <div class="step__title">Концепт и план</div>
-              <div class="muted">Структура/сценарий, референсы, план съёмки.</div>
+              <div class="muted">Структура/сценарий, референсы, прод-план.</div>
             </div>
           </div>
           <div class="step">
             <div class="step__num">03</div>
             <div class="step__body">
-              <div class="step__title">Съёмка / Трансляция</div>
+              <div class="step__title">Съёмка / эфир</div>
               <div class="muted">Камера, свет, звук, контроль качества.</div>
             </div>
           </div>
@@ -484,18 +565,20 @@
           </div>
         </div>
 
-        <a class="backNav" href="#top">Back to navigation ↑</a>
+        <a class="backNav" href="#top">Back to top ↑</a>
       </div>
     </section>
 
-    <!-- PARTNERS -->
-    <section class="partners" id="partners" aria-label="Партнёры">
+    <!-- =========================
+         CHAPTER 06 — PARTNERS
+         ========================= -->
+    <section class="chapter" id="partners" aria-label="Partners">
       <div class="container">
-        <div class="chapterHead" data-reveal>
+        <header class="chapterHead" data-reveal>
           <div class="chapterKicker">chapter 06</div>
-          <h2 class="h2">Партнёры</h2>
-          <p class="muted">Только реальные бренды/площадки.</p>
-        </div>
+          <h2 class="chapterTitle">Partners</h2>
+          <p class="chapterDesc">Только реальные бренды/площадки.</p>
+        </header>
 
         <div class="logos" data-reveal>
           <div class="logoTile">Partner</div>
@@ -506,18 +589,20 @@
           <div class="logoTile">Partner</div>
         </div>
 
-        <a class="backNav" href="#top">Back to navigation ↑</a>
+        <a class="backNav" href="#top">Back to top ↑</a>
       </div>
     </section>
 
-    <!-- PRICING -->
-    <section class="pricing" id="pricing" aria-label="Цены">
+    <!-- =========================
+         CHAPTER 07 — PRICING
+         ========================= -->
+    <section class="chapter" id="pricing" aria-label="Pricing">
       <div class="container">
-        <div class="chapterHead" data-reveal>
+        <header class="chapterHead" data-reveal>
           <div class="chapterKicker">chapter 07</div>
-          <h2 class="h2">Ценообразование</h2>
-          <p class="muted">3 пакета + кастом. (Цифры вставишь позже.)</p>
-        </div>
+          <h2 class="chapterTitle">Pricing</h2>
+          <p class="chapterDesc">3 пакета + кастом.</p>
+        </header>
 
         <div class="pricingGrid" data-reveal>
           <article class="priceCard">
@@ -525,13 +610,13 @@
               <div class="priceName">Start</div>
               <div class="priceNum">€ —</div>
             </div>
-            <p class="muted">Быстрый ролик под задачу.</p>
+            <p class="muted">Быстрое видео под задачу.</p>
             <ul class="bullets">
               <li>1 съёмочный блок</li>
               <li>Монтаж + базовая графика</li>
               <li>1–2 адаптации</li>
             </ul>
-            <a class="btn btn--ghost btn--wide" href="#brief">Запросить</a>
+            <a class="ctl ctl--ghost ctl--wide" href="#brief">Запросить</a>
           </article>
 
           <article class="priceCard priceCard--hot">
@@ -547,7 +632,7 @@
               <li>Монтаж + цвет + графика</li>
               <li>Пакет адаптаций</li>
             </ul>
-            <a class="btn btn--primary btn--wide" href="#brief">Заполнить бриф</a>
+            <a class="ctl ctl--primary ctl--wide" href="#brief">Заполнить бриф</a>
           </article>
 
           <article class="priceCard">
@@ -555,28 +640,30 @@
               <div class="priceName">Custom</div>
               <div class="priceNum">€ —</div>
             </div>
-            <p class="muted">Сложные проекты / серия роликов.</p>
+            <p class="muted">Серия роликов / сложный проект.</p>
             <ul class="bullets">
               <li>Команда под проект</li>
               <li>Препрод + прод</li>
-              <li>Графика/3D/AI по задаче</li>
+              <li>GFX/3D/AI по задаче</li>
             </ul>
-            <a class="btn btn--ghost btn--wide" href="#brief">Обсудить</a>
+            <a class="ctl ctl--ghost ctl--wide" href="#brief">Обсудить</a>
           </article>
         </div>
 
-        <a class="backNav" href="#top">Back to navigation ↑</a>
+        <a class="backNav" href="#top">Back to top ↑</a>
       </div>
     </section>
 
-    <!-- BRIEF / CONTACT -->
-    <section class="brief" id="brief" aria-label="Бриф и контакты">
+    <!-- =========================
+         CHAPTER 08 — BRIEF
+         ========================= -->
+    <section class="chapter" id="brief" aria-label="Brief">
       <div class="container">
-        <div class="chapterHead" data-reveal>
+        <header class="chapterHead" data-reveal>
           <div class="chapterKicker">chapter 08</div>
-          <h2 class="h2">Бриф и связь</h2>
-          <p class="muted">GitHub Pages без бэка: форма — через Formspree/Google Forms.</p>
-        </div>
+          <h2 class="chapterTitle">Brief</h2>
+          <p class="chapterDesc">Форма для связи (на GitHub Pages обычно через Formspree/Google Forms).</p>
+        </header>
 
         <div class="contactGrid">
           <form class="form" data-reveal action="https://formspree.io/f/YOUR_ID" method="POST">
@@ -593,11 +680,11 @@
 
             <label class="field">
               <span class="field__label">Задача</span>
-              <textarea class="field__input field__input--ta" name="message" required placeholder="Что нужно снять/смонтировать, сроки, формат, референсы"></textarea>
+              <textarea class="field__input field__input--ta" name="message" required placeholder="Что нужно сделать, сроки, формат, референсы"></textarea>
             </label>
 
-            <button class="btn btn--primary" type="submit">Отправить</button>
-            <div class="muted small">Поменяй `YOUR_ID` на свой Formspree ID.</div>
+            <button class="ctl ctl--primary" type="submit">Отправить</button>
+            <div class="muted small">Поменяй YOUR_ID на свой Formspree ID.</div>
           </form>
 
           <aside class="contacts" data-reveal>
@@ -614,25 +701,30 @@
             <div class="contactsCard">
               <div class="contactsTitle">Быстрый старт</div>
               <div class="muted">1) бриф → 2) созвон 15 мин → 3) план и смета</div>
-              <a class="btn btn--ghost btn--wide" href="#showreel">Сначала шоурил</a>
+              <a class="ctl ctl--ghost ctl--wide" href="#showreel">Сначала showreel</a>
             </div>
           </aside>
         </div>
 
-        <a class="backNav" href="#top">Back to navigation ↑</a>
+        <a class="backNav" href="#top">Back to top ↑</a>
       </div>
     </section>
 
-    <footer class="footer">
+    <!-- FOOTER (Editions-like minimal legal row) -->
+    <footer class="footer" aria-label="Footer">
       <div class="container footer__inner">
-        <div class="muted small">© <span id="year"></span> studio INDIVIDNI</div>
-        <a class="muted small" href="#top">Наверх ↑</a>
+        <div class="muted small">© <span id="year"></span> INDIVIDNI</div>
+        <div class="footer__links">
+          <a class="muted small" href="#top">Top</a>
+          <a class="muted small" href="#">Terms</a>
+          <a class="muted small" href="#">Privacy</a>
+        </div>
       </div>
     </footer>
 
     <noscript>
-      <div class="noscript">
-        Для анимаций и табов нужен JavaScript.
+      <div class="noscript container">
+        Для анимаций, поиска и табов нужен JavaScript.
       </div>
     </noscript>
   </main>
