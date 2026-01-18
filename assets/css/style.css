@@ -720,3 +720,55 @@ body.menu-open .drawer{ display:block; }
   .sr__laptop{ height: 260vh; }
   @keyframes sr-scene-zoom{ 0%{ scale:1; } 100%{ scale: 6; } }
 }
+
+/* === SHOWREEL Laptop FIX PATCH === */
+
+/* ноут крупнее (не такой “тесный”) */
+.sr .jbook{
+  width: 36vmin;            /* было 30vmin */
+}
+
+/* корпус темнее, меньше “серости” */
+.sr .shell--top{
+  background: #05060f;
+}
+.sr .shell--bottom{
+  background: #0b0f1f;
+}
+
+/* рамку крышки потоньше, чтобы экран казался больше */
+.sr .shell--top::after{
+  border-width: 0.7vmin;    /* было 1vmin */
+  border-color: rgba(255,255,255,0.06);
+}
+
+/* КРИТИЧНО: экран поверх cuboid (а не под ним) */
+.sr .shell--top{
+  position: relative;
+}
+.sr .shell--top .cuboid{
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+/* экран поднимаем “вперёд” и ставим выше по слоям */
+.sr__screen{
+  inset: 5%;                /* было 8% → экран больше */
+  z-index: 5;
+  transform: translateZ(3vmin);
+  rotate: 0deg;             /* если видео вдруг вверх ногами — поменяй обратно на 180deg */
+}
+
+/* кнопка звука точно поверх видео */
+.sr__sound{
+  z-index: 10;
+}
+
+/* клавиатура поверх базы и нормально читается */
+.sr .laptop-keyboard{
+  z-index: 6;
+  opacity: 0.95;
+  filter: contrast(1.1) brightness(1.05);
+}
+
