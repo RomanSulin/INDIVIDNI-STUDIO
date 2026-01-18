@@ -423,6 +423,10 @@ body.menu-open .drawer{ display:block; }
 /* === SHOWREEL LAPTOP  ============================================================================================================ */
 
 .sr{
+  --sr-black: #05060f;
+  --sr-grey:  #1a1d2b;
+  --sr-border: rgba(255,255,255,0.12);
+
   padding: 18px 0 28px;
   border-bottom: 1px solid var(--border);
 }
@@ -451,10 +455,10 @@ body.menu-open .drawer{ display:block; }
   color: rgba(255,255,255,0.55);
 }
 
-/* scroll space for animation */
+/* scroll space */
 .sr__laptop{
-  height: 260vh;           /* длина сцены */
-  view-timeline: --laptop; /* твой подход */
+  height: 360vh;            /* можно уменьшить потом */
+  view-timeline: --sr-laptop;
   position: relative;
   z-index: 2;
 }
@@ -469,100 +473,250 @@ body.menu-open .drawer{ display:block; }
   height: 100vh;
 }
 
-/* 3D preserve */
-.sr .laptop *,
-.sr .laptop *::before,
-.sr .laptop *::after{
+/* preserve 3D */
+.sr .laptop *,.sr .laptop *::before,.sr .laptop *::after{
   transform-style: preserve-3d;
   box-sizing: border-box;
 }
 
-/* Scene baseline */
+/* timelines (как в твоей демке) */
+.sr{
+  --jump: cover 15% cover 45%;
+  --spin: cover 15% cover 45%;
+  --flip: cover 15% cover 45%;
+  --open: cover 15% cover 45%;
+  --straighten: contain 25% contain 65%;
+  --zoom: contain 25% exit -20%;
+}
+
+.sr .scene__jump{
+  animation: sr-book-jump both ease-in-out;
+  animation-timeline: --sr-laptop;
+  animation-range: var(--jump);
+}
+
+@keyframes sr-book-jump{
+  50% { transform: translate3d(0,0,40vmin); }
+}
+
+.sr .scene__spin{
+  animation: sr-book-spin both ease-in-out;
+  animation-timeline: --sr-laptop;
+  animation-range: var(--spin);
+}
+@keyframes sr-book-spin{ to{ transform: rotateZ(-360deg); } }
+
+.sr .scene__flip{
+  animation: sr-book-flip both ease-in-out;
+  animation-timeline: --sr-laptop;
+  animation-range: var(--flip);
+}
+@keyframes sr-book-flip{
+  0%,20%{ transform: rotateX(0deg); }
+  80%,100%{ transform: rotateX(360deg); }
+}
+
+/* ВАЖНО: это ключевой трансформ из твоей демки */
 .sr .scene{
-  transform: rotateX(-24deg) rotateY(-32deg) translate3d(0, 0, 0);
-  animation: sr-straighten both linear;
-  animation-timeline: --laptop;
-  animation-range: contain 10% contain 60%;
+  animation: sr-scale-to-view both linear;
+  animation-timeline: --sr-laptop;
+  animation-range: var(--straighten);
+  transform: rotateX(-24deg) rotateY(-32deg) rotateX(90deg) translate3d(0,0,-20vmin);
 }
 
-@keyframes sr-straighten{
-  from{ transform: rotateX(-24deg) rotateY(-32deg) translate3d(0,0,0); }
-  to  { transform: rotateX(0deg)   rotateY(0deg)   translate3d(0,0,0); }
+@keyframes sr-scale-to-view{
+  0%{
+    transform: rotateX(-24deg) rotateY(-32deg) rotateX(90deg) translate3d(0,0,-20vmin);
+  }
+  100%{
+    transform: rotateX(0) rotateY(0) rotateX(90deg) translate3d(0,0,-12vmin);
+  }
 }
 
-/* Zoom (растёт почти на весь экран, но с отступом) */
 .sr .scene__zoom{
-  animation: sr-zoom both linear;
-  animation-timeline: --laptop;
-  animation-range: contain 10% contain 60%;
+  animation: sr-scene-zoom both linear;
+  animation-timeline: --sr-laptop;
+  animation-range: var(--zoom);
+}
+@keyframes sr-scene-zoom{
+  0% { scale: 1; }
+  100% { scale: 9; } /* почти во весь экран */
 }
 
-@keyframes sr-zoom{
-  from{ scale: 1; }
-  to  { scale: 7.2; } /* "почти полный экран, но не в край" */
-}
-
-/* Laptop model */
+/* model */
 .sr .jbook{
   width: 30vmin;
-  aspect-ratio: 16 / 12;
+  aspect-ratio: 16/12;
   position: relative;
-  transform: translate3d(0, 0, 2vmin);
+  transform: translate3d(0,0,2vmin);
 }
 
-/* Shells */
-.sr .shell{
-  position: absolute;
-  inset: 0;
-}
+.sr .shell{ position:absolute; inset:0; }
 
 .sr .shell--top{
   --depth: 2;
-  --color: hsl(0 0% 12%);
-  background: #05060f;
+  --color: var(--sr-black);
+  background: var(--sr-black);
   transform-origin: 50% 0;
   animation: sr-open-top both linear;
-  animation-timeline: --laptop;
-  animation-range: contain 15% contain 55%;
+  animation-timeline: --sr-laptop;
+  animation-range: var(--open);
 }
-
 .sr .shell--top::after{
   content:"";
   position:absolute;
   inset:0;
-  border: 1vmin solid rgba(255,255,255,0.06);
+  border: 1vmin solid rgba(255,255,255,0.07);
 }
 
 @keyframes sr-open-top{
-  0%, 25% { transform: rotateX(0deg); }
-  60%,100%{ transform: rotateX(92deg); } /* “открыт” */
+  0%,30%{ transform: rotateX(0deg); }
+  40%{ transform: rotateX(120deg); }
+  75%,100%{ transform: rotateX(90deg); }
 }
 
 .sr .shell--bottom{
   --depth: 2;
-  --color: hsl(0 0% 38%);
-  background: hsl(0 0% 20%);
+  --color: var(--sr-grey);
+  background: var(--sr-grey);
   transform-origin: 50% 0;
+  animation: sr-open-bottom both linear;
+  animation-timeline: --sr-laptop;
+  animation-range: var(--open);
+}
+@keyframes sr-open-bottom{
+  0%,45%{ transform: rotateX(0deg); }
+  65%{ transform: rotateX(50deg); }
+  100%{ transform: rotateX(0deg); }
 }
 
-/* Keyboard svg placement (как в демке) */
+/* keyboard svg (вставишь свой) */
 .sr .laptop-keyboard{
   width: 90%;
   position: absolute;
   top: 50%;
   left: 50%;
   translate: -50% -80%;
-  opacity: 0.92;
-  filter: contrast(1.05) brightness(0.95);
+  opacity: .92;
 }
 
-/* Put cuboids in correct Z */
-.sr .shell--top .cuboid{ transform: translate3d(0,0,calc(1vmin + 1px)); }
-.sr .shell--bottom .cuboid{ transform: translate3d(0,0,calc(-1vmin - 1px)); }
+/* shadow */
+.sr .scene__shadow{ position: relative; }
+.sr .scene__shadow::after{
+  background: rgba(0,0,0,0.55);
+  content:"";
+  position:absolute;
+  inset: 5%;
+  filter: blur(10px);
+  animation: sr-shadow both linear;
+  animation-timeline: --sr-laptop;
+  animation-range: var(--jump);
+}
+@keyframes sr-shadow{
+  0%,5%,95%,100%{ opacity: 1; }
+  35%,65%{ opacity: 0; }
+}
 
-/* Screen (video) — вместо медведя */
+/* screen with video (замена медведя) */
 .sr__screen{
-  position: absolute;
+  position:absolute;
   inset: 8%;
-  border-radius: 1.4vm
+  border-radius: 1.4vmin;
+  overflow:hidden;
+  background:#000;
+  border: 1px solid rgba(255,255,255,0.10);
+  rotate: 180deg; /* как в твоей демке у screen-bear */
+}
 
+.sr__video{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+}
+
+/* sound button */
+.sr__sound{
+  position:absolute;
+  right: 12px;
+  bottom: 12px;
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(12px);
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  transition: transform .2s ease, background .2s ease, border-color .2s ease;
+}
+.sr__sound:hover{
+  transform: scale(1.05);
+  border-color: rgba(255,255,255,0.24);
+  background: rgba(0,0,0,0.48);
+}
+.sr__sound-icon{
+  width:18px; height:18px; position:relative;
+}
+.sr__sound-icon::before{
+  content:"";
+  position:absolute;
+  left:0; top:50%;
+  width:7px; height:10px;
+  transform: translateY(-50%);
+  border-radius:2px;
+  background: rgba(255,255,255,0.9);
+}
+.sr__sound-icon::after{
+  content:"";
+  position:absolute;
+  left:7px; top:50%;
+  width:9px; height:9px;
+  transform: translateY(-50%) rotate(45deg);
+  border-right:2px solid rgba(255,255,255,0.9);
+  border-top:2px solid rgba(255,255,255,0.9);
+  border-radius:2px;
+}
+
+.sr__sound:not(.is-on){ animation: srSoundPulse 1.6s ease-in-out infinite; }
+.sr__sound.is-on{ animation:none; }
+@keyframes srSoundPulse{
+  0%,100%{ box-shadow: 0 0 0 0 rgba(255,255,255,0.0); }
+  50%{ box-shadow: 0 0 0 12px rgba(255,255,255,0.03); }
+}
+
+/* cuboid boilerplate */
+.sr .cuboid{ width:100%; height:100%; position:relative; }
+.sr .cuboid__side{ background: var(--color); filter: brightness(var(--b, 1)); position:absolute; }
+.sr .cuboid__side:nth-of-type(1){
+  --b:1.1; height: calc(var(--depth,20) * 1vmin); width:100%;
+  top:0; transform: translate(0,-50%) rotateX(90deg);
+}
+.sr .cuboid__side:nth-of-type(2){
+  --b:0.9; height:100%; width: calc(var(--depth,20) * 1vmin);
+  top:50%; right:0; transform: translate(50%,-50%) rotateY(90deg);
+}
+.sr .cuboid__side:nth-of-type(3){
+  --b:0.5; width:100%; height: calc(var(--depth,20) * 1vmin);
+  bottom:0; transform: translate(0,50%) rotateX(90deg);
+}
+.sr .cuboid__side:nth-of-type(4){
+  --b:1; height:100%; width: calc(var(--depth,20) * 1vmin);
+  left:0; top:50%; transform: translate(-50%,-50%) rotateY(90deg);
+}
+.sr .cuboid__side:nth-of-type(5){
+  --b:0.8; height:100%; width:100%;
+  transform: translate3d(0,0,calc(var(--depth,20) * 0.5vmin));
+  top:0; left:0;
+}
+.sr .cuboid__side:nth-of-type(6){
+  --b:1.2; height:100%; width:100%;
+  transform: translate3d(0,0,calc(var(--depth,20) * -0.5vmin)) rotateY(180deg);
+  top:0; left:0;
+}
+
+@media (max-width: 860px){
+  .sr__laptop{ height: 260vh; }
+  @keyframes sr-scene-zoom{ 0%{ scale:1; } 100%{ scale: 6; } }
+}
