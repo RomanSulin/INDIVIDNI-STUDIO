@@ -1,44 +1,367 @@
 <!doctype html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>INDIVIDNI — Liquid</title>
+  <title>INDIVIDNI — studio</title>
 
-  <!-- Fonts (как у тебя) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=Bebas+Neue&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="./assets/css/style.css" />
-  <link rel="stylesheet" href="/assets/css/liquid.css">
 </head>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="/assets/js/liquid.js" defer></script>
-
 <body>
-  <!-- LIQUID HERO -->
-  <section class="liquid-hero" aria-label="INDIVIDNI liquid hero">
-    <div id="liquid-bg" aria-hidden="true"></div>
+  <!-- HEADER -->
+  <header class="header" id="top">
+    <div class="header-shell">
+      <div class="header-row header-row--top">
+        <a class="brand" href="#top" aria-label="INDIVIDNI">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span class="brand-name">INDIVIDNI</span>
+        </a>
 
-    <div class="liquid-title">
-      <div class="liquid-sub">studio</div>
-      <div class="liquid-main">INDIVIDNI</div>
+        <nav class="nav nav--top" aria-label="Навигация">
+          <a class="nav-link" href="#projects">Projects</a>
+          <a class="nav-link" href="#about">About</a>
+          <a class="nav-link" href="#team">Team</a>
+          <a class="nav-link" href="#contact">Contact</a>
+        </nav>
+
+        <button class="burger" type="button" aria-label="Menu" data-burger>
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+
+      <div class="header-row header-row--sub">
+        <a class="nav-link nav-link--sub" href="#services">
+          <span class="nav-sub-icon" aria-hidden="true">↳</span> Services
+        </a>
+
+        <div class="header-actions">
+          <a class="btn btn--ghost" href="#services">Services</a>
+          <a class="btn btn--primary" href="#contact">Get in touch</a>
+        </div>
+      </div>
     </div>
-  </section>
 
-  <!-- Ниже просто заглушки, чтобы проверить скролл (можешь удалить) -->
-  <section class="after-hero">
-    <div class="container">
-      <h2>Next section</h2>
-      <p>Scroll works. Liquid stays only in hero.</p>
+    <!-- mobile drawer -->
+    <div class="drawer" data-drawer>
+      <a class="drawer-link" href="#projects">Projects</a>
+      <a class="drawer-link" href="#about">About</a>
+      <a class="drawer-link" href="#team">Team</a>
+      <a class="drawer-link" href="#contact">Contact</a>
+      <a class="drawer-link" href="#services">Services</a>
+      <a class="drawer-link" href="./wall.html">Wall prototype</a>
     </div>
-  </section>
+  </header>
 
-  <!-- Three.js -->
+  <main class="page">
+
+    <!-- HERO (LIQUID) -->
+    <section class="liquid-hero" id="about" aria-label="INDIVIDNI hero">
+      <div id="liquid-bg" aria-hidden="true"></div>
+
+      <div class="hero-inner container">
+        <div class="hero-title-wrap">
+          <div class="liquid-title">
+            <div class="liquid-sub">studio</div>
+            <div class="liquid-main">INDIVIDNI</div>
+          </div>
+        </div>
+
+        <!-- “плашки” как на макете -->
+        <div class="hero-slats" aria-hidden="true">
+          <span class="slat"></span><span class="slat"></span><span class="slat"></span>
+          <span class="slat"></span><span class="slat"></span><span class="slat"></span>
+          <span class="slat"></span><span class="slat"></span><span class="slat"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTRO -->
+    <section class="intro">
+      <div class="container intro-grid">
+        <p class="intro-text">
+          We are passionate about creating visually stunning and functional solutions that communicate effectively.
+          We have a keen eye for detail and a deep understanding of design principles to deliver projects that exceed expectations.
+        </p>
+
+        <div class="intro-clients" aria-label="Clients">
+          <div class="client">◎ KRATE</div>
+          <div class="client">◎ Kalo</div>
+          <div class="client">◎ Massui</div>
+          <div class="client">◎ Kinnua</div>
+          <div class="client">◎ Altall</div>
+          <div class="client">◎ TANO</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICES (accordion) -->
+    <section class="services" id="services">
+      <div class="container">
+        <div class="section-kicker">↳ Our Services</div>
+
+        <div class="accordion" data-accordion>
+          <div class="acc-item" data-acc-item data-open>
+            <button class="acc-btn" type="button" aria-expanded="true">
+              <span class="acc-left">
+                <span class="acc-thumb">
+                  <img alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='56'%3E%3Crect width='100%25' height='100%25' rx='14' fill='%2312141f'/%3E%3C/svg%3E">
+                </span>
+                <span class="acc-title">Web &amp; Mobile Design</span>
+              </span>
+              <span class="acc-plus" aria-hidden="true">+</span>
+            </button>
+            <div class="acc-panel" data-acc-panel style="height:auto">
+              <div class="acc-panel-inner">
+                UI/UX, responsive layouts, design systems, prototyping.
+              </div>
+            </div>
+          </div>
+
+          <div class="acc-item" data-acc-item>
+            <button class="acc-btn" type="button" aria-expanded="false">
+              <span class="acc-left">
+                <span class="acc-thumb">
+                  <img alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='56'%3E%3Crect width='100%25' height='100%25' rx='14' fill='%2312141f'/%3E%3C/svg%3E">
+                </span>
+                <span class="acc-title">Brand Identity</span>
+              </span>
+              <span class="acc-plus" aria-hidden="true">+</span>
+            </button>
+            <div class="acc-panel" data-acc-panel>
+              <div class="acc-panel-inner">
+                Naming, logo, guidelines, typography, tone of voice.
+              </div>
+            </div>
+          </div>
+
+          <div class="acc-item" data-acc-item>
+            <button class="acc-btn" type="button" aria-expanded="false">
+              <span class="acc-left">
+                <span class="acc-thumb">
+                  <img alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='56'%3E%3Crect width='100%25' height='100%25' rx='14' fill='%2312141f'/%3E%3C/svg%3E">
+                </span>
+                <span class="acc-title">App Development</span>
+              </span>
+              <span class="acc-plus" aria-hidden="true">+</span>
+            </button>
+            <div class="acc-panel" data-acc-panel>
+              <div class="acc-panel-inner">
+                Landing to product — frontend + integrations.
+              </div>
+            </div>
+          </div>
+
+          <div class="acc-item" data-acc-item>
+            <button class="acc-btn" type="button" aria-expanded="false">
+              <span class="acc-left">
+                <span class="acc-thumb">
+                  <img alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='56'%3E%3Crect width='100%25' height='100%25' rx='14' fill='%2312141f'/%3E%3C/svg%3E">
+                </span>
+                <span class="acc-title">Consultancy</span>
+              </span>
+              <span class="acc-plus" aria-hidden="true">+</span>
+            </button>
+            <div class="acc-panel" data-acc-panel>
+              <div class="acc-panel-inner">
+                Audits, creative direction, design strategy.
+              </div>
+            </div>
+          </div>
+
+          <div class="acc-item" data-acc-item>
+            <button class="acc-btn" type="button" aria-expanded="false">
+              <span class="acc-left">
+                <span class="acc-thumb">
+                  <img alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='56'%3E%3Crect width='100%25' height='100%25' rx='14' fill='%2312141f'/%3E%3C/svg%3E">
+                </span>
+                <span class="acc-title">Packaging</span>
+              </span>
+              <span class="acc-plus" aria-hidden="true">+</span>
+            </button>
+            <div class="acc-panel" data-acc-panel>
+              <div class="acc-panel-inner">
+                Labeling, print-ready files, mockups.
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- WORKS -->
+    <section class="works" id="projects">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-kicker">↳ Recent Work</div>
+          <a class="section-link" href="#all">View all work <span aria-hidden="true">↗</span></a>
+        </div>
+
+        <div class="works-grid">
+          <a class="work-card" href="#">
+            <div class="work-media">
+              <img alt="Galaxia Branding" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='900'%3E%3Crect width='100%25' height='100%25' rx='40' fill='%2312141f'/%3E%3C/svg%3E">
+            </div>
+            <div class="work-meta">Galaxia Branding</div>
+          </a>
+
+          <a class="work-card" href="#">
+            <div class="work-media">
+              <img alt="John Mayer NYC" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='900'%3E%3Crect width='100%25' height='100%25' rx='40' fill='%2312141f'/%3E%3C/svg%3E">
+            </div>
+            <div class="work-meta">John Mayer NYC</div>
+          </a>
+
+          <a class="work-card" href="#">
+            <div class="work-media">
+              <img alt="Nayzak Patterns" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='900'%3E%3Crect width='100%25' height='100%25' rx='40' fill='%2312141f'/%3E%3C/svg%3E">
+            </div>
+            <div class="work-meta">Nayzak Patterns</div>
+          </a>
+
+          <a class="work-card" href="#">
+            <div class="work-media">
+              <img alt="Crave Chips" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='900'%3E%3Crect width='100%25' height='100%25' rx='40' fill='%2312141f'/%3E%3C/svg%3E">
+            </div>
+            <div class="work-meta">Crave Chips</div>
+          </a>
+        </div>
+
+        <div class="works-bottom">
+          <a class="btn btn--ghost" href="#all">View all work <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- TEAM -->
+    <section class="team" id="team">
+      <div class="container">
+        <div class="section-kicker">↳ Our Team</div>
+
+        <div class="team-grid">
+          <div class="team-text">
+            <h2 class="team-title">
+              We are passionate about creating visually stunning and functional solutions that communicate effectively.
+            </h2>
+          </div>
+
+          <div class="team-cards">
+            <div class="member member--lg">
+              <div class="member-photo">
+                <img alt="Member" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='650'%3E%3Crect width='100%25' height='100%25' rx='40' fill='%2312141f'/%3E%3C/svg%3E">
+              </div>
+              <div class="member-meta">
+                <div class="member-name">Jocelyn Schleifer</div>
+                <div class="member-role">Managing Director</div>
+              </div>
+            </div>
+
+            <div class="member member--lg">
+              <div class="member-photo">
+                <img alt="Member" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='650'%3E%3Crect width='100%25' height='100%25' rx='40' fill='%2312141f'/%3E%3C/svg%3E">
+              </div>
+              <div class="member-meta">
+                <div class="member-name">Jocelyn Schleifer</div>
+                <div class="member-role">Managing Director</div>
+              </div>
+            </div>
+
+            <div class="member member--sm">
+              <div class="member-photo">
+                <img alt="Member" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='700' height='520'%3E%3Crect width='100%25' height='100%25' rx='34' fill='%2312141f'/%3E%3C/svg%3E">
+              </div>
+              <div class="member-meta">
+                <div class="member-name">Jocelyn Schleifer</div>
+                <div class="member-role">Managing Director</div>
+              </div>
+            </div>
+
+            <div class="member member--sm">
+              <div class="member-photo">
+                <img alt="Member" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='700' height='520'%3E%3Crect width='100%25' height='100%25' rx='34' fill='%2312141f'/%3E%3C/svg%3E">
+              </div>
+              <div class="member-meta">
+                <div class="member-name">Jocelyn Schleifer</div>
+                <div class="member-role">Managing Director</div>
+              </div>
+            </div>
+
+            <div class="member member--sm">
+              <div class="member-photo">
+                <img alt="Member" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='700' height='520'%3E%3Crect width='100%25' height='100%25' rx='34' fill='%2312141f'/%3E%3C/svg%3E">
+              </div>
+              <div class="member-meta">
+                <div class="member-name">Jocelyn Schleifer</div>
+                <div class="member-role">Managing Director</div>
+              </div>
+            </div>
+
+            <div class="member member--sm">
+              <div class="member-photo">
+                <img alt="Member" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='700' height='520'%3E%3Crect width='100%25' height='100%25' rx='34' fill='%2312141f'/%3E%3C/svg%3E">
+              </div>
+              <div class="member-meta">
+                <div class="member-name">Jocelyn Schleifer</div>
+                <div class="member-role">Managing Director</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="team-bottom">
+          <a class="section-link" href="#members">See all members <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+      <div class="container cta-inner">
+        <div class="cta-card">
+          <div class="cta-title">Have an idea?<br/>Let’s talk.</div>
+          <div class="cta-sub">
+            Visually attractive design from concept to final result. We create solutions that are bold and forward-looking.
+          </div>
+
+          <a class="btn btn--primary" href="#contact">Free Consultation</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer" id="contact">
+    <div class="footer-shell">
+      <div class="footer-left">
+        <div class="footer-brand">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span class="brand-name">INDIVIDNI</span>
+        </div>
+
+        <nav class="nav nav--footer" aria-label="Footer Navigation">
+          <a class="nav-link" href="#projects">Projects</a>
+          <a class="nav-link" href="#about">About</a>
+          <a class="nav-link" href="#team">Team</a>
+          <a class="nav-link" href="#contact">Contact</a>
+        </nav>
+      </div>
+
+      <div class="footer-right">
+        <a class="footer-email" href="mailto:hello@individnistudio.ru">hello@individnistudio.ru</a>
+        <div class="footer-meta">© <span id="year"></span> INDIVIDNI</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <!-- Liquid App -->
   <script src="./assets/js/liquid.js" defer></script>
+  <script src="./assets/js/main.js" defer></script>
 </body>
 </html>
