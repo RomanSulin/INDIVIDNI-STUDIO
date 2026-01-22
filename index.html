@@ -73,90 +73,39 @@
   </div>
 </section>
 
-<!-- SHOWREEL LAPTOP (clean) ------------------------------------------------------------------------------------------------>
-<section class="sr-demo" id="showreel">
-  <div class="container sr-demo__head">
-    <div class="sr-demo__line1">ВИДЕОПРОДАКШН</div>
-    <div class="sr-demo__line2">полного цикла</div>
-  </div>
+<!-- TV FLY-THROUGH SHOWREEL ------------------------------------------------------------------------------------------>
+<section class="tvfly" id="showreel">
+  <div class="tvfly__wrapper">
+    <!-- BACK: black + 3D TV -->
+    <div class="tvfly__stage" aria-hidden="true">
+      <canvas id="tvflyCanvas"></canvas>
 
-  <div class="scroll-section laptop sr-demo__laptop" data-sr-demo>
-    <section>
-      <div class="scene__zoom">
-        <div class="scene">
-          <div class="scene__rock">
-            <div class="scene__spin">
-              <div class="scene__shadow">
-                <div class="scene__jump">
-                  <div class="scene__flip">
+      <button class="tvfly__sound" id="tvflySound" aria-label="Включить звук" aria-pressed="false">
+        <span class="tvfly__soundIcon" aria-hidden="true"></span>
+      </button>
 
-                    <div class="jbook">
-                      <div class="jbook__shell shell shell--top">
+      <video id="tvflyVideo" muted playsinline webkit-playsinline preload="metadata" loop style="display:none">
+        <source src="./assets/ui/showreel.mp4" type="video/mp4" />
+      </video>
+    </div>
 
-                        <!-- REPLACE screen-bear with VIDEO -->
-                        <div class="sr-demo__screen">
-                          <video
-                            class="sr-demo__video"
-                            data-sr-video
-                            playsinline
-                            webkit-playsinline
-                            muted
-                            preload="metadata"
-                            loop
-                          >
-                            <source src="./assets/ui/showreel.mp4" type="video/mp4" />
-                          </video>
+    <!-- label -->
+    <div class="tvfly__label container">
+      <div class="tvfly__line1">ВИДЕОПРОДАКШН</div>
+      <div class="tvfly__line2">полного цикла</div>
+    </div>
 
-                          <button
-                            class="sr-demo__sound"
-                            type="button"
-                            data-sr-sound
-                            aria-label="Включить звук"
-                            aria-pressed="false"
-                          >
-                            <span class="sr-demo__sound-icon" aria-hidden="true"></span>
-                          </button>
-                        </div>
-
-                        <div class="cuboid">
-                          <div class="cuboid__side"></div>
-                          <div class="cuboid__side"></div>
-                          <div class="cuboid__side"></div>
-                          <div class="cuboid__side"></div>
-
-                          <!-- side 5 (WAS shell-bear) — оставляем, но пустую -->
-                          <div class="cuboid__side"></div>
-
-                          <div class="cuboid__side"></div>
-                        </div>
-                      </div>
-
-                      <div class="jbook__shell shell shell--bottom">
-
-                        <!-- ВСТАВЬ СЮДА ТВОЙ SVG КЛАВИАТУРЫ ИЗ ДЕМКИ 1-в-1 -->
-                        <!-- <svg class="laptop-keyboard" ...>...</svg> -->
-
-                        <div class="cuboid">
-                          <div class="cuboid__side"></div>
-                          <div class="cuboid__side"></div>
-                          <div class="cuboid__side"></div>
-                          <div class="cuboid__side"></div>
-                          <div class="cuboid__side"></div>
-                          <div class="cuboid__side"></div>
-                        </div>
-                      </div>
-                    </div>
-
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    <!-- FRONT: image we fly through -->
+    <div class="tvfly__image-container">
+      <img
+        class="tvfly__image"
+        src="https://assets-global.website-files.com/63ec206c5542613e2e5aa784/643312a6bc4ac122fc4e3afa_main%20home.webp"
+        alt="image"
+      />
+    </div>
   </div>
 </section>
+
 
     <!-- INTRO ---------------------------------------------------------------------------------------------------------------------------------------------------------->
     <section class="intro">
