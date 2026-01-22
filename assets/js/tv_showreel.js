@@ -123,8 +123,11 @@
 
   const screenMat = new THREE.MeshBasicMaterial({ map: canvasTex, side: THREE.DoubleSide });
   screenMat.toneMapped = false;
-  screenMat.depthTest = false;
-  screenMat.depthWrite = false;
+  screenMat.depthTest = true;     // рамка сможет перекрывать края
+  screenMat.depthWrite = false;   // но не будет ломать глубину
+  screenMat.polygonOffset = true; // чтобы не было z-fighting
+  screenMat.polygonOffsetFactor = -1;
+  screenMat.polygonOffsetUnits = -1;
 
   // TV textures
   const texLoader = new THREE.TextureLoader();
@@ -174,15 +177,17 @@
     const box = new THREE.Box3().setFromObject(model);
     const size = box.getSize(new THREE.Vector3());
 
-    const w = size.x * (isMobile ? 0.74 : 0.86);
-    const h = w * 9 / 16;
+    const w = size.x * (isMobile ? 0.70 : 0.80);  // было 0.86 — слишком широко
+const h = w * 9 / 16;
 
-    screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(w, h), screenMat);
-    screenPlane.renderOrder = 999;
-    screenPlane.frustumCulled = false;
+screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(w, h), screenMat);
+screenPlane.renderOrder = 2;
+screenPlane.frustumCulled = false;
 
-    screenPlane.position.set(0, size.y * 0.11, box.max.z + size.z * 0.035);
-    tvRoot.add(screenPlane);
+// ВАЖНО: не “перед” телеком, а чуть ВНУТРИ рамки (минус, а не плюс)
+screenPlane.position.set(0, size.y * 0.10, box.max.z - size.z * 0.01);
+
+tvRoot.add(screenPlane);
   }
 
   const loader = new THREE.FBXLoader();
