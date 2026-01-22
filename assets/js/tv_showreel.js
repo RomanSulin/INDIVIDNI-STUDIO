@@ -1,6 +1,7 @@
 /* global THREE, gsap, ScrollTrigger */
 
 (() => {
+  console.log("[tvfly] script start");
   const section = document.querySelector(".tvfly");
   if (!section) return;
 
@@ -10,10 +11,14 @@
   const video = section.querySelector("#tvflyVideo");
 
   if (!wrapper || !img || !canvas || !video) return;
-  if (!window.THREE || !window.gsap || !window.ScrollTrigger || !THREE.FBXLoader) return;
+  if (!window.THREE) return console.error("[tvfly] THREE missing");
+  if (!window.gsap) return console.error("[tvfly] GSAP missing");
+  if (!window.ScrollTrigger) return console.error("[tvfly] ScrollTrigger missing");
+  if (!THREE.FBXLoader) return console.error("[tvfly] FBXLoader missing (or fflate not loaded)");
+
 
   gsap.registerPlugin(ScrollTrigger);
-
+  console.log("[tvfly] libs ok:", !!window.THREE, !!window.gsap, !!window.ScrollTrigger, !!THREE.FBXLoader);
   const isMobile = window.matchMedia("(max-width: 860px)").matches;
 
   // ТВ у тебя уже “лицом” — оставь свой рабочий угол
@@ -267,7 +272,9 @@
   }
 
   // ===== load FBX =====
+  console.log("[tvfly] fbx loaded ✅");
   const loader = new THREE.FBXLoader();
+  console.log("[tvfly] start loading fbx…");
   loader.load("./assets/models/retro_tv/tv.fbx", (fbx) => {
     model = fbx;
 
