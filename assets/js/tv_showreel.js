@@ -55,15 +55,15 @@
   camera.position.set(0, 0.2, 3.2);
 
   // light: чтобы тёмная текстура ТВ читалась
-  scene.add(new THREE.AmbientLight(0xffffff, 0.9));
+scene.add(new THREE.AmbientLight(0xffffff, 0.35));
 
-  const key = new THREE.DirectionalLight(0xffffff, 1.2);
-  key.position.set(3, 3, 2);
-  scene.add(key);
+const key = new THREE.DirectionalLight(0xffffff, 1.1);
+key.position.set(3, 3, 2);
+scene.add(key);
 
-  const fill = new THREE.DirectionalLight(0xffffff, 0.9);
-  fill.position.set(-3, 1.8, -2.5);
-  scene.add(fill);
+const fill = new THREE.DirectionalLight(0xffffff, 0.35);
+fill.position.set(-3, 1.2, -2.5);
+scene.add(fill);
 
   const hemi = new THREE.HemisphereLight(0xffffff, 0x111122, 0.55);
   scene.add(hemi);
@@ -105,16 +105,16 @@
   texBase.encoding = THREE.sRGBEncoding;
 
   // Текстура очень тёмная. Добавляем легкий emissive, чтобы ТВ не исчезал на black.
-  const bodyMat = new THREE.MeshStandardMaterial({
-    map: texBase,
-    normalMap: texNormal,
-    roughnessMap: texRough,
-    metalnessMap: texMetal,
-    roughness: 0.95,
-    metalness: 0.1,
-    emissive: new THREE.Color(0x222233),
-    emissiveIntensity: 0.8
-  });
+const bodyMat = new THREE.MeshStandardMaterial({
+  map: texBase,
+  normalMap: texNormal,
+  roughnessMap: texRough,
+  metalnessMap: texMetal,
+  roughness: 0.9,
+  metalness: 0.08,
+  emissive: new THREE.Color(0x000000),
+  emissiveIntensity: 0.0
+});
 
   const screenMat = new THREE.MeshBasicMaterial({ map: videoTex });
   screenMat.toneMapped = false;
@@ -129,7 +129,7 @@
     const maxDim = Math.max(size.x, size.y, size.z) || 1;
 
     const fov = camera.fov * (Math.PI / 180);
-    const camZ = (maxDim / 2) / Math.tan(fov / 2) * 1.35;
+    const camZ = (maxDim / 2) / Math.tan(fov / 2) * 1.85;
 
     camera.position.set(0, maxDim * 0.12, camZ);
     camera.near = Math.max(0.01, camZ / 100);
@@ -200,7 +200,8 @@
       // масштаб под “условные метры” (чтобы не было “внутри модели”)
       const s0 = b0.getSize(new THREE.Vector3());
       const max0 = Math.max(s0.x, s0.y, s0.z) || 1;
-      const targetSize = 1.6;             // итоговый габарит ТВ в сцене
+      const targetSize = 1.05;             // итоговый габарит ТВ в сцене
+      model.rotation.set(0, 0, 0);
       model.scale.setScalar(targetSize / max0);
 
       // ещё раз центрируем после scale
@@ -209,7 +210,7 @@
       model.position.sub(c1);
 
       // развернём к камере (часто FBX задом)
-      model.rotation.y = Math.PI;
+      model.rotation.y = -Math.PI / 2;
 
       // ищем экран
       screenMesh = findScreenMesh(model);
@@ -250,7 +251,7 @@
 
     // лёгкая анимация (без “внутрь модели”)
     const baseZ = fit.camZ || 3.2;
-    camera.position.z = baseZ - (fit.maxDim * 0.35) * t;
+    camera.position.z = baseZ - (fit.maxDim * 0.18) * t;
     camera.position.y = (fit.maxDim * 0.12) - (fit.maxDim * 0.03) * t;
     camera.lookAt(0, 0, 0);
 
