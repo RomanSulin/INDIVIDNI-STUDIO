@@ -79,6 +79,13 @@
 
   // VideoTexture
   const videoTex = new THREE.VideoTexture(video);
+  video.addEventListener("loadeddata", () => {
+  // первый кадр, чтобы texture не была чёрной
+  try { video.currentTime = 0.01; } catch(e) {}
+  video.play().catch(() => {});
+}, { once: true });
+
+video.load();
   videoTex.encoding = THREE.sRGBEncoding;
   videoTex.flipY = false;
   videoTex.minFilter = THREE.LinearFilter;
@@ -90,6 +97,9 @@
     side: THREE.DoubleSide
   });
   screenMat.toneMapped = false;
+  // чтобы видео всегда рисовалось поверх
+  screenMat.depthTest = false;
+  screenMat.depthWrite = false;
 
   // Textures
   const texLoader = new THREE.TextureLoader();
@@ -236,6 +246,25 @@
       addFallbackPlane(model);
 
       tvRoot.add(model);
+      // --- Fallback screen: гарантированно видно видео поверх телика ---
+const box = new THREE.Box3().setFromObject(model);
+const size = box.getSize(new THREE.Vector3());
+
+// размеры экрана (подгонишь потом)
+const w = size.x * 0.38;
+const h = w * 9 / 16;
+
+const fallback = new THREE.Mesh(new THREE.PlaneGeometry(w, h), screenMat);
+fallback.renderOrder = 999;
+fallback.frustumCulled = false;
+
+// ставим чуть впереди передней грани телика
+// (если будет “слишком наружу/внутрь” — меняй множитель 0.03)
+fallback.position.set(0, size.y * 0.06, box.max.z + size.z * 0.03);
+
+// если у тебя телик повернут — плоскость всё равно будет вместе с моделью
+model.add(fallback);
+
 
       // 7) камера по модели
       fitCameraTo(tvRoot);
