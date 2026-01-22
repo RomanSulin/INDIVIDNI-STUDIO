@@ -1,65 +1,53 @@
 /* global THREE, gsap, ScrollTrigger */
 
-(function () {
-  const section = document.querySelector('.tvfly');
+(() => {
+  const section = document.querySelector(".tvfly");
   if (!section) return;
 
-  const wrapper = section.querySelector('.tvfly__wrapper');
-  const img = section.querySelector('.tvfly__image');
-  const canvas = section.querySelector('#tvflyCanvas');
-  const video = section.querySelector('#tvflyVideo');
-  const soundBtn = section.querySelector('#tvflySound');
+  const wrapper = section.querySelector(".tvfly__wrapper");
+  const img = section.querySelector(".tvfly__image");
+  const canvas = section.querySelector("#tvflyCanvas");
+  const video = section.querySelector("#tvflyVideo");
+  const soundBtn = section.querySelector("#tvflySound");
 
   if (!wrapper || !img || !canvas || !video || !soundBtn) return;
-  if (!window.THREE || !window.gsap || !window.ScrollTrigger) return;
-  if (!THREE.FBXLoader) {
-    console.warn('[tvfly] FBXLoader missing (check fflate + loader order)');
-    return;
-  }
+  if (!window.THREE || !window.gsap || !window.ScrollTrigger || !THREE.FBXLoader) return;
 
   gsap.registerPlugin(ScrollTrigger);
 
-  // ====== ПОВОРОТ ТЕЛЕКА (ты уже подобрал) ======
+  // Поворот телика (оставь свой рабочий)
   const FORCE_ROT_Y = (3 * Math.PI) / 2;
 
-  // ===== video =====
+  // video
   video.muted = true;
   video.loop = true;
 
-  function syncSoundBtn() {
+  function syncSound() {
     const on = !video.muted;
-    soundBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
-    soundBtn.setAttribute('aria-label', on ? 'Выключить звук' : 'Включить звук');
+    soundBtn.setAttribute("aria-pressed", on ? "true" : "false");
+    soundBtn.setAttribute("aria-label", on ? "Выключить звук" : "Включить звук");
   }
-
-  soundBtn.addEventListener('click', () => {
+  soundBtn.addEventListener("click", () => {
     video.muted = !video.muted;
     video.play().catch(() => {});
-    syncSoundBtn();
+    syncSound();
   });
-  syncSoundBtn();
+  syncSound();
 
-  // ===== three =====
-  const renderer = new THREE.WebGLRenderer({
-    canvas,
-    antialias: true,
-    alpha: false,
-    powerPreference: 'high-performance'
-  });
+  // renderer
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: "high-performance" });
   renderer.setClearColor(0x000000, 1);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.outputEncoding = THREE.sRGBEncoding;
 
   const scene = new THREE.Scene();
-
   const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 200);
-  camera.position.set(0, 0.15, 3.0);
 
+  // light (контрастно, без “молока”)
   scene.add(new THREE.AmbientLight(0xffffff, 0.35));
   const key = new THREE.DirectionalLight(0xffffff, 1.15);
   key.position.set(3, 3, 2);
   scene.add(key);
-
   const fill = new THREE.DirectionalLight(0xffffff, 0.35);
   fill.position.set(-3, 1.2, -2.5);
   scene.add(fill);
@@ -71,12 +59,12 @@
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
   }
-  window.addEventListener('resize', resize);
+  window.addEventListener("resize", resize);
   resize();
 
-  // ===== CanvasTexture (железобетон) =====
-  const vCanvas = document.createElement('canvas');
-  const vCtx = vCanvas.getContext('2d', { alpha: false });
+  // CanvasTexture (вместо VideoTexture)
+  const vCanvas = document.createElement("canvas");
+  const vCtx = vCanvas.getContext("2d", { alpha: false });
 
   const canvasTex = new THREE.CanvasTexture(vCanvas);
   canvasTex.encoding = THREE.sRGBEncoding;
@@ -95,20 +83,17 @@
     }
   }
 
-  const screenMat = new THREE.MeshBasicMaterial({
-    map: canvasTex,
-    side: THREE.DoubleSide
-  });
+  const screenMat = new THREE.MeshBasicMaterial({ map: canvasTex, side: THREE.DoubleSide });
   screenMat.toneMapped = false;
   screenMat.depthTest = false;
   screenMat.depthWrite = false;
 
-  // ===== TV model materials =====
+  // TV body textures
   const texLoader = new THREE.TextureLoader();
-  const texBase = texLoader.load('./assets/models/retro_tv/textures/basecolor.png');
-  const texNormal = texLoader.load('./assets/models/retro_tv/textures/normal.png');
-  const texRough = texLoader.load('./assets/models/retro_tv/textures/roughness.png');
-  const texMetal = texLoader.load('./assets/models/retro_tv/textures/metallic.png');
+  const texBase = texLoader.load("./assets/models/retro_tv/textures/basecolor.png");
+  const texNormal = texLoader.load("./assets/models/retro_tv/textures/normal.png");
+  const texRough = texLoader.load("./assets/models/retro_tv/textures/roughness.png");
+  const texMetal = texLoader.load("./assets/models/retro_tv/textures/metallic.png");
   texBase.encoding = THREE.sRGBEncoding;
 
   const bodyMat = new THREE.MeshStandardMaterial({
@@ -125,95 +110,93 @@
   scene.add(tvRoot);
 
   let model = null;
-  let tvBox = null;
   let screenPlane = null;
 
-  // ===== load FBX =====
-  const loader = new THREE.FBXLoader();
-  loader.load(
-    './assets/models/retro_tv/tv.fbx',
-    (fbx) => {
-      model = fbx;
+  function fitCameraTo(obj) {
+    const box = new THREE.Box3().setFromObject(obj);
+    const size = box.getSize(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.y, size.z) || 1;
 
-      // масштаб
-      const box0 = new THREE.Box3().setFromObject(model);
-      const size0 = box0.getSize(new THREE.Vector3());
-      const max0 = Math.max(size0.x, size0.y, size0.z) || 1;
-      const target = 1.2;
-      model.scale.setScalar(target / max0);
+    const fov = camera.fov * (Math.PI / 180);
+    const dist = (maxDim / 2) / Math.tan(fov / 2) * 1.8;
 
-      // поворот
-      model.rotation.set(0, FORCE_ROT_Y, 0);
+    camera.position.set(0, maxDim * 0.10, dist);
+    camera.near = Math.max(0.01, dist / 100);
+    camera.far = dist * 200;
+    camera.updateProjectionMatrix();
+    camera.lookAt(0, 0, 0);
+  }
 
-      // центрирование после поворота
-      const box1 = new THREE.Box3().setFromObject(model);
-      const c1 = box1.getCenter(new THREE.Vector3());
-      model.position.sub(c1);
+  function ensureScreenPlane() {
+    if (!model || screenPlane) return;
 
-      // материалы корпуса
-      model.traverse((o) => {
-        if (!o.isMesh) return;
-        o.frustumCulled = false;
-        o.material = bodyMat;
-      });
+    const box = new THREE.Box3().setFromObject(tvRoot);
+    const size = box.getSize(new THREE.Vector3());
 
-      tvRoot.add(model);
+    const w = size.x * 0.36;
+    const h = w * 9 / 16;
 
-      // bbox телека в координатах tvRoot
-      tvBox = new THREE.Box3().setFromObject(tvRoot);
-
-      // плоскость-экран (создаём один раз)
-      const size = tvBox.getSize(new THREE.Vector3());
-      const w = size.x * 0.36;
-      const h = w * 9 / 16;
-
-      screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(w, h), screenMat);
-      screenPlane.renderOrder = 999;
-      screenPlane.frustumCulled = false;
-      tvRoot.add(screenPlane);
-
-      console.log('[tvfly] model loaded');
-    },
-    undefined,
-    (err) => console.error('[tvfly] FBX load error', err)
-  );
-
-  // ===== animation loop =====
-  let active = false;
-  let raf = 0;
-  let scrollP = 0;
-
-  function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+    screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(w, h), screenMat);
+    screenPlane.renderOrder = 999;
+    screenPlane.frustumCulled = false;
+    tvRoot.add(screenPlane);
+  }
 
   function updateScreenPlane() {
-    if (!screenPlane || !tvBox) return;
+    if (!screenPlane || !model) return;
 
-    // обновляем bbox (на случай скейла/анимации)
-    tvBox.setFromObject(tvRoot);
-    const size = tvBox.getSize(new THREE.Vector3());
-    const center = tvBox.getCenter(new THREE.Vector3());
+    const box = new THREE.Box3().setFromObject(tvRoot);
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
 
-    // направление к камере
+    // ставим экран перед телеком со стороны камеры
     const dir = new THREE.Vector3().subVectors(camera.position, center).normalize();
-
-    // ставим экран чуть перед телеком по направлению к камере
     const pos = center.clone()
       .add(dir.multiplyScalar(size.z * 0.55))
       .add(new THREE.Vector3(0, size.y * 0.06, 0));
 
     screenPlane.position.copy(pos);
-
-    // поворачиваем лицом к камере
     screenPlane.lookAt(camera.position);
   }
 
+  // load FBX
+  const loader = new THREE.FBXLoader();
+  loader.load("./assets/models/retro_tv/tv.fbx", (fbx) => {
+    model = fbx;
+
+    // scale
+    const box0 = new THREE.Box3().setFromObject(model);
+    const size0 = box0.getSize(new THREE.Vector3());
+    const max0 = Math.max(size0.x, size0.y, size0.z) || 1;
+    model.scale.setScalar(1.2 / max0);
+
+    // rotate
+    model.rotation.set(0, FORCE_ROT_Y, 0);
+
+    // center AFTER rotate
+    const box1 = new THREE.Box3().setFromObject(model);
+    const c1 = box1.getCenter(new THREE.Vector3());
+    model.position.sub(c1);
+
+    // materials
+    model.traverse((o) => {
+      if (!o.isMesh) return;
+      o.frustumCulled = false;
+      o.material = bodyMat;
+    });
+
+    tvRoot.add(model);
+    ensureScreenPlane();
+    fitCameraTo(tvRoot);
+  });
+
+  // GSAP fly-through + render loop
+  let active = false;
+  let raf = 0;
+  let scrollP = 0;
+
   function render() {
     if (!active) return;
-
-    const t = easeOutCubic(scrollP);
-
-    // можешь вернуть лёгкий поворот позже, сейчас фиксируем стабильность
-    tvRoot.rotation.y = 0;
 
     updateVideoTexture();
     updateScreenPlane();
@@ -240,11 +223,10 @@
   gsap.timeline({
     scrollTrigger: {
       trigger: wrapper,
-      start: 'top top',
-      end: '+=160%',
+      start: "top top",
+      end: "+=160%",
       pin: true,
       scrub: true,
-      markers: false,
       onEnter: start,
       onEnterBack: start,
       onLeave: stop,
@@ -252,15 +234,6 @@
       onUpdate: (self) => { scrollP = self.progress; }
     }
   })
-  .to(img, {
-    scale: 2,
-    z: 350,
-    transformOrigin: 'center center',
-    ease: 'power1.inOut'
-  })
-  .to(img, {
-    opacity: 0,
-    ease: 'power1.out'
-  }, 0.55);
-
+  .to(img, { scale: 2, z: 350, transformOrigin: "center center", ease: "power1.inOut" })
+  .to(img, { opacity: 0, ease: "power1.out" }, 0.55);
 })();
