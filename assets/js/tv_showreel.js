@@ -93,33 +93,17 @@
   canvasTex.magFilter = THREE.LinearFilter;
   canvasTex.generateMipmaps = false;
 
-  const SCREEN_AR = 16 / 9;
-
-  // фиксированный размер текстуры экрана (16:9)
-    const TEX_W = 1024;
-    const TEX_H = Math.round(TEX_W / SCREEN_AR);
-    vCanvas.width = TEX_W;
-    vCanvas.height = TEX_H;
-  
-  function updateVideoTexture() {
+function updateVideoTexture() {
   if (!(video.readyState >= 2 && video.videoWidth && video.videoHeight)) return;
 
-  const vw = video.videoWidth;
-  const vh = video.videoHeight;
+  // canvas = размер видео, чтобы было 1:1
+  if (vCanvas.width !== video.videoWidth || vCanvas.height !== video.videoHeight) {
+    vCanvas.width = video.videoWidth;
+    vCanvas.height = video.videoHeight;
+  }
 
-  // заполняем фон (поля) чёрным
-  vCtx.fillStyle = "#000";
-  vCtx.fillRect(0, 0, vCanvas.width, vCanvas.height);
-
-  // CONTAIN: вписываем целиком без растяжения и без обрезки
-  const scale = Math.min(vCanvas.width / vw, vCanvas.height / vh);
-  const dw = Math.round(vw * scale);
-  const dh = Math.round(vh * scale);
-
-  const dx = Math.round((vCanvas.width - dw) / 2);
-  const dy = Math.round((vCanvas.height - dh) / 2);
-
-  vCtx.drawImage(video, 0, 0, vw, vh, dx, dy, dw, dh);
+  // рисуем полный кадр без кропа/contain
+  vCtx.drawImage(video, 0, 0, vCanvas.width, vCanvas.height);
   canvasTex.needsUpdate = true;
 }
 
@@ -173,15 +157,19 @@
 
     camBase = { maxDim, dist };
   }
+let videoAR = 5 / 4;
+video.addEventListener("loadedmetadata", () => {
+  if (video.videoWidth && video.videoHeight) videoAR = video.videoWidth / video.videoHeight;
+}, { once: true });
 
-  function ensureScreenPlane() {
+    function ensureScreenPlane() {
     if (!model || screenPlane) return;
 
     const box = new THREE.Box3().setFromObject(model);
     const size = box.getSize(new THREE.Vector3());
 
     const w = size.x * (isMobile ? 0.70 : 0.80);  // было 0.86 — слишком широко
-const h = w * 9 / 16;
+    const h = w / videoAR;
 
 screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(w, h), screenMat);
 screenPlane.renderOrder = 2;
