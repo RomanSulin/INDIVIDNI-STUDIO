@@ -6,18 +6,16 @@
 
   const wrapper = section.querySelector(".tvfly__wrapper");
   const img = section.querySelector(".tvfly__image") || section.querySelector(".tvfly__image-container img");
-  if (!img) { console.warn("[tvfly] image not found"); return; }
   const canvas = section.querySelector("#tvflyCanvas");
   const video = section.querySelector("#tvflyVideo");
   const soundBtn = section.querySelector("#tvflySound");
 
   if (!wrapper || !img || !canvas || !video || !soundBtn) return;
   if (!window.THREE || !window.gsap || !window.ScrollTrigger || !THREE.FBXLoader) return;
-  gsap.set(img, { transformPerspective: 500, transformOrigin: "center center" });
 
   gsap.registerPlugin(ScrollTrigger);
 
-  // Поворот телика (оставь свой рабочий)
+  // Поворот телека (оставь как у тебя “лицом”)
   const FORCE_ROT_Y = (3 * Math.PI) / 2;
 
   // video
@@ -45,7 +43,7 @@
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 200);
 
-  // light (контрастно, без “молока”)
+  // lights
   scene.add(new THREE.AmbientLight(0xffffff, 0.35));
   const key = new THREE.DirectionalLight(0xffffff, 1.15);
   key.position.set(3, 3, 2);
@@ -64,7 +62,7 @@
   window.addEventListener("resize", resize);
   resize();
 
-  // CanvasTexture (вместо VideoTexture)
+  // CanvasTexture (самый стабильный способ)
   const vCanvas = document.createElement("canvas");
   const vCtx = vCanvas.getContext("2d", { alpha: false });
 
@@ -127,43 +125,30 @@
     camera.far = dist * 200;
     camera.updateProjectionMatrix();
     camera.lookAt(0, 0, 0);
+
+    return { size, dist };
   }
 
-function ensureScreenPlane() {
-  if (!model || screenPlane) return;
+  function createScreenPlaneOnce() {
+    if (!model || screenPlane) return;
 
-  const box = new THREE.Box3().setFromObject(tvRoot);
-  const size = box.getSize(new THREE.Vector3());
-
-  const w = size.x * 0.82;          // было 0.62 — станет заметно больше
-  const h = w * 9 / 16;
-
-  screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(w, h), screenMat);
-  screenPlane.renderOrder = 999;
-  screenPlane.frustumCulled = false;
-
-// чуть выше и чуть ближе к “лицу”
-  screenPlane.position.set(0, size.y * 0.09, size.z * 0.50);
-  screenPlane.lookAt(camera.position);
-
-  tvRoot.add(screenPlane);
-}
-
-  function updateScreenPlane() {
-    if (!screenPlane || !model) return;
-
-    const box = new THREE.Box3().setFromObject(tvRoot);
+    // bbox модели уже в центре (0,0,0)
+    const box = new THREE.Box3().setFromObject(model);
     const size = box.getSize(new THREE.Vector3());
-    const center = box.getCenter(new THREE.Vector3());
 
-    // ставим экран перед телеком со стороны камеры
-    const dir = new THREE.Vector3().subVectors(camera.position, center).normalize();
-    const pos = center.clone()
-      .add(dir.multiplyScalar(size.z * 0.55))
-      .add(new THREE.Vector3(0, size.y * 0.06, 0));
+    // Хочешь “увеличить” — меняй 0.72 -> 0.80
+    const w = size.x * 0.78;
+    const h = w * 9 / 16;
 
-    screenPlane.position.copy(pos);
-    screenPlane.lookAt(camera.position);
+    screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(w, h), screenMat);
+    screenPlane.renderOrder = 999;
+    screenPlane.frustumCulled = false;
+
+    // Ставим ПЕРЕД телеком по локальной Z (после поворота)
+    screenPlane.position.set(0, size.y * 0.10, box.max.z + size.z * 0.03);
+
+    // Не крутим каждый кадр — не будет “улёта”
+    tvRoot.add(screenPlane);
   }
 
   // load FBX
@@ -171,21 +156,21 @@ function ensureScreenPlane() {
   loader.load("./assets/models/retro_tv/tv.fbx", (fbx) => {
     model = fbx;
 
-    // scale
-    const box0 = new THREE.Box3().setFromObject(model);
-    const size0 = box0.getSize(new THREE.Vector3());
-    const max0 = Math.max(size0.x, size0.y, size0.z) || 1;
+    // scale to sane size
+    const b0 = new THREE.Box3().setFromObject(model);
+    const s0 = b0.getSize(new THREE.Vector3());
+    const max0 = Math.max(s0.x, s0.y, s0.z) || 1;
     model.scale.setScalar(1.2 / max0);
 
     // rotate
     model.rotation.set(0, FORCE_ROT_Y, 0);
 
     // center AFTER rotate
-    const box1 = new THREE.Box3().setFromObject(model);
-    const c1 = box1.getCenter(new THREE.Vector3());
+    const b1 = new THREE.Box3().setFromObject(model);
+    const c1 = b1.getCenter(new THREE.Vector3());
     model.position.sub(c1);
 
-    // materials
+    // body materials
     model.traverse((o) => {
       if (!o.isMesh) return;
       o.frustumCulled = false;
@@ -193,21 +178,19 @@ function ensureScreenPlane() {
     });
 
     tvRoot.add(model);
-    fitCameraTo(tvRoot);     // СНАЧАЛА камера
-    ensureScreenPlane();     // ПОТОМ экран
-    if (screenPlane) screenPlane.lookAt(camera.position); // на всякий
-   });
 
-  // GSAP fly-through + render loop
+    // Важно: сначала камера, потом экран-плоскость (чтобы не было “ребром”)
+    fitCameraTo(tvRoot);
+    createScreenPlaneOnce();
+  });
+
+  // render control
   let active = false;
   let raf = 0;
-  let scrollP = 0;
 
   function render() {
     if (!active) return;
-
     updateVideoTexture();
-    if (screenPlane) screenPlane.lookAt(camera.position);
     camera.lookAt(0, 0, 0);
     renderer.render(scene, camera);
     raf = requestAnimationFrame(render);
@@ -227,6 +210,7 @@ function ensureScreenPlane() {
     raf = 0;
   }
 
+  // GSAP fly-through (картинка window.png)
   gsap.timeline({
     scrollTrigger: {
       trigger: wrapper,
@@ -237,10 +221,9 @@ function ensureScreenPlane() {
       onEnter: start,
       onEnterBack: start,
       onLeave: stop,
-      onLeaveBack: stop,
-      onUpdate: (self) => { scrollP = self.progress; }
+      onLeaveBack: stop
     }
   })
-  .to(img, { scale: 2, z: 350, transformOrigin: "center center", ease: "power1.inOut" })
-  .to(img, { opacity: 0, ease: "power1.out" }, 0.55);
+    .to(img, { scale: 2, z: 350, transformOrigin: "center center", ease: "power1.inOut" })
+    .to(img, { opacity: 0, ease: "power1.out" }, 0.55);
 })();
