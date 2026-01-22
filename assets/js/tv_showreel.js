@@ -1,65 +1,63 @@
 /* global THREE, gsap, ScrollTrigger */
 
 (() => {
-  const section = document.querySelector(".tvfly");
+  const section = document.querySelector(".tvfly"); 
   if (!section) return;
 
   const wrapper = section.querySelector(".tvfly__wrapper");
   const img = section.querySelector(".tvfly__image") || section.querySelector(".tvfly__image-container img");
   const canvas = section.querySelector("#tvflyCanvas");
   const video = section.querySelector("#tvflyVideo");
-
-  // HTML controls могут быть, а могут и не быть — код не зависит
-  const htmlSoundBtn = section.querySelector("#tvflySound");
+  const soundBtn = section.querySelector("#tvflySound");   // опционально (можешь потом удалить из HTML)
+  const volume = section.querySelector("#tvflyVolume");  // опционально
 
   if (!wrapper || !img || !canvas || !video) return;
-
-  if (!window.THREE) return console.error("[tvfly] THREE missing");
-  if (!window.gsap) return console.error("[tvfly] GSAP missing");
-  if (!window.ScrollTrigger) return console.error("[tvfly] ScrollTrigger missing");
-  if (!THREE.FBXLoader) return console.error("[tvfly] FBXLoader missing (check fflate + loader order)");
+  if (!window.THREE || !window.gsap || !window.ScrollTrigger || !THREE.FBXLoader) return;
 
   gsap.registerPlugin(ScrollTrigger);
 
   const isMobile = window.matchMedia("(max-width: 860px)").matches;
-
-  // Поворот телека (твой рабочий)
   const FORCE_ROT_Y = (3 * Math.PI) / 2;
 
   // ===== video =====
   video.loop = true;
   video.playsInline = true;
   video.muted = true;
-  video.volume = 1;
+  video.volume = 0.8;
 
-  function syncHtmlBtn() {
-    if (!htmlSoundBtn) return;
-    const on = !video.muted;
-    htmlSoundBtn.setAttribute("aria-pressed", on ? "true" : "false");
+  function setBtnLabel() {
+    const on = !video.muted && video.volume > 0;
+    soundBtn.setAttribute("aria-pressed", on ? "true" : "false");
+    soundBtn.textContent = on ? "ВЫКЛ" : "ВКЛ";
   }
 
-  function toggleSound() {
-    video.muted = !video.muted;
+  soundBtn.addEventListener("click", () => {
+    if (video.muted || video.volume === 0) {
+      video.muted = false;
+      if (video.volume === 0) video.volume = 0.8;
+    } else {
+      video.muted = true;
+    }
     video.play().catch(() => {});
-    syncHtmlBtn();
-  }
-
-  if (htmlSoundBtn) {
-    htmlSoundBtn.addEventListener("click", (e) => {
-      // если вдруг у тебя в html есть input внутри button — не даём ему ломать клик
-      e.preventDefault();
-      toggleSound();
-    });
-    syncHtmlBtn();
-  }
-
-  // ===== renderer =====
-  const renderer = new THREE.WebGLRenderer({
-    canvas,
-    antialias: true,
-    alpha: false,
-    powerPreference: "high-performance"
+    if (volume) volume.value = String(Math.round(video.volume * 100));
+    setBtnLabel();
   });
+
+  if (volume) {
+    volume.addEventListener("input", () => {
+      const v = Math.min(1, Math.max(0, Number(volume.value) / 100));
+      video.volume = v;
+      video.muted = v === 0;
+      video.play().catch(() => {});
+      setBtnLabel();
+    });
+    if (isMobile) volume.style.display = "none";
+  }
+
+  setBtnLabel();
+
+  // ===== three =====
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: "high-performance" });
   renderer.setClearColor(0x000000, 1);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.outputEncoding = THREE.sRGBEncoding;
@@ -85,7 +83,7 @@
   window.addEventListener("resize", resize);
   resize();
 
-  // ===== CanvasTexture: рисуем полный кадр без кропа/полос =====
+  // ===== CanvasTexture (cover to 16:9) =====
   const vCanvas = document.createElement("canvas");
   const vCtx = vCanvas.getContext("2d", { alpha: false });
 
@@ -95,38 +93,30 @@
   canvasTex.magFilter = THREE.LinearFilter;
   canvasTex.generateMipmaps = false;
 
-  let videoAR = 5 / 4;
-  video.addEventListener("loadedmetadata", () => {
-    if (video.videoWidth && video.videoHeight) {
-      videoAR = video.videoWidth / video.videoHeight;
-      if (screenPlane) {
-        const w = screenPlane.geometry.parameters.width;
-        screenPlane.geometry.dispose();
-        screenPlane.geometry = new THREE.PlaneGeometry(w, w / videoAR);
-      }
-    }
-  }, { once: true });
+function updateVideoTexture() {
+  if (!(video.readyState >= 2 && video.videoWidth && video.videoHeight)) return;
 
-  function updateVideoTexture() {
-    if (!(video.readyState >= 2 && video.videoWidth && video.videoHeight)) return;
-
-    if (vCanvas.width !== video.videoWidth || vCanvas.height !== video.videoHeight) {
-      vCanvas.width = video.videoWidth;
-      vCanvas.height = video.videoHeight;
-    }
-    vCtx.drawImage(video, 0, 0, vCanvas.width, vCanvas.height);
-    canvasTex.needsUpdate = true;
+  // canvas = размер видео, чтобы было 1:1
+  if (vCanvas.width !== video.videoWidth || vCanvas.height !== video.videoHeight) {
+    vCanvas.width = video.videoWidth;
+    vCanvas.height = video.videoHeight;
   }
+
+  // рисуем полный кадр без кропа/contain
+  vCtx.drawImage(video, 0, 0, vCanvas.width, vCanvas.height);
+  canvasTex.needsUpdate = true;
+}
+
 
   const screenMat = new THREE.MeshBasicMaterial({ map: canvasTex, side: THREE.DoubleSide });
   screenMat.toneMapped = false;
-  screenMat.depthTest = true;      // рамка может перекрывать края
-  screenMat.depthWrite = false;
-  screenMat.polygonOffset = true;  // чтобы не мерцало
+  screenMat.depthTest = true;     // рамка сможет перекрывать края
+  screenMat.depthWrite = false;   // но не будет ломать глубину
+  screenMat.polygonOffset = true; // чтобы не было z-fighting
   screenMat.polygonOffsetFactor = -1;
   screenMat.polygonOffsetUnits = -1;
 
-  // ===== TV textures =====
+  // TV textures
   const texLoader = new THREE.TextureLoader();
   const texBase = texLoader.load("./assets/models/retro_tv/textures/basecolor.png");
   const texNormal = texLoader.load("./assets/models/retro_tv/textures/normal.png");
@@ -146,6 +136,126 @@
 
   const tvRoot = new THREE.Group();
   scene.add(tvRoot);
+
+  // ===== 3D SOUND BUTTON (PNG on TV) =====
+const buttonTex = texLoader.load("./assets/png/sound.png");
+buttonTex.encoding = THREE.sRGBEncoding;
+
+const btnMat = new THREE.MeshBasicMaterial({
+  map: buttonTex,
+  transparent: true,
+  alphaTest: 0.25
+});
+// чтобы точно было видно
+btnMat.depthTest = false;
+btnMat.depthWrite = false;
+
+const glowMat = new THREE.MeshBasicMaterial({
+  map: buttonTex,
+  transparent: true,
+  alphaTest: 0.25,
+  blending: THREE.AdditiveBlending,
+  color: new THREE.Color(1, 0.15, 0.15),
+  opacity: 0.0
+});
+glowMat.depthTest = false;
+glowMat.depthWrite = false;
+
+let soundBtn3D = null;
+let soundGlow3D = null;
+
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+
+function mountSoundButtonOnTV() {
+  if (!model || soundBtn3D) return;
+
+  const box = new THREE.Box3().setFromObject(model);
+  const size = box.getSize(new THREE.Vector3());
+
+  // размер кнопки
+  const bw = size.x * (isMobile ? 0.16 : 0.14);
+  const bh = bw * 0.45;
+
+  soundGlow3D = new THREE.Mesh(new THREE.PlaneGeometry(bw * 1.22, bh * 1.22), glowMat);
+  soundGlow3D.renderOrder = 999;
+
+  soundBtn3D = new THREE.Mesh(new THREE.PlaneGeometry(bw, bh), btnMat);
+  soundBtn3D.name = "SOUND_BTN";
+  soundBtn3D.renderOrder = 1000;
+
+  // позиция (как на твоём скрине справа снизу на панели)
+  const x = size.x * 0.23;
+  const y = -size.y * 0.33;
+  // чуть ПЕРЕД фронтом, чтобы не пряталось в корпусе
+  const z = box.max.z + size.z * 0.005;
+
+  soundGlow3D.position.set(x, y, z);
+  soundBtn3D.position.set(x, y, z + size.z * 0.0005);
+
+  model.add(soundGlow3D);
+  model.add(soundBtn3D);
+}
+
+function setCursorFromHover(e) {
+  if (!soundBtn3D) return;
+  const rect = canvas.getBoundingClientRect();
+  pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+  pointer.y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
+
+  raycaster.setFromCamera(pointer, camera);
+  const hit = raycaster.intersectObject(soundBtn3D, true);
+  canvas.style.cursor = hit.length ? "pointer" : "default";
+}
+
+canvas.addEventListener("pointermove", setCursorFromHover);
+
+canvas.addEventListener("pointerdown", (e) => {
+  if (!soundBtn3D) return;
+  const rect = canvas.getBoundingClientRect();
+  pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+  pointer.y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
+
+  raycaster.setFromCamera(pointer, camera);
+  const hit = raycaster.intersectObject(soundBtn3D, true);
+
+  if (hit.length) {
+    video.muted = !video.muted;
+    video.play().catch(() => {});
+    // если старую HTML кнопку оставишь — можно синхронизировать подпись:
+    if (soundBtn) soundBtn.textContent = video.muted ? "ВКЛ" : "ВЫКЛ";
+  }
+});
+
+
+  function mountSoundButtonOnTV() {
+    if (!model || soundBtn3D) return;
+
+    const box = new THREE.Box3().setFromObject(model);
+    const size = box.getSize(new THREE.Vector3());
+
+    // размеры кнопки
+    const bw = size.x * (isMobile ? 0.16 : 0.14);
+    const bh = bw * 0.45;
+
+    soundGlow3D = new THREE.Mesh(new THREE.PlaneGeometry(bw * 1.18, bh * 1.18), glowMat);
+    soundGlow3D.renderOrder = 19;
+
+    soundBtn3D = new THREE.Mesh(new THREE.PlaneGeometry(bw, bh), btnMat);
+    soundBtn3D.name = "SOUND_BTN";
+    soundBtn3D.renderOrder = 20;
+
+    // позиция на панели справа снизу (как на твоём скрине)
+    const x = size.x * 0.23;
+    const y = -size.y * 0.33;
+    const z = box.max.z - size.z * 0.015;
+
+    soundGlow3D.position.set(x, y, z - size.z * 0.001);
+    soundBtn3D.position.set(x, y, z);
+
+    model.add(soundGlow3D);
+    model.add(soundBtn3D);
+  }
 
   let model = null;
   let screenPlane = null;
@@ -167,126 +277,34 @@
 
     camBase = { maxDim, dist };
   }
+let videoAR = 5 / 4;
+video.addEventListener("loadedmetadata", () => {
+  if (video.videoWidth && video.videoHeight) videoAR = video.videoWidth / video.videoHeight;
+}, { once: true });
 
-  function ensureScreenPlane() {
+    function ensureScreenPlane() {
     if (!model || screenPlane) return;
 
     const box = new THREE.Box3().setFromObject(model);
     const size = box.getSize(new THREE.Vector3());
 
-    // ✅ УВЕЛИЧЕНИЕ ШОУРИЛА — МЕНЯЙ ЭТУ ЦИФРУ
-    const W_COEF = isMobile ? 0.74 : 0.88;  // было 0.80; сделай 0.90 если нужно ещё больше
-
-    const w = size.x * W_COEF;
+    const w = size.x * (isMobile ? 0.70 : 0.86);  // было 0.86 — слишком широко
     const h = w / videoAR;
 
-    screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(w, h), screenMat);
-    screenPlane.renderOrder = 2;
-    screenPlane.frustumCulled = false;
+screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(w, h), screenMat);
+screenPlane.renderOrder = 2;
+screenPlane.frustumCulled = false;
 
-    // чуть внутрь рамки, чтобы не вылезал на зуме
-    screenPlane.position.set(0, size.y * 0.10, box.max.z - size.z * 0.02);
+// ВАЖНО: не “перед” телеком, а чуть ВНУТРИ рамки (минус, а не плюс)
+screenPlane.position.set(0, size.y * 0.10, box.max.z - size.z * 0.02);
 
-    model.add(screenPlane);
+tvRoot.add(screenPlane);
   }
 
-  // ===== 3D SOUND BUTTON (PNG on TV) =====
-  const soundTex = texLoader.load("./assets/png/sound.png");
-  soundTex.encoding = THREE.sRGBEncoding;
-
-  const btnMat = new THREE.MeshBasicMaterial({
-    map: soundTex,
-    transparent: true,
-    alphaTest: 0.25
-  });
-  btnMat.depthTest = false;
-  btnMat.depthWrite = false;
-
-  const glowMat = new THREE.MeshBasicMaterial({
-    map: soundTex,
-    transparent: true,
-    alphaTest: 0.25,
-    blending: THREE.AdditiveBlending,
-    color: new THREE.Color(1, 0.15, 0.15),
-    opacity: 0.0
-  });
-  glowMat.depthTest = false;
-  glowMat.depthWrite = false;
-
-  let soundBtn3D = null;
-  let soundGlow3D = null;
-
-  const raycaster = new THREE.Raycaster();
-  const pointer = new THREE.Vector2();
-
-  function mountSoundButtonOnTV() {
-    if (!model || soundBtn3D) return;
-
-    // берем WORLD bbox и переводим позицию в LOCAL — иначе улетает после поворота
-    const box = new THREE.Box3().setFromObject(model);
-    const size = box.getSize(new THREE.Vector3());
-    const center = box.getCenter(new THREE.Vector3());
-
-    const bw = size.x * (isMobile ? 0.16 : 0.14);
-    const bh = bw * 0.45;
-
-    soundGlow3D = new THREE.Mesh(new THREE.PlaneGeometry(bw * 1.22, bh * 1.22), glowMat);
-    soundGlow3D.renderOrder = 999;
-
-    soundBtn3D = new THREE.Mesh(new THREE.PlaneGeometry(bw, bh), btnMat);
-    soundBtn3D.name = "SOUND_BTN";
-    soundBtn3D.renderOrder = 1000;
-
-    // WORLD target position (справа снизу на панели)
-    const worldPos = new THREE.Vector3(
-      center.x + size.x * 0.23,
-      center.y - size.y * 0.33,
-      box.max.z - size.z * 0.015
-    );
-
-    // convert WORLD -> LOCAL
-    const localPos = worldPos.clone();
-    model.worldToLocal(localPos);
-
-    soundGlow3D.position.copy(localPos);
-    soundBtn3D.position.copy(localPos);
-
-    // чуть наружу
-    soundBtn3D.position.z += size.z * 0.002;
-    soundGlow3D.position.z += size.z * 0.001;
-
-    model.add(soundGlow3D);
-    model.add(soundBtn3D);
-  }
-
-  function pointerToNDC(e) {
-    const rect = canvas.getBoundingClientRect();
-    pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    pointer.y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
-  }
-
-  canvas.addEventListener("pointermove", (e) => {
-    if (!soundBtn3D) return;
-    pointerToNDC(e);
-    raycaster.setFromCamera(pointer, camera);
-    const hit = raycaster.intersectObjects([soundBtn3D, soundGlow3D].filter(Boolean), true);
-    canvas.style.cursor = hit.length ? "pointer" : "default";
-  });
-
-  canvas.addEventListener("pointerdown", (e) => {
-    if (!soundBtn3D) return;
-    pointerToNDC(e);
-    raycaster.setFromCamera(pointer, camera);
-    const hit = raycaster.intersectObjects([soundBtn3D, soundGlow3D].filter(Boolean), true);
-    if (hit.length) toggleSound();
-  });
-
-  // ===== load FBX =====
   const loader = new THREE.FBXLoader();
   loader.load("./assets/models/retro_tv/tv.fbx", (fbx) => {
     model = fbx;
 
-    // базовый scale (зум делаем tvRoot’ом)
     const b0 = new THREE.Box3().setFromObject(model);
     const s0 = b0.getSize(new THREE.Vector3());
     const max0 = Math.max(s0.x, s0.y, s0.z) || 1;
@@ -294,7 +312,6 @@
 
     model.rotation.set(0, FORCE_ROT_Y, 0);
 
-    // центр после поворота
     const b1 = new THREE.Box3().setFromObject(model);
     const c1 = b1.getCenter(new THREE.Vector3());
     model.position.sub(c1);
@@ -308,12 +325,11 @@
     tvRoot.add(model);
     fitCameraTo(tvRoot);
     ensureScreenPlane();
-    mountSoundButtonOnTV();
-
     tvRoot.scale.setScalar(0.55);
+    mountSoundButtonOnTV();
   });
 
-  // ===== render + GSAP =====
+  // ===== render + gsap sync =====
   let active = false;
   let raf = 0;
   let progress = 0;
@@ -322,23 +338,20 @@
     if (!active) return;
 
     updateVideoTexture();
-
-    // glow: muted -> пульс, on -> красный
-    if (soundGlow3D) {
-      const time = performance.now() * 0.001;
-      soundGlow3D.material.opacity = video.muted
-        ? 0.10 + 0.10 * (0.5 + 0.5 * Math.sin(time * 2.6))
-        : 0.35;
-      soundGlow3D.material.needsUpdate = true;
-    }
-
-    // чтобы “приклеенная” кнопка всегда читалась — чуть ориентируем к камере (не влияет на позицию)
-    if (soundBtn3D) soundBtn3D.lookAt(camera.position);
-    if (soundGlow3D) soundGlow3D.lookAt(camera.position);
+    // glow: muted -> пульс, on -> красный горит
+if (soundGlow3D) {
+  const time = performance.now() * 0.001;
+  if (video.muted) {
+    soundGlow3D.material.opacity = 0.10 + 0.10 * (0.5 + 0.5 * Math.sin(time * 2.6));
+  } else {
+    soundGlow3D.material.opacity = 0.35;
+  }
+  soundGlow3D.material.needsUpdate = true;
+}
 
     const t = progress;
 
-    // твой “приближение” как раньше
+    // синхронизируем телик с зумом картинки
     tvRoot.scale.setScalar((isMobile ? 0.55 : 0.45) + (isMobile ? 0.40 : 0.60) * t);
     camera.position.z = camBase.dist + (camBase.maxDim * 0.35) * (1 - t);
     camera.position.y = (camBase.maxDim * 0.10) - (camBase.maxDim * 0.03) * t;
@@ -360,7 +373,6 @@
     video.pause();
     if (raf) cancelAnimationFrame(raf);
     raf = 0;
-    canvas.style.cursor = "default";
   }
 
   gsap.timeline({
