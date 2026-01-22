@@ -420,32 +420,45 @@ a{ color: inherit; text-decoration:none; }
 
 body.menu-open .drawer{ display:block; }
 
-/* === SHOWREEL LAPTOP  ============================================================================================================ */
-
-.sr-demo{
-  --black: hsl(0 0% 2%);
-  --white: hsl(0 0% 98%);
-  --accent: hsl(10 90% 50%);
-
-  /* demo ranges */
-  --jump: cover 15% cover 45%;
-  --spin: cover 15% cover 45%;
-  --flip: cover 15% cover 45%;
-  --open: cover 15% cover 45%;
-  --straighten: contain 25% contain 65%;
-  --zoom: contain 25% exit -20%;
-
-  padding: 18px 0 24px;
+/* ===== TV fly-through ============================================================================================ */
+.tvfly{
+  position: relative;
   border-bottom: 1px solid var(--border);
 }
 
-.sr-demo__head{
-  padding: 18px 0 10px;
+.tvfly__wrapper{
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* back stage */
+.tvfly__stage{
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: #000;
+}
+#tvflyCanvas{
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* overlay label */
+.tvfly__label{
+  position: absolute;
+  left: 50%;
+  top: 18vh;
+  transform: translateX(-50%);
+  z-index: 3;
   text-align: center;
+  pointer-events: none;
   user-select: none;
 }
 
-.sr-demo__line1{
+.tvfly__line1{
   font-family: "Syne", sans-serif;
   font-weight: 700;
   font-size: clamp(14px, 1.6vw, 16px);
@@ -453,8 +466,7 @@ body.menu-open .drawer{ display:block; }
   text-transform: uppercase;
   color: rgba(255,255,255,0.78);
 }
-
-.sr-demo__line2{
+.tvfly__line2{
   margin-top: 6px;
   font-family: "Inter", sans-serif;
   font-weight: 500;
@@ -463,300 +475,51 @@ body.menu-open .drawer{ display:block; }
   color: rgba(255,255,255,0.55);
 }
 
-/* Laptop section (from demo) */
-.sr-demo .laptop *,
-.sr-demo .laptop *:before,
-.sr-demo .laptop *:after {
-  transform-style: preserve-3d;
-  box-sizing: border-box;
-}
-
-.sr-demo .laptop {
-  height: 500vh;
-  view-timeline: --laptop;
-  position: relative;
-  z-index: 2;
-}
-
-.sr-demo .laptop section {
-  width: 100%;
-  position: sticky;
-  top: 0;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-  height: 100vh;
-}
-
-.sr-demo .laptop .scene {
-  transform: rotateX(-24deg) rotateY(-32deg) rotateX(90deg) translate3d(0, 0, -20vmin);
-}
-
-/* Animations (from demo) */
-.sr-demo .scene__jump {
-  animation: book-jump both ease-in-out;
-  animation-timeline: --laptop;
-  animation-range: var(--jump);
-}
-@keyframes book-jump { 50% { transform: translate3d(0, 0, 40vmin); } }
-
-.sr-demo .scene__spin {
-  animation: book-spin both ease-in-out;
-  animation-timeline: --laptop;
-  animation-range: var(--spin);
-}
-@keyframes book-spin { to { transform: rotateZ(-360deg); } }
-
-.sr-demo .scene__flip {
-  animation: book-flip both ease-in-out;
-  animation-timeline: --laptop;
-  animation-range: var(--flip);
-}
-@keyframes book-flip {
-  0%, 20% { transform: rotateX(0deg); }
-  80%, 100% { transform: rotateX(360deg); }
-}
-
-.sr-demo .scene {
-  animation: scale-to-view both linear;
-  animation-timeline: --laptop;
-  animation-range: var(--straighten);
-  transform: translate3d(0, 0, 100vmin);
-}
-@keyframes scale-to-view {
-  0% { transform: rotateX(-24deg) rotateY(-32deg) rotateX(90deg) translate3d(0, 0, -20vmin); }
-  to { transform: rotateX(0) rotateY(0) rotateX(90deg) translate3d(0, 0, -12vmin); }
-}
-
-.sr-demo .scene__zoom {
-  animation: scene-zoom both linear;
-  animation-timeline: --laptop;
-  animation-range: var(--zoom);
-}
-@keyframes scene-zoom { 0% { scale: 1; } to { scale: 9; } }
-
-/* Shadow (from demo) */
-.sr-demo .scene__shadow { position: relative; }
-.sr-demo .scene__shadow:after {
-  background: hsl(0 0% 0% / 0.5);
-  content: "";
-  position: absolute;
-  inset: 5%;
-  filter: blur(10px);
-  animation: shadow-in-out both linear;
-  animation-timeline: --laptop;
-  animation-range: var(--jump);
-}
-@keyframes shadow-in-out {
-  0%, 5%, 95%, 100% { opacity: 1; }
-  35%, 65% { opacity: 0; }
-}
-
-/* Model (from demo) */
-.sr-demo .jbook {
-  width: 30vmin;
-  aspect-ratio: 16 / 12;
-  position: relative;
-  transform: translate3d(0, 0, 2vmin);
-}
-
-.sr-demo .shell { position: absolute; inset: 0; }
-
-.sr-demo .shell--top {
-  --depth: 2;
-  --color: hsl(0 0% 80%);
-  background: var(--black);
-  transform: rotateX(0deg);
-  transform-origin: 50% 0;
-  animation: book-open-top both linear;
-  animation-timeline: --laptop;
-  animation-range: var(--open);
-}
-.sr-demo .shell--top:after {
-  content: "";
+/* front image */
+.tvfly__image-container{
   position: absolute;
   inset: 0;
-  border: 1vmin solid hsl(0 0% 10%);
-}
-@keyframes book-open-top {
-  0%, 30% { transform: rotateX(0deg); }
-  40% { transform: rotateX(120deg); }
-  75%, 100% { transform: rotateX(90deg); }
-}
-
-.sr-demo .shell--bottom {
-  --depth: 2;
-  --color: hsl(0 0% 80%);
-  background: hsl(0 0% 50%);
-  transform-origin: 50% 0;
-  animation: book-open-bottom both linear;
-  animation-timeline: --laptop;
-  animation-range: var(--open);
-}
-@keyframes book-open-bottom {
-  0%, 45% { transform: rotateX(0deg); }
-  65% { transform: rotateX(50deg); }
-  100% { transform: rotateX(0deg); }
-}
-
-/* keyboard placement (from demo) */
-.sr-demo .laptop-keyboard {
-  width: 90%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  translate: -50% -80%;
-}
-
-/* bottom extra (from demo) */
-.sr-demo .shell--bottom:after {
-  content: "";
-  width: 32%;
-  aspect-ratio: 4 / 3;
-  background: hsl(0 0% 40%);
-  position: absolute;
-  bottom: 5%;
-  left: 50%;
-  translate: -50% 0;
-  border-radius: 0.5vmin;
-}
-.sr-demo .shell--bottom .cuboid__side:nth-of-type(6) { --b: 0.8; }
-.sr-demo .shell--bottom .cuboid__side:nth-of-type(2):after {
-  content: "";
-  position: absolute;
-  width: 50%;
-  aspect-ratio: 1 / 3;
-  background: var(--black);
-  left: 50%;
-  top: 10%;
-  translate: -50% 0;
-}
-
-.sr-demo .shell--top .cuboid {
-  transform: translate3d(0, 0, calc(1vmin + 1px));
-}
-.sr-demo .shell--bottom .cuboid {
-  transform: translate3d(0, 0, calc(-1vmin - 1px));
-}
-
-/* Cuboid boilerplate (from demo) */
-.sr-demo .cuboid { width: 100%; height: 100%; position: relative; }
-.sr-demo .cuboid__side { background: var(--color); filter: brightness(var(--b, 1)); position: absolute; }
-.sr-demo .cuboid__side:nth-of-type(1) {
-  --b: 1.1; height: calc(var(--depth, 20) * 1vmin); width: 100%;
-  top: 0; transform: translate(0, -50%) rotateX(90deg);
-}
-.sr-demo .cuboid__side:nth-of-type(2) {
-  --b: 0.9; height: 100%; width: calc(var(--depth, 20) * 1vmin);
-  top: 50%; right: 0; transform: translate(50%, -50%) rotateY(90deg);
-}
-.sr-demo .cuboid__side:nth-of-type(3) {
-  --b: 0.5; width: 100%; height: calc(var(--depth, 20) * 1vmin);
-  bottom: 0; transform: translate(0%, 50%) rotateX(90deg);
-}
-.sr-demo .cuboid__side:nth-of-type(4) {
-  --b: 1; height: 100%; width: calc(var(--depth, 20) * 1vmin);
-  left: 0; top: 50%; transform: translate(-50%, -50%) rotateY(90deg);
-}
-.sr-demo .cuboid__side:nth-of-type(5) {
-  --b: 0.8; height: 100%; width: 100%;
-  transform: translate3d(0, 0, calc(var(--depth, 20) * 0.5vmin));
-  top: 0; left: 0;
-}
-.sr-demo .cuboid__side:nth-of-type(6) {
-  --b: 1.2; height: 100%; width: 100%;
-  transform: translate3d(0, 0, calc(var(--depth, 20) * -0.5vmin)) rotateY(180deg);
-  top: 0; left: 0;
-}
-
-/* ========== OUR VIDEO ON SCREEN (new) ========== */
-/* делаем как screen-bear, но больше */
-.sr-demo .shell--top { position: relative; }
-
-.sr-demo__screen{
-  position: absolute;
-  width: 72%;
-  aspect-ratio: 16 / 9;
-
-  top: 50%;
-  left: 50%;
-  translate: -50% -50%;
-
-  rotate: 180deg; /* как в демке */
-  overflow: hidden;
-  border-radius: 1.2vmin;
-  background: #000;
-
-  border: 0.35vmin solid rgba(255,255,255,0.08);
   z-index: 2;
+  perspective: 500px;
+  overflow: hidden;
+  pointer-events: none;
 }
-
-.sr-demo__video{
+.tvfly__image{
   width: 100%;
   height: 100%;
-  display: block;
   object-fit: cover;
+  object-position: center center;
+  will-change: transform, opacity;
 }
 
-/* sound btn */
-.sr-demo__sound{
+/* sound button */
+.tvfly__sound{
   position: absolute;
-  right: 10px;
-  bottom: 10px;
-  width: 52px;
-  height: 52px;
+  right: 18px;
+  bottom: 18px;
+  width: 56px;
+  height: 56px;
   border-radius: 999px;
-
   border: 1px solid rgba(255,255,255,0.16);
   background: rgba(0,0,0,0.40);
   backdrop-filter: blur(12px);
-
   display: grid;
   place-items: center;
   cursor: pointer;
-  z-index: 3;
-
-  transition: transform .2s ease, background .2s ease, border-color .2s ease;
+  z-index: 4;
 }
-.sr-demo__sound:hover{
-  transform: scale(1.05);
-  background: rgba(0,0,0,0.55);
-  border-color: rgba(255,255,255,0.26);
+.tvfly__soundIcon{
+  width: 18px; height: 18px; position: relative;
 }
-
-.sr-demo__sound-icon{
-  width: 18px;
-  height: 18px;
-  position: relative;
+.tvfly__soundIcon::before{
+  content:""; position:absolute; left:0; top:50%;
+  width:7px; height:10px; transform:translateY(-50%);
+  border-radius:2px; background:rgba(255,255,255,0.9);
 }
-.sr-demo__sound-icon::before{
-  content:"";
-  position:absolute;
-  left:0; top:50%;
-  width:7px; height:10px;
-  transform: translateY(-50%);
-  border-radius:2px;
-  background: rgba(255,255,255,0.9);
-}
-.sr-demo__sound-icon::after{
-  content:"";
-  position:absolute;
-  left:7px; top:50%;
-  width:9px; height:9px;
-  transform: translateY(-50%) rotate(45deg);
+.tvfly__soundIcon::after{
+  content:""; position:absolute; left:7px; top:50%;
+  width:9px; height:9px; transform:translateY(-50%) rotate(45deg);
   border-right:2px solid rgba(255,255,255,0.9);
   border-top:2px solid rgba(255,255,255,0.9);
   border-radius:2px;
 }
-
-.sr-demo__sound:not(.is-on){
-  animation: srDemoPulse 1.6s ease-in-out infinite;
-}
-.sr-demo__sound.is-on{ animation:none; }
-
-@keyframes srDemoPulse{
-  0%,100%{ box-shadow: 0 0 0 0 rgba(255,255,255,0.0); }
-  50%{ box-shadow: 0 0 0 12px rgba(255,255,255,0.03); }
-}
-
-/* если видео вдруг вверх ногами — поменяй на rotate:0deg */
