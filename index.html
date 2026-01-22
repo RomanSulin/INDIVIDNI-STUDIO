@@ -73,24 +73,27 @@
   </div>
 </section>
 
-<!-- TV FLY-THROUGH SHOWREEL ------------------------------------------------------------------------------------------>
+<!-- TV FLY-THROUGH SHOWREEL ---------------------------------------------------------------------------------------------->
 <section class="tvfly" id="showreel">
   <div class="tvfly__wrapper">
-    <!-- BACK: black + 3D TV -->
+
+    <!-- BACK: black + TV -->
     <div class="tvfly__stage" aria-hidden="true">
       <canvas id="tvflyCanvas"></canvas>
 
-     <video id="tvflyVideo" muted playsinline webkit-playsinline preload="auto" loop class="tvfly__hiddenVideo">
-  <source src="./assets/ui/showreel_2.mp4" type="video/mp4" />
-</video>
+      <!-- video for texture (НЕ display:none) -->
+      <video id="tvflyVideo" class="tvfly__hiddenVideo" muted playsinline webkit-playsinline preload="auto" loop>
+        <source src="./assets/ui/showreel_2.mp4" type="video/mp4" />
+      </video>
     </div>
 
     <!-- FRONT: image we fly through -->
     <div class="tvfly__image-container">
-  <img class="tvfly__image" src="./assets/ui/window.png" alt="window">
-</div>
+      <img class="tvfly__image" src="./assets/ui/window.png" alt="window" />
+    </div>
   </div>
 </section>
+
 
 
     <!-- INTRO ---------------------------------------------------------------------------------------------------------------------------------------------------------->
@@ -372,19 +375,26 @@
     </div>
   </footer>
 
-  <!-- Scripts -->
+<!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
+<!-- GSAP -->
 <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
 
+<!-- fflate MUST be BEFORE FBXLoader -->
 <script src="https://unpkg.com/fflate@0.7.4/umd/index.js"></script>
+
+<!-- FBXLoader for three r128 -->
 <script src="https://unpkg.com/three@0.128.0/examples/js/loaders/FBXLoader.js"></script>
 
+<!-- TV showreel -->
 <script src="./assets/js/tv_showreel.js" defer></script>
 
+<!-- existing -->
 <script src="./assets/js/liquid.js" defer></script>
 <script src="./assets/js/main.js" defer></script>
+
 
 </body>
 </html>
