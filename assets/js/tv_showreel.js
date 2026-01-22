@@ -135,15 +135,15 @@ function ensureScreenPlane() {
   const box = new THREE.Box3().setFromObject(tvRoot);
   const size = box.getSize(new THREE.Vector3());
 
-  const w = size.x * 0.62;
+  const w = size.x * 0.82;          // было 0.62 — станет заметно больше
   const h = w * 9 / 16;
 
   screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(w, h), screenMat);
   screenPlane.renderOrder = 999;
   screenPlane.frustumCulled = false;
 
-  // позиция “перед” телеком (локально)
-  screenPlane.position.set(0, size.y * 0.06, size.z * 0.55);
+// чуть выше и чуть ближе к “лицу”
+  screenPlane.position.set(0, size.y * 0.09, size.z * 0.50);
   screenPlane.lookAt(camera.position);
 
   tvRoot.add(screenPlane);
@@ -193,8 +193,9 @@ function ensureScreenPlane() {
     });
 
     tvRoot.add(model);
-    ensureScreenPlane();
-    fitCameraTo(tvRoot);
+    fitCameraTo(tvRoot);     // СНАЧАЛА камера
+    ensureScreenPlane();     // ПОТОМ экран
+    if (screenPlane) screenPlane.lookAt(camera.position); // на всякий
    });
 
   // GSAP fly-through + render loop
@@ -206,7 +207,7 @@ function ensureScreenPlane() {
     if (!active) return;
 
     updateVideoTexture();
-
+    if (screenPlane) screenPlane.lookAt(camera.position);
     camera.lookAt(0, 0, 0);
     renderer.render(scene, camera);
     raf = requestAnimationFrame(render);
