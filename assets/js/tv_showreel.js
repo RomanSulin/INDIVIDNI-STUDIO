@@ -136,6 +136,100 @@ function updateVideoTexture() {
 
   const tvRoot = new THREE.Group();
   scene.add(tvRoot);
+  // ===== 3D SOUND BUTTON on TV (PNG) =========================================================================================================
+  const buttonTex = texLoader.load("./assets/png/sound.png");
+  buttonTex.encoding = THREE.sRGBEncoding;
+
+  const btnMat = new THREE.MeshBasicMaterial({
+    map: buttonTex,
+    transparent: true,
+    alphaTest: 0.25
+  });
+  btnMat.depthTest = true;
+  btnMat.depthWrite = false;
+  btnMat.polygonOffset = true;
+  btnMat.polygonOffsetFactor = -2;
+  btnMat.polygonOffsetUnits = -2;
+
+  const glowMat = new THREE.MeshBasicMaterial({
+    map: buttonTex,
+    transparent: true,
+    alphaTest: 0.25,
+    blending: THREE.AdditiveBlending,
+    color: new THREE.Color(1, 0.15, 0.15),
+    opacity: 0.0
+  });
+  glowMat.depthTest = true;
+  glowMat.depthWrite = false;
+  glowMat.polygonOffset = true;
+  glowMat.polygonOffsetFactor = -3;
+  glowMat.polygonOffsetUnits = -3;
+
+  let soundBtn3D = null;
+  let soundGlow3D = null;
+
+  const raycaster = new THREE.Raycaster();
+  const pointer = new THREE.Vector2();
+
+  function setCanvasCursor(e) {
+    if (!soundBtn3D) return;
+    const rect = canvas.getBoundingClientRect();
+    pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    pointer.y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
+    raycaster.setFromCamera(pointer, camera);
+    const hit = raycaster.intersectObject(soundBtn3D, true);
+    canvas.style.cursor = hit.length ? "pointer" : "default";
+  }
+
+  canvas.addEventListener("pointermove", setCanvasCursor);
+
+  canvas.addEventListener("pointerdown", (e) => {
+    if (!soundBtn3D) return;
+
+    const rect = canvas.getBoundingClientRect();
+    pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    pointer.y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
+
+    raycaster.setFromCamera(pointer, camera);
+    const hit = raycaster.intersectObject(soundBtn3D, true);
+
+    if (hit.length) {
+      // toggle mute
+      video.muted = !video.muted;
+      video.play().catch(() => {});
+      // синхронизируем текстовую кнопку (если ты её не убрал)
+      setBtnLabel();
+    }
+  });
+
+  function mountSoundButtonOnTV() {
+    if (!model || soundBtn3D) return;
+
+    const box = new THREE.Box3().setFromObject(model);
+    const size = box.getSize(new THREE.Vector3());
+
+    // размеры кнопки
+    const bw = size.x * (isMobile ? 0.16 : 0.14);
+    const bh = bw * 0.45;
+
+    soundGlow3D = new THREE.Mesh(new THREE.PlaneGeometry(bw * 1.18, bh * 1.18), glowMat);
+    soundGlow3D.renderOrder = 19;
+
+    soundBtn3D = new THREE.Mesh(new THREE.PlaneGeometry(bw, bh), btnMat);
+    soundBtn3D.name = "SOUND_BTN";
+    soundBtn3D.renderOrder = 20;
+
+    // позиция на панели справа снизу (как на твоём скрине)
+    const x = size.x * 0.23;
+    const y = -size.y * 0.33;
+    const z = box.max.z - size.z * 0.015;
+
+    soundGlow3D.position.set(x, y, z - size.z * 0.001);
+    soundBtn3D.position.set(x, y, z);
+
+    model.add(soundGlow3D);
+    model.add(soundBtn3D);
+  }
 
   let model = null;
   let screenPlane = null;
@@ -206,6 +300,7 @@ tvRoot.add(screenPlane);
     fitCameraTo(tvRoot);
     ensureScreenPlane();
     tvRoot.scale.setScalar(0.55);
+    mountSoundButtonOnTV();
   });
 
   // ===== render + gsap sync =====
@@ -217,6 +312,18 @@ tvRoot.add(screenPlane);
     if (!active) return;
 
     updateVideoTexture();
+    // glow effect for sound button
+    if (soundGlow3D) {
+      const time = performance.now() * 0.001;
+      if (video.muted) {
+        // muted: мягко пульсирует, чтобы заметили
+        soundGlow3D.material.opacity = 0.10 + 0.10 * (0.5 + 0.5 * Math.sin(time * 2.6));
+      } else {
+        // sound on: яркое красное свечение
+        soundGlow3D.material.opacity = 0.35;
+      }
+      soundGlow3D.material.needsUpdate = true;
+    }
 
     const t = progress;
 
