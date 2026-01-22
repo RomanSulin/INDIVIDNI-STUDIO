@@ -19,11 +19,10 @@
 
   gsap.registerPlugin(ScrollTrigger);
 
-  // ====== ТУТ ПОВОРОТ ТЕЛЕКА (твоя настройка) ======
-  // варианты: 0, Math.PI/2, Math.PI, 3*Math.PI/2
+  // ====== ориентация телека (твоя настройка) ======
   const FORCE_ROT_Y = (3 * Math.PI) / 2;
 
-  // ====== Video ======
+  // ====== video ======
   video.muted = true;
   video.loop = true;
 
@@ -40,7 +39,7 @@
   });
   syncSoundBtn();
 
-  // ====== Three ======
+  // ====== three ======
   const renderer = new THREE.WebGLRenderer({
     canvas,
     antialias: true,
@@ -56,9 +55,7 @@
   const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 200);
   camera.position.set(0, 0.15, 3.0);
 
-  // Свет без “молока”
   scene.add(new THREE.AmbientLight(0xffffff, 0.35));
-
   const key = new THREE.DirectionalLight(0xffffff, 1.15);
   key.position.set(3, 3, 2);
   scene.add(key);
@@ -77,47 +74,37 @@
   window.addEventListener('resize', resize);
   resize();
 
-  // VideoTexture
-// ===== CanvasTexture вместо VideoTexture (гарантированно) =====
-const vCanvas = document.createElement('canvas');
-const vCtx = vCanvas.getContext('2d', { alpha: false });
+  // ===== CanvasTexture (надёжнее VideoTexture в твоём кейсе) =====
+  const vCanvas = document.createElement('canvas');
+  const vCtx = vCanvas.getContext('2d', { alpha: false });
 
-const canvasTex = new THREE.CanvasTexture(vCanvas);
-canvasTex.encoding = THREE.sRGBEncoding;
-canvasTex.minFilter = THREE.LinearFilter;
-canvasTex.magFilter = THREE.LinearFilter;
-canvasTex.generateMipmaps = false;
+  const canvasTex = new THREE.CanvasTexture(vCanvas);
+  canvasTex.encoding = THREE.sRGBEncoding;
+  canvasTex.minFilter = THREE.LinearFilter;
+  canvasTex.magFilter = THREE.LinearFilter;
+  canvasTex.generateMipmaps = false;
 
-const screenMat = new THREE.MeshBasicMaterial({
-  map: canvasTex,
-  side: THREE.DoubleSide
-});
-screenMat.toneMapped = false;
-  screenMat.side = THREE.DoubleSide;
-screenMat.depthTest = false;
-screenMat.depthWrite = false;
-
-// функция обновления кадра
-function updateVideoTexture() {
-  // когда есть кадры
-  if (video.readyState >= 2 && video.videoWidth && video.videoHeight) {
-    // один раз под размер видео
-    if (vCanvas.width !== video.videoWidth) {
-      vCanvas.width = video.videoWidth;
-      vCanvas.height = video.videoHeight;
+  function updateVideoTexture() {
+    if (video.readyState >= 2 && video.videoWidth && video.videoHeight) {
+      if (vCanvas.width !== video.videoWidth) {
+        vCanvas.width = video.videoWidth;
+        vCanvas.height = video.videoHeight;
+      }
+      vCtx.drawImage(video, 0, 0, vCanvas.width, vCanvas.height);
+      canvasTex.needsUpdate = true;
     }
-    vCtx.drawImage(video, 0, 0, vCanvas.width, vCanvas.height);
-    canvasTex.needsUpdate = true;
   }
-}
 
-  
+  const screenMat = new THREE.MeshBasicMaterial({
+    map: canvasTex,
+    side: THREE.DoubleSide
+  });
   screenMat.toneMapped = false;
-  // чтобы видео всегда рисовалось поверх
+  // чтобы “экран” не перекрывался стеклом/пластиком модели
   screenMat.depthTest = false;
   screenMat.depthWrite = false;
 
-  // Textures
+  // ===== textures body =====
   const texLoader = new THREE.TextureLoader();
   const texBase = texLoader.load('./assets/models/retro_tv/textures/basecolor.png');
   const texNormal = texLoader.load('./assets/models/retro_tv/textures/normal.png');
@@ -144,7 +131,6 @@ function updateVideoTexture() {
   let scrollP = 0;
 
   function clamp01(x) { return Math.min(1, Math.max(0, x)); }
-  function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
 
   function fitCameraTo(obj) {
     const box = new THREE.Box3().setFromObject(obj);
@@ -163,164 +149,72 @@ function updateVideoTexture() {
     return { maxDim, dist };
   }
 
-  // Поиск экрана (по имени + эвристика)
-  function findScreenMesh(root) {
-    let byName = null;
-    root.traverse((o) => {
-      if (byName || !o.isMesh) return;
-      const n = (o.name || '').toLowerCase();
-      const mn = (o.material?.name || '').toLowerCase();
-      if (n.includes('screen') || n.includes('display') || n.includes('monitor') ||
-          mn.includes('screen') || mn.includes('display')) {
-        byName = o;
-      }
-    });
-    if (byName) return byName;
-
-    const rootBox = new THREE.Box3().setFromObject(root);
-    let best = null;
-    let bestScore = -1e9;
-
-    root.traverse((o) => {
-      if (!o.isMesh) return;
-
-      const b = new THREE.Box3().setFromObject(o);
-      const s = b.getSize(new THREE.Vector3());
-      const c = b.getCenter(new THREE.Vector3());
-
-      const dims = [Math.abs(s.x), Math.abs(s.y), Math.abs(s.z)].sort((a, b) => a - b);
-      const thickness = dims[0];
-      const area = dims[1] * dims[2];
-      const flat = thickness / (dims[2] + 1e-6);
-      if (flat > 0.12 || area < 0.02) return;
-
-      const aspect = dims[2] / (dims[1] + 1e-6);
-      const aspectDist = Math.min(Math.abs(aspect - 1.333), Math.abs(aspect - 1.777));
-      const frontness = (c.z - rootBox.min.z) / ((rootBox.max.z - rootBox.min.z) + 1e-6);
-
-      const score = (area * 2.0) + (frontness * 0.8) - (aspectDist * 1.0);
-      if (score > bestScore) { bestScore = score; best = o; }
-    });
-
-    return best;
-  }
-
-  // Фолбэк: плоскость с видео прямо перед телеком (шоурилл будет всегда)
-  function addFallbackPlane(root) {
+  function addSingleScreenPlane(root) {
     const box = new THREE.Box3().setFromObject(root);
     const size = box.getSize(new THREE.Vector3());
 
-    const w = size.x * 0.38;
+    const w = size.x * 0.36;
     const h = w * 9 / 16;
 
     const plane = new THREE.Mesh(new THREE.PlaneGeometry(w, h), screenMat);
-    plane.name = 'TV_FALLBACK_SCREEN';
-    plane.renderOrder = 10;
+    plane.name = 'TV_SCREEN_PLANE';
+    plane.renderOrder = 999;
+    plane.frustumCulled = false;
 
-    // Локальная позиция относительно root (root пока не в сцене — это ок)
-    // ставим чуть выше центра и ближе к камере (box.max.z)
-    plane.position.set(0, size.y * 0.06, box.max.z + size.z * 0.01);
+    // по центру, чуть выше, и слегка перед фронтом
+    plane.position.set(0, size.y * 0.06, box.max.z + size.z * 0.03);
 
     root.add(plane);
     return plane;
   }
 
-  // ====== Load FBX ======
+  // ===== load FBX =====
   const loader = new THREE.FBXLoader();
   loader.load(
     './assets/models/retro_tv/tv.fbx',
     (fbx) => {
       model = fbx;
 
-      // 1) scale до адекватного размера
+      // scale до адекватного размера
       const box0 = new THREE.Box3().setFromObject(model);
       const size0 = box0.getSize(new THREE.Vector3());
       const max0 = Math.max(size0.x, size0.y, size0.z) || 1;
-
-      const target = 1.2; // если всё ещё слишком большой/маленький — меняй тут (1.0..1.4)
+      const target = 1.2;
       model.scale.setScalar(target / max0);
 
-      // 2) ПОВОРОТ
+      // поворот
       model.rotation.set(0, FORCE_ROT_Y, 0);
 
-      // 3) КРИТИЧНО: центрируем ПОСЛЕ поворота
+      // центрирование ПОСЛЕ поворота
       const box1 = new THREE.Box3().setFromObject(model);
       const center1 = box1.getCenter(new THREE.Vector3());
       model.position.sub(center1);
 
-      // 4) ищем экран
-      const screen = findScreenMesh(model);
-
-      // 5) материалы
+      // материалы корпуса
       model.traverse((o) => {
         if (!o.isMesh) return;
         o.frustumCulled = false;
-        o.material = (screen && o === screen) ? screenMat : bodyMat;
+        o.material = bodyMat;
       });
 
-      // 6) ФОЛБЭК экран всегда (даже если screen найден, оставляем — он не мешает)
-      addFallbackPlane(model);
+      // один-единственный экран
+      addSingleScreenPlane(model);
 
       tvRoot.add(model);
-      // ===== ALWAYS-VISIBLE VIDEO PLANE (over the TV) =====
-const tvBox = new THREE.Box3().setFromObject(model);
-const tvSize = tvBox.getSize(new THREE.Vector3());
-
-// размер “экрана” (подгоняется, но начнём с адекватных)
-const planeW = tvSize.x * 0.36;
-const planeH = planeW * 9 / 16;
-
-const plane = new THREE.Mesh(new THREE.PlaneGeometry(planeW, planeH), screenMat);
-plane.renderOrder = 999;
-plane.frustumCulled = false;
-
-// ставим чуть выше центра и немного “перед” передней гранью TV
-plane.position.set(0, tvSize.y * 0.06, tvBox.max.z + tvSize.z * 0.02);
-
-// добавляем как child модели, чтобы ехал вместе с ней
-model.add(plane);
-
-      // --- Fallback screen: гарантированно видно видео поверх телика ---
-const box = new THREE.Box3().setFromObject(model);
-const size = box.getSize(new THREE.Vector3());
-
-// размеры экрана (подгонишь потом)
-const w = size.x * 0.38;
-const h = w * 9 / 16;
-
-const fallback = new THREE.Mesh(new THREE.PlaneGeometry(w, h), screenMat);
-fallback.renderOrder = 999;
-fallback.frustumCulled = false;
-
-// ставим чуть впереди передней грани телика
-// (если будет “слишком наружу/внутрь” — меняй множитель 0.03)
-fallback.position.set(0, size.y * 0.06, box.max.z + size.z * 0.03);
-
-// если у тебя телик повернут — плоскость всё равно будет вместе с моделью
-model.add(fallback);
-
-
-      // 7) камера по модели
       fitCameraTo(tvRoot);
 
-      console.log('[tvfly] loaded. screen:', screen ? (screen.name || '(no name)') : 'not found (fallback ok)');
+      console.log('[tvfly] loaded ok');
     },
     undefined,
     (err) => console.error('[tvfly] FBX load error', err)
   );
 
-  // ====== Render ======
   function render() {
     if (!active) return;
 
-    const t = easeOutCubic(scrollP);
-
-    // ВАЖНО: не крутим tvRoot, пока центрируем (иначе кажется “не по центру”)
-    tvRoot.rotation.y = 0;
-
+    updateVideoTexture();      // <-- вот это двигает картинку на “экране”
     camera.lookAt(0, 0, 0);
-    updateVideoTexture();
-    if (video.readyState >= 2) videoTex.needsUpdate = true;
+
     renderer.render(scene, camera);
     raf = requestAnimationFrame(render);
   }
