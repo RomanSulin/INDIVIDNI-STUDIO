@@ -262,7 +262,7 @@ video.addEventListener("loadedmetadata", () => {
     const box = new THREE.Box3().setFromObject(model);
     const size = box.getSize(new THREE.Vector3());
 
-    const w = size.x * (isMobile ? 0.70 : 0.80);  // было 0.86 — слишком широко
+    const w = size.x * (isMobile ? 0.70 : 0.86);  // было 0.86 — слишком широко
     const h = w / videoAR;
 
 screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(w, h), screenMat);
