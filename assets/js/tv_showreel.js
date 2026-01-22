@@ -167,13 +167,13 @@ let soundGlow3D = null;
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
 
-function mountSoundButtonOnTV() {
+  function mountSoundButtonOnTV() {
   if (!model || soundBtn3D) return;
 
   const box = new THREE.Box3().setFromObject(model);
   const size = box.getSize(new THREE.Vector3());
+  const center = box.getCenter(new THREE.Vector3());
 
-  // размер кнопки
   const bw = size.x * (isMobile ? 0.16 : 0.14);
   const bh = bw * 0.45;
 
@@ -184,14 +184,23 @@ function mountSoundButtonOnTV() {
   soundBtn3D.name = "SOUND_BTN";
   soundBtn3D.renderOrder = 1000;
 
-  // позиция (как на твоём скрине справа снизу на панели)
-  const x = size.x * 0.23;
-  const y = -size.y * 0.33;
-  // чуть ПЕРЕД фронтом, чтобы не пряталось в корпусе
-  const z = box.max.z + size.z * 0.005;
+  // Точка в WORLD (справа снизу на панели)
+  const worldPos = new THREE.Vector3(
+    center.x + size.x * 0.23,     // вправо
+    center.y - size.y * 0.33,     // вниз
+    box.max.z - size.z * 0.015    // чуть "внутрь" фронта
+  );
 
-  soundGlow3D.position.set(x, y, z);
-  soundBtn3D.position.set(x, y, z + size.z * 0.0005);
+  // Переводим WORLD -> LOCAL модели
+  const localPos = worldPos.clone();
+  model.worldToLocal(localPos);
+
+  soundGlow3D.position.copy(localPos);
+  soundBtn3D.position.copy(localPos);
+
+  // Чуть ближе к камере (чтобы не "утопало" в пластике)
+  soundBtn3D.position.z += size.z * 0.002;
+  soundGlow3D.position.z += size.z * 0.001;
 
   model.add(soundGlow3D);
   model.add(soundBtn3D);
@@ -217,7 +226,7 @@ canvas.addEventListener("pointerdown", (e) => {
   pointer.y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
 
   raycaster.setFromCamera(pointer, camera);
-  const hit = raycaster.intersectObject(soundBtn3D, true);
+  const hit = raycaster.intersectObjects([soundBtn3D, soundGlow3D].filter(Boolean), true);
 
   if (hit.length) {
     video.muted = !video.muted;
@@ -226,36 +235,6 @@ canvas.addEventListener("pointerdown", (e) => {
     if (soundBtn) soundBtn.textContent = video.muted ? "ВКЛ" : "ВЫКЛ";
   }
 });
-
-
-  function mountSoundButtonOnTV() {
-    if (!model || soundBtn3D) return;
-
-    const box = new THREE.Box3().setFromObject(model);
-    const size = box.getSize(new THREE.Vector3());
-
-    // размеры кнопки
-    const bw = size.x * (isMobile ? 0.16 : 0.14);
-    const bh = bw * 0.45;
-
-    soundGlow3D = new THREE.Mesh(new THREE.PlaneGeometry(bw * 1.18, bh * 1.18), glowMat);
-    soundGlow3D.renderOrder = 19;
-
-    soundBtn3D = new THREE.Mesh(new THREE.PlaneGeometry(bw, bh), btnMat);
-    soundBtn3D.name = "SOUND_BTN";
-    soundBtn3D.renderOrder = 20;
-
-    // позиция на панели справа снизу (как на твоём скрине)
-    const x = size.x * 0.23;
-    const y = -size.y * 0.33;
-    const z = box.max.z - size.z * 0.015;
-
-    soundGlow3D.position.set(x, y, z - size.z * 0.001);
-    soundBtn3D.position.set(x, y, z);
-
-    model.add(soundGlow3D);
-    model.add(soundBtn3D);
-  }
 
   let model = null;
   let screenPlane = null;
@@ -348,7 +327,9 @@ if (soundGlow3D) {
   }
   soundGlow3D.material.needsUpdate = true;
 }
-
+    if (soundBtn3D) soundBtn3D.lookAt(camera.position);
+if (soundGlow3D) soundGlow3D.lookAt(camera.position);
+}
     const t = progress;
 
     // синхронизируем телик с зумом картинки
