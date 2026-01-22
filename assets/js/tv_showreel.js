@@ -8,34 +8,72 @@
   const img = section.querySelector(".tvfly__image") || section.querySelector(".tvfly__image-container img");
   const canvas = section.querySelector("#tvflyCanvas");
   const video = section.querySelector("#tvflyVideo");
-  const soundBtn = section.querySelector("#tvflySound");
 
-  if (!wrapper || !img || !canvas || !video || !soundBtn) return;
+  // controls (desktop slider + fallback button)
+  const soundBtn = section.querySelector("#tvflySound");
+  const vol = section.querySelector("#tvflyVolume");
+
+  if (!wrapper || !img || !canvas || !video) return;
   if (!window.THREE || !window.gsap || !window.ScrollTrigger || !THREE.FBXLoader) return;
 
   gsap.registerPlugin(ScrollTrigger);
 
-  // Поворот телека (оставь как у тебя “лицом”)
+  // TV orientation
   const FORCE_ROT_Y = (3 * Math.PI) / 2;
 
-  // video
-  video.muted = true;
+  // ===== video setup =====
   video.loop = true;
+  video.playsInline = true;
 
-  function syncSound() {
-    const on = !video.muted;
-    soundBtn.setAttribute("aria-pressed", on ? "true" : "false");
-    soundBtn.setAttribute("aria-label", on ? "Выключить звук" : "Включить звук");
+  // start muted by default (autoplay friendly)
+  video.muted = true;
+  video.volume = 1;
+
+  const isMobile = window.matchMedia("(max-width: 860px)").matches;
+
+  function updateUI() {
+    if (soundBtn) {
+      const on = !video.muted;
+      soundBtn.setAttribute("aria-pressed", on ? "true" : "false");
+      soundBtn.setAttribute("aria-label", on ? "Выключить звук" : "Включить звук");
+      soundBtn.classList.toggle("is-on", on);
+    }
+    if (vol) {
+      vol.value = String(Math.round(video.volume * 100));
+      vol.disabled = video.muted;
+    }
   }
-  soundBtn.addEventListener("click", () => {
-    video.muted = !video.muted;
-    video.play().catch(() => {});
-    syncSound();
-  });
-  syncSound();
 
-  // renderer
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: "high-performance" });
+  if (soundBtn) {
+    soundBtn.addEventListener("click", () => {
+      // toggle mute
+      video.muted = !video.muted;
+      if (!video.muted && video.volume === 0) video.volume = 0.7;
+
+      // if unmuting, ensure playback
+      video.play().catch(() => {});
+      updateUI();
+    });
+  }
+
+  if (vol) {
+    vol.addEventListener("input", () => {
+      const v = Math.min(1, Math.max(0, Number(vol.value) / 100));
+      video.volume = v;
+      if (v > 0) video.muted = false;
+      updateUI();
+    });
+  }
+
+  updateUI();
+
+  // ===== three renderer =====
+  const renderer = new THREE.WebGLRenderer({
+    canvas,
+    antialias: true,
+    alpha: false,
+    powerPreference: "high-performance"
+  });
   renderer.setClearColor(0x000000, 1);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.outputEncoding = THREE.sRGBEncoding;
@@ -62,7 +100,7 @@
   window.addEventListener("resize", resize);
   resize();
 
-  // CanvasTexture (самый стабильный способ)
+  // ===== CanvasTexture for video =====
   const vCanvas = document.createElement("canvas");
   const vCtx = vCanvas.getContext("2d", { alpha: false });
 
@@ -72,40 +110,35 @@
   canvasTex.magFilter = THREE.LinearFilter;
   canvasTex.generateMipmaps = false;
 
-function updateVideoTexture() {
-  if (!(video.readyState >= 2 && video.videoWidth && video.videoHeight)) return;
+  // screen aspect (plane) = 16:9
+  const SCREEN_AR = 16 / 9;
 
-  // один раз под размер видео
-  if (vCanvas.width !== video.videoWidth) {
-    vCanvas.width = video.videoWidth;
-    vCanvas.height = video.videoHeight;
-  }
+  function updateVideoTextureCover() {
+    if (!(video.readyState >= 2 && video.videoWidth && video.videoHeight)) return;
 
-  // Экран-плоскость у нас 16:9 (w/h), а видео 5:4
-  // Делаем drawImage по принципу cover (без искажений)
-  const targetW = vCanvas.width;
-  const targetH = vCanvas.height;
+    // canvas uses video resolution
+    if (vCanvas.width !== video.videoWidth) {
+      vCanvas.width = video.videoWidth;
+      vCanvas.height = video.videoHeight;
+    }
 
-  const videoAR = video.videoWidth / video.videoHeight;    // 1500/1200 = 1.25
-  const screenAR = 16 / 9;                                 // 1.777...
+    const vw = video.videoWidth;
+    const vh = video.videoHeight;
+    const vAR = vw / vh;
 
-  let sx = 0, sy = 0, sw = video.videoWidth, sh = video.videoHeight;
+    let sx = 0, sy = 0, sw = vw, sh = vh;
 
-  if (videoAR > screenAR) {
-    // видео шире, чем экран -> режем по ширине
-    sw = video.videoHeight * screenAR;
-    sx = (video.videoWidth - sw) / 2;
-  } else {
-    // видео уже, чем экран -> режем по высоте
-    sh = video.videoWidth / screenAR;
-    sy = (video.videoHeight - sh) / 2;
-  }
+    // crop to screen aspect (cover)
+    if (vAR > SCREEN_AR) {
+      sw = vh * SCREEN_AR;
+      sx = (vw - sw) / 2;
+    } else {
+      sh = vw / SCREEN_AR;
+      sy = (vh - sh) / 2;
+    }
 
-  vCtx.clearRect(0, 0, targetW, targetH);
-  vCtx.drawImage(video, sx, sy, sw, sh, 0, 0, targetW, targetH);
-
-  canvasTex.needsUpdate = true;
-}
+    vCtx.drawImage(video, sx, sy, sw, sh, 0, 0, vCanvas.width, vCanvas.height);
+    canvasTex.needsUpdate = true;
   }
 
   const screenMat = new THREE.MeshBasicMaterial({ map: canvasTex, side: THREE.DoubleSide });
@@ -113,7 +146,7 @@ function updateVideoTexture() {
   screenMat.depthTest = false;
   screenMat.depthWrite = false;
 
-  // TV body textures
+  // ===== TV body textures =====
   const texLoader = new THREE.TextureLoader();
   const texBase = texLoader.load("./assets/models/retro_tv/textures/basecolor.png");
   const texNormal = texLoader.load("./assets/models/retro_tv/textures/normal.png");
@@ -137,13 +170,16 @@ function updateVideoTexture() {
   let model = null;
   let screenPlane = null;
 
+  // fit camera and keep reference dist for “zoom”
+  let camBase = { maxDim: 1, dist: 3 };
+
   function fitCameraTo(obj) {
     const box = new THREE.Box3().setFromObject(obj);
     const size = box.getSize(new THREE.Vector3());
     const maxDim = Math.max(size.x, size.y, size.z) || 1;
 
     const fov = camera.fov * (Math.PI / 180);
-    const dist = (maxDim / 2) / Math.tan(fov / 2) * 1.8;
+    const dist = (maxDim / 2) / Math.tan(fov / 2) * (isMobile ? 2.2 : 1.8);
 
     camera.position.set(0, maxDim * 0.10, dist);
     camera.near = Math.max(0.01, dist / 100);
@@ -151,28 +187,26 @@ function updateVideoTexture() {
     camera.updateProjectionMatrix();
     camera.lookAt(0, 0, 0);
 
-    return { size, dist };
+    camBase = { maxDim, dist };
   }
 
   function createScreenPlaneOnce() {
     if (!model || screenPlane) return;
 
-    // bbox модели уже в центре (0,0,0)
     const box = new THREE.Box3().setFromObject(model);
     const size = box.getSize(new THREE.Vector3());
 
-    // Хочешь “увеличить” — меняй 0.72 -> 0.80
-    const w = size.x * 0.78;
+    // larger on desktop, a bit smaller on mobile
+    const w = size.x * (isMobile ? 0.68 : 0.82);
     const h = w * 9 / 16;
 
     screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(w, h), screenMat);
     screenPlane.renderOrder = 999;
     screenPlane.frustumCulled = false;
 
-    // Ставим ПЕРЕД телеком по локальной Z (после поворота)
+    // front of the TV
     screenPlane.position.set(0, size.y * 0.10, box.max.z + size.z * 0.03);
 
-    // Не крутим каждый кадр — не будет “улёта”
     tvRoot.add(screenPlane);
   }
 
@@ -204,19 +238,32 @@ function updateVideoTexture() {
 
     tvRoot.add(model);
 
-    // Важно: сначала камера, потом экран-плоскость (чтобы не было “ребром”)
+    // IMPORTANT: camera first, then screen plane (avoid “edge” / reflection look)
     fitCameraTo(tvRoot);
     createScreenPlaneOnce();
   });
 
-  // render control
+  // ===== animation (GSAP + 3D zoom) =====
   let active = false;
   let raf = 0;
+  let progress = 0;
 
   function render() {
     if (!active) return;
-    updateVideoTexture();
+
+    // keep video updating
+    updateVideoTextureCover();
+
+    // zoom TV smoothly based on progress (0..1)
+    // Start smaller, end bigger, without breaking screen plane
+    const t = progress;
+    const zoom = isMobile ? (0.82 + t * 0.28) : (0.72 + t * 0.42);
+    tvRoot.scale.setScalar(zoom);
+
+    // camera gentle dolly in
+    camera.position.z = camBase.dist - (camBase.maxDim * (isMobile ? 0.08 : 0.16)) * t;
     camera.lookAt(0, 0, 0);
+
     renderer.render(scene, camera);
     raf = requestAnimationFrame(render);
   }
@@ -235,7 +282,10 @@ function updateVideoTexture() {
     raf = 0;
   }
 
-  // GSAP fly-through (картинка window.png)
+  // desktop: slider. mobile: hide slider
+  if (vol) vol.style.display = isMobile ? "none" : "";
+  if (soundBtn) soundBtn.style.display = "";
+
   gsap.timeline({
     scrollTrigger: {
       trigger: wrapper,
@@ -246,9 +296,15 @@ function updateVideoTexture() {
       onEnter: start,
       onEnterBack: start,
       onLeave: stop,
-      onLeaveBack: stop
+      onLeaveBack: stop,
+      onUpdate: (self) => { progress = self.progress; }
     }
   })
-    .to(img, { scale: 2, z: 350, transformOrigin: "center center", ease: "power1.inOut" })
-    .to(img, { opacity: 0, ease: "power1.out" }, 0.55);
+  .to(img, {
+    scale: 2.2,
+    z: 650,
+    transformOrigin: "center center",
+    ease: "power1.inOut"
+  })
+  .to(img, { opacity: 0, ease: "power1.out" }, 0.55);
 })();
