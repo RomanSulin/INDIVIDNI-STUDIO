@@ -270,7 +270,7 @@ screenPlane.renderOrder = 2;
 screenPlane.frustumCulled = false;
 
 // ВАЖНО: не “перед” телеком, а чуть ВНУТРИ рамки (минус, а не плюс)
-screenPlane.position.set(0, size.y * 0.10, box.max.z - size.z * 0.01);
+screenPlane.position.set(0, size.y * 0.10, box.max.z - size.z * 0.02);
 
 tvRoot.add(screenPlane);
   }
