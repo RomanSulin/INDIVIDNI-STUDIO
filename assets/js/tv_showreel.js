@@ -9,7 +9,7 @@
   const canvas = section.querySelector("#tvflyCanvas");
   const video = section.querySelector("#tvflyVideo");
   const soundBtn = section.querySelector("#tvflySound");
-  const volume = section.querySelector("#tvflyVolume"); // optional
+  const volume = section.querySelector("#tvflyVolume");
 
   if (!wrapper || !img || !canvas || !video || !soundBtn) return;
   if (!window.THREE || !window.gsap || !window.ScrollTrigger || !THREE.FBXLoader) return;
@@ -17,8 +17,6 @@
   gsap.registerPlugin(ScrollTrigger);
 
   const isMobile = window.matchMedia("(max-width: 860px)").matches;
-
-  // TV orientation (твой рабочий)
   const FORCE_ROT_Y = (3 * Math.PI) / 2;
 
   // ===== video =====
@@ -53,19 +51,13 @@
       video.play().catch(() => {});
       setBtnLabel();
     });
+    if (isMobile) volume.style.display = "none";
   }
 
-  // mobile: slider off
-  if (isMobile && volume) volume.style.display = "none";
   setBtnLabel();
 
-  // ===== three renderer =====
-  const renderer = new THREE.WebGLRenderer({
-    canvas,
-    antialias: true,
-    alpha: false,
-    powerPreference: "high-performance"
-  });
+  // ===== three =====
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: "high-performance" });
   renderer.setClearColor(0x000000, 1);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.outputEncoding = THREE.sRGBEncoding;
@@ -91,7 +83,7 @@
   window.addEventListener("resize", resize);
   resize();
 
-  // ===== CanvasTexture (cover under 16:9) =====
+  // ===== CanvasTexture (cover to 16:9) =====
   const vCanvas = document.createElement("canvas");
   const vCtx = vCanvas.getContext("2d", { alpha: false });
 
@@ -117,7 +109,6 @@
 
     let sx = 0, sy = 0, sw = vw, sh = vh;
 
-    // cover crop to 16:9 without stretching
     if (vAR > SCREEN_AR) {
       sw = vh * SCREEN_AR;
       sx = (vw - sw) / 2;
@@ -135,7 +126,7 @@
   screenMat.depthTest = false;
   screenMat.depthWrite = false;
 
-  // ===== TV body textures =====
+  // TV textures
   const texLoader = new THREE.TextureLoader();
   const texBase = texLoader.load("./assets/models/retro_tv/textures/basecolor.png");
   const texNormal = texLoader.load("./assets/models/retro_tv/textures/normal.png");
@@ -183,33 +174,28 @@
     const box = new THREE.Box3().setFromObject(model);
     const size = box.getSize(new THREE.Vector3());
 
-    const w = size.x * (isMobile ? 0.74 : 0.86); // bigger than before
+    const w = size.x * (isMobile ? 0.74 : 0.86);
     const h = w * 9 / 16;
 
     screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(w, h), screenMat);
     screenPlane.renderOrder = 999;
     screenPlane.frustumCulled = false;
 
-    // slightly higher & closer to front
     screenPlane.position.set(0, size.y * 0.11, box.max.z + size.z * 0.035);
-
     tvRoot.add(screenPlane);
   }
 
-  // ---- load FBX ----
   const loader = new THREE.FBXLoader();
   loader.load("./assets/models/retro_tv/tv.fbx", (fbx) => {
     model = fbx;
 
-    // scale to sane size (but NOT big at start — we will animate tvRoot scale)
     const b0 = new THREE.Box3().setFromObject(model);
     const s0 = b0.getSize(new THREE.Vector3());
     const max0 = Math.max(s0.x, s0.y, s0.z) || 1;
-    model.scale.setScalar(1.0 / max0); // базовый, без “сразу большой”
+    model.scale.setScalar(1.0 / max0);
 
     model.rotation.set(0, FORCE_ROT_Y, 0);
 
-    // center AFTER rotate
     const b1 = new THREE.Box3().setFromObject(model);
     const c1 = b1.getCenter(new THREE.Vector3());
     model.position.sub(c1);
@@ -221,15 +207,12 @@
     });
 
     tvRoot.add(model);
-
     fitCameraTo(tvRoot);
     ensureScreenPlane();
-
-    // плавное появление (без “резкого”)
     tvRoot.scale.setScalar(0.55);
   });
 
-  // ===== render + GSAP =====
+  // ===== render + gsap sync =====
   let active = false;
   let raf = 0;
   let progress = 0;
@@ -238,25 +221,13 @@
     if (!active) return;
 
     updateVideoTexture();
-// синхронный зум телека под тот же таймлайн что и картинка
-// 0..1
-const t = progress;
 
-// на старте дальше и меньше, в конце ближе и больше
-tvRoot.scale.setScalar(0.45 + 0.60 * t);
-camera.position.z = 3.2 - 0.9 * t;
-camera.position.y = 0.18 - 0.05 * t;
-camera.lookAt(0, 0, 0);
-    // TV zoom динамика: был далеко -> стал ближе
-    // на старте маленький
     const t = progress;
-    const startScale = isMobile ? 0.55 : 0.45;
-    const endScale = isMobile ? 0.95 : 1.05;
-    const s = startScale + (endScale - startScale) * t;
-    tvRoot.scale.setScalar(s);
 
-    // camera dolly мягкий (не ломает экран)
-    camera.position.z = camBase.dist + (camBase.maxDim * 0.35) * (1 - t); // дальше в начале
+    // синхронизируем телик с зумом картинки
+    tvRoot.scale.setScalar((isMobile ? 0.55 : 0.45) + (isMobile ? 0.40 : 0.60) * t);
+    camera.position.z = camBase.dist + (camBase.maxDim * 0.35) * (1 - t);
+    camera.position.y = (camBase.maxDim * 0.10) - (camBase.maxDim * 0.03) * t;
     camera.lookAt(0, 0, 0);
 
     renderer.render(scene, camera);
@@ -266,7 +237,6 @@ camera.lookAt(0, 0, 0);
   function start() {
     if (active) return;
     active = true;
-    // чтобы не было “пусто”: стартуем рендер сразу
     video.play().catch(() => {});
     raf = requestAnimationFrame(render);
   }
@@ -280,18 +250,18 @@ camera.lookAt(0, 0, 0);
 
   gsap.timeline({
     scrollTrigger: {
-  trigger: wrapper,
-  start: "top top",
-  end: "+=160%",
-  pin: true,
-  scrub: true,
-  onEnter: start,
-  onEnterBack: start,
-  onLeave: stop,
-  onLeaveBack: stop,
-  onUpdate: (self) => { progress = self.progress; }
+      trigger: wrapper,
+      start: "top top",
+      end: "+=160%",
+      pin: true,
+      scrub: true,
+      onEnter: start,
+      onEnterBack: start,
+      onLeave: stop,
+      onLeaveBack: stop,
+      onUpdate: (self) => { progress = self.progress; }
     }
   })
-    .to(img, { scale: 2.2, z: 650, transformOrigin: "center center", ease: "power1.inOut" })
-    .to(img, { opacity: 0, ease: "power1.out" }, 0.55);
+  .to(img, { scale: 2.2, z: 650, transformOrigin: "center center", ease: "power1.inOut" })
+  .to(img, { opacity: 0, ease: "power1.out" }, 0.55);
 })();
