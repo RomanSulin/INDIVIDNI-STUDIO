@@ -557,3 +557,37 @@ body.menu-open .drawer{ display:block; }
     height: 40px;
   }
 }
+
+.tvfly__volume{
+  position:absolute;
+  right: 24px;
+  bottom: 148px;  /* выше */
+  width: 160px;
+  z-index: 4;
+  accent-color: white;
+}
+
+/* кнопка ближе и выше */
+.tvfly__sound{
+  right: 24px;
+  bottom: 108px;
+  width: 74px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(0,0,0,0.42);
+  color: rgba(255,255,255,0.9);
+  font-family: "Syne", sans-serif;
+  font-size: 12px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* мобила: скрыть ползунок, оставить кнопку */
+@media (max-width: 860px){
+  .tvfly__volume{ display:none; }
+  .tvfly__sound{ right: 12px; bottom: 12px; }
+}
