@@ -485,23 +485,6 @@ body.menu-open .drawer{ display:block; }
 }
 
 /* Sound button */
-.tvfly__sound{
-  right: 28px;
-  bottom: 120px;            /* выше */
-  width: 64px;
-  height: 40px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.18);
-  background: rgba(0,0,0,0.42);
-  color: rgba(255,255,255,0.9);
-  font-family: "Syne", sans-serif;
-  font-size: 12px;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
 .tvfly__soundIcon{
   width: 18px; height: 18px; position: relative;
 }
@@ -569,8 +552,6 @@ body.menu-open .drawer{ display:block; }
 
 /* кнопка ближе и выше */
 .tvfly__sound{
-  right: 24px;
-  bottom: 108px;
   width: 74px;
   height: 40px;
   border-radius: 999px;
@@ -590,4 +571,15 @@ body.menu-open .drawer{ display:block; }
 @media (max-width: 860px){
   .tvfly__volume{ display:none; }
   .tvfly__sound{ right: 12px; bottom: 12px; }
+}
+
+.tvfly__controls{
+  position:absolute;
+  right: 24px;
+  bottom: 108px;
+  z-index: 4;
+  display:flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
 }
