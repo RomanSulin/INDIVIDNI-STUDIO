@@ -233,7 +233,7 @@
       model.position.sub(c1);
 
 // РУЧНОЙ поворот (выбери нужный угол)
-const FORCE_ROT_Y = Math.PI / 2;
+const FORCE_ROT_Y = (3 * Math.PI) / 2;
 // варианты: 0, Math.PI/2, Math.PI, 3*Math.PI/2
 
 model.rotation.set(0, FORCE_ROT_Y, 0);
