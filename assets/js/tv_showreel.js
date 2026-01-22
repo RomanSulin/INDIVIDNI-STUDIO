@@ -93,6 +93,9 @@ const screenMat = new THREE.MeshBasicMaterial({
   side: THREE.DoubleSide
 });
 screenMat.toneMapped = false;
+  screenMat.side = THREE.DoubleSide;
+screenMat.depthTest = false;
+screenMat.depthWrite = false;
 
 // функция обновления кадра
 function updateVideoTexture() {
@@ -259,6 +262,24 @@ function updateVideoTexture() {
       addFallbackPlane(model);
 
       tvRoot.add(model);
+      // ===== ALWAYS-VISIBLE VIDEO PLANE (over the TV) =====
+const tvBox = new THREE.Box3().setFromObject(model);
+const tvSize = tvBox.getSize(new THREE.Vector3());
+
+// размер “экрана” (подгоняется, но начнём с адекватных)
+const planeW = tvSize.x * 0.36;
+const planeH = planeW * 9 / 16;
+
+const plane = new THREE.Mesh(new THREE.PlaneGeometry(planeW, planeH), screenMat);
+plane.renderOrder = 999;
+plane.frustumCulled = false;
+
+// ставим чуть выше центра и немного “перед” передней гранью TV
+plane.position.set(0, tvSize.y * 0.06, tvBox.max.z + tvSize.z * 0.02);
+
+// добавляем как child модели, чтобы ехал вместе с ней
+model.add(plane);
+
       // --- Fallback screen: гарантированно видно видео поверх телика ---
 const box = new THREE.Box3().setFromObject(model);
 const size = box.getSize(new THREE.Vector3());
@@ -299,6 +320,7 @@ model.add(fallback);
 
     camera.lookAt(0, 0, 0);
     updateVideoTexture();
+    if (video.readyState >= 2) videoTex.needsUpdate = true;
     renderer.render(scene, camera);
     raf = requestAnimationFrame(render);
   }
