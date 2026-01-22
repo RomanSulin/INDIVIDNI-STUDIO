@@ -583,3 +583,42 @@ body.menu-open .drawer{ display:block; }
   gap: 10px;
   align-items: flex-end;
 }
+
+/* Place controls in the red-marked area */
+.tvfly__controls{
+  position: absolute;
+  /* зона справа от телека */
+  left: 66%;
+  top: 60%;
+  transform: translate(0, -50%);
+  z-index: 5;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+/* чуть компактнее в этой зоне */
+.tvfly__volume{
+  width: 260px;
+}
+
+.tvfly__sound{
+  width: 74px;
+  height: 40px;
+}
+
+/* адаптив: на узких экранах возвращаем вниз-справа, ползунок скрыт */
+@media (max-width: 860px){
+  .tvfly__controls{
+    left: auto;
+    top: auto;
+    right: 12px;
+    bottom: 12px;
+    transform: none;
+    align-items: flex-end;
+  }
+  .tvfly__volume{ display: none; }
+}
+
