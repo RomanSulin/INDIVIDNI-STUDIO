@@ -534,3 +534,19 @@ body.menu-open .drawer{ display:block; }
   margin-top: calc(var(--headerSpace) * -1);
   height: calc(100svh + var(--headerSpace));
 }
+
+/* desktop volume slider */
+.tvfly__volume{
+  position: absolute;
+  right: 86px;
+  bottom: 28px;
+  width: 140px;
+  z-index: 4;
+  accent-color: white;
+}
+
+/* mobile: hide slider (JS тоже скрывает) ------------------------------------------------------------------------------------------------------------------------------------*/
+@media (max-width: 860px){
+  .tvfly__volume{ display:none; }
+}
+
