@@ -313,34 +313,37 @@ tvRoot.add(screenPlane);
   let raf = 0;
   let progress = 0;
 
-  function render() {
-    if (!active) return;
+function render() {
+  if (!active) return;
 
-    updateVideoTexture();
-    // glow: muted -> пульс, on -> красный горит
-if (soundGlow3D) {
-  const time = performance.now() * 0.001;
-  if (video.muted) {
-    soundGlow3D.material.opacity = 0.10 + 0.10 * (0.5 + 0.5 * Math.sin(time * 2.6));
-  } else {
-    soundGlow3D.material.opacity = 0.35;
+  updateVideoTexture();
+
+  // glow: muted -> пульс, on -> красный горит
+  if (soundGlow3D) {
+    const time = performance.now() * 0.001;
+    if (video.muted) {
+      soundGlow3D.material.opacity = 0.10 + 0.10 * (0.5 + 0.5 * Math.sin(time * 2.6));
+    } else {
+      soundGlow3D.material.opacity = 0.35;
+    }
+    soundGlow3D.material.needsUpdate = true;
   }
-  soundGlow3D.material.needsUpdate = true;
-}
-    if (soundBtn3D) soundBtn3D.lookAt(camera.position);
-if (soundGlow3D) soundGlow3D.lookAt(camera.position);
-}
-    const t = progress;
 
-    // синхронизируем телик с зумом картинки
-    tvRoot.scale.setScalar((isMobile ? 0.55 : 0.45) + (isMobile ? 0.40 : 0.60) * t);
-    camera.position.z = camBase.dist + (camBase.maxDim * 0.35) * (1 - t);
-    camera.position.y = (camBase.maxDim * 0.10) - (camBase.maxDim * 0.03) * t;
-    camera.lookAt(0, 0, 0);
+  // кнопка всегда смотрит в камеру
+  if (soundBtn3D) soundBtn3D.lookAt(camera.position);
+  if (soundGlow3D) soundGlow3D.lookAt(camera.position);
 
-    renderer.render(scene, camera);
-    raf = requestAnimationFrame(render);
-  }
+  const t = progress;
+
+  // синхронизируем телик с зумом картинки
+  tvRoot.scale.setScalar((isMobile ? 0.55 : 0.45) + (isMobile ? 0.40 : 0.60) * t);
+  camera.position.z = camBase.dist + (camBase.maxDim * 0.35) * (1 - t);
+  camera.position.y = (camBase.maxDim * 0.10) - (camBase.maxDim * 0.03) * t;
+  camera.lookAt(0, 0, 0);
+
+  renderer.render(scene, camera);
+  raf = requestAnimationFrame(render);
+}
 
   function start() {
     if (active) return;
