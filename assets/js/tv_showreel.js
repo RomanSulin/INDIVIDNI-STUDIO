@@ -5,7 +5,7 @@
   if (!section) return;
 
   const wrapper = section.querySelector('.tvfly__wrapper');
-  const img = section.querySelector('.tvfly__image');
+  const img = section.querySelector('.tvfly__image'); 
   const canvas = section.querySelector('#tvflyCanvas');
   const video = section.querySelector('#tvflyVideo');
   const soundBtn = section.querySelector('#tvflySound');
