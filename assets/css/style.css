@@ -526,3 +526,11 @@ body.menu-open .drawer{ display:block; }
   opacity: 0;
   pointer-events: none;
 }
+
+/* FIX: убираем верхний “пустой” участок, но оставляем отступ для остальных секций */
+:root{ --headerSpace: 110px; } /* если у тебя другой — поменяй */
+
+.liquid-hero{
+  margin-top: calc(var(--headerSpace) * -1);
+  height: calc(100svh + var(--headerSpace));
+}
