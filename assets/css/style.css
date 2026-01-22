@@ -523,3 +523,13 @@ body.menu-open .drawer{ display:block; }
   border-top:2px solid rgba(255,255,255,0.9);
   border-radius:2px;
 }
+.tvfly__hiddenVideo{
+  position: fixed;
+  left: -9999px;
+  top: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
