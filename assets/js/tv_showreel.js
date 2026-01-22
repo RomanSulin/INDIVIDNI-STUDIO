@@ -61,15 +61,6 @@
   }
   window.addEventListener("resize", resize);
   resize();
-  // запускаем рендер-цикл всегда, но видео паузим когда не в секции
-let alwaysRaf = 0;
-function alwaysRender() {
-  updateVideoTexture();
-  renderer.render(scene, camera);
-  alwaysRaf = requestAnimationFrame(alwaysRender);
-}
-alwaysRaf = requestAnimationFrame(alwaysRender);
-
 
   // ===== CanvasTexture (оригинал 1:1, без кропа/полос) =====
   const vCanvas = document.createElement("canvas");
@@ -346,12 +337,16 @@ alwaysRaf = requestAnimationFrame(alwaysRender);
     raf = requestAnimationFrame(render);
   }
 
-  function start() {
-    if (active) return;
-    active = true;
-    video.play().catch(() => {});
-    raf = requestAnimationFrame(render);
-  }
+function start() {
+  if (active) return;
+  active = true;
+
+  // форсим первый кадр, чтобы текстура не была чёрной
+  video.play().catch(() => {});
+  video.currentTime = Math.min(video.currentTime, 0.03);
+
+  raf = requestAnimationFrame(render);
+}
 
   function stop() {
     active = false;
