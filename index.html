@@ -80,10 +80,11 @@
     <div class="tvfly__stage" aria-hidden="true">
       <canvas id="tvflyCanvas"></canvas>
 
-      <button class="tvfly__sound" id="tvflySound" aria-label="Включить звук" aria-pressed="false">
-        <input id="tvflyVolume" class="tvfly__volume" type="range" min="0" max="100" value="80" aria-label="Громкость">
-        <span class="tvfly__soundIcon" aria-hidden="true"></span>
-      </button>
+      <div class="tvfly__controls">
+      <input id="tvflyVolume" class="tvfly__volume" type="range" min="0" max="100" value="80" aria-label="Громкость">
+      <button class="tvfly__sound" id="tvflySound" type="button" aria-label="Включить звук" aria-pressed="false">ВКЛ</button>
+      </div>
+
 
      <video id="tvflyVideo" muted playsinline webkit-playsinline preload="auto" loop class="tvfly__hiddenVideo">
   <source src="./assets/ui/showreel_2.mp4" type="video/mp4" />
