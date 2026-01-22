@@ -238,7 +238,15 @@
     if (!active) return;
 
     updateVideoTexture();
+// синхронный зум телека под тот же таймлайн что и картинка
+// 0..1
+const t = progress;
 
+// на старте дальше и меньше, в конце ближе и больше
+tvRoot.scale.setScalar(0.45 + 0.60 * t);
+camera.position.z = 3.2 - 0.9 * t;
+camera.position.y = 0.18 - 0.05 * t;
+camera.lookAt(0, 0, 0);
     // TV zoom динамика: был далеко -> стал ближе
     // на старте маленький
     const t = progress;
@@ -272,16 +280,16 @@
 
   gsap.timeline({
     scrollTrigger: {
-      trigger: wrapper,
-      start: "top top",
-      end: "+=160%",
-      pin: true,
-      scrub: true,
-      onEnter: start,
-      onEnterBack: start,
-      onLeave: stop,
-      onLeaveBack: stop,
-      onUpdate: (self) => { progress = self.progress; }
+  trigger: wrapper,
+  start: "top top",
+  end: "+=160%",
+  pin: true,
+  scrub: true,
+  onEnter: start,
+  onEnterBack: start,
+  onLeave: stop,
+  onLeaveBack: stop,
+  onUpdate: (self) => { progress = self.progress; }
     }
   })
     .to(img, { scale: 2.2, z: 650, transformOrigin: "center center", ease: "power1.inOut" })
