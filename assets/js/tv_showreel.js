@@ -127,20 +127,25 @@
     camera.lookAt(0, 0, 0);
   }
 
-  function ensureScreenPlane() {
-    if (!model || screenPlane) return;
+function ensureScreenPlane() {
+  if (!model || screenPlane) return;
 
-    const box = new THREE.Box3().setFromObject(tvRoot);
-    const size = box.getSize(new THREE.Vector3());
+  const box = new THREE.Box3().setFromObject(tvRoot);
+  const size = box.getSize(new THREE.Vector3());
 
-    const w = size.x * 0.36;
-    const h = w * 9 / 16;
+  const w = size.x * 0.62;
+  const h = w * 9 / 16;
 
-    screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(w, h), screenMat);
-    screenPlane.renderOrder = 999;
-    screenPlane.frustumCulled = false;
-    tvRoot.add(screenPlane);
-  }
+  screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(w, h), screenMat);
+  screenPlane.renderOrder = 999;
+  screenPlane.frustumCulled = false;
+
+  // позиция “перед” телеком (локально)
+  screenPlane.position.set(0, size.y * 0.06, size.z * 0.55);
+  screenPlane.lookAt(camera.position);
+
+  tvRoot.add(screenPlane);
+}
 
   function updateScreenPlane() {
     if (!screenPlane || !model) return;
@@ -188,34 +193,7 @@
     tvRoot.add(model);
     ensureScreenPlane();
     fitCameraTo(tvRoot);
-    // ===== FIXED SCREEN PLANE (создаём 1 раз и больше не двигаем) =====
-const tvBox = new THREE.Box3().setFromObject(tvRoot);
-const tvSize = tvBox.getSize(new THREE.Vector3());
-const tvCenter = tvBox.getCenter(new THREE.Vector3());
-
-// размеры “экрана”
-const screenW = tvSize.x * 0.36;
-const screenH = screenW * 9 / 16;
-
-// плоскость с материалом видео (screenMat)
-const screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(screenW, screenH), screenMat);
-screenPlane.renderOrder = 999;
-screenPlane.frustumCulled = false;
-
-// ставим чуть выше центра и чуть перед “лицом” телека
-// ВАЖНО: используем направление “к камере”, но позицию задаём ОДИН РАЗ
-const toCam = new THREE.Vector3().subVectors(camera.position, tvCenter).normalize();
-
-screenPlane.position.copy(tvCenter)
-  .add(toCam.multiplyScalar(tvSize.z * 0.55))
-  .add(new THREE.Vector3(0, tvSize.y * 0.06, 0));
-
-// плоскость всегда смотрит в камеру
-screenPlane.lookAt(camera.position);
-
-// добавляем в tvRoot, чтобы оставалось по центру вместе с моделью
-tvRoot.add(screenPlane);
-  });
+   
 
   // GSAP fly-through + render loop
   let active = false;
@@ -226,7 +204,6 @@ tvRoot.add(screenPlane);
     if (!active) return;
 
     updateVideoTexture();
-    updateScreenPlane();
 
     camera.lookAt(0, 0, 0);
     renderer.render(scene, camera);
