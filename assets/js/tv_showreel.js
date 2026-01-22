@@ -9,28 +9,47 @@
   const canvas = section.querySelector('#tvflyCanvas');
   const video = section.querySelector('#tvflyVideo');
   const soundBtn = section.querySelector('#tvflySound');
+  const stage = section.querySelector('.tvfly__stage');
 
-  if (!wrapper || !img || !canvas || !video || !soundBtn) {
-    console.warn('[tvfly] Missing DOM nodes');
-    return;
-  }
-  if (!window.THREE) {
-    console.warn('[tvfly] THREE missing');
-    return;
-  }
-  if (!window.gsap || !window.ScrollTrigger) {
-    console.warn('[tvfly] GSAP/ScrollTrigger missing');
-    return;
-  }
+  if (!wrapper || !img || !canvas || !video || !soundBtn || !stage) return;
+  if (!window.THREE || !window.gsap || !window.ScrollTrigger) return;
   if (!THREE.FBXLoader) {
-    console.warn('[tvfly] FBXLoader missing (script not included or wrong version)');
+    console.warn('[tvfly] FBXLoader missing: check script order in index.html');
     return;
   }
 
   gsap.registerPlugin(ScrollTrigger);
 
-  // ==== DEBUG (поставь true если надо увидеть “кубик” точно) ====
-  const DEBUG = true;
+  // ---- On-screen status (bottom-left) ----
+  const status = document.createElement('div');
+  status.style.cssText = [
+    'position:absolute',
+    'left:12px',
+    'bottom:12px',
+    'z-index:6',
+    'padding:10px 12px',
+    'border-radius:12px',
+    'background:rgba(0,0,0,.55)',
+    'border:1px solid rgba(255,255,255,.12)',
+    'color:rgba(255,255,255,.85)',
+    'font:12px/1.35 Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial',
+    'backdrop-filter: blur(10px)',
+    'max-width: 55ch',
+    'pointer-events:none'
+  ].join(';');
+  stage.appendChild(status);
+
+  const setStatus = (t) => { status.textContent = t; };
+
+  // quick fetch checks (shows 404 immediately)
+  (async () => {
+    try {
+      const r1 = await fetch('./assets/models/retro_tv/tv.fbx', { method: 'GET', cache: 'no-store' });
+      setStatus(`FBX request: ${r1.status} ${r1.ok ? '(ok)' : '(fail)'}`);
+    } catch (e) {
+      setStatus(`FBX request failed: ${e?.message || e}`);
+    }
+  })();
 
   // ---- Sound toggle ----
   video.muted = true;
@@ -38,11 +57,9 @@
 
   function syncSoundBtn() {
     const on = !video.muted;
-    soundBtn.classList.toggle('is-on', on);
     soundBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
     soundBtn.setAttribute('aria-label', on ? 'Выключить звук' : 'Включить звук');
   }
-
   soundBtn.addEventListener('click', () => {
     video.muted = !video.muted;
     if (video.paused) video.play().catch(() => {});
@@ -50,7 +67,7 @@
   });
   syncSoundBtn();
 
-  // ---- Three.js setup ----
+  // ---- Three.js ----
   const renderer = new THREE.WebGLRenderer({
     canvas,
     antialias: true,
@@ -64,29 +81,26 @@
   const scene = new THREE.Scene();
 
   const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
-  camera.position.set(0, 0.15, 2.9);
+  camera.position.set(0, 0.2, 3.2);
 
-  // lights
-  scene.add(new THREE.AmbientLight(0xffffff, 0.65));
+  // lights (чтобы на черном фоне точно читалось)
+  scene.add(new THREE.AmbientLight(0xffffff, 0.75));
 
-  const key = new THREE.DirectionalLight(0xffffff, 0.95);
+  const key = new THREE.DirectionalLight(0xffffff, 1.0);
   key.position.set(2.5, 3, 2);
   scene.add(key);
 
-  // rim light чтобы силуэт читался на чёрном
-  const rim = new THREE.DirectionalLight(0xffffff, 0.75);
-  rim.position.set(-2.5, 1.5, -2);
+  const rim = new THREE.DirectionalLight(0xffffff, 0.9);
+  rim.position.set(-3, 1.8, -2.5);
   scene.add(rim);
 
-  // DEBUG cube: если видишь его — рендер работает, значит проблема только в модели/камере
-  if (DEBUG) {
-    const cube = new THREE.Mesh(
-      new THREE.BoxGeometry(0.25, 0.25, 0.25),
-      new THREE.MeshStandardMaterial({ color: 0xff00ff })
-    );
-    cube.position.set(0, 0, 0);
-    scene.add(cube);
-  }
+  // debug cube (у тебя он уже виден — оставляем)
+  const cube = new THREE.Mesh(
+    new THREE.BoxGeometry(0.25, 0.25, 0.25),
+    new THREE.MeshStandardMaterial({ color: 0xff00ff })
+  );
+  cube.position.set(0, 0, 0);
+  scene.add(cube);
 
   function resize() {
     const w = canvas.clientWidth;
@@ -98,7 +112,7 @@
   window.addEventListener('resize', resize);
   resize();
 
-  // VideoTexture
+  // VideoTexture for TV screen
   const videoTex = new THREE.VideoTexture(video);
   videoTex.encoding = THREE.sRGBEncoding;
   videoTex.flipY = false;
@@ -106,31 +120,34 @@
   const tvRoot = new THREE.Group();
   scene.add(tvRoot);
 
-  // textures
   const texLoader = new THREE.TextureLoader();
+
   const texBase = texLoader.load('./assets/models/retro_tv/textures/basecolor.png');
   const texNormal = texLoader.load('./assets/models/retro_tv/textures/normal.png');
   const texRough = texLoader.load('./assets/models/retro_tv/textures/roughness.png');
   const texMetal = texLoader.load('./assets/models/retro_tv/textures/metallic.png');
+
   texBase.encoding = THREE.sRGBEncoding;
 
-  // НЕ делаем metalness=1 на чёрном фоне (будет “невидимо”)
+  // корпус делаем НЕ супер-металлическим (иначе на черном он "исчезает")
   const bodyMat = new THREE.MeshStandardMaterial({
     map: texBase,
     normalMap: texNormal,
     roughnessMap: texRough,
     metalnessMap: texMetal,
-    roughness: 0.9,
-    metalness: 0.25,
-    color: 0xffffff
+    roughness: 0.95,
+    metalness: 0.15,
+    emissive: new THREE.Color(0x111111),
+    emissiveIntensity: 0.6
   });
 
   const screenMat = new THREE.MeshBasicMaterial({ map: videoTex });
   screenMat.toneMapped = false;
 
   let model = null;
-  let screenMesh = null;
+  let boxHelper = null;
 
+  // heuristic: ищем "плоский большой" меш как экран
   function pickScreenMesh(root) {
     const candidates = [];
     const box = new THREE.Box3();
@@ -139,19 +156,15 @@
 
     root.traverse((o) => {
       if (!o.isMesh) return;
+
       box.setFromObject(o);
       box.getSize(size);
       box.getCenter(center);
 
-      const dx = Math.abs(size.x);
-      const dy = Math.abs(size.y);
-      const dz = Math.abs(size.z);
-      const dims = [dx, dy, dz].sort((a, b) => a - b);
+      const dims = [Math.abs(size.x), Math.abs(size.y), Math.abs(size.z)].sort((a, b) => a - b);
       const thickness = dims[0];
-      const maxDim = dims[2];
-      const midDim = dims[1];
-      const flat = thickness / (maxDim + 1e-6);
-      const area = midDim * maxDim;
+      const area = dims[1] * dims[2];
+      const flat = thickness / (dims[2] + 1e-6);
 
       if (flat < 0.12 && area > 0.02) {
         candidates.push({ o, area, z: center.z });
@@ -162,58 +175,64 @@
     return candidates[0] ? candidates[0].o : null;
   }
 
+  setStatus('Loading FBX…');
+
   const loader = new THREE.FBXLoader();
   loader.load(
     './assets/models/retro_tv/tv.fbx',
     (fbx) => {
-      console.log('[tvfly] FBX loaded');
-
       model = fbx;
 
-      // Scale & center
+      // центрирование + масштабирование (чтобы точно попало в кадр)
       const b = new THREE.Box3().setFromObject(model);
       const s = new THREE.Vector3();
       b.getSize(s);
       const max = Math.max(s.x, s.y, s.z) || 1;
 
-      const scale = 1.35 / max; // чуть крупнее, чтобы гарантированно увидеть
+      const target = 1.8;                 // делаем больше, чтобы увидеть 100%
+      const scale = target / max;
       model.scale.setScalar(scale);
 
-      // recenter
       b.setFromObject(model);
       const c = new THREE.Vector3();
       b.getCenter(c);
       model.position.sub(c);
 
-      // не уводим сильно вниз (у тебя было -0.28)
-      model.position.y -= 0.08;
+      model.position.y -= 0.05;
+      model.rotation.y = Math.PI;         // часто FBX спиной к камере
 
-      // повернём к камере (если вдруг спиной)
-      model.rotation.y = Math.PI;
+      const screenMesh = pickScreenMesh(model);
 
-      // pick screen mesh
-      screenMesh = pickScreenMesh(model);
-      if (!screenMesh) {
-        console.warn('[tvfly] Screen mesh not found. Printing mesh names:');
-        model.traverse((o) => { if (o.isMesh) console.log('mesh:', o.name); });
-      } else {
-        console.log('[tvfly] Screen mesh:', screenMesh.name || '(no name)');
-      }
-
+      // назначаем материалы
       model.traverse((o) => {
         if (!o.isMesh) return;
-        o.frustumCulled = false; // на всякий случай
-        if (screenMesh && o === screenMesh) o.material = screenMat;
-        else o.material = bodyMat;
+        o.frustumCulled = false;
+        o.material = (screenMesh && o === screenMesh) ? screenMat : bodyMat;
       });
 
       tvRoot.add(model);
+
+      // зелёный бокс вокруг модели для debug
+      boxHelper = new THREE.BoxHelper(model, 0x00ff00);
+      scene.add(boxHelper);
+
+      setStatus(`FBX LOADED ✅  | Screen mesh: ${screenMesh ? (screenMesh.name || '(no name)') : 'NOT FOUND'}  | If NOT FOUND — TV still should be visible.`);
     },
-    undefined,
-    (err) => console.error('[tvfly] FBX load error', err)
+    (xhr) => {
+      if (xhr && xhr.total) {
+        const p = Math.round((xhr.loaded / xhr.total) * 100);
+        setStatus(`Loading FBX… ${p}%`);
+      } else {
+        setStatus(`Loading FBX…`);
+      }
+    },
+    (err) => {
+      console.error('[tvfly] FBX load error', err);
+      setStatus(`FBX ERROR ❌  ${err?.message || err}`);
+    }
   );
 
-  // ---- Animation loop ----
+  // ---- Render loop control ----
   let active = false;
   let raf = 0;
   let scrollP = 0;
@@ -227,17 +246,14 @@
 
     const t = easeOutCubic(scrollP);
 
-    camera.position.z = 2.9 - 0.9 * t;
-    camera.position.y = 0.15 - 0.03 * t;
-
-    // КЛЮЧ: всегда смотрим в центр сцены
+    camera.position.z = 3.2 - 1.2 * t;
+    camera.position.y = 0.2 - 0.06 * t;
     camera.lookAt(0, 0, 0);
 
-    tvRoot.rotation.y = (t - 0.5) * 0.35;
+    tvRoot.rotation.y = (t - 0.5) * 0.28;
     tvRoot.rotation.x = 0.02 - 0.02 * t;
 
-    const sc = 0.9 + 0.28 * t;
-    tvRoot.scale.setScalar(sc);
+    if (boxHelper) boxHelper.update();
 
     renderer.render(scene, camera);
     raf = requestAnimationFrame(render);
@@ -257,7 +273,7 @@
     raf = 0;
   }
 
-  // ---- GSAP timeline ----
+  // ---- GSAP fly-through ----
   gsap.timeline({
     scrollTrigger: {
       trigger: wrapper,
@@ -282,6 +298,6 @@
   .to(img, {
     opacity: 0,
     ease: 'power1.out'
-  }, 0.45);
+  }, 0.55);
 
 })();
