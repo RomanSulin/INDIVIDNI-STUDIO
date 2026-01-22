@@ -8,64 +8,56 @@
   const img = section.querySelector(".tvfly__image") || section.querySelector(".tvfly__image-container img");
   const canvas = section.querySelector("#tvflyCanvas");
   const video = section.querySelector("#tvflyVideo");
-
-  // controls (desktop slider + fallback button)
   const soundBtn = section.querySelector("#tvflySound");
-  const vol = section.querySelector("#tvflyVolume");
+  const volume = section.querySelector("#tvflyVolume"); // optional
 
-  if (!wrapper || !img || !canvas || !video) return;
+  if (!wrapper || !img || !canvas || !video || !soundBtn) return;
   if (!window.THREE || !window.gsap || !window.ScrollTrigger || !THREE.FBXLoader) return;
 
   gsap.registerPlugin(ScrollTrigger);
 
-  // TV orientation
-  const FORCE_ROT_Y = (3 * Math.PI) / 2;
-
-  // ===== video setup =====
-  video.loop = true;
-  video.playsInline = true;
-
-  // start muted by default (autoplay friendly)
-  video.muted = true;
-  video.volume = 1;
-
   const isMobile = window.matchMedia("(max-width: 860px)").matches;
 
-  function updateUI() {
-    if (soundBtn) {
-      const on = !video.muted;
-      soundBtn.setAttribute("aria-pressed", on ? "true" : "false");
-      soundBtn.setAttribute("aria-label", on ? "Выключить звук" : "Включить звук");
-      soundBtn.classList.toggle("is-on", on);
-    }
-    if (vol) {
-      vol.value = String(Math.round(video.volume * 100));
-      vol.disabled = video.muted;
-    }
+  // TV orientation (твой рабочий)
+  const FORCE_ROT_Y = (3 * Math.PI) / 2;
+
+  // ===== video =====
+  video.loop = true;
+  video.playsInline = true;
+  video.muted = true;
+  video.volume = 0.8;
+
+  function setBtnLabel() {
+    const on = !video.muted && video.volume > 0;
+    soundBtn.setAttribute("aria-pressed", on ? "true" : "false");
+    soundBtn.textContent = on ? "ВЫКЛ" : "ВКЛ";
   }
 
-  if (soundBtn) {
-    soundBtn.addEventListener("click", () => {
-      // toggle mute
-      video.muted = !video.muted;
-      if (!video.muted && video.volume === 0) video.volume = 0.7;
+  soundBtn.addEventListener("click", () => {
+    if (video.muted || video.volume === 0) {
+      video.muted = false;
+      if (video.volume === 0) video.volume = 0.8;
+    } else {
+      video.muted = true;
+    }
+    video.play().catch(() => {});
+    if (volume) volume.value = String(Math.round(video.volume * 100));
+    setBtnLabel();
+  });
 
-      // if unmuting, ensure playback
-      video.play().catch(() => {});
-      updateUI();
-    });
-  }
-
-  if (vol) {
-    vol.addEventListener("input", () => {
-      const v = Math.min(1, Math.max(0, Number(vol.value) / 100));
+  if (volume) {
+    volume.addEventListener("input", () => {
+      const v = Math.min(1, Math.max(0, Number(volume.value) / 100));
       video.volume = v;
-      if (v > 0) video.muted = false;
-      updateUI();
+      video.muted = v === 0;
+      video.play().catch(() => {});
+      setBtnLabel();
     });
   }
 
-  updateUI();
+  // mobile: slider off
+  if (isMobile && volume) volume.style.display = "none";
+  setBtnLabel();
 
   // ===== three renderer =====
   const renderer = new THREE.WebGLRenderer({
@@ -81,7 +73,6 @@
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 200);
 
-  // lights
   scene.add(new THREE.AmbientLight(0xffffff, 0.35));
   const key = new THREE.DirectionalLight(0xffffff, 1.15);
   key.position.set(3, 3, 2);
@@ -100,7 +91,7 @@
   window.addEventListener("resize", resize);
   resize();
 
-  // ===== CanvasTexture for video =====
+  // ===== CanvasTexture (cover under 16:9) =====
   const vCanvas = document.createElement("canvas");
   const vCtx = vCanvas.getContext("2d", { alpha: false });
 
@@ -110,13 +101,11 @@
   canvasTex.magFilter = THREE.LinearFilter;
   canvasTex.generateMipmaps = false;
 
-  // screen aspect (plane) = 16:9
   const SCREEN_AR = 16 / 9;
 
-  function updateVideoTextureCover() {
+  function updateVideoTexture() {
     if (!(video.readyState >= 2 && video.videoWidth && video.videoHeight)) return;
 
-    // canvas uses video resolution
     if (vCanvas.width !== video.videoWidth) {
       vCanvas.width = video.videoWidth;
       vCanvas.height = video.videoHeight;
@@ -128,7 +117,7 @@
 
     let sx = 0, sy = 0, sw = vw, sh = vh;
 
-    // crop to screen aspect (cover)
+    // cover crop to 16:9 without stretching
     if (vAR > SCREEN_AR) {
       sw = vh * SCREEN_AR;
       sx = (vw - sw) / 2;
@@ -169,8 +158,6 @@
 
   let model = null;
   let screenPlane = null;
-
-  // fit camera and keep reference dist for “zoom”
   let camBase = { maxDim: 1, dist: 3 };
 
   function fitCameraTo(obj) {
@@ -179,7 +166,7 @@
     const maxDim = Math.max(size.x, size.y, size.z) || 1;
 
     const fov = camera.fov * (Math.PI / 180);
-    const dist = (maxDim / 2) / Math.tan(fov / 2) * (isMobile ? 2.2 : 1.8);
+    const dist = (maxDim / 2) / Math.tan(fov / 2) * (isMobile ? 2.3 : 2.0);
 
     camera.position.set(0, maxDim * 0.10, dist);
     camera.near = Math.max(0.01, dist / 100);
@@ -190,38 +177,36 @@
     camBase = { maxDim, dist };
   }
 
-  function createScreenPlaneOnce() {
+  function ensureScreenPlane() {
     if (!model || screenPlane) return;
 
     const box = new THREE.Box3().setFromObject(model);
     const size = box.getSize(new THREE.Vector3());
 
-    // larger on desktop, a bit smaller on mobile
-    const w = size.x * (isMobile ? 0.68 : 0.82);
+    const w = size.x * (isMobile ? 0.74 : 0.86); // bigger than before
     const h = w * 9 / 16;
 
     screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(w, h), screenMat);
     screenPlane.renderOrder = 999;
     screenPlane.frustumCulled = false;
 
-    // front of the TV
-    screenPlane.position.set(0, size.y * 0.10, box.max.z + size.z * 0.03);
+    // slightly higher & closer to front
+    screenPlane.position.set(0, size.y * 0.11, box.max.z + size.z * 0.035);
 
     tvRoot.add(screenPlane);
   }
 
-  // load FBX
+  // ---- load FBX ----
   const loader = new THREE.FBXLoader();
   loader.load("./assets/models/retro_tv/tv.fbx", (fbx) => {
     model = fbx;
 
-    // scale to sane size
+    // scale to sane size (but NOT big at start — we will animate tvRoot scale)
     const b0 = new THREE.Box3().setFromObject(model);
     const s0 = b0.getSize(new THREE.Vector3());
     const max0 = Math.max(s0.x, s0.y, s0.z) || 1;
-    model.scale.setScalar(1.2 / max0);
+    model.scale.setScalar(1.0 / max0); // базовый, без “сразу большой”
 
-    // rotate
     model.rotation.set(0, FORCE_ROT_Y, 0);
 
     // center AFTER rotate
@@ -229,7 +214,6 @@
     const c1 = b1.getCenter(new THREE.Vector3());
     model.position.sub(c1);
 
-    // body materials
     model.traverse((o) => {
       if (!o.isMesh) return;
       o.frustumCulled = false;
@@ -238,12 +222,14 @@
 
     tvRoot.add(model);
 
-    // IMPORTANT: camera first, then screen plane (avoid “edge” / reflection look)
     fitCameraTo(tvRoot);
-    createScreenPlaneOnce();
+    ensureScreenPlane();
+
+    // плавное появление (без “резкого”)
+    tvRoot.scale.setScalar(0.55);
   });
 
-  // ===== animation (GSAP + 3D zoom) =====
+  // ===== render + GSAP =====
   let active = false;
   let raf = 0;
   let progress = 0;
@@ -251,17 +237,18 @@
   function render() {
     if (!active) return;
 
-    // keep video updating
-    updateVideoTextureCover();
+    updateVideoTexture();
 
-    // zoom TV smoothly based on progress (0..1)
-    // Start smaller, end bigger, without breaking screen plane
+    // TV zoom динамика: был далеко -> стал ближе
+    // на старте маленький
     const t = progress;
-    const zoom = isMobile ? (0.82 + t * 0.28) : (0.72 + t * 0.42);
-    tvRoot.scale.setScalar(zoom);
+    const startScale = isMobile ? 0.55 : 0.45;
+    const endScale = isMobile ? 0.95 : 1.05;
+    const s = startScale + (endScale - startScale) * t;
+    tvRoot.scale.setScalar(s);
 
-    // camera gentle dolly in
-    camera.position.z = camBase.dist - (camBase.maxDim * (isMobile ? 0.08 : 0.16)) * t;
+    // camera dolly мягкий (не ломает экран)
+    camera.position.z = camBase.dist + (camBase.maxDim * 0.35) * (1 - t); // дальше в начале
     camera.lookAt(0, 0, 0);
 
     renderer.render(scene, camera);
@@ -271,6 +258,7 @@
   function start() {
     if (active) return;
     active = true;
+    // чтобы не было “пусто”: стартуем рендер сразу
     video.play().catch(() => {});
     raf = requestAnimationFrame(render);
   }
@@ -281,10 +269,6 @@
     if (raf) cancelAnimationFrame(raf);
     raf = 0;
   }
-
-  // desktop: slider. mobile: hide slider
-  if (vol) vol.style.display = isMobile ? "none" : "";
-  if (soundBtn) soundBtn.style.display = "";
 
   gsap.timeline({
     scrollTrigger: {
@@ -300,11 +284,6 @@
       onUpdate: (self) => { progress = self.progress; }
     }
   })
-  .to(img, {
-    scale: 2.2,
-    z: 650,
-    transformOrigin: "center center",
-    ease: "power1.inOut"
-  })
-  .to(img, { opacity: 0, ease: "power1.out" }, 0.55);
+    .to(img, { scale: 2.2, z: 650, transformOrigin: "center center", ease: "power1.inOut" })
+    .to(img, { opacity: 0, ease: "power1.out" }, 0.55);
 })();
