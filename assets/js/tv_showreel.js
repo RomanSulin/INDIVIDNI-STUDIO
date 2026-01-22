@@ -2,22 +2,28 @@
 
 (() => {
   const section = document.querySelector(".tvfly");
-  if (!section) return;
+  if (!section) return console.error("[tvfly] .tvfly not found");
 
   const wrapper = section.querySelector(".tvfly__wrapper");
   const img = section.querySelector(".tvfly__image");
   const canvas = section.querySelector("#tvflyCanvas");
   const video = section.querySelector("#tvflyVideo");
 
-  if (!wrapper || !img || !canvas || !video) return;
-  if (!window.THREE || !window.gsap || !window.ScrollTrigger || !THREE.FBXLoader) return;
+  if (!wrapper || !img || !canvas || !video) {
+    return console.error("[tvfly] missing DOM", { wrapper:!!wrapper, img:!!img, canvas:!!canvas, video:!!video });
+  }
+  if (!window.THREE || !window.gsap || !window.ScrollTrigger || !THREE.FBXLoader) {
+    return console.error("[tvfly] missing libs", {
+      THREE: !!window.THREE, gsap: !!window.gsap, ScrollTrigger: !!window.ScrollTrigger, FBXLoader: !!(window.THREE && THREE.FBXLoader)
+    });
+  }
 
   gsap.registerPlugin(ScrollTrigger);
 
   const isMobile = window.matchMedia("(max-width: 860px)").matches;
-  const FORCE_ROT_Y = (3 * Math.PI) / 2; // твой поворот телека “лицом”
+  const FORCE_ROT_Y = (3 * Math.PI) / 2; // твой поворот “лицом”
 
-  // ===== video =====
+  // video
   video.loop = true;
   video.playsInline = true;
   video.muted = true;
@@ -28,7 +34,7 @@
     video.play().catch(() => {});
   }
 
-  // ===== renderer =====
+  // renderer
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: "high-performance" });
   renderer.setClearColor(0x000000, 1);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -55,7 +61,7 @@
   window.addEventListener("resize", resize);
   resize();
 
-  // ===== CanvasTexture (рисуем оригинальный кадр 1:1) =====
+  // CanvasTexture full frame (без кропа/полос)
   const vCanvas = document.createElement("canvas");
   const vCtx = vCanvas.getContext("2d", { alpha: false });
 
@@ -65,7 +71,9 @@
   canvasTex.magFilter = THREE.LinearFilter;
   canvasTex.generateMipmaps = false;
 
-  let videoAR = 5 / 4; // дефолт 1500/1200
+  let videoAR = 5 / 4;
+  let screenPlane = null;
+
   video.addEventListener("loadedmetadata", () => {
     if (video.videoWidth && video.videoHeight) {
       videoAR = video.videoWidth / video.videoHeight;
@@ -79,7 +87,6 @@
 
   function updateVideoTexture() {
     if (!(video.readyState >= 2 && video.videoWidth && video.videoHeight)) return;
-
     if (vCanvas.width !== video.videoWidth || vCanvas.height !== video.videoHeight) {
       vCanvas.width = video.videoWidth;
       vCanvas.height = video.videoHeight;
@@ -96,23 +103,19 @@
   screenMat.polygonOffsetFactor = -1;
   screenMat.polygonOffsetUnits = -1;
 
-  // ===== TV body =====
+  // Remap FBX internal texture names -> твои файлы (убирает 404)
   const manager = new THREE.LoadingManager();
+  manager.setURLModifier((url) => {
+    const file = decodeURIComponent(url).toLowerCase().split("/").pop();
+    if (file === "retro_tv_1_basecolor.png" || file === "retro tv 1 basecolor.png") return "./assets/models/retro_tv/textures/basecolor.png";
+    if (file === "retro_tv_1_normal.png"    || file === "retro tv 1 normal.png")    return "./assets/models/retro_tv/textures/normal.png";
+    if (file === "retro_tv_1_roughness.png" || file === "retro tv 1 roughness.png") return "./assets/models/retro_tv/textures/roughness.png";
+    if (file === "retro_tv_1_metallic.png"  || file === "retro tv 1 metallic.png")  return "./assets/models/retro_tv/textures/metallic.png";
+    return url;
+  });
 
-manager.setURLModifier((url) => {
-  const u = decodeURIComponent(url).toLowerCase();
+  const texLoader = new THREE.TextureLoader(manager);
 
-  if (u.endsWith("retro tv 1 basecolor.png")) return "./assets/models/retro_tv/textures/basecolor.png";
-  if (u.endsWith("retro tv 1 normal.png"))    return "./assets/models/retro_tv/textures/normal.png";
-  if (u.endsWith("retro tv 1 roughness.png")) return "./assets/models/retro_tv/textures/roughness.png";
-  if (u.endsWith("retro tv 1 metallic.png"))  return "./assets/models/retro_tv/textures/metallic.png";
-
-  return url;
-});
-
-manager.onError = (url) => console.warn("[tvfly] asset missing:", url);
-
-const texLoader = new THREE.TextureLoader(manager);
   const texBase = texLoader.load("./assets/models/retro_tv/textures/basecolor.png");
   const texNormal = texLoader.load("./assets/models/retro_tv/textures/normal.png");
   const texRough = texLoader.load("./assets/models/retro_tv/textures/roughness.png");
@@ -133,7 +136,6 @@ const texLoader = new THREE.TextureLoader(manager);
   scene.add(tvRoot);
 
   let model = null;
-  let screenPlane = null;
   let camBase = { maxDim: 1, dist: 3 };
 
   function fitCameraTo(obj) {
@@ -159,14 +161,14 @@ const texLoader = new THREE.TextureLoader(manager);
     const box = new THREE.Box3().setFromObject(model);
     const size = box.getSize(new THREE.Vector3());
 
-    const w = size.x * (isMobile ? 0.74 : 0.88); // увеличить — 0.90/0.92
+    const w = size.x * (isMobile ? 0.74 : 0.88);
     const h = w / videoAR;
 
     screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(w, h), screenMat);
     screenPlane.renderOrder = 2;
     screenPlane.frustumCulled = false;
 
-    // внутрь рамки
+    // в рамку
     const worldPos = new THREE.Vector3(0, size.y * 0.10, box.max.z - size.z * 0.02);
     model.worldToLocal(worldPos);
     screenPlane.position.copy(worldPos);
@@ -174,7 +176,7 @@ const texLoader = new THREE.TextureLoader(manager);
     model.add(screenPlane);
   }
 
-  // ===== 3D PNG button on TV =====
+  // 3D PNG button
   const soundTex = texLoader.load("./assets/png/sound.png");
   soundTex.encoding = THREE.sRGBEncoding;
 
@@ -215,7 +217,6 @@ const texLoader = new THREE.TextureLoader(manager);
     soundBtn3D = new THREE.Mesh(new THREE.PlaneGeometry(bw, bh), btnMat);
     soundBtn3D.renderOrder = 1000;
 
-    // world -> local, чтобы не улетало
     const worldPos = new THREE.Vector3(
       center.x + size.x * 0.23,
       center.y - size.y * 0.33,
@@ -257,12 +258,11 @@ const texLoader = new THREE.TextureLoader(manager);
     if (hit.length) toggleSound();
   });
 
-  // ===== load FBX =====
+  // load FBX
   const loader = new THREE.FBXLoader(manager);
   loader.load("./assets/models/retro_tv/tv.fbx", (fbx) => {
     model = fbx;
 
-    // базовый scale
     const b0 = new THREE.Box3().setFromObject(model);
     const s0 = b0.getSize(new THREE.Vector3());
     const max0 = Math.max(s0.x, s0.y, s0.z) || 1;
@@ -270,7 +270,6 @@ const texLoader = new THREE.TextureLoader(manager);
 
     model.rotation.set(0, FORCE_ROT_Y, 0);
 
-    // центр после поворота
     const b1 = new THREE.Box3().setFromObject(model);
     const c1 = b1.getCenter(new THREE.Vector3());
     model.position.sub(c1);
@@ -289,7 +288,7 @@ const texLoader = new THREE.TextureLoader(manager);
     tvRoot.scale.setScalar(0.55);
   });
 
-  // ===== render + GSAP =====
+  // render + GSAP
   let active = false;
   let raf = 0;
   let progress = 0;
@@ -299,7 +298,6 @@ const texLoader = new THREE.TextureLoader(manager);
 
     updateVideoTexture();
 
-    // glow
     if (soundGlow3D) {
       const time = performance.now() * 0.001;
       soundGlow3D.material.opacity = video.muted
@@ -308,7 +306,6 @@ const texLoader = new THREE.TextureLoader(manager);
       soundGlow3D.material.needsUpdate = true;
     }
 
-    // button faces camera
     if (soundBtn3D) soundBtn3D.lookAt(camera.position);
     if (soundGlow3D) soundGlow3D.lookAt(camera.position);
 
