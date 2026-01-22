@@ -232,27 +232,14 @@
       const c1 = box1.getCenter(new THREE.Vector3());
       model.position.sub(c1);
 
-      // 3) Авто-поворот: пробуем 4 варианта и берём тот, где экран находится лучше
-      const rotations = [0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2];
-      let bestRot = 0;
-      let bestScreen = null;
-      let bestScore = -1e9;
+// РУЧНОЙ поворот (выбери нужный угол)
+const FORCE_ROT_Y = Math.PI / 2;
+// варианты: 0, Math.PI/2, Math.PI, 3*Math.PI/2
 
-      rotations.forEach((ry) => {
-        model.rotation.set(0, ry, 0);
-        const candidate = findBestScreen(model);
-        if (!candidate) return;
-        const rootBox = new THREE.Box3().setFromObject(model);
-        const score = scoreMeshAsScreen(candidate, rootBox);
-        if (score > bestScore) {
-          bestScore = score;
-          bestRot = ry;
-          bestScreen = candidate;
-        }
-      });
+model.rotation.set(0, FORCE_ROT_Y, 0);
 
-      model.rotation.set(0, bestRot, 0);
-      screenMesh = bestScreen;
+// после поворота — заново ищем экран
+screenMesh = findBestScreen(model);
 
       // 4) Материалы
       model.traverse((o) => {
