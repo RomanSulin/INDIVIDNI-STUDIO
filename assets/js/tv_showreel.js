@@ -1,7 +1,7 @@
 /* global THREE, gsap, ScrollTrigger */
 
 (() => {
-  const section = document.querySelector(".tvfly");
+  const section = document.querySelector(".tvfly"); 
   if (!section) return;
 
   const wrapper = section.querySelector(".tvfly__wrapper");
