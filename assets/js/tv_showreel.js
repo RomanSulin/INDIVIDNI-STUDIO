@@ -95,31 +95,34 @@
 
   const SCREEN_AR = 16 / 9;
 
+  // фиксированный размер текстуры экрана (16:9)
+    const TEX_W = 1024;
+    const TEX_H = Math.round(TEX_W / SCREEN_AR);
+    vCanvas.width = TEX_W;
+    vCanvas.height = TEX_H;
+  
   function updateVideoTexture() {
-    if (!(video.readyState >= 2 && video.videoWidth && video.videoHeight)) return;
+  if (!(video.readyState >= 2 && video.videoWidth && video.videoHeight)) return;
 
-    if (vCanvas.width !== video.videoWidth) {
-      vCanvas.width = video.videoWidth;
-      vCanvas.height = video.videoHeight;
-    }
+  const vw = video.videoWidth;
+  const vh = video.videoHeight;
 
-    const vw = video.videoWidth;
-    const vh = video.videoHeight;
-    const vAR = vw / vh;
+  // заполняем фон (поля) чёрным
+  vCtx.fillStyle = "#000";
+  vCtx.fillRect(0, 0, vCanvas.width, vCanvas.height);
 
-    let sx = 0, sy = 0, sw = vw, sh = vh;
+  // CONTAIN: вписываем целиком без растяжения и без обрезки
+  const scale = Math.min(vCanvas.width / vw, vCanvas.height / vh);
+  const dw = Math.round(vw * scale);
+  const dh = Math.round(vh * scale);
 
-    if (vAR > SCREEN_AR) {
-      sw = vh * SCREEN_AR;
-      sx = (vw - sw) / 2;
-    } else {
-      sh = vw / SCREEN_AR;
-      sy = (vh - sh) / 2;
-    }
+  const dx = Math.round((vCanvas.width - dw) / 2);
+  const dy = Math.round((vCanvas.height - dh) / 2);
 
-    vCtx.drawImage(video, sx, sy, sw, sh, 0, 0, vCanvas.width, vCanvas.height);
-    canvasTex.needsUpdate = true;
-  }
+  vCtx.drawImage(video, 0, 0, vw, vh, dx, dy, dw, dh);
+  canvasTex.needsUpdate = true;
+}
+
 
   const screenMat = new THREE.MeshBasicMaterial({ map: canvasTex, side: THREE.DoubleSide });
   screenMat.toneMapped = false;
