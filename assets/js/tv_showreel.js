@@ -5,13 +5,15 @@
   if (!section) return;
 
   const wrapper = section.querySelector(".tvfly__wrapper");
-  const img = section.querySelector(".tvfly__image");
+  const img = section.querySelector(".tvfly__image") || section.querySelector(".tvfly__image-container img");
+  if (!img) { console.warn("[tvfly] image not found"); return; }
   const canvas = section.querySelector("#tvflyCanvas");
   const video = section.querySelector("#tvflyVideo");
   const soundBtn = section.querySelector("#tvflySound");
 
   if (!wrapper || !img || !canvas || !video || !soundBtn) return;
   if (!window.THREE || !window.gsap || !window.ScrollTrigger || !THREE.FBXLoader) return;
+  gsap.set(img, { transformPerspective: 500, transformOrigin: "center center" });
 
   gsap.registerPlugin(ScrollTrigger);
 
