@@ -1,7 +1,6 @@
 /* global THREE, gsap, ScrollTrigger */
 
 (() => {
-  console.log("[tvfly] script start");
   const section = document.querySelector(".tvfly");
   if (!section) return;
 
@@ -9,39 +8,56 @@
   const img = section.querySelector(".tvfly__image") || section.querySelector(".tvfly__image-container img");
   const canvas = section.querySelector("#tvflyCanvas");
   const video = section.querySelector("#tvflyVideo");
+  const soundBtn = section.querySelector("#tvflySound");
+  const volume = section.querySelector("#tvflyVolume");
 
-  if (!wrapper || !img || !canvas || !video) return;
-  if (!window.THREE) return console.error("[tvfly] THREE missing");
-  if (!window.gsap) return console.error("[tvfly] GSAP missing");
-  if (!window.ScrollTrigger) return console.error("[tvfly] ScrollTrigger missing");
-  if (!THREE.FBXLoader) return console.error("[tvfly] FBXLoader missing (or fflate not loaded)");
-
+  if (!wrapper || !img || !canvas || !video || !soundBtn) return;
+  if (!window.THREE || !window.gsap || !window.ScrollTrigger || !THREE.FBXLoader) return;
 
   gsap.registerPlugin(ScrollTrigger);
-  console.log("[tvfly] libs ok:", !!window.THREE, !!window.gsap, !!window.ScrollTrigger, !!THREE.FBXLoader);
-  const isMobile = window.matchMedia("(max-width: 860px)").matches;
 
-  // ТВ у тебя уже “лицом” — оставь свой рабочий угол
+  const isMobile = window.matchMedia("(max-width: 860px)").matches;
   const FORCE_ROT_Y = (3 * Math.PI) / 2;
 
   // ===== video =====
   video.loop = true;
   video.playsInline = true;
   video.muted = true;
-  video.volume = 1;
+  video.volume = 0.8;
 
-  function toggleSound() {
-    video.muted = !video.muted;
-    video.play().catch(() => {});
+  function setBtnLabel() {
+    const on = !video.muted && video.volume > 0;
+    soundBtn.setAttribute("aria-pressed", on ? "true" : "false");
+    soundBtn.textContent = on ? "ВЫКЛ" : "ВКЛ";
   }
 
-  // ===== renderer =====
-  const renderer = new THREE.WebGLRenderer({
-    canvas,
-    antialias: true,
-    alpha: false,
-    powerPreference: "high-performance"
+  soundBtn.addEventListener("click", () => {
+    if (video.muted || video.volume === 0) {
+      video.muted = false;
+      if (video.volume === 0) video.volume = 0.8;
+    } else {
+      video.muted = true;
+    }
+    video.play().catch(() => {});
+    if (volume) volume.value = String(Math.round(video.volume * 100));
+    setBtnLabel();
   });
+
+  if (volume) {
+    volume.addEventListener("input", () => {
+      const v = Math.min(1, Math.max(0, Number(volume.value) / 100));
+      video.volume = v;
+      video.muted = v === 0;
+      video.play().catch(() => {});
+      setBtnLabel();
+    });
+    if (isMobile) volume.style.display = "none";
+  }
+
+  setBtnLabel();
+
+  // ===== three =====
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: "high-performance" });
   renderer.setClearColor(0x000000, 1);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.outputEncoding = THREE.sRGBEncoding;
@@ -67,7 +83,7 @@
   window.addEventListener("resize", resize);
   resize();
 
-  // ===== CanvasTexture (оригинал 1:1, без кропа/полос) =====
+  // ===== CanvasTexture (cover to 16:9) =====
   const vCanvas = document.createElement("canvas");
   const vCtx = vCanvas.getContext("2d", { alpha: false });
 
@@ -77,41 +93,30 @@
   canvasTex.magFilter = THREE.LinearFilter;
   canvasTex.generateMipmaps = false;
 
-  let videoAR = 5 / 4; // дефолт
-  video.addEventListener("loadedmetadata", () => {
-    if (video.videoWidth && video.videoHeight) {
-      videoAR = video.videoWidth / video.videoHeight;
-      // если экран уже создан — подстроим геометрию
-      if (screenPlane) {
-        const w = screenPlane.geometry.parameters.width;
-        screenPlane.geometry.dispose();
-        screenPlane.geometry = new THREE.PlaneGeometry(w, w / videoAR);
-      }
-    }
-  }, { once: true });
+function updateVideoTexture() {
+  if (!(video.readyState >= 2 && video.videoWidth && video.videoHeight)) return;
 
-  function updateVideoTexture() {
-    if (!(video.readyState >= 2 && video.videoWidth && video.videoHeight)) return;
-
-    if (vCanvas.width !== video.videoWidth || vCanvas.height !== video.videoHeight) {
-      vCanvas.width = video.videoWidth;
-      vCanvas.height = video.videoHeight;
-    }
-
-    vCtx.drawImage(video, 0, 0, vCanvas.width, vCanvas.height);
-    canvasTex.needsUpdate = true;
+  // canvas = размер видео, чтобы было 1:1
+  if (vCanvas.width !== video.videoWidth || vCanvas.height !== video.videoHeight) {
+    vCanvas.width = video.videoWidth;
+    vCanvas.height = video.videoHeight;
   }
+
+  // рисуем полный кадр без кропа/contain
+  vCtx.drawImage(video, 0, 0, vCanvas.width, vCanvas.height);
+  canvasTex.needsUpdate = true;
+}
+
 
   const screenMat = new THREE.MeshBasicMaterial({ map: canvasTex, side: THREE.DoubleSide });
   screenMat.toneMapped = false;
-  // рамка телека перекрывает края
-  screenMat.depthTest = true;
-  screenMat.depthWrite = false;
-  screenMat.polygonOffset = true;
+  screenMat.depthTest = true;     // рамка сможет перекрывать края
+  screenMat.depthWrite = false;   // но не будет ломать глубину
+  screenMat.polygonOffset = true; // чтобы не было z-fighting
   screenMat.polygonOffsetFactor = -1;
   screenMat.polygonOffsetUnits = -1;
 
-  // ===== TV body textures =====
+  // TV textures
   const texLoader = new THREE.TextureLoader();
   const texBase = texLoader.load("./assets/models/retro_tv/textures/basecolor.png");
   const texNormal = texLoader.load("./assets/models/retro_tv/textures/normal.png");
@@ -134,104 +139,6 @@
 
   let model = null;
   let screenPlane = null;
-
-  // ===== BUTTON on TV (3D plane + glow) =====
-  const buttonTex = texLoader.load("./assets/png/sound.png");
-  buttonTex.encoding = THREE.sRGBEncoding;
-
-  const buttonMat = new THREE.MeshBasicMaterial({
-    map: buttonTex,
-    transparent: true,
-    alphaTest: 0.25
-  });
-  buttonMat.depthTest = true;
-  buttonMat.depthWrite = false;
-  buttonMat.polygonOffset = true;
-  buttonMat.polygonOffsetFactor = -2;
-  buttonMat.polygonOffsetUnits = -2;
-
-  const glowMat = new THREE.MeshBasicMaterial({
-    map: buttonTex,
-    transparent: true,
-    alphaTest: 0.25,
-    blending: THREE.AdditiveBlending,
-    color: new THREE.Color(1, 0.15, 0.15),
-    opacity: 0.0
-  });
-  glowMat.depthTest = true;
-  glowMat.depthWrite = false;
-  glowMat.polygonOffset = true;
-  glowMat.polygonOffsetFactor = -3;
-  glowMat.polygonOffsetUnits = -3;
-
-  let soundButton = null;
-  let soundGlow = null;
-
-  // raycaster for clicks on the TV button
-  const raycaster = new THREE.Raycaster();
-  const mouse = new THREE.Vector2();
-
-  function setupButtonOnTV() {
-    if (!model || soundButton) return;
-
-    const box = new THREE.Box3().setFromObject(model);
-    const size = box.getSize(new THREE.Vector3());
-
-    // размеры кнопки (подгони по вкусу)
-    const bw = size.x * (isMobile ? 0.16 : 0.14);
-    const bh = bw * 0.45; // кнопка-таблетка по твоей png
-
-    const geo = new THREE.PlaneGeometry(bw, bh);
-
-    soundButton = new THREE.Mesh(geo, buttonMat);
-    soundButton.name = "SOUND_BTN";
-    soundButton.renderOrder = 20;
-
-    soundGlow = new THREE.Mesh(new THREE.PlaneGeometry(bw * 1.18, bh * 1.18), glowMat);
-    soundGlow.name = "SOUND_GLOW";
-    soundGlow.renderOrder = 19;
-
-    // Позиция кнопки: низ справа на панели (как на скрине)
-    // Эти коэффициенты можно быстро подогнать:
-    const x = size.x * 0.23;
-    const y = -size.y * 0.33;
-    const z = box.max.z + size.z * 0.01; // чуть ВПЕРЁД // слегка "внутрь", чтобы рамка не перекрывала
-
-    soundButton.position.set(x, y, z);
-    soundGlow.position.set(x, y, z - size.z * 0.001);
-
-    model.add(soundGlow);
-    model.add(soundButton);
-  }
-
-  function setCursorFromHover(e) {
-    if (!soundButton) return;
-    const rect = canvas.getBoundingClientRect();
-    mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    mouse.y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
-    raycaster.setFromCamera(mouse, camera);
-    const hit = raycaster.intersectObject(soundButton, true);
-    canvas.style.cursor = hit.length ? "pointer" : "default";
-  }
-
-  canvas.addEventListener("pointermove", setCursorFromHover);
-
-  canvas.addEventListener("pointerdown", (e) => {
-    if (!soundButton) return;
-
-    const rect = canvas.getBoundingClientRect();
-    mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    mouse.y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
-
-    raycaster.setFromCamera(mouse, camera);
-    const hits = raycaster.intersectObject(soundButton, true);
-
-    if (hits.length) {
-      toggleSound();
-    }
-  });
-
-  // ===== camera fit =====
   let camBase = { maxDim: 1, dist: 3 };
 
   function fitCameraTo(obj) {
@@ -250,35 +157,34 @@
 
     camBase = { maxDim, dist };
   }
+let videoAR = 5 / 4;
+video.addEventListener("loadedmetadata", () => {
+  if (video.videoWidth && video.videoHeight) videoAR = video.videoWidth / video.videoHeight;
+}, { once: true });
 
-  function ensureScreenPlane() {
+    function ensureScreenPlane() {
     if (!model || screenPlane) return;
 
     const box = new THREE.Box3().setFromObject(model);
     const size = box.getSize(new THREE.Vector3());
 
-    // ширина в пределах рамки
-    const w = size.x * (isMobile ? 0.70 : 0.80);
-    const h = w / videoAR; // <-- под твоё видео
+    const w = size.x * (isMobile ? 0.70 : 0.80);  // было 0.86 — слишком широко
+    const h = w / videoAR;
 
-    screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(w, h), screenMat);
-    screenPlane.renderOrder = 2;
-    screenPlane.frustumCulled = false;
+screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(w, h), screenMat);
+screenPlane.renderOrder = 2;
+screenPlane.frustumCulled = false;
 
-    // внутрь рамки, чтобы края не вылезали при увеличении
-    screenPlane.position.set(0, size.y * 0.10, box.max.z - size.z * 0.01);
+// ВАЖНО: не “перед” телеком, а чуть ВНУТРИ рамки (минус, а не плюс)
+screenPlane.position.set(0, size.y * 0.10, box.max.z - size.z * 0.01);
 
-    model.add(screenPlane);
+tvRoot.add(screenPlane);
   }
 
-  // ===== load FBX =====
-  console.log("[tvfly] fbx loaded ✅");
   const loader = new THREE.FBXLoader();
-  console.log("[tvfly] start loading fbx…");
   loader.load("./assets/models/retro_tv/tv.fbx", (fbx) => {
     model = fbx;
 
-    // базовый scale (а зум делаем tvRoot'ом)
     const b0 = new THREE.Box3().setFromObject(model);
     const s0 = b0.getSize(new THREE.Vector3());
     const max0 = Math.max(s0.x, s0.y, s0.z) || 1;
@@ -286,7 +192,6 @@
 
     model.rotation.set(0, FORCE_ROT_Y, 0);
 
-    // центр после поворота
     const b1 = new THREE.Box3().setFromObject(model);
     const c1 = b1.getCenter(new THREE.Vector3());
     model.position.sub(c1);
@@ -298,16 +203,12 @@
     });
 
     tvRoot.add(model);
-
     fitCameraTo(tvRoot);
     ensureScreenPlane();
-    setupButtonOnTV();
-
-    // стартовый размер
-    tvRoot.scale.setScalar(0.45);
+    tvRoot.scale.setScalar(0.55);
   });
 
-  // ===== render + GSAP =====
+  // ===== render + gsap sync =====
   let active = false;
   let raf = 0;
   let progress = 0;
@@ -317,25 +218,10 @@
 
     updateVideoTexture();
 
-    // glow logic
-    if (soundGlow) {
-      const time = performance.now() * 0.001;
-      if (video.muted) {
-        // muted: мягко переливается
-        soundGlow.material.opacity = 0.12 + 0.10 * (0.5 + 0.5 * Math.sin(time * 2.6));
-      } else {
-        // on: ярко красным
-        soundGlow.material.opacity = 0.35;
-      }
-      soundGlow.material.needsUpdate = true;
-    }
-
-    // синхронный зум телека (как у тебя было “прилипание”)
     const t = progress;
-    const startScale = isMobile ? 0.55 : 0.45;
-    const endScale = isMobile ? 1.00 : 1.10;
-    tvRoot.scale.setScalar(startScale + (endScale - startScale) * t);
 
+    // синхронизируем телик с зумом картинки
+    tvRoot.scale.setScalar((isMobile ? 0.55 : 0.45) + (isMobile ? 0.40 : 0.60) * t);
     camera.position.z = camBase.dist + (camBase.maxDim * 0.35) * (1 - t);
     camera.position.y = (camBase.maxDim * 0.10) - (camBase.maxDim * 0.03) * t;
     camera.lookAt(0, 0, 0);
@@ -344,16 +230,12 @@
     raf = requestAnimationFrame(render);
   }
 
-function start() {
-  if (active) return;
-  active = true;
-
-  // форсим первый кадр, чтобы текстура не была чёрной
-  video.play().catch(() => {});
-  video.currentTime = Math.min(video.currentTime, 0.03);
-
-  raf = requestAnimationFrame(render);
-}
+  function start() {
+    if (active) return;
+    active = true;
+    video.play().catch(() => {});
+    raf = requestAnimationFrame(render);
+  }
 
   function stop() {
     active = false;
