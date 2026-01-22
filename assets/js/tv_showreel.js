@@ -72,15 +72,40 @@
   canvasTex.magFilter = THREE.LinearFilter;
   canvasTex.generateMipmaps = false;
 
-  function updateVideoTexture() {
-    if (video.readyState >= 2 && video.videoWidth && video.videoHeight) {
-      if (vCanvas.width !== video.videoWidth) {
-        vCanvas.width = video.videoWidth;
-        vCanvas.height = video.videoHeight;
-      }
-      vCtx.drawImage(video, 0, 0, vCanvas.width, vCanvas.height);
-      canvasTex.needsUpdate = true;
-    }
+function updateVideoTexture() {
+  if (!(video.readyState >= 2 && video.videoWidth && video.videoHeight)) return;
+
+  // один раз под размер видео
+  if (vCanvas.width !== video.videoWidth) {
+    vCanvas.width = video.videoWidth;
+    vCanvas.height = video.videoHeight;
+  }
+
+  // Экран-плоскость у нас 16:9 (w/h), а видео 5:4
+  // Делаем drawImage по принципу cover (без искажений)
+  const targetW = vCanvas.width;
+  const targetH = vCanvas.height;
+
+  const videoAR = video.videoWidth / video.videoHeight;    // 1500/1200 = 1.25
+  const screenAR = 16 / 9;                                 // 1.777...
+
+  let sx = 0, sy = 0, sw = video.videoWidth, sh = video.videoHeight;
+
+  if (videoAR > screenAR) {
+    // видео шире, чем экран -> режем по ширине
+    sw = video.videoHeight * screenAR;
+    sx = (video.videoWidth - sw) / 2;
+  } else {
+    // видео уже, чем экран -> режем по высоте
+    sh = video.videoWidth / screenAR;
+    sy = (video.videoHeight - sh) / 2;
+  }
+
+  vCtx.clearRect(0, 0, targetW, targetH);
+  vCtx.drawImage(video, sx, sy, sw, sh, 0, 0, targetW, targetH);
+
+  canvasTex.needsUpdate = true;
+}
   }
 
   const screenMat = new THREE.MeshBasicMaterial({ map: canvasTex, side: THREE.DoubleSide });
