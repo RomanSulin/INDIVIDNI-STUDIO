@@ -78,24 +78,37 @@
   resize();
 
   // VideoTexture
-  const videoTex = new THREE.VideoTexture(video);
-  video.addEventListener("loadeddata", () => {
-  // первый кадр, чтобы texture не была чёрной
-  try { video.currentTime = 0.01; } catch(e) {}
-  video.play().catch(() => {});
-}, { once: true });
+// ===== CanvasTexture вместо VideoTexture (гарантированно) =====
+const vCanvas = document.createElement('canvas');
+const vCtx = vCanvas.getContext('2d', { alpha: false });
 
-video.load();
-  videoTex.encoding = THREE.sRGBEncoding;
-  videoTex.flipY = false;
-  videoTex.minFilter = THREE.LinearFilter;
-  videoTex.magFilter = THREE.LinearFilter;
-  videoTex.generateMipmaps = false;
+const canvasTex = new THREE.CanvasTexture(vCanvas);
+canvasTex.encoding = THREE.sRGBEncoding;
+canvasTex.minFilter = THREE.LinearFilter;
+canvasTex.magFilter = THREE.LinearFilter;
+canvasTex.generateMipmaps = false;
 
-  const screenMat = new THREE.MeshBasicMaterial({
-    map: videoTex,
-    side: THREE.DoubleSide
-  });
+const screenMat = new THREE.MeshBasicMaterial({
+  map: canvasTex,
+  side: THREE.DoubleSide
+});
+screenMat.toneMapped = false;
+
+// функция обновления кадра
+function updateVideoTexture() {
+  // когда есть кадры
+  if (video.readyState >= 2 && video.videoWidth && video.videoHeight) {
+    // один раз под размер видео
+    if (vCanvas.width !== video.videoWidth) {
+      vCanvas.width = video.videoWidth;
+      vCanvas.height = video.videoHeight;
+    }
+    vCtx.drawImage(video, 0, 0, vCanvas.width, vCanvas.height);
+    canvasTex.needsUpdate = true;
+  }
+}
+
+  
   screenMat.toneMapped = false;
   // чтобы видео всегда рисовалось поверх
   screenMat.depthTest = false;
@@ -285,6 +298,7 @@ model.add(fallback);
     tvRoot.rotation.y = 0;
 
     camera.lookAt(0, 0, 0);
+    updateVideoTexture();
     renderer.render(scene, camera);
     raf = requestAnimationFrame(render);
   }
