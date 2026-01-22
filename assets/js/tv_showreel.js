@@ -195,7 +195,7 @@ function ensureScreenPlane() {
     tvRoot.add(model);
     ensureScreenPlane();
     fitCameraTo(tvRoot);
-   
+   });
 
   // GSAP fly-through + render loop
   let active = false;
