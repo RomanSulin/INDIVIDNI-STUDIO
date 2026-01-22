@@ -5,7 +5,7 @@
   if (!section) return;
 
   const wrapper = section.querySelector('.tvfly__wrapper');
-  const img = section.querySelector('.tvfly__image'); 
+  const img = section.querySelector('.tvfly__image');
   const canvas = section.querySelector('#tvflyCanvas');
   const video = section.querySelector('#tvflyVideo');
   const soundBtn = section.querySelector('#tvflySound');
@@ -23,11 +23,14 @@
     return;
   }
   if (!THREE.FBXLoader) {
-    console.warn('[tvfly] FBXLoader missing');
+    console.warn('[tvfly] FBXLoader missing (script not included or wrong version)');
     return;
   }
 
   gsap.registerPlugin(ScrollTrigger);
+
+  // ==== DEBUG (поставь true если надо увидеть “кубик” точно) ====
+  const DEBUG = true;
 
   // ---- Sound toggle ----
   video.muted = true;
@@ -61,12 +64,29 @@
   const scene = new THREE.Scene();
 
   const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
-  camera.position.set(0, 0.35, 2.9);
+  camera.position.set(0, 0.15, 2.9);
 
-  scene.add(new THREE.AmbientLight(0xffffff, 0.85));
-  const dir = new THREE.DirectionalLight(0xffffff, 0.9);
-  dir.position.set(2, 3, 2);
-  scene.add(dir);
+  // lights
+  scene.add(new THREE.AmbientLight(0xffffff, 0.65));
+
+  const key = new THREE.DirectionalLight(0xffffff, 0.95);
+  key.position.set(2.5, 3, 2);
+  scene.add(key);
+
+  // rim light чтобы силуэт читался на чёрном
+  const rim = new THREE.DirectionalLight(0xffffff, 0.75);
+  rim.position.set(-2.5, 1.5, -2);
+  scene.add(rim);
+
+  // DEBUG cube: если видишь его — рендер работает, значит проблема только в модели/камере
+  if (DEBUG) {
+    const cube = new THREE.Mesh(
+      new THREE.BoxGeometry(0.25, 0.25, 0.25),
+      new THREE.MeshStandardMaterial({ color: 0xff00ff })
+    );
+    cube.position.set(0, 0, 0);
+    scene.add(cube);
+  }
 
   function resize() {
     const w = canvas.clientWidth;
@@ -86,7 +106,7 @@
   const tvRoot = new THREE.Group();
   scene.add(tvRoot);
 
-  // load textures
+  // textures
   const texLoader = new THREE.TextureLoader();
   const texBase = texLoader.load('./assets/models/retro_tv/textures/basecolor.png');
   const texNormal = texLoader.load('./assets/models/retro_tv/textures/normal.png');
@@ -94,13 +114,15 @@
   const texMetal = texLoader.load('./assets/models/retro_tv/textures/metallic.png');
   texBase.encoding = THREE.sRGBEncoding;
 
+  // НЕ делаем metalness=1 на чёрном фоне (будет “невидимо”)
   const bodyMat = new THREE.MeshStandardMaterial({
     map: texBase,
     normalMap: texNormal,
     roughnessMap: texRough,
     metalnessMap: texMetal,
-    roughness: 1,
-    metalness: 1
+    roughness: 0.9,
+    metalness: 0.25,
+    color: 0xffffff
   });
 
   const screenMat = new THREE.MeshBasicMaterial({ map: videoTex });
@@ -131,9 +153,8 @@
       const flat = thickness / (maxDim + 1e-6);
       const area = midDim * maxDim;
 
-      // Screen is usually: thin + decent area
       if (flat < 0.12 && area > 0.02) {
-        candidates.push({ o, area, z: center.z, flat });
+        candidates.push({ o, area, z: center.z });
       }
     });
 
@@ -141,11 +162,12 @@
     return candidates[0] ? candidates[0].o : null;
   }
 
-  // load FBX
   const loader = new THREE.FBXLoader();
   loader.load(
     './assets/models/retro_tv/tv.fbx',
     (fbx) => {
+      console.log('[tvfly] FBX loaded');
+
       model = fbx;
 
       // Scale & center
@@ -153,37 +175,36 @@
       const s = new THREE.Vector3();
       b.getSize(s);
       const max = Math.max(s.x, s.y, s.z) || 1;
-      const scale = 1.15 / max; // target size
+
+      const scale = 1.35 / max; // чуть крупнее, чтобы гарантированно увидеть
       model.scale.setScalar(scale);
 
-      // re-center after scaling
+      // recenter
       b.setFromObject(model);
       const c = new THREE.Vector3();
       b.getCenter(c);
       model.position.sub(c);
-      model.position.y -= 0.28;
 
-      // try orient to camera
-      model.rotation.y = Math.PI; // flip if TV faces away
+      // не уводим сильно вниз (у тебя было -0.28)
+      model.position.y -= 0.08;
+
+      // повернём к камере (если вдруг спиной)
+      model.rotation.y = Math.PI;
 
       // pick screen mesh
       screenMesh = pickScreenMesh(model);
       if (!screenMesh) {
         console.warn('[tvfly] Screen mesh not found. Printing mesh names:');
         model.traverse((o) => { if (o.isMesh) console.log('mesh:', o.name); });
+      } else {
+        console.log('[tvfly] Screen mesh:', screenMesh.name || '(no name)');
       }
 
-      // apply materials
       model.traverse((o) => {
         if (!o.isMesh) return;
-        o.castShadow = false;
-        o.receiveShadow = false;
-
-        if (screenMesh && o === screenMesh) {
-          o.material = screenMat;
-        } else {
-          o.material = bodyMat;
-        }
+        o.frustumCulled = false; // на всякий случай
+        if (screenMesh && o === screenMesh) o.material = screenMat;
+        else o.material = bodyMat;
       });
 
       tvRoot.add(model);
@@ -192,7 +213,7 @@
     (err) => console.error('[tvfly] FBX load error', err)
   );
 
-  // ---- Animation loop (only while section active) ----
+  // ---- Animation loop ----
   let active = false;
   let raf = 0;
   let scrollP = 0;
@@ -206,17 +227,17 @@
 
     const t = easeOutCubic(scrollP);
 
-    // camera push-in
     camera.position.z = 2.9 - 0.9 * t;
-    camera.position.y = 0.35 - 0.05 * t;
+    camera.position.y = 0.15 - 0.03 * t;
 
-    // subtle TV rotate
+    // КЛЮЧ: всегда смотрим в центр сцены
+    camera.lookAt(0, 0, 0);
+
     tvRoot.rotation.y = (t - 0.5) * 0.35;
-    tvRoot.rotation.x = 0.04 - 0.04 * t;
+    tvRoot.rotation.x = 0.02 - 0.02 * t;
 
-    // scale up a bit
-    const s = 0.85 + 0.25 * t;
-    tvRoot.scale.setScalar(s);
+    const sc = 0.9 + 0.28 * t;
+    tvRoot.scale.setScalar(sc);
 
     renderer.render(scene, camera);
     raf = requestAnimationFrame(render);
@@ -236,7 +257,7 @@
     raf = 0;
   }
 
-  // ---- GSAP fly-through timeline ----
+  // ---- GSAP timeline ----
   gsap.timeline({
     scrollTrigger: {
       trigger: wrapper,
@@ -249,9 +270,7 @@
       onEnterBack: start,
       onLeave: stop,
       onLeaveBack: stop,
-      onUpdate: (self) => {
-        scrollP = self.progress;
-      }
+      onUpdate: (self) => { scrollP = self.progress; }
     }
   })
   .to(img, {
@@ -263,6 +282,6 @@
   .to(img, {
     opacity: 0,
     ease: 'power1.out'
-  }, 0.55);
+  }, 0.45);
 
 })();
