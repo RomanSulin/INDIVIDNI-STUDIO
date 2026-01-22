@@ -486,19 +486,21 @@ body.menu-open .drawer{ display:block; }
 
 /* Sound button */
 .tvfly__sound{
-  position: absolute;
-  right: 18px;
-  bottom: 18px;
-  width: 56px;
-  height: 56px;
+  right: 28px;
+  bottom: 120px;            /* выше */
+  width: 64px;
+  height: 40px;
   border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.16);
-  background: rgba(0,0,0,0.40);
-  backdrop-filter: blur(12px);
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  z-index: 4;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(0,0,0,0.42);
+  color: rgba(255,255,255,0.9);
+  font-family: "Syne", sans-serif;
+  font-size: 12px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 .tvfly__soundIcon{
   width: 18px; height: 18px; position: relative;
@@ -537,10 +539,10 @@ body.menu-open .drawer{ display:block; }
 
 /* desktop volume slider */
 .tvfly__volume{
-  position: absolute;
-  right: 86px;
-  bottom: 28px;
-  width: 140px;
+  position:absolute;
+  right: 28px;
+  bottom: 168px;            /* над кнопкой */
+  width: 160px;
   z-index: 4;
   accent-color: white;
 }
@@ -548,5 +550,10 @@ body.menu-open .drawer{ display:block; }
 /* mobile: hide slider (JS тоже скрывает) ------------------------------------------------------------------------------------------------------------------------------------*/
 @media (max-width: 860px){
   .tvfly__volume{ display:none; }
+  .tvfly__sound{
+    right: 12px;
+    bottom: 12px;
+    width: 64px;
+    height: 40px;
+  }
 }
-
