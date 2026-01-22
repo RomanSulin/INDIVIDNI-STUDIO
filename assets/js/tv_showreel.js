@@ -97,7 +97,22 @@
   screenMat.polygonOffsetUnits = -1;
 
   // ===== TV body =====
-  const texLoader = new THREE.TextureLoader();
+  const manager = new THREE.LoadingManager();
+
+manager.setURLModifier((url) => {
+  const u = decodeURIComponent(url).toLowerCase();
+
+  if (u.endsWith("retro tv 1 basecolor.png")) return "./assets/models/retro_tv/textures/basecolor.png";
+  if (u.endsWith("retro tv 1 normal.png"))    return "./assets/models/retro_tv/textures/normal.png";
+  if (u.endsWith("retro tv 1 roughness.png")) return "./assets/models/retro_tv/textures/roughness.png";
+  if (u.endsWith("retro tv 1 metallic.png"))  return "./assets/models/retro_tv/textures/metallic.png";
+
+  return url;
+});
+
+manager.onError = (url) => console.warn("[tvfly] asset missing:", url);
+
+const texLoader = new THREE.TextureLoader(manager);
   const texBase = texLoader.load("./assets/models/retro_tv/textures/basecolor.png");
   const texNormal = texLoader.load("./assets/models/retro_tv/textures/normal.png");
   const texRough = texLoader.load("./assets/models/retro_tv/textures/roughness.png");
@@ -243,7 +258,7 @@
   });
 
   // ===== load FBX =====
-  const loader = new THREE.FBXLoader();
+  const loader = new THREE.FBXLoader(manager);
   loader.load("./assets/models/retro_tv/tv.fbx", (fbx) => {
     model = fbx;
 
