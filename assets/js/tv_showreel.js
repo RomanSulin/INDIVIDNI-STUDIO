@@ -347,7 +347,7 @@ function mountScreenAndButton() {
   const eps = Math.max(size.z, 0.01) * 0.02;
 
   // screen size in LOCAL units
-  screenW = Math.max(0.05, size.x * (isMobile ? 0.90 : 1.06));
+  screenW = Math.max(0.05, size.x * (isMobile ? 0.95 : 1.00));
   const screenH = screenW / videoAR;
 
   const screenPos = center
@@ -376,7 +376,7 @@ function mountScreenAndButton() {
     .clone()
     .add(right.clone().multiplyScalar(screenW * BTN_X_K))
     .add(up.clone().multiplyScalar(-screenH * BTN_DOWN_K))
-    .add(normalV.clone().multiplyScalar(eps * 1.2));
+    .add(normalV.clone().multiplyScalar(eps * 1.5));
 
   if (!soundBtn3D) {
     soundGlow3D = new THREE.Mesh(new THREE.PlaneGeometry(bw * 1.22, bh * 1.22), glowMat);
