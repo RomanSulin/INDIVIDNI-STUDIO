@@ -210,8 +210,6 @@
   // =========================
   const tvRoot = new THREE.Group();
   scene.add(tvRoot);
-  // FIX ORIENTATION (попробуй это первым)
-  let model = null;
 
   // =========================
   // 3D sound button (texture)
