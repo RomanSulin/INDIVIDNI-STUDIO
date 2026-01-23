@@ -343,7 +343,7 @@ function mountScreenAndButton() {
   const SCREEN_UP_K = 0.11; // ↑ экран выше (0.05–0.14)
   const SCREEN_X_K  = 0.00;      // вправо/влево в долях ширины экрана (-0.10..0.10)
   const BTN_DOWN_K  = 0.57; // ↑ кнопка ниже (0.45–0.75)
-  const BTN_X_K     = 0.45;  // вправо/влево (-0.10..0.60)
+  const BTN_X_K     = 0.40;  // вправо/влево (-0.10..0.60)
   const eps = Math.max(size.z, 0.01) * 0.02;
 
   // screen size in LOCAL units
@@ -369,14 +369,14 @@ function mountScreenAndButton() {
   screenPlane.quaternion.copy(quatLocal);
 
   // BUTTON (LOCAL)
-  const bw = screenW * 0.22;
+  const bw = screenW * 0.16;
   const bh = bw * 0.45;
 
     const btnPos = center
     .clone()
     .add(right.clone().multiplyScalar(screenW * BTN_X_K))
     .add(up.clone().multiplyScalar(-screenH * BTN_DOWN_K))
-    .add(normalV.clone().multiplyScalar(eps * 3.5));
+    .add(normalV.clone().multiplyScalar(eps * 1.6));
 
   if (!soundBtn3D) {
     soundGlow3D = new THREE.Mesh(new THREE.PlaneGeometry(bw * 1.22, bh * 1.22), glowMat);
