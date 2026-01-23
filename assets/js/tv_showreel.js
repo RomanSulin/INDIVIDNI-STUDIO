@@ -295,100 +295,107 @@
     return cands[0] ? cands[0].o : null;
   }
 
-  function mountScreenAndButton() {
-    if (!model) return;
+function mountScreenAndButton() {
+  if (!model) return;
 
-    const anchor = findScreenCandidate(model);
+  const anchor = findScreenCandidate(model);
 
-    // screen basis
-    let box, center, size, quat;
-    if (anchor) {
-      box = new THREE.Box3().setFromObject(anchor);
-      center = box.getCenter(new THREE.Vector3());
-      size = box.getSize(new THREE.Vector3());
-      quat = anchor.getWorldQuaternion(new THREE.Quaternion());
-    } else {
-      box = new THREE.Box3().setFromObject(model);
-      center = box.getCenter(new THREE.Vector3());
-      size = box.getSize(new THREE.Vector3());
-      quat = model.getWorldQuaternion(new THREE.Quaternion());
-    }
+  // WORLD basis
+  let centerW, sizeW, quatW;
+  if (anchor) {
+    const boxW = new THREE.Box3().setFromObject(anchor);
+    centerW = boxW.getCenter(new THREE.Vector3());
+    sizeW   = boxW.getSize(new THREE.Vector3());
+    quatW   = anchor.getWorldQuaternion(new THREE.Quaternion());
+  } else {
+    const boxW = new THREE.Box3().setFromObject(model);
+    centerW = boxW.getCenter(new THREE.Vector3());
+    sizeW   = boxW.getSize(new THREE.Vector3());
+    quatW   = model.getWorldQuaternion(new THREE.Quaternion());
+  }
 
-    // AXIS FIX: доворачиваем плоскости на 90° вокруг Y
-    // если станет зеркально/не туда — поменяй Math.PI/2 на -Math.PI/2
-    const axisFix = new THREE.Quaternion().setFromAxisAngle(
+  // переводим всё в LOCAL tvRoot (чтобы не было дрейфа при tvRoot.scale)
+  tvRoot.updateMatrixWorld(true);
+
+  const tvScale = tvRoot.getWorldScale(new THREE.Vector3());
+  const invS = 1 / (tvScale.x || 1); // scale у тебя uniform
+
+  const tvInvQuat = tvRoot.getWorldQuaternion(new THREE.Quaternion()).invert();
+
+  const center = tvRoot.worldToLocal(centerW.clone());   // LOCAL
+  const size   = sizeW.clone().multiplyScalar(invS);     // LOCAL
+
+  // AXIS FIX (как у тебя сейчас “всё ок”)
+  const axisFix = new THREE.Quaternion().setFromAxisAngle(
     new THREE.Vector3(0, 1, 0),
     Math.PI / 2
-    );
+  );
 
-const quatFixed = quat.clone().multiply(axisFix);
+  // WORLD -> LOCAL
+  const quatLocal = tvInvQuat.clone().multiply(quatW).multiply(axisFix);
 
-const right   = new THREE.Vector3(1, 0, 0).applyQuaternion(quatFixed).normalize();
-const up      = new THREE.Vector3(0, 1, 0).applyQuaternion(quatFixed).normalize();
-const normalV = new THREE.Vector3(0, 0, 1).applyQuaternion(quatFixed).normalize();
+  const right   = new THREE.Vector3(1, 0, 0).applyQuaternion(quatLocal).normalize();
+  const up      = new THREE.Vector3(0, 1, 0).applyQuaternion(quatLocal).normalize();
+  const normalV = new THREE.Vector3(0, 0, 1).applyQuaternion(quatLocal).normalize();
 
+  const eps = Math.max(size.z, 0.01) * 0.06;
 
-    const eps = Math.max(size.z, 0.01) * 0.06;
+  // screen size (LOCAL)
+  screenW = Math.max(0.05, size.x * (isMobile ? 0.95 : 0.98));
+  const screenH = screenW / videoAR;
 
-    // make screen size relative to the "anchor" size
-    screenW = Math.max(0.05, size.x * (isMobile ? 0.95 : 0.98));
-    const screenH = screenW / videoAR;
+  // поднять экран выше
+  const SCREEN_UP = size.y * 0.08;
 
-    const SCREEN_UP = size.y * 0.08; // ↑ больше число = выше (пробуй 0.05–0.14)
-
-    const screenPos = center
+  const screenPos = center
     .clone()
     .add(up.clone().multiplyScalar(SCREEN_UP))
     .add(normalV.clone().multiplyScalar(eps));
 
-    if (!screenPlane) {
-      screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(screenW, screenH), screenMat);
-      screenPlane.renderOrder = 10;
-      screenPlane.position.copy(screenPos);
-      screenPlane.quaternion.copy(quatFixed);
-      tvRoot.add(screenPlane);
-    } else {
-      // keep position/quaternion, just update size if needed
-      setPlaneSize(screenPlane, screenW, screenH);
-      screenPlane.position.copy(screenPos);
-      screenPlane.quaternion.copy(quatFixed);
-    }
+  if (!screenPlane) {
+    screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(screenW, screenH), screenMat);
+    screenPlane.renderOrder = 10;
+    tvRoot.add(screenPlane);
+  } else {
+    setPlaneSize(screenPlane, screenW, screenH);
+  }
 
-    // ===== BUTTON =====
-const bw = screenW * 0.22;
-const bh = bw * 0.45;
+  screenPlane.position.copy(screenPos);
+  screenPlane.quaternion.copy(quatLocal);
 
-const btnPos = center
-  .clone()
-  .add(right.clone().multiplyScalar(screenW * 0.32))
-  .add(up.clone().multiplyScalar(-screenH * 0.55)) // <- тут двигаешь ниже/выше
-  .add(normalV.clone().multiplyScalar(eps * 1.2));
+  // ===== BUTTON (LOCAL) =====
+  const bw = screenW * 0.22;
+  const bh = bw * 0.45;
 
-if (!soundBtn3D) {
-  soundGlow3D = new THREE.Mesh(new THREE.PlaneGeometry(bw * 1.22, bh * 1.22), glowMat);
-  soundBtn3D  = new THREE.Mesh(new THREE.PlaneGeometry(bw, bh), btnMat);
+  const btnPos = center
+    .clone()
+    .add(right.clone().multiplyScalar(screenW * 0.32))
+    .add(up.clone().multiplyScalar(-screenH * 0.55)) // ниже/выше кнопка
+    .add(normalV.clone().multiplyScalar(eps * 1.2));
 
-  soundGlow3D.renderOrder = 999;
-  soundBtn3D.renderOrder  = 1000;
+  if (!soundBtn3D) {
+    soundGlow3D = new THREE.Mesh(new THREE.PlaneGeometry(bw * 1.22, bh * 1.22), glowMat);
+    soundBtn3D  = new THREE.Mesh(new THREE.PlaneGeometry(bw, bh), btnMat);
 
-  tvRoot.add(soundGlow3D);
-  tvRoot.add(soundBtn3D);
-} else {
-  // обновляем размер (на случай ресайза/пересчёта)
-  soundGlow3D.geometry.dispose();
-  soundGlow3D.geometry = new THREE.PlaneGeometry(bw * 1.22, bh * 1.22);
+    soundGlow3D.renderOrder = 999;
+    soundBtn3D.renderOrder  = 1000;
 
-  soundBtn3D.geometry.dispose();
-  soundBtn3D.geometry = new THREE.PlaneGeometry(bw, bh);
+    tvRoot.add(soundGlow3D);
+    tvRoot.add(soundBtn3D);
+  } else {
+    soundGlow3D.geometry.dispose();
+    soundGlow3D.geometry = new THREE.PlaneGeometry(bw * 1.22, bh * 1.22);
+
+    soundBtn3D.geometry.dispose();
+    soundBtn3D.geometry = new THREE.PlaneGeometry(bw, bh);
+  }
+
+  soundGlow3D.position.copy(btnPos);
+  soundBtn3D.position.copy(btnPos);
+
+  soundGlow3D.quaternion.copy(quatLocal);
+  soundBtn3D.quaternion.copy(quatLocal);
 }
-
-// обновляем позицию/ориентацию всегда
-soundGlow3D.position.copy(btnPos);
-soundBtn3D.position.copy(btnPos);
-
-soundGlow3D.quaternion.copy(quatFixed);
-soundBtn3D.quaternion.copy(quatFixed);
-    }
 
   canvas.addEventListener("pointermove", (e) => {
     if (!soundBtn3D) return;
