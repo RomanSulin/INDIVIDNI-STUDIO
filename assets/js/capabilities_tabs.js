@@ -1,16 +1,15 @@
 (function () {
-  // Capabilities SVG tabs — keep the original animation,
-  // but make the tabs span the FULL WIDTH of the accordion container
-  // without scaling them taller.
+  // Capabilities SVG tabs — keep the original hover animation
+  // but make BOTH spacing and CARD widths fill the whole container width.
   if (!window.gsap) return;
 
-  const mainSVG = document.getElementById("mainSVG");
+  const mainSVG = document.getElementById('mainSVG');
   if (!mainSVG) return;
 
-  const animWrap = mainSVG.closest(".cap-anim") || mainSVG.parentElement;
-  const container = mainSVG.querySelector("#container");
-  const colorTab = mainSVG.querySelector(".colorTab");
-  const maskRect = mainSVG.querySelector("#mask rect");
+  const animWrap = mainSVG.closest('.cap-anim') || mainSVG.parentElement;
+  const container = mainSVG.querySelector('#container');
+  const colorTab = mainSVG.querySelector('.colorTab');
+  const maskRect = mainSVG.querySelector('#mask rect');
 
   if (!container || !colorTab) return;
 
@@ -19,44 +18,43 @@
   const pt = mainSVG.createSVGPoint();
   const mousePos = { x: -9999, y: 0 };
 
-  // Keep original "feel" but adapt to spacing a bit
+  // Will be updated after layout
   const visibleArea = { value: 160, offset: 0 };
 
   const colors = [
-    "#001219", "#005f73", "#0a9396", "#94d2bd", "#e9d8a6",
-    "#ee9b00", "#ca6702", "#bb3e03", "#ae2012", "#9b2226"
+    '#001219', '#005f73', '#0a9396', '#94d2bd', '#e9d8a6',
+    '#ee9b00', '#ca6702', '#bb3e03', '#ae2012', '#9b2226'
   ];
 
   // ✅ Change texts here
   const labels = [
-    "Commercials",
-    "Brand Films",
-    "Music Videos",
-    "Fashion",
-    "CGI / VFX",
-    "Color",
-    "Sound",
-    "Motion",
-    "Web",
-    "Direction"
+    'Commercials',
+    'Brand Films',
+    'Music Videos',
+    'Fashion',
+    'CGI / VFX',
+    'Color',
+    'Sound',
+    'Motion',
+    'Web',
+    'Direction'
   ];
 
-  // Make svg visible (in case it starts hidden)
-  gsap.set(mainSVG, { visibility: "visible" });
+  // make sure it's visible
+  gsap.set(mainSVG, { visibility: 'visible' });
 
   // Build tabs once
-  container.innerHTML = "";
+  container.innerHTML = '';
   const tabs = [];
 
   colors.forEach((fill, i) => {
     const clone = colorTab.cloneNode(true);
     container.appendChild(clone);
 
-    // rect style + position like original
-    const rect = clone.querySelector("rect");
+    const rect = clone.querySelector('rect');
     if (rect) gsap.set(rect, { fill, y: 100 });
 
-    const text = clone.querySelector("text");
+    const text = clone.querySelector('text');
     if (text) text.textContent = labels[i] || `Item ${i + 1}`;
 
     tabs.push(clone);
@@ -74,23 +72,23 @@
     mousePos.y = p.y - visibleArea.offset;
   }
 
-  mainSVG.addEventListener("pointermove", onMove);
-  mainSVG.addEventListener("pointerleave", () => (mousePos.x = -9999));
+  mainSVG.addEventListener('pointermove', onMove);
+  mainSVG.addEventListener('pointerleave', () => (mousePos.x = -9999));
 
-  const clamp = gsap.utils.clamp;
+  function mapOpacity(dist) {
+    const max = Math.max(1, visibleArea.value);
+    const v = Math.max(0, Math.min(max, dist));
+    return gsap.utils.mapRange(0, max, 1, 0, v);
+  }
 
-  const mapOpacity = gsap.utils.pipe(
-    clamp(0, visibleArea.value),
-    gsap.utils.mapRange(0, visibleArea.value, 1, 0)
-  );
+  function mapPosY(dist) {
+    const max = Math.max(1, visibleArea.value);
+    const v = Math.max(0, Math.min(max, dist));
+    return gsap.utils.mapRange(0, max, 100, 200, v);
+  }
 
-  const mapPosY = gsap.utils.pipe(
-    clamp(0, visibleArea.value),
-    gsap.utils.mapRange(0, visibleArea.value, 100, 200)
-  );
-
-  // ---- Fit-to-width logic (only X), keep height behaviour the same
-  // We keep viewBox HEIGHT = 600 (as in your SVG) => vertical scale stays stable.
+  // Layout: keep viewBox height stable, adapt viewBox width to container aspect
+  // then make each CARD width = slot width (so no gaps).
   const VIEW_H = 600;
 
   function fitToWidth() {
@@ -98,42 +96,50 @@
     const w = Math.max(1, r.width);
     const h = Math.max(1, r.height);
 
-    // Calculate a viewBox width that exactly matches the current container aspect ratio
-    // so the SVG uses the FULL width without making everything taller.
+    // keep vertical scale stable
     const viewW = VIEW_H * (w / h);
 
-    mainSVG.setAttribute("viewBox", `0 0 ${viewW} ${VIEW_H}`);
-    if (maskRect) maskRect.setAttribute("width", String(viewW));
+    mainSVG.setAttribute('viewBox', `0 0 ${viewW} ${VIEW_H}`);
+    if (maskRect) maskRect.setAttribute('width', String(viewW));
 
-    // Get tab width from template (default 130)
-    const rectTemplate = colorTab.querySelector("rect");
-    const tabW = rectTemplate ? (parseFloat(rectTemplate.getAttribute("width")) || 130) : 130;
+    const n = Math.max(1, tabs.length);
+    const GAP = 0; // set to 6 if you want a small gap between cards
 
-    const n = tabs.length;
-    const spacerX = n > 1 ? (viewW - tabW) / (n - 1) : 0;
+    const tabW = (viewW - GAP * (n - 1)) / n;
 
-    // Keep the "influence radius" similar even when we spread wider
-    visibleArea.value = Math.max(160, spacerX * 2.2);
+    // keep the hover influence proportional to the new card size
+    visibleArea.value = Math.max(160, tabW * 2.2);
+
+    const rx = Math.max(10, Math.min(20, tabW * 0.18));
+    const padX = Math.max(10, tabW * 0.08);
 
     tabs.forEach((g, i) => {
-      gsap.set(g, { x: i * spacerX });
+      gsap.set(g, { x: i * (tabW + GAP) });
+
+      const rect = g.querySelector('rect');
+      if (rect) {
+        rect.setAttribute('width', String(tabW));
+        rect.setAttribute('rx', String(rx));
+      }
+
+      const text = g.querySelector('text');
+      if (text) {
+        text.setAttribute('x', String(padX));
+      }
     });
   }
 
-  // Initial + on resize
   fitToWidth();
-  window.addEventListener("resize", () => {
-    fitToWidth();
-  }, { passive: true });
+  window.addEventListener('resize', fitToWidth, { passive: true });
 
   function update() {
     tabs.forEach((g) => {
-      const gx = gsap.getProperty(g, "x");
+      const gx = gsap.getProperty(g, 'x');
       const dist = Math.hypot(gx - mousePos.x + visibleArea.offset, 0);
 
       gsap.to(g, { y: mapPosY(dist), duration: 0.25, overwrite: true });
 
-      const label = g.querySelector("text");
+      const label = g.querySelector('text');
       if (label) gsap.to(label, { opacity: mapOpacity(dist), duration: 0.25, overwrite: true });
     });
   }
