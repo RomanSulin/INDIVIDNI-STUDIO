@@ -474,7 +474,7 @@ if (soundBtn3D) {
   const pulse = 0.5 + 0.5 * Math.sin(time * 2.6); // скорость пульса
 
   // muted = пульсирует, unmuted = спокойная
-  const k = video.muted ? (0.85 + 0.50 * pulse) : 1.0; // 0.85..1.35
+  const k = video.muted ? (0.90 + 0.80 * pulse) : 1.0; // 0.85..1.35
 
   soundBtn3D.material.color.setRGB(k, k, k);
   // если захочешь ещё "живее" — можно добавить:
