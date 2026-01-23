@@ -308,9 +308,19 @@
       quat = model.getWorldQuaternion(new THREE.Quaternion());
     }
 
-    const right = new THREE.Vector3(1, 0, 0).applyQuaternion(quat).normalize();
-    const up = new THREE.Vector3(0, 1, 0).applyQuaternion(quat).normalize();
-    const normalV = new THREE.Vector3(0, 0, 1).applyQuaternion(quat).normalize();
+    // AXIS FIX: доворачиваем плоскости на 90° вокруг Y
+    // если станет зеркально/не туда — поменяй Math.PI/2 на -Math.PI/2
+    const axisFix = new THREE.Quaternion().setFromAxisAngle(
+    new THREE.Vector3(0, 1, 0),
+    Math.PI / 2
+    );
+
+const quatFixed = quat.clone().multiply(axisFix);
+
+const right   = new THREE.Vector3(1, 0, 0).applyQuaternion(quatFixed).normalize();
+const up      = new THREE.Vector3(0, 1, 0).applyQuaternion(quatFixed).normalize();
+const normalV = new THREE.Vector3(0, 0, 1).applyQuaternion(quatFixed).normalize();
+
 
     const eps = Math.max(size.z, 0.01) * 0.06;
 
@@ -324,13 +334,13 @@
       screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(screenW, screenH), screenMat);
       screenPlane.renderOrder = 10;
       screenPlane.position.copy(screenPos);
-      screenPlane.quaternion.copy(quat);
+      screenPlane.quaternion.copy(quatFixed);
       tvRoot.add(screenPlane);
     } else {
       // keep position/quaternion, just update size if needed
       setPlaneSize(screenPlane, screenW, screenH);
       screenPlane.position.copy(screenPos);
-      screenPlane.quaternion.copy(quat);
+      screenPlane.quaternion.copy(quatFixed);
     }
 
     // ===== BUTTON =====
@@ -354,8 +364,8 @@
       soundBtn3D.position.copy(btnPos);
 
       // keep it "stuck" to TV plane
-      soundGlow3D.quaternion.copy(quat);
-      soundBtn3D.quaternion.copy(quat);
+      soundGlow3D.quaternion.copy(quatFixed);
+      soundBtn3D.quaternion.copy(quatFixed);
 
       tvRoot.add(soundGlow3D);
       tvRoot.add(soundBtn3D);
