@@ -373,6 +373,7 @@ function mountScreenAndButton() {
   const bh = bw * 0.45;
 
   const btnPos = center
+    const btnPos = center
     .clone()
     .add(right.clone().multiplyScalar(screenW * 0.32))
     .add(up.clone().multiplyScalar(-screenH * BTN_DOWN_K))
