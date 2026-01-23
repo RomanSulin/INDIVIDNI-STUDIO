@@ -540,3 +540,43 @@ body.menu-open .drawer{ display:block; }
   opacity: 0;
   pointer-events: none;
 }
+
+
+/* ===== Capabilities (SVG blocks + accordion) ============================================= */
+.capabilities{ padding: 18px 0 26px; border-bottom: 1px solid var(--border); }
+
+.cap-anim{
+  margin-top: 14px;
+  height: min(420px, 60vh);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: rgba(255,255,255,0.03);
+}
+
+.cap-anim svg{
+  width: 100%;
+  height: 100%;
+  display:block;
+  visibility: visible;
+}
+
+.cap-anim text{ fill: rgba(255,255,255,0.92); }
+.cap-anim .label{
+  font-family: "Syne", sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+}
+
+.cap-anim .colorTab rect{
+  stroke: rgba(255,255,255,0.10);
+  stroke-width: 1;
+}
+
+.cap-accordion{ margin-top: 14px; }
+
+@media (max-width: 860px){
+  .cap-anim{ height: 340px; }
+  .cap-anim .label{ font-size: 14px; }
+}
