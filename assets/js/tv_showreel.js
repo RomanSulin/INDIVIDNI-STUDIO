@@ -252,7 +252,6 @@
   let screenPlane = null;
   let screenW = 0;
   let soundBtn3D = null;
-  let soundGlow3D = null;
 
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
@@ -379,35 +378,23 @@ function mountScreenAndButton() {
     .add(normalV.clone().multiplyScalar(eps * 1.6));
 
   if (!soundBtn3D) {
-    soundGlow3D = new THREE.Mesh(new THREE.PlaneGeometry(bw * 1.22, bh * 1.22), glowMat);
-    soundBtn3D  = new THREE.Mesh(new THREE.PlaneGeometry(bw, bh), btnMat);
+  soundBtn3D = new THREE.Mesh(new THREE.PlaneGeometry(bw, bh), btnMat);
+  soundBtn3D.renderOrder = 1000;
+  tvRoot.add(soundBtn3D);
+} else {
+  soundBtn3D.geometry.dispose();
+  soundBtn3D.geometry = new THREE.PlaneGeometry(bw, bh);
+}
 
-    soundGlow3D.renderOrder = 999;
-    soundBtn3D.renderOrder  = 1000;
-
-    tvRoot.add(soundGlow3D);
-    tvRoot.add(soundBtn3D);
-  } else {
-    // update sizes if remount happens after AR change
-    soundGlow3D.geometry.dispose();
-    soundGlow3D.geometry = new THREE.PlaneGeometry(bw * 1.22, bh * 1.22);
-
-    soundBtn3D.geometry.dispose();
-    soundBtn3D.geometry = new THREE.PlaneGeometry(bw, bh);
-  }
-
-  soundGlow3D.position.copy(btnPos);
-  soundBtn3D.position.copy(btnPos);
-
-  soundGlow3D.quaternion.copy(quatLocal);
-  soundBtn3D.quaternion.copy(quatLocal);
+soundBtn3D.position.copy(btnPos);
+soundBtn3D.quaternion.copy(quatLocal);
 }
 
   canvas.addEventListener("pointermove", (e) => {
     if (!soundBtn3D) return;
     pointerToNDC(e);
     raycaster.setFromCamera(pointer, camera);
-    const hit = raycaster.intersectObjects([soundBtn3D, soundGlow3D].filter(Boolean), true);
+    const hit = raycaster.intersectObjects([soundBtn3D].filter(Boolean), true);
     canvas.style.cursor = hit.length ? "pointer" : "default";
   });
 
@@ -415,7 +402,7 @@ function mountScreenAndButton() {
     if (!soundBtn3D) return;
     pointerToNDC(e);
     raycaster.setFromCamera(pointer, camera);
-    const hit = raycaster.intersectObjects([soundBtn3D, soundGlow3D].filter(Boolean), true);
+    const hit = raycaster.intersectObjects([soundBtn3D].filter(Boolean), true);
     if (hit.length) toggleSound();
   });
 
@@ -481,13 +468,20 @@ function mountScreenAndButton() {
     updateVideoTexture();
 
     // glow feedback
-    if (soundGlow3D) {
-      const time = performance.now() * 0.001;
-      soundGlow3D.material.opacity = video.muted
-        ? 0.10 + 0.10 * (0.5 + 0.5 * Math.sin(time * 2.6))
-        : 0.35;
-      soundGlow3D.material.needsUpdate = true;
-    }
+    // button brightness (no halo)
+if (soundBtn3D) {
+  const time = performance.now() * 0.001;
+  const pulse = 0.5 + 0.5 * Math.sin(time * 2.6); // скорость пульса
+
+  // muted = пульсирует, unmuted = спокойная
+  const k = video.muted ? (0.85 + 0.50 * pulse) : 1.0; // 0.85..1.35
+
+  soundBtn3D.material.color.setRGB(k, k, k);
+  // если захочешь ещё "живее" — можно добавить:
+  // soundBtn3D.material.opacity = video.muted ? (0.85 + 0.15 * pulse) : 1.0;
+
+  soundBtn3D.material.needsUpdate = true;
+}
 
     const t = progress;
     tvRoot.scale.setScalar((isMobile ? 0.55 : 0.45) + (isMobile ? 0.40 : 0.60) * t);
