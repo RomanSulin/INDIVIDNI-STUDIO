@@ -163,8 +163,11 @@
     transparent: false
   });
   // screen always visible (not hidden by glass)
-  screenMat.depthTest = false;
+  screenMat.depthTest = true;
   screenMat.depthWrite = false;
+  screenMat.polygonOffset = true;
+  screenMat.polygonOffsetFactor = -2;
+  screenMat.polygonOffsetUnits = -2;
   screenMat.toneMapped = false;
 
   // =========================
@@ -234,8 +237,11 @@
     alphaTest: 0.25,
     side: THREE.DoubleSide
   });
-  btnMat.depthTest = false;
+  btnMat.depthTest = true;
   btnMat.depthWrite = false;
+  btnMat.polygonOffset = true;
+  btnMat.polygonOffsetFactor = -2;
+  btnMat.polygonOffsetUnits = -2;
 
   const glowMat = new THREE.MeshBasicMaterial({
     map: soundTex,
@@ -343,7 +349,7 @@ function mountScreenAndButton() {
   const SCREEN_UP_K = 0.08; // ↑ экран выше (0.05–0.14)
   const BTN_DOWN_K  = 0.55; // ↑ кнопка ниже (0.45–0.75)
 
-  const eps = Math.max(size.z, 0.01) * 0.06;
+  const eps = Math.max(size.z, 0.01) * 0.02;
 
   // screen size in LOCAL units
   screenW = Math.max(0.05, size.x * (isMobile ? 0.95 : 0.98));
