@@ -376,7 +376,7 @@ function mountScreenAndButton() {
     .clone()
     .add(right.clone().multiplyScalar(screenW * BTN_X_K))
     .add(up.clone().multiplyScalar(-screenH * BTN_DOWN_K))
-    .add(normalV.clone().multiplyScalar(eps * 1.5));
+    .add(normalV.clone().multiplyScalar(eps * 3.5));
 
   if (!soundBtn3D) {
     soundGlow3D = new THREE.Mesh(new THREE.PlaneGeometry(bw * 1.22, bh * 1.22), glowMat);
