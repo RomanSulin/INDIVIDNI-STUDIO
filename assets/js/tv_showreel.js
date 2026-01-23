@@ -1,5 +1,14 @@
 /* global THREE, gsap, ScrollTrigger */
 
+/**
+ * TV fly-through (Three.js + GSAP ScrollTrigger)
+ * Fixes:
+ *  - Remap FBX-referenced textures to your actual folder to kill 404s on GitHub Pages (case-sensitive FS).
+ *  - More robust screen/button placement: tries to find a mesh with name like "screen/display/monitor",
+ *    otherwise falls back to model bounding box.
+ *  - Safer resize using wrapper rect.
+ */
+
 (() => {
   const section = document.querySelector(".tvfly");
   if (!section) return console.error("[tvfly] .tvfly not found");
@@ -10,8 +19,14 @@
   const video = section.querySelector("#tvflyVideo");
 
   if (!wrapper || !img || !canvas || !video) {
-    return console.error("[tvfly] missing DOM", {wrapper:!!wrapper,img:!!img,canvas:!!canvas,video:!!video});
+    return console.error("[tvfly] missing DOM", {
+      wrapper: !!wrapper,
+      img: !!img,
+      canvas: !!canvas,
+      video: !!video
+    });
   }
+
   if (!window.THREE || !window.gsap || !window.ScrollTrigger || !THREE.FBXLoader) {
     return console.error("[tvfly] missing libs", {
       THREE: !!window.THREE,
@@ -24,21 +39,50 @@
   gsap.registerPlugin(ScrollTrigger);
 
   const isMobile = window.matchMedia("(max-width: 860px)").matches;
-  const FORCE_ROT_Y = (3 * Math.PI) / 2;
 
-  // video
+  // =========================
+  // Video
+  // =========================
   video.loop = true;
   video.playsInline = true;
   video.muted = true;
   video.volume = 1;
+  video.preload = "auto";
+
+  video.addEventListener("error", () => {
+    console.error("[tvfly] video error", video.error);
+  });
+
+  let videoAR = 16 / 9; // fallback until metadata
+  video.addEventListener(
+    "loadedmetadata",
+    () => {
+      if (video.videoWidth && video.videoHeight) {
+        videoAR = video.videoWidth / video.videoHeight;
+        // if screen already exists — refresh geometry height
+        if (screenPlane && screenW > 0) {
+          setPlaneSize(screenPlane, screenW, screenW / videoAR);
+        }
+      }
+    },
+    { once: true }
+  );
 
   const toggleSound = () => {
     video.muted = !video.muted;
-    video.play().catch(()=>{});
+    // user gesture → should allow play even on strict browsers
+    video.play().catch(() => {});
   };
 
-  // renderer
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:false, powerPreference:"high-performance" });
+  // =========================
+  // Renderer / scene
+  // =========================
+  const renderer = new THREE.WebGLRenderer({
+    canvas,
+    antialias: true,
+    alpha: false,
+    powerPreference: "high-performance"
+  });
   renderer.setClearColor(0x000000, 1);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.outputEncoding = THREE.sRGBEncoding;
@@ -48,74 +92,103 @@
 
   scene.add(new THREE.AmbientLight(0xffffff, 0.35));
   const key = new THREE.DirectionalLight(0xffffff, 1.15);
-  key.position.set(3,3,2);
+  key.position.set(3, 3, 2);
   scene.add(key);
   const fill = new THREE.DirectionalLight(0xffffff, 0.35);
-  fill.position.set(-3,1.2,-2.5);
+  fill.position.set(-3, 1.2, -2.5);
   scene.add(fill);
 
-  function resize(){
-    const w = canvas.clientWidth, h = canvas.clientHeight;
+  function resize() {
+    const r = wrapper.getBoundingClientRect();
+    const w = Math.max(1, Math.round(r.width));
+    const h = Math.max(1, Math.round(r.height));
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
   }
-  window.addEventListener("resize", resize);
+  window.addEventListener("resize", resize, { passive: true });
   resize();
 
-  // CanvasTexture full-frame
+  // =========================
+  // CanvasTexture (video -> offscreen canvas -> texture)
+  // =========================
   const vCanvas = document.createElement("canvas");
-  const vCtx = vCanvas.getContext("2d", {alpha:false});
+  const vCtx = vCanvas.getContext("2d", { alpha: false });
+
+  // show a visible fallback while video isn't ready
+  function drawFallback() {
+    if (vCanvas.width !== 512 || vCanvas.height !== 288) {
+      vCanvas.width = 512;
+      vCanvas.height = 288;
+    }
+    vCtx.fillStyle = "#000";
+    vCtx.fillRect(0, 0, vCanvas.width, vCanvas.height);
+    vCtx.fillStyle = "rgba(255,255,255,0.65)";
+    vCtx.font = "24px Arial";
+    vCtx.fillText("SHOWREEL", 24, 52);
+    vCtx.font = "14px Arial";
+    vCtx.fillStyle = "rgba(255,255,255,0.45)";
+    vCtx.fillText("loading…", 26, 80);
+  }
+
   const canvasTex = new THREE.CanvasTexture(vCanvas);
   canvasTex.encoding = THREE.sRGBEncoding;
   canvasTex.minFilter = THREE.LinearFilter;
   canvasTex.magFilter = THREE.LinearFilter;
   canvasTex.generateMipmaps = false;
 
-  let videoAR = 5/4;
-  video.addEventListener("loadedmetadata", () => {
-    if (video.videoWidth && video.videoHeight) videoAR = video.videoWidth / video.videoHeight;
-  }, { once:true });
-
-  function updateVideoTexture(){
-    if (!(video.readyState >= 2 && video.videoWidth && video.videoHeight)) return;
-    if (vCanvas.width !== video.videoWidth || vCanvas.height !== video.videoHeight) {
-      vCanvas.width = video.videoWidth;
-      vCanvas.height = video.videoHeight;
+  function updateVideoTexture() {
+    if (video.readyState >= 2 && video.videoWidth && video.videoHeight) {
+      if (vCanvas.width !== video.videoWidth || vCanvas.height !== video.videoHeight) {
+        vCanvas.width = video.videoWidth;
+        vCanvas.height = video.videoHeight;
+      }
+      vCtx.drawImage(video, 0, 0, vCanvas.width, vCanvas.height);
+      canvasTex.needsUpdate = true;
+      return;
     }
-    vCtx.drawImage(video, 0, 0, vCanvas.width, vCanvas.height);
+    // fallback (so ты точно видишь, что экран живой)
+    drawFallback();
     canvasTex.needsUpdate = true;
   }
 
-  const screenMat = new THREE.MeshBasicMaterial({ map: canvasTex, side: THREE.DoubleSide, transparent:false });
-  // сделаем экран гарантированно видимым (не перекрывается стеклом)
+  const screenMat = new THREE.MeshBasicMaterial({
+    map: canvasTex,
+    side: THREE.DoubleSide,
+    transparent: false
+  });
+  // screen always visible (not hidden by glass)
   screenMat.depthTest = false;
   screenMat.depthWrite = false;
   screenMat.toneMapped = false;
 
-  // LoadingManager: ремап текстур из FBX (и пробелы, и подчёркивания)
+  // =========================
+  // LoadingManager: kill 404 from FBX texture references
+  // IMPORTANT: GitHub Pages is case-sensitive.
+  // =========================
   const manager = new THREE.LoadingManager();
   manager.setURLModifier((url) => {
-    const file = decodeURIComponent(url).split("/").pop();
+    const file = decodeURIComponent(url).split(/[\\/]/).pop();
+    const f = (file || "").toLowerCase();
 
-    // варианты, которые FBX реально запрашивает у тебя
-    if (file === "retro_tv 1 BaseColor.png") return "./assets/models/retro_tv 1 BaseColor.png";
-    if (file === "retro_tv 1 Normal.png")    return "./assets/models/retro_tv 1 Normal.png";
-    if (file === "retro_tv 1 Roughness.png") return "./assets/models/retro_tv 1 Roughness.png";
-    if (file === "retro_tv 1 Metallic.png")  return "./assets/models/retro_tv 1 Metallic.png";
+    const remap = {
+      "retro_tv 1 basecolor.png": "./assets/models/retro_tv/textures/basecolor.png",
+      "retro_tv 1 normal.png": "./assets/models/retro_tv/textures/normal.png",
+      "retro_tv 1 roughness.png": "./assets/models/retro_tv/textures/roughness.png",
+      "retro_tv 1 metallic.png": "./assets/models/retro_tv/textures/metallic.png",
 
-    // на всякий — если вдруг попадётся с underscore
-    if (file === "retro_tv_1_BaseColor.png") return "./assets/models/retro_tv 1 BaseColor.png";
-    if (file === "retro_tv_1_Normal.png")    return "./assets/models/retro_tv 1 Normal.png";
-    if (file === "retro_tv_1_Roughness.png") return "./assets/models/retro_tv 1 Roughness.png";
-    if (file === "retro_tv_1_Metallic.png")  return "./assets/models/retro_tv 1 Metallic.png";
+      "retro_tv_1_basecolor.png": "./assets/models/retro_tv/textures/basecolor.png",
+      "retro_tv_1_normal.png": "./assets/models/retro_tv/textures/normal.png",
+      "retro_tv_1_roughness.png": "./assets/models/retro_tv/textures/roughness.png",
+      "retro_tv_1_metallic.png": "./assets/models/retro_tv/textures/metallic.png"
+    };
 
-    return url;
+    return remap[f] || url;
   });
 
   const texLoader = new THREE.TextureLoader(manager);
 
-  // body textures (твои новые)
+  // body textures (your folder)
   const base = texLoader.load("./assets/models/retro_tv/textures/basecolor.png");
   const normal = texLoader.load("./assets/models/retro_tv/textures/normal.png");
   const rough = texLoader.load("./assets/models/retro_tv/textures/roughness.png");
@@ -123,91 +196,171 @@
   base.encoding = THREE.sRGBEncoding;
 
   const bodyMat = new THREE.MeshStandardMaterial({
-    map: base, normalMap: normal, roughnessMap: rough, metalnessMap: metal,
-    roughness: 0.9, metalness: 0.08, color: 0xffffff
+    map: base,
+    normalMap: normal,
+    roughnessMap: rough,
+    metalnessMap: metal,
+    roughness: 0.9,
+    metalness: 0.08,
+    color: 0xffffff
   });
 
+  // =========================
+  // TV root
+  // =========================
   const tvRoot = new THREE.Group();
   scene.add(tvRoot);
 
   let model = null;
-  let screenPlane = null;
 
-  // button textures
-  const soundTex = texLoader.load("./assets/png/sound.png");
+  // =========================
+  // 3D sound button (texture)
+  // =========================
+  const soundTex = texLoader.load(
+    "./assets/png/sound.png",
+    undefined,
+    undefined,
+    () => console.warn("[tvfly] sound.png not found: ./assets/png/sound.png")
+  );
   soundTex.encoding = THREE.sRGBEncoding;
 
-  const btnMat = new THREE.MeshBasicMaterial({ map: soundTex, transparent:true, alphaTest:0.25, side: THREE.DoubleSide });
-  btnMat.depthTest = false; btnMat.depthWrite = false;
+  const btnMat = new THREE.MeshBasicMaterial({
+    map: soundTex,
+    transparent: true,
+    alphaTest: 0.25,
+    side: THREE.DoubleSide
+  });
+  btnMat.depthTest = false;
+  btnMat.depthWrite = false;
 
   const glowMat = new THREE.MeshBasicMaterial({
     map: soundTex,
-    transparent:true,
-    alphaTest:0.25,
+    transparent: true,
+    alphaTest: 0.25,
     blending: THREE.AdditiveBlending,
-    color: new THREE.Color(1,0.15,0.15),
+    color: new THREE.Color(1, 0.15, 0.15),
     opacity: 0.0,
     side: THREE.DoubleSide
   });
-  glowMat.depthTest = false; glowMat.depthWrite = false;
+  glowMat.depthTest = false;
+  glowMat.depthWrite = false;
 
-  let soundBtn3D = null, soundGlow3D = null;
+  let screenPlane = null;
+  let screenW = 0;
+  let soundBtn3D = null;
+  let soundGlow3D = null;
+
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
 
-  function pointerToNDC(e){
+  function pointerToNDC(e) {
     const r = canvas.getBoundingClientRect();
     pointer.x = ((e.clientX - r.left) / r.width) * 2 - 1;
     pointer.y = -(((e.clientY - r.top) / r.height) * 2 - 1);
   }
 
-  function mountScreenAndButton(){
+  function setPlaneSize(mesh, w, h) {
+    const pos = mesh.position.clone();
+    const quat = mesh.quaternion.clone();
+    mesh.geometry.dispose();
+    mesh.geometry = new THREE.PlaneGeometry(w, h);
+    mesh.position.copy(pos);
+    mesh.quaternion.copy(quat);
+  }
+
+  function findScreenCandidate(root) {
+    const cands = [];
+    root.traverse((o) => {
+      if (!o.isMesh) return;
+      const name = (o.name || "").toLowerCase();
+      // typical names in models
+      if (
+        name.includes("screen") ||
+        name.includes("display") ||
+        name.includes("monitor") ||
+        name.includes("glass")
+      ) {
+        const b = new THREE.Box3().setFromObject(o);
+        const s = b.getSize(new THREE.Vector3());
+        const area = s.x * s.y;
+        // ignore tiny parts
+        if (area > 0.0005) cands.push({ o, area });
+      }
+    });
+    cands.sort((a, b) => b.area - a.area);
+    return cands[0] ? cands[0].o : null;
+  }
+
+  function mountScreenAndButton() {
     if (!model) return;
 
-    const box = new THREE.Box3().setFromObject(model);
-    const size = box.getSize(new THREE.Vector3());
-    const center = box.getCenter(new THREE.Vector3());
+    const anchor = findScreenCandidate(model);
 
-    // ===== SCREEN =====
+    // screen basis
+    let box, center, size, quat;
+    if (anchor) {
+      box = new THREE.Box3().setFromObject(anchor);
+      center = box.getCenter(new THREE.Vector3());
+      size = box.getSize(new THREE.Vector3());
+      quat = anchor.getWorldQuaternion(new THREE.Quaternion());
+    } else {
+      box = new THREE.Box3().setFromObject(model);
+      center = box.getCenter(new THREE.Vector3());
+      size = box.getSize(new THREE.Vector3());
+      quat = model.getWorldQuaternion(new THREE.Quaternion());
+    }
+
+    const right = new THREE.Vector3(1, 0, 0).applyQuaternion(quat).normalize();
+    const up = new THREE.Vector3(0, 1, 0).applyQuaternion(quat).normalize();
+    const normalV = new THREE.Vector3(0, 0, 1).applyQuaternion(quat).normalize();
+
+    const eps = Math.max(size.z, 0.01) * 0.06;
+
+    // make screen size relative to the "anchor" size
+    screenW = Math.max(0.05, size.x * (isMobile ? 0.95 : 0.98));
+    const screenH = screenW / videoAR;
+
+    const screenPos = center.clone().add(normalV.clone().multiplyScalar(eps));
+
     if (!screenPlane) {
-      const w = size.x * (isMobile ? 0.74 : 0.88);
-      const h = w / videoAR;
-      screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(w, h), screenMat);
+      screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(screenW, screenH), screenMat);
       screenPlane.renderOrder = 10;
-
-      // WORLD -> LOCAL
-      const worldPos = new THREE.Vector3(center.x, center.y + size.y*0.10, box.max.z + size.z*0.003);
-      const localPos = worldPos.clone();
-      model.worldToLocal(localPos);
-      screenPlane.position.copy(localPos);
-
-      model.add(screenPlane);
+      screenPlane.position.copy(screenPos);
+      screenPlane.quaternion.copy(quat);
+      tvRoot.add(screenPlane);
+    } else {
+      // keep position/quaternion, just update size if needed
+      setPlaneSize(screenPlane, screenW, screenH);
+      screenPlane.position.copy(screenPos);
+      screenPlane.quaternion.copy(quat);
     }
 
     // ===== BUTTON =====
     if (!soundBtn3D) {
-      const bw = size.x * (isMobile ? 0.16 : 0.14);
+      const bw = screenW * 0.22;
       const bh = bw * 0.45;
 
-      soundGlow3D = new THREE.Mesh(new THREE.PlaneGeometry(bw*1.22, bh*1.22), glowMat);
-      soundGlow3D.renderOrder = 999;
-
+      soundGlow3D = new THREE.Mesh(new THREE.PlaneGeometry(bw * 1.22, bh * 1.22), glowMat);
       soundBtn3D = new THREE.Mesh(new THREE.PlaneGeometry(bw, bh), btnMat);
+
+      soundGlow3D.renderOrder = 999;
       soundBtn3D.renderOrder = 1000;
 
-      const worldPos = new THREE.Vector3(
-        center.x + size.x*0.23,
-        center.y - size.y*0.33,
-        box.max.z + size.z*0.006
-      );
-      const localPos = worldPos.clone();
-      model.worldToLocal(localPos);
+      const btnPos = center
+        .clone()
+        .add(right.clone().multiplyScalar(screenW * 0.32))
+        .add(up.clone().multiplyScalar(-screenH * 0.40))
+        .add(normalV.clone().multiplyScalar(eps * 1.2));
 
-      soundGlow3D.position.copy(localPos);
-      soundBtn3D.position.copy(localPos);
+      soundGlow3D.position.copy(btnPos);
+      soundBtn3D.position.copy(btnPos);
 
-      model.add(soundGlow3D);
-      model.add(soundBtn3D);
+      // keep it "stuck" to TV plane
+      soundGlow3D.quaternion.copy(quat);
+      soundBtn3D.quaternion.copy(quat);
+
+      tvRoot.add(soundGlow3D);
+      tvRoot.add(soundBtn3D);
     }
   }
 
@@ -227,78 +380,92 @@
     if (hit.length) toggleSound();
   });
 
-  // FBX loader with manager
+  // =========================
+  // FBX load
+  // =========================
   const loader = new THREE.FBXLoader(manager);
-  loader.load("./assets/models/retro_tv/tv.fbx", (fbx) => {
-    model = fbx;
 
-    // normalize scale
-    const b0 = new THREE.Box3().setFromObject(model);
-    const s0 = b0.getSize(new THREE.Vector3());
-    const max0 = Math.max(s0.x, s0.y, s0.z) || 1;
-    model.scale.setScalar(1.0 / max0);
+  loader.load(
+    "./assets/models/retro_tv/tv.fbx",
+    (fbx) => {
+      model = fbx;
 
-    model.rotation.set(0, FORCE_ROT_Y, 0);
+      // normalize scale
+      const b0 = new THREE.Box3().setFromObject(model);
+      const s0 = b0.getSize(new THREE.Vector3());
+      const max0 = Math.max(s0.x, s0.y, s0.z) || 1;
+      model.scale.setScalar(1.0 / max0);
 
-    // center after rotate
-    const b1 = new THREE.Box3().setFromObject(model);
-    const c1 = b1.getCenter(new THREE.Vector3());
-    model.position.sub(c1);
+      // center
+      const b1 = new THREE.Box3().setFromObject(model);
+      const c1 = b1.getCenter(new THREE.Vector3());
+      model.position.sub(c1);
 
-    model.traverse((o) => {
-      if (!o.isMesh) return;
-      o.frustumCulled = false;
-      o.material = bodyMat;
-    });
+      // apply our material everywhere
+      model.traverse((o) => {
+        if (!o.isMesh) return;
+        o.frustumCulled = false;
+        o.material = bodyMat;
+      });
 
-    tvRoot.add(model);
+      tvRoot.add(model);
 
-    // camera fit
-    const box = new THREE.Box3().setFromObject(tvRoot);
-    const size = box.getSize(new THREE.Vector3());
-    const maxDim = Math.max(size.x, size.y, size.z) || 1;
-    const fov = camera.fov * (Math.PI / 180);
-    const dist = (maxDim/2)/Math.tan(fov/2) * (isMobile ? 2.3 : 2.0);
-    camera.position.set(0, maxDim*0.10, dist);
-    camera.updateProjectionMatrix();
+      // camera fit
+      const box = new THREE.Box3().setFromObject(tvRoot);
+      const size = box.getSize(new THREE.Vector3());
+      const maxDim = Math.max(size.x, size.y, size.z) || 1;
+      const fov = (camera.fov * Math.PI) / 180;
+      const dist = (maxDim / 2) / Math.tan(fov / 2) * (isMobile ? 2.3 : 2.0);
 
-    mountScreenAndButton();
-  });
+      camera.position.set(0, maxDim * 0.10, dist);
+      camera.updateProjectionMatrix();
 
-  // GSAP + render
-  let active = false, raf = 0, progress = 0;
+      mountScreenAndButton();
+    },
+    undefined,
+    (err) => console.error("[tvfly] FBX load error", err)
+  );
 
-  function render(){
+  // =========================
+  // GSAP + render loop
+  // =========================
+  let active = false;
+  let raf = 0;
+  let progress = 0;
+
+  function render() {
     if (!active) return;
 
     updateVideoTexture();
 
-    // glow
+    // glow feedback
     if (soundGlow3D) {
-      const time = performance.now()*0.001;
+      const time = performance.now() * 0.001;
       soundGlow3D.material.opacity = video.muted
-        ? 0.10 + 0.10*(0.5 + 0.5*Math.sin(time*2.6))
+        ? 0.10 + 0.10 * (0.5 + 0.5 * Math.sin(time * 2.6))
         : 0.35;
       soundGlow3D.material.needsUpdate = true;
-      soundGlow3D.lookAt(camera.position);
     }
-    if (soundBtn3D) soundBtn3D.lookAt(camera.position);
 
     const t = progress;
-    tvRoot.scale.setScalar((isMobile ? 0.55 : 0.45) + (isMobile ? 0.40 : 0.60)*t);
+    tvRoot.scale.setScalar((isMobile ? 0.55 : 0.45) + (isMobile ? 0.40 : 0.60) * t);
 
-    camera.lookAt(0,0,0);
+    camera.lookAt(0, 0, 0);
     renderer.render(scene, camera);
+
     raf = requestAnimationFrame(render);
   }
 
-  function start(){
+  function start() {
     if (active) return;
     active = true;
-    video.play().catch(()=>{});
+
+    // try to start video (muted autoplay allowed)
+    video.play().catch(() => {});
     raf = requestAnimationFrame(render);
   }
-  function stop(){
+
+  function stop() {
     active = false;
     video.pause();
     if (raf) cancelAnimationFrame(raf);
@@ -306,20 +473,27 @@
     canvas.style.cursor = "default";
   }
 
-  gsap.timeline({
-    scrollTrigger: {
-      trigger: wrapper,
-      start: "top top",
-      end: "+=160%",
-      pin: true,
-      scrub: true,
-      onEnter: start,
-      onEnterBack: start,
-      onLeave: stop,
-      onLeaveBack: stop,
-      onUpdate: (self) => { progress = self.progress; }
-    }
-  })
-  .to(img, { scale: 2.2, z: 650, transformOrigin: "center center", ease: "power1.inOut" })
-  .to(img, { opacity: 0, ease: "power1.out" }, 0.55);
+  gsap
+    .timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: "top top",
+        end: "+=160%",
+        pin: wrapper,
+        scrub: true,
+        onEnter: start,
+        onEnterBack: start,
+        onLeave: stop,
+        onLeaveBack: stop,
+        onRefresh: () => {
+          resize();
+          mountScreenAndButton();
+        },
+        onUpdate: (self) => {
+          progress = self.progress;
+        }
+      }
+    })
+    .to(img, { scale: 2.2, z: 650, transformOrigin: "center center", ease: "power1.inOut" })
+    .to(img, { opacity: 0, ease: "power1.out" }, 0.55);
 })();
