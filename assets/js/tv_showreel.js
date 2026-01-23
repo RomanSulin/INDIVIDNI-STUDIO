@@ -300,7 +300,7 @@ function mountScreenAndButton() {
 
   const anchor = findScreenCandidate(model);
 
-  // WORLD basis
+  // WORLD basis (from anchor if possible, else whole model)
   let centerW, sizeW, quatW;
   if (anchor) {
     const boxW = new THREE.Box3().setFromObject(anchor);
@@ -314,73 +314,47 @@ function mountScreenAndButton() {
     quatW   = model.getWorldQuaternion(new THREE.Quaternion());
   }
 
-  // --- IMPORTANT: переводим расчёт из WORLD в LOCAL tvRoot (чтобы не плавало при scale)
+  // --- CRITICAL: work in LOCAL space of tvRoot so nothing "drifts" while tvRoot scales ---
   tvRoot.updateMatrixWorld(true);
 
   const tvScale = tvRoot.getWorldScale(new THREE.Vector3());
-  const invS = 1 / (tvScale.x || 1); // scale у тебя uniform
+  const invS = 1 / (tvScale.x || 1); // tvRoot uses uniform scale
 
   const center = tvRoot.worldToLocal(centerW.clone());      // LOCAL
-  const size   = sizeW.clone().multiplyScalar(invS);        // LOCAL
+  const size   = sizeW.clone().multiplyScalar(invS);        // LOCAL (compensate tvRoot.scale)
 
   const tvInvQuat = tvRoot.getWorldQuaternion(new THREE.Quaternion()).invert();
 
-  // дальше — твой axisFix как раньше
+  // AXIS FIX (оставь этот знак — у тебя сейчас "картинка и кнопка ок")
+  // если когда-то снова станет зеркально — меняешь Math.PI/2 на -Math.PI/2
   const axisFix = new THREE.Quaternion().setFromAxisAngle(
     new THREE.Vector3(0, 1, 0),
     Math.PI / 2
   );
 
-  const quatLocal = tvInvQuat.clone().multiply(quatW).multiply(axisFix);
-
-  // и уже от quatLocal считаешь right/up/normalV
-  const right   = new THREE.Vector3(1, 0, 0).applyQuaternion(quatLocal).normalize();
-  const up      = new THREE.Vector3(0, 1, 0).applyQuaternion(quatLocal).normalize();
-  const normalV = new THREE.Vector3(0, 0, 1).applyQuaternion(quatLocal).normalize();
-
-  // ... дальше твой код screenW/eps/screenPos/btnPos и т.д.
-  // ВАЖНО: screenPlane.quaternion.copy(quatLocal); и кнопкам тоже quatLocal
-}
-
-
-  // переводим всё в LOCAL tvRoot (чтобы не было дрейфа при tvRoot.scale)
-  tvRoot.updateMatrixWorld(true);
-
-  const tvScale = tvRoot.getWorldScale(new THREE.Vector3());
-  const invS = 1 / (tvScale.x || 1); // scale у тебя uniform
-
-  const tvInvQuat = tvRoot.getWorldQuaternion(new THREE.Quaternion()).invert();
-
-  const center = tvRoot.worldToLocal(centerW.clone());   // LOCAL
-  const size   = sizeW.clone().multiplyScalar(invS);     // LOCAL
-
-  // AXIS FIX (как у тебя сейчас “всё ок”)
-  const axisFix = new THREE.Quaternion().setFromAxisAngle(
-    new THREE.Vector3(0, 1, 0),
-    Math.PI / 2
-  );
-
-  // WORLD -> LOCAL
+  // WORLD -> LOCAL orientation
   const quatLocal = tvInvQuat.clone().multiply(quatW).multiply(axisFix);
 
   const right   = new THREE.Vector3(1, 0, 0).applyQuaternion(quatLocal).normalize();
   const up      = new THREE.Vector3(0, 1, 0).applyQuaternion(quatLocal).normalize();
   const normalV = new THREE.Vector3(0, 0, 1).applyQuaternion(quatLocal).normalize();
+
+  // tweak knobs
+  const SCREEN_UP_K = 0.08; // ↑ экран выше (0.05–0.14)
+  const BTN_DOWN_K  = 0.55; // ↑ кнопка ниже (0.45–0.75)
 
   const eps = Math.max(size.z, 0.01) * 0.06;
 
-  // screen size (LOCAL)
+  // screen size in LOCAL units
   screenW = Math.max(0.05, size.x * (isMobile ? 0.95 : 0.98));
   const screenH = screenW / videoAR;
 
-  // поднять экран выше
-  const SCREEN_UP = size.y * 0.08;
-
   const screenPos = center
     .clone()
-    .add(up.clone().multiplyScalar(SCREEN_UP))
+    .add(up.clone().multiplyScalar(size.y * SCREEN_UP_K))
     .add(normalV.clone().multiplyScalar(eps));
 
+  // SCREEN
   if (!screenPlane) {
     screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(screenW, screenH), screenMat);
     screenPlane.renderOrder = 10;
@@ -392,14 +366,14 @@ function mountScreenAndButton() {
   screenPlane.position.copy(screenPos);
   screenPlane.quaternion.copy(quatLocal);
 
-  // ===== BUTTON (LOCAL) =====
+  // BUTTON (LOCAL)
   const bw = screenW * 0.22;
   const bh = bw * 0.45;
 
   const btnPos = center
     .clone()
     .add(right.clone().multiplyScalar(screenW * 0.32))
-    .add(up.clone().multiplyScalar(-screenH * 0.55)) // ниже/выше кнопка
+    .add(up.clone().multiplyScalar(-screenH * BTN_DOWN_K))
     .add(normalV.clone().multiplyScalar(eps * 1.2));
 
   if (!soundBtn3D) {
@@ -412,6 +386,7 @@ function mountScreenAndButton() {
     tvRoot.add(soundGlow3D);
     tvRoot.add(soundBtn3D);
   } else {
+    // update sizes if remount happens after AR change
     soundGlow3D.geometry.dispose();
     soundGlow3D.geometry = new THREE.PlaneGeometry(bw * 1.22, bh * 1.22);
 
