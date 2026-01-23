@@ -210,7 +210,8 @@
   // =========================
   const tvRoot = new THREE.Group();
   scene.add(tvRoot);
-
+  // FIX ORIENTATION (попробуй это первым)
+  tvRoot.rotation.set(0, -Math.PI / 2, 0);  // -90° по Y
   let model = null;
 
   // =========================
