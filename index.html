@@ -369,6 +369,79 @@
     </div>
   </footer>
 
+  <!-- Project panel (append before </body>) ---------------------------------------------------------------------------------------------------------->
+<div class="project-panel" id="projectPanel" aria-hidden="true">
+  <div class="project-panel__sheet" id="projectPanelSheet">
+    <div class="project-panel__content">
+      <header class="pp-header">
+        <button class="pp-close" type="button" data-pp-close aria-label="Close">×</button>
+
+        <div class="pp-nav">
+          <span class="pp-nav__item">PROJECT</span>
+          <span class="pp-nav__sep">/</span>
+          <span class="pp-nav__item">DETAILS</span>
+        </div>
+
+        <a class="pp-brief" href="#brief" data-pp-brief-top>К БРИФУ</a>
+      </header>
+
+      <div class="pp-track" id="projectPanelTrack">
+        <!-- INTRO SLIDE -->
+        <section class="pp-slide pp-slide--intro" data-pp-slide="intro">
+          <div class="pp-intro">
+            <div class="pp-copy">
+              <h1 class="pp-title" data-pp-title>Porsche: Dream Machine</h1>
+              <p class="pp-desc" data-pp-desc>
+                Описание проекта. Тут будет короткий текст — что это за работа и какой был запрос.
+              </p>
+
+              <div class="pp-cols">
+                <div class="pp-col">
+                  <div class="pp-col__title">SERVICES</div>
+                  <ul class="pp-list" data-pp-services></ul>
+                </div>
+
+                <div class="pp-col">
+                  <div class="pp-col__title">RECOGNITIONS</div>
+                  <ul class="pp-list" data-pp-recognitions></ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="pp-hero">
+              <div class="pp-hero__frame">
+                <div class="pp-badge">HERO</div>
+                <div class="pp-placeholder">ОБЛОЖКА (фото/видео позже)</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- MEDIA SLIDES are injected by JS -->
+
+        <!-- END SLIDE -->
+        <section class="pp-slide pp-slide--end" data-pp-slide="end">
+          <div class="pp-end">
+            <div class="pp-end__box">
+              <div class="pp-end__kicker">NEXT PROJECT</div>
+              <div class="pp-end__title">СЛЕДУЮЩИЙ ПРОЕКТ</div>
+              <div class="pp-end__actions">
+                <button class="pp-next" type="button" data-pp-next disabled>Скоро</button>
+                <a class="pp-brief pp-brief--dark" href="#brief" data-pp-brief-end>ПЕРЕЙТИ К БРИФУ</a>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="pp-hint">
+        <span>Скролл: мышь/тачпад →</span>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END Project panel (append before </body>) ---------------------------------------------------------------------------------------------------------->
+
 <!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
@@ -384,6 +457,7 @@
 <script src="./assets/js/capabilities_tabs.js" defer></script>
 
 <script src="./assets/js/main.js" defer></script>
+<script src="./assets/js/project_panel.js" defer></script>
 
 </body>
 </html>
