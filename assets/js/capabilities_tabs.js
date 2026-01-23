@@ -74,7 +74,7 @@
   const VIEW_H = 400;            // smaller internal height => bigger cards on screen
   const MASK_H = 400;            // same as view height => no "dead" vertical area
   const OVERLAP = 0.65;          // 0 = no overlap, 0.65 = strong overlap (cards on top)
-  const LABEL_Y = 25;           // label baseline inside the card (in viewBox units)
+  const LABEL_Y = 40;           // label baseline inside the card (in viewBox units)
   const RECT_Y = 5;             // top offset inside the group
   const RECT_H = 200;            // card height (in viewBox units) ~almost full height
   const GAP = 0;                 // keep 0 for full-coverage. increase if you want spacing
