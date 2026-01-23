@@ -342,8 +342,8 @@ function mountScreenAndButton() {
   // tweak knobs
   const SCREEN_UP_K = 0.10; // ↑ экран выше (0.05–0.14)
   const SCREEN_X_K  = 0.10;      // вправо/влево в долях ширины экрана (-0.10..0.10)
-  const BTN_DOWN_K  = 0.75; // ↑ кнопка ниже (0.45–0.75)
-
+  const BTN_DOWN_K  = 0.60; // ↑ кнопка ниже (0.45–0.75)
+  const BTN_X_K     = 0.32;  // вправо/влево (-0.10..0.60)
   const eps = Math.max(size.z, 0.01) * 0.06;
 
   // screen size in LOCAL units
@@ -375,7 +375,7 @@ function mountScreenAndButton() {
   const btnPos = center
     const btnPos = center
     .clone()
-    .add(right.clone().multiplyScalar(screenW * 0.32))
+    .add(right.clone().multiplyScalar(screenW * BTN_X_K))
     .add(up.clone().multiplyScalar(-screenH * BTN_DOWN_K))
     .add(normalV.clone().multiplyScalar(eps * 1.2));
 
