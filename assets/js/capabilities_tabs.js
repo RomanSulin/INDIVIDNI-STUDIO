@@ -16,16 +16,16 @@
   ];
 
   const labels = [
-    'Commercials',
-    'Brand Films',
-    'Music Videos',
-    'Fashion',
+    'Коммерческое',
+    'Для брендов',
+    'Музыкальные клипы',
+    'Репортажы',
+    'Подкасты',
+    'Интевью',
+    'Монтаж',
+    'Цветокорекция',
     'CGI / VFX',
-    'Color',
-    'Sound',
-    'Motion',
-    'Web',
-    'Direction'
+    'AI'
   ];
 
   // Distance sensitivity (in SVG units)
