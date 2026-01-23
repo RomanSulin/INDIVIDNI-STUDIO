@@ -2,56 +2,68 @@
   // Capabilities: SVG blocks hover animation (GSAP)
   if (!window.gsap) return;
 
-  const mainSVG = document.getElementById("mainSVG");
+  const mainSVG = document.getElementById('mainSVG');
   if (!mainSVG) return;
 
-  const container = mainSVG.querySelector("#container");
-  const colorTab = mainSVG.querySelector(".colorTab");
+  const container = mainSVG.querySelector('#container');
+  const colorTab = mainSVG.querySelector('.colorTab');
   if (!container || !colorTab) return;
 
-  const pt = mainSVG.createSVGPoint();
-  const mousePos = { x: -9999, y: 0 };
-
-  const visibleArea = { value: 170, offset: 0 };
-
-  // Colors stay as in your snippet, labels are the part you’ll tweak later
+  // --- Config: change only labels here ---
   const colors = [
-    "#001219", "#005f73", "#0a9396", "#94d2bd", "#e9d8a6",
-    "#ee9b00", "#ca6702", "#bb3e03", "#ae2012", "#9b2226"
+    '#001219', '#005f73', '#0a9396', '#94d2bd', '#e9d8a6',
+    '#ee9b00', '#ca6702', '#bb3e03', '#ae2012', '#9b2226'
   ];
 
   const labels = [
-    "Commercials",
-    "Brand Films",
-    "Music Videos",
-    "Fashion",
-    "CGI / VFX",
-    "Color",
-    "Sound",
-    "Motion",
-    "Web",
-    "Direction"
+    'Commercials',
+    'Brand Films',
+    'Music Videos',
+    'Fashion',
+    'CGI / VFX',
+    'Color',
+    'Sound',
+    'Motion',
+    'Web',
+    'Direction'
   ];
 
-  const spacerX = 66; // distance between blocks in SVG units
+  // Distance sensitivity (in SVG units)
+  const visibleArea = { value: 170, offset: 0 };
+
+  // Make sure SVG is visible
+  gsap.set(mainSVG, { visibility: 'visible' });
+
+  // Clear existing clones (if hot-reloaded)
+  container.innerHTML = '';
+
+  // --- Layout: spread blocks across full SVG width ---
+  const vb = (mainSVG.viewBox && mainSVG.viewBox.baseVal) ? mainSVG.viewBox.baseVal : { width: 800, height: 600 };
+  const viewW = vb.width || 800;
+
+  // Read tab width from template rect (fallback 130)
+  const rectTemplate = colorTab.querySelector('rect');
+  const tabW = rectTemplate ? (parseFloat(rectTemplate.getAttribute('width')) || 130) : 130;
+
+  // Place first tab at x=0 and last tab ending exactly at viewW
+  const n = colors.length;
+  const spacerX = n > 1 ? (viewW - tabW) / (n - 1) : 0;
+
   const tabs = [];
 
-  gsap.set(mainSVG, { visibility: "visible" });
-
-  // Build blocks
   colors.forEach((fill, i) => {
     const clone = colorTab.cloneNode(true);
     container.appendChild(clone);
 
-    // group position
+    // Position
     gsap.set(clone, { x: i * spacerX });
 
-    // rect
-    const rect = clone.querySelector("rect");
+    // Rect fill and base Y
+    const rect = clone.querySelector('rect');
     if (rect) gsap.set(rect, { fill, y: 90 });
 
-    // label
-    const text = clone.querySelector("text");
+    // Label text
+    const text = clone.querySelector('text');
     if (text) text.textContent = labels[i] || `Item ${i + 1}`;
 
     tabs.push(clone);
@@ -69,8 +81,8 @@
     mousePos.y = p.y;
   }
 
-  mainSVG.addEventListener("pointermove", onMove);
-  mainSVG.addEventListener("pointerleave", () => {
+  mainSVG.addEventListener('pointermove', onMove);
+  mainSVG.addEventListener('pointerleave', () => {
     mousePos.x = -9999;
   });
 
@@ -88,11 +100,12 @@
 
   function update() {
     tabs.forEach((g) => {
-      const gx = gsap.getProperty(g, "x");
+      const gx = gsap.getProperty(g, 'x');
       const dist = Math.abs(gx - mousePos.x + visibleArea.offset);
 
       gsap.to(g, { y: mapPosY(dist), duration: 0.25, overwrite: true });
-      const label = g.querySelector("text");
+
+      const label = g.querySelector('text');
       if (label) gsap.to(label, { opacity: mapOpacity(dist), duration: 0.25, overwrite: true });
     });
   }
