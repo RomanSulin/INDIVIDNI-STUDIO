@@ -211,7 +211,6 @@
   const tvRoot = new THREE.Group();
   scene.add(tvRoot);
   // FIX ORIENTATION (попробуй это первым)
-  tvRoot.rotation.set(0, -Math.PI / 2, 0);  // -90° по Y
   let model = null;
 
   // =========================
@@ -390,6 +389,9 @@
     "./assets/models/retro_tv/tv.fbx",
     (fbx) => {
       model = fbx;
+
+      // вместо tvRoot.rotation — крутим саму модель
+      model.rotation.y = -Math.PI / 2; // тот же поворот, который у тебя “правильно” работал
 
       // normalize scale
       const b0 = new THREE.Box3().setFromObject(model);
