@@ -340,8 +340,9 @@ function mountScreenAndButton() {
   const normalV = new THREE.Vector3(0, 0, 1).applyQuaternion(quatLocal).normalize();
 
   // tweak knobs
-  const SCREEN_UP_K = 0.08; // ↑ экран выше (0.05–0.14)
-  const BTN_DOWN_K  = 0.55; // ↑ кнопка ниже (0.45–0.75)
+  const SCREEN_UP_K = 0.10; // ↑ экран выше (0.05–0.14)
+  const SCREEN_X_K  = 0.10;      // вправо/влево в долях ширины экрана (-0.10..0.10)
+  const BTN_DOWN_K  = 0.75; // ↑ кнопка ниже (0.45–0.75)
 
   const eps = Math.max(size.z, 0.01) * 0.06;
 
@@ -351,6 +352,7 @@ function mountScreenAndButton() {
 
   const screenPos = center
     .clone()
+    .add(right.clone().multiplyScalar(screenW * SCREEN_X_K))
     .add(up.clone().multiplyScalar(size.y * SCREEN_UP_K))
     .add(normalV.clone().multiplyScalar(eps));
 
