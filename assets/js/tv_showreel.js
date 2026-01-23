@@ -97,7 +97,7 @@
 
   const screenMat = new THREE.MeshBasicMaterial({ map: canvasTex, side: THREE.DoubleSide });
   screenMat.toneMapped = false;
-  screenMat.depthTest = true;
+  screenMat.depthTest = false;
   screenMat.depthWrite = false;
   screenMat.polygonOffset = true;
   screenMat.polygonOffsetFactor = -1;
@@ -163,7 +163,7 @@ function ensureScreenPlane() {
   const size = box.getSize(new THREE.Vector3());
   const center = box.getCenter(new THREE.Vector3());
 
-  const W_COEF = isMobile ? 0.74 : 0.88; // сделать больше: 0.90/0.92
+  const W_COEF = isMobile ? 0.72 : 0.84;   // чтобы не вылезало
   const w = size.x * W_COEF;
   const h = w / videoAR;
 
@@ -171,12 +171,12 @@ function ensureScreenPlane() {
   screenPlane.renderOrder = 2;
   screenPlane.frustumCulled = false;
 
-  // ЦЕЛЕВАЯ ТОЧКА В WORLD (внутри рамки)
+  // было: box.max.z - size.z * 0.02
   const worldPos = new THREE.Vector3(
-    center.x,
-    center.y + size.y * 0.10,
-    box.max.z - size.z * 0.02
-  );
+  center.x,
+  center.y + size.y * 0.10,
+  box.max.z + size.z * 0.003     // <-- ВПЕРЁД, чтобы не перекрывалось стеклом
+);
 
   // WORLD -> LOCAL модели
   const localPos = worldPos.clone();
@@ -193,7 +193,7 @@ function ensureScreenPlane() {
   const btnMat = new THREE.MeshBasicMaterial({ map: soundTex, transparent: true, alphaTest: 0.25 });
   btnMat.depthTest = false;
   btnMat.depthWrite = false;
-
+  btnMat.side = THREE.DoubleSide;
   const glowMat = new THREE.MeshBasicMaterial({
     map: soundTex,
     transparent: true,
@@ -204,7 +204,7 @@ function ensureScreenPlane() {
   });
   glowMat.depthTest = false;
   glowMat.depthWrite = false;
-
+  glowMat.side = THREE.DoubleSide;
   let soundBtn3D = null;
   let soundGlow3D = null;
 
