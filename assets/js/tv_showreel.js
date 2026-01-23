@@ -333,7 +333,12 @@ const normalV = new THREE.Vector3(0, 0, 1).applyQuaternion(quatFixed).normalize(
     screenW = Math.max(0.05, size.x * (isMobile ? 0.95 : 0.98));
     const screenH = screenW / videoAR;
 
-    const screenPos = center.clone().add(normalV.clone().multiplyScalar(eps));
+    const SCREEN_UP = size.y * 0.08; // ↑ больше число = выше (пробуй 0.05–0.14)
+
+    const screenPos = center
+    .clone()
+    .add(up.clone().multiplyScalar(SCREEN_UP))
+    .add(normalV.clone().multiplyScalar(eps));
 
     if (!screenPlane) {
       screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(screenW, screenH), screenMat);
@@ -349,31 +354,39 @@ const normalV = new THREE.Vector3(0, 0, 1).applyQuaternion(quatFixed).normalize(
     }
 
     // ===== BUTTON =====
-    if (!soundBtn3D) {
-      const bw = screenW * 0.22;
-      const bh = bw * 0.45;
+const bw = screenW * 0.22;
+const bh = bw * 0.45;
 
-      soundGlow3D = new THREE.Mesh(new THREE.PlaneGeometry(bw * 1.22, bh * 1.22), glowMat);
-      soundBtn3D = new THREE.Mesh(new THREE.PlaneGeometry(bw, bh), btnMat);
+const btnPos = center
+  .clone()
+  .add(right.clone().multiplyScalar(screenW * 0.32))
+  .add(up.clone().multiplyScalar(-screenH * 0.55)) // <- тут двигаешь ниже/выше
+  .add(normalV.clone().multiplyScalar(eps * 1.2));
 
-      soundGlow3D.renderOrder = 999;
-      soundBtn3D.renderOrder = 1000;
+if (!soundBtn3D) {
+  soundGlow3D = new THREE.Mesh(new THREE.PlaneGeometry(bw * 1.22, bh * 1.22), glowMat);
+  soundBtn3D  = new THREE.Mesh(new THREE.PlaneGeometry(bw, bh), btnMat);
 
-      const btnPos = center
-        .clone()
-        .add(right.clone().multiplyScalar(screenW * 0.32))
-        .add(up.clone().multiplyScalar(-screenH * 0.40))
-        .add(normalV.clone().multiplyScalar(eps * 1.2));
+  soundGlow3D.renderOrder = 999;
+  soundBtn3D.renderOrder  = 1000;
 
-      soundGlow3D.position.copy(btnPos);
-      soundBtn3D.position.copy(btnPos);
+  tvRoot.add(soundGlow3D);
+  tvRoot.add(soundBtn3D);
+} else {
+  // обновляем размер (на случай ресайза/пересчёта)
+  soundGlow3D.geometry.dispose();
+  soundGlow3D.geometry = new THREE.PlaneGeometry(bw * 1.22, bh * 1.22);
 
-      // keep it "stuck" to TV plane
-      soundGlow3D.quaternion.copy(quatFixed);
-      soundBtn3D.quaternion.copy(quatFixed);
+  soundBtn3D.geometry.dispose();
+  soundBtn3D.geometry = new THREE.PlaneGeometry(bw, bh);
+}
 
-      tvRoot.add(soundGlow3D);
-      tvRoot.add(soundBtn3D);
+// обновляем позицию/ориентацию всегда
+soundGlow3D.position.copy(btnPos);
+soundBtn3D.position.copy(btnPos);
+
+soundGlow3D.quaternion.copy(quatFixed);
+soundBtn3D.quaternion.copy(quatFixed);
     }
   }
 
