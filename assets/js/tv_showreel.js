@@ -1,4 +1,4 @@
-/* global THREE, gsap, ScrollTrigger */
+  /* global THREE, gsap, ScrollTrigger */
 
 /**
  * TV fly-through (Three.js + GSAP ScrollTrigger)
@@ -313,6 +313,35 @@ function mountScreenAndButton() {
     sizeW   = boxW.getSize(new THREE.Vector3());
     quatW   = model.getWorldQuaternion(new THREE.Quaternion());
   }
+
+  // --- IMPORTANT: переводим расчёт из WORLD в LOCAL tvRoot (чтобы не плавало при scale)
+  tvRoot.updateMatrixWorld(true);
+
+  const tvScale = tvRoot.getWorldScale(new THREE.Vector3());
+  const invS = 1 / (tvScale.x || 1); // scale у тебя uniform
+
+  const center = tvRoot.worldToLocal(centerW.clone());      // LOCAL
+  const size   = sizeW.clone().multiplyScalar(invS);        // LOCAL
+
+  const tvInvQuat = tvRoot.getWorldQuaternion(new THREE.Quaternion()).invert();
+
+  // дальше — твой axisFix как раньше
+  const axisFix = new THREE.Quaternion().setFromAxisAngle(
+    new THREE.Vector3(0, 1, 0),
+    Math.PI / 2
+  );
+
+  const quatLocal = tvInvQuat.clone().multiply(quatW).multiply(axisFix);
+
+  // и уже от quatLocal считаешь right/up/normalV
+  const right   = new THREE.Vector3(1, 0, 0).applyQuaternion(quatLocal).normalize();
+  const up      = new THREE.Vector3(0, 1, 0).applyQuaternion(quatLocal).normalize();
+  const normalV = new THREE.Vector3(0, 0, 1).applyQuaternion(quatLocal).normalize();
+
+  // ... дальше твой код screenW/eps/screenPos/btnPos и т.д.
+  // ВАЖНО: screenPlane.quaternion.copy(quatLocal); и кнопкам тоже quatLocal
+}
+
 
   // переводим всё в LOCAL tvRoot (чтобы не было дрейфа при tvRoot.scale)
   tvRoot.updateMatrixWorld(true);
