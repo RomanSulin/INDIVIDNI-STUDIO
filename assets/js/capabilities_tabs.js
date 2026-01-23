@@ -168,7 +168,7 @@
     const t = clamp01(dist / max);
     // same feel as before, just scaled down for VIEW_H=400
     // near -> smaller Y, far -> larger Y
-    return 40 + t * 70; // 40..110
+    return 40 + t * 90; // 40..110
   }
 
   function update() {
