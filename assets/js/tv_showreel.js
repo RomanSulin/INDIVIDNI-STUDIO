@@ -186,7 +186,6 @@ function ensureScreenPlane() {
   model.add(screenPlane);
 }
 
-
   // 3D PNG button
   const soundTex = texLoader.load("./assets/png/sound.png");
   soundTex.encoding = THREE.sRGBEncoding;
@@ -336,11 +335,12 @@ function mountSoundButtonOnTV() {
   }
 
   function start() {
-    if (active) return;
-    active = true;
-    video.play().catch(() => {});
-    raf = requestAnimationFrame(render);
-  }
+  if (active) return;
+  active = true;
+  video.play().catch(() => {});
+  video.currentTime = Math.min(video.currentTime, 0.03);
+  raf = requestAnimationFrame(render);
+}
 
   function stop() {
     active = false;
