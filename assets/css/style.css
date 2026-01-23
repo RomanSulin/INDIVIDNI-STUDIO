@@ -580,3 +580,10 @@ body.menu-open .drawer{ display:block; }
   .cap-anim{ height: 340px; }
   .cap-anim .label{ font-size: 14px; }
 }
+
+/* remove underlay card under the SVG animation */
+.cap-anim{
+  border: 0 !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+}
