@@ -53,20 +53,16 @@
     console.error("[tvfly] video error", video.error);
   });
 
-  let videoAR = 16 / 9; // fallback until metadata
-  video.addEventListener(
-    "loadedmetadata",
-    () => {
-      if (video.videoWidth && video.videoHeight) {
-        videoAR = video.videoWidth / video.videoHeight;
-        // if screen already exists — refresh geometry height
-        if (screenPlane && screenW > 0) {
-          setPlaneSize(screenPlane, screenW, screenW / videoAR);
-        }
-      }
-    },
-    { once: true }
-  );
+  let videoAR = 16 / 9; // fallback
+  let lastVideoAR = 0;
+
+  video.addEventListener("loadedmetadata", () => {
+  if (video.videoWidth && video.videoHeight) {
+    videoAR = video.videoWidth / video.videoHeight;   // будет 1.25 для 1500x1200
+    lastVideoAR = videoAR;
+    if (model) mountScreenAndButton();                // важно: не только size, но и позиция кнопки
+  }
+  }, { once: true });
 
   const toggleSound = () => {
     video.muted = !video.muted;
@@ -138,15 +134,24 @@
   canvasTex.generateMipmaps = false;
 
   function updateVideoTexture() {
-    if (video.readyState >= 2 && video.videoWidth && video.videoHeight) {
-      if (vCanvas.width !== video.videoWidth || vCanvas.height !== video.videoHeight) {
-        vCanvas.width = video.videoWidth;
-        vCanvas.height = video.videoHeight;
-      }
-      vCtx.drawImage(video, 0, 0, vCanvas.width, vCanvas.height);
-      canvasTex.needsUpdate = true;
-      return;
+  if (video.readyState >= 2 && video.videoWidth && video.videoHeight) {
+
+    const ar = video.videoWidth / video.videoHeight;
+    if (Number.isFinite(ar) && model && Math.abs(ar - lastVideoAR) > 0.0001) {
+      videoAR = ar;
+      lastVideoAR = ar;
+      mountScreenAndButton();
     }
+
+    if (vCanvas.width !== video.videoWidth || vCanvas.height !== video.videoHeight) {
+      vCanvas.width = video.videoWidth;
+      vCanvas.height = video.videoHeight;
+    }
+
+    vCtx.drawImage(video, 0, 0, vCanvas.width, vCanvas.height);
+    canvasTex.needsUpdate = true;
+    return;
+  }
     // fallback (so ты точно видишь, что экран живой)
     drawFallback();
     canvasTex.needsUpdate = true;
