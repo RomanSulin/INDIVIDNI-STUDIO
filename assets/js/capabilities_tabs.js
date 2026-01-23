@@ -5,7 +5,7 @@
   //  - fill the whole container width (no dead gaps)
   //  - make cards visibly taller (~2x on screen) by using a smaller internal viewBox height
   //  - allow overlap (cards on top of each other) with a simple parameter
-  if (!window.gsap) return;
+  if (!window.gsap) return; 
 
   const mainSVG = document.getElementById("mainSVG");
   if (!mainSVG) return;
