@@ -72,7 +72,7 @@
 
   // ---- Layout settings (tweak these only) ----
   const VIEW_H = 400;            // smaller internal height => bigger cards on screen
-  const MASK_H = 400;            // same as view height => no "dead" vertical area
+  const MASK_H = 5;            // same as view height => no "dead" vertical area
   const OVERLAP = 0.65;          // 0 = no overlap, 0.65 = strong overlap (cards on top)
   const LABEL_Y = 250;           // label baseline inside the card (in viewBox units)
   const RECT_Y = 5;             // top offset inside the group
