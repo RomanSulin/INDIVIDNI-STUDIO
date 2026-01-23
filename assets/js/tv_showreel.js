@@ -53,20 +53,16 @@
     console.error("[tvfly] video error", video.error);
   });
 
-  let videoAR = 16 / 9; // fallback until metadata
-  video.addEventListener(
-    "loadedmetadata",
-    () => {
-      if (video.videoWidth && video.videoHeight) {
-        videoAR = video.videoWidth / video.videoHeight;
-        // if screen already exists — refresh geometry height
-        if (screenPlane && screenW > 0) {
-          setPlaneSize(screenPlane, screenW, screenW / videoAR);
-        }
-      }
-    },
-    { once: true }
-  );
+  let videoAR = 16 / 9; // fallback
+  let lastVideoAR = 0;
+
+  video.addEventListener("loadedmetadata", () => {
+  if (video.videoWidth && video.videoHeight) {
+    videoAR = video.videoWidth / video.videoHeight;   // будет 1.25 для 1500x1200
+    lastVideoAR = videoAR;
+    if (model) mountScreenAndButton();                // важно: не только size, но и позиция кнопки
+  }
+  }, { once: true });
 
   const toggleSound = () => {
     video.muted = !video.muted;
@@ -138,15 +134,24 @@
   canvasTex.generateMipmaps = false;
 
   function updateVideoTexture() {
-    if (video.readyState >= 2 && video.videoWidth && video.videoHeight) {
-      if (vCanvas.width !== video.videoWidth || vCanvas.height !== video.videoHeight) {
-        vCanvas.width = video.videoWidth;
-        vCanvas.height = video.videoHeight;
-      }
-      vCtx.drawImage(video, 0, 0, vCanvas.width, vCanvas.height);
-      canvasTex.needsUpdate = true;
-      return;
+  if (video.readyState >= 2 && video.videoWidth && video.videoHeight) {
+
+    const ar = video.videoWidth / video.videoHeight;
+    if (Number.isFinite(ar) && model && Math.abs(ar - lastVideoAR) > 0.0001) {
+      videoAR = ar;
+      lastVideoAR = ar;
+      mountScreenAndButton();
     }
+
+    if (vCanvas.width !== video.videoWidth || vCanvas.height !== video.videoHeight) {
+      vCanvas.width = video.videoWidth;
+      vCanvas.height = video.videoHeight;
+    }
+
+    vCtx.drawImage(video, 0, 0, vCanvas.width, vCanvas.height);
+    canvasTex.needsUpdate = true;
+    return;
+  }
     // fallback (so ты точно видишь, что экран живой)
     drawFallback();
     canvasTex.needsUpdate = true;
@@ -210,10 +215,8 @@
   // =========================
   const tvRoot = new THREE.Group();
   scene.add(tvRoot);
-
-
-  // IMPORTANT: declared model variable to avoid crashes before FBX loads
   let model = null;
+
   // =========================
   // 3D sound button (texture)
   // =========================
@@ -311,9 +314,19 @@
       quat = model.getWorldQuaternion(new THREE.Quaternion());
     }
 
-    const right = new THREE.Vector3(1, 0, 0).applyQuaternion(quat).normalize();
-    const up = new THREE.Vector3(0, 1, 0).applyQuaternion(quat).normalize();
-    const normalV = new THREE.Vector3(0, 0, 1).applyQuaternion(quat).normalize();
+    // AXIS FIX: доворачиваем плоскости на 90° вокруг Y
+    // если станет зеркально/не туда — поменяй Math.PI/2 на -Math.PI/2
+    const axisFix = new THREE.Quaternion().setFromAxisAngle(
+    new THREE.Vector3(0, 1, 0),
+    Math.PI / 2
+    );
+
+const quatFixed = quat.clone().multiply(axisFix);
+
+const right   = new THREE.Vector3(1, 0, 0).applyQuaternion(quatFixed).normalize();
+const up      = new THREE.Vector3(0, 1, 0).applyQuaternion(quatFixed).normalize();
+const normalV = new THREE.Vector3(0, 0, 1).applyQuaternion(quatFixed).normalize();
+
 
     const eps = Math.max(size.z, 0.01) * 0.06;
 
@@ -321,40 +334,35 @@
     screenW = Math.max(0.05, size.x * (isMobile ? 0.95 : 0.98));
     const screenH = screenW / videoAR;
 
-    // --- OFFSETS (tweak these) ---
-const SCREEN_UP = size.y * 0.08;  // поднять экран выше (0.05–0.14)
+    const SCREEN_UP = size.y * 0.08; // ↑ больше число = выше (пробуй 0.05–0.14)
 
-const screenPos = center
-  .clone()
-  .add(up.clone().multiplyScalar(SCREEN_UP))
-  .add(normalV.clone().multiplyScalar(eps));
-if (!screenPlane) {
+    const screenPos = center
+    .clone()
+    .add(up.clone().multiplyScalar(SCREEN_UP))
+    .add(normalV.clone().multiplyScalar(eps));
+
+    if (!screenPlane) {
       screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(screenW, screenH), screenMat);
       screenPlane.renderOrder = 10;
       screenPlane.position.copy(screenPos);
-      screenPlane.quaternion.copy(quat);
+      screenPlane.quaternion.copy(quatFixed);
       tvRoot.add(screenPlane);
     } else {
       // keep position/quaternion, just update size if needed
       setPlaneSize(screenPlane, screenW, screenH);
       screenPlane.position.copy(screenPos);
-      screenPlane.quaternion.copy(quat);
+      screenPlane.quaternion.copy(quatFixed);
     }
 
     // ===== BUTTON =====
-// --- OFFSETS (tweak these) ---
-const BTN_RIGHT = 0.32;            // вправо
-const BTN_DOWN  = 0.58;            // ниже (0.45–0.75)
-const BTN_OUT   = 1.2;             // чуть вперёд от экрана
-
 const bw = screenW * 0.22;
 const bh = bw * 0.45;
 
 const btnPos = center
   .clone()
-  .add(right.clone().multiplyScalar(screenW * BTN_RIGHT))
-  .add(up.clone().multiplyScalar(-screenH * BTN_DOWN))
-  .add(normalV.clone().multiplyScalar(eps * BTN_OUT));
+  .add(right.clone().multiplyScalar(screenW * 0.32))
+  .add(up.clone().multiplyScalar(-screenH * 0.55)) // <- тут двигаешь ниже/выше
+  .add(normalV.clone().multiplyScalar(eps * 1.2));
 
 if (!soundBtn3D) {
   soundGlow3D = new THREE.Mesh(new THREE.PlaneGeometry(bw * 1.22, bh * 1.22), glowMat);
@@ -366,7 +374,7 @@ if (!soundBtn3D) {
   tvRoot.add(soundGlow3D);
   tvRoot.add(soundBtn3D);
 } else {
-  // обновляем размер при пересчёте (ресайз / metadata)
+  // обновляем размер (на случай ресайза/пересчёта)
   soundGlow3D.geometry.dispose();
   soundGlow3D.geometry = new THREE.PlaneGeometry(bw * 1.22, bh * 1.22);
 
@@ -374,13 +382,13 @@ if (!soundBtn3D) {
   soundBtn3D.geometry = new THREE.PlaneGeometry(bw, bh);
 }
 
-// всегда обновляем позицию/ориентацию
+// обновляем позицию/ориентацию всегда
 soundGlow3D.position.copy(btnPos);
 soundBtn3D.position.copy(btnPos);
 
 soundGlow3D.quaternion.copy(quatFixed);
 soundBtn3D.quaternion.copy(quatFixed);
-}
+    }
 
   canvas.addEventListener("pointermove", (e) => {
     if (!soundBtn3D) return;
