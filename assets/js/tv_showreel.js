@@ -347,7 +347,7 @@ function mountScreenAndButton() {
   const eps = Math.max(size.z, 0.01) * 0.02;
 
   // screen size in LOCAL units
-  screenW = Math.max(0.05, size.x * (isMobile ? 0.95 : 1.03));
+  screenW = Math.max(0.05, size.x * (isMobile ? 0.90 : 1.03));
   const screenH = screenW / videoAR;
 
   const screenPos = center
