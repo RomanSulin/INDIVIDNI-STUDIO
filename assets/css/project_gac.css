@@ -93,7 +93,7 @@ body.project-page a{ color: inherit; }
 .proj-intro{
   width: 100%;
   display: grid;
-  grid-template-columns: 0.95fr 1.55fr;
+  grid-template-columns: 0.98fr 0.3fr;
   gap: 28px;
   align-items: start;
 }
@@ -301,8 +301,8 @@ body.project-page a{ color: inherit; }
 
 /* Intro text-only slide should be narrower so the next media is closer */
 .proj-slide.proj-intro{
-  flex: 0 0 min(56vw, 720px);
-  max-width: min(56vw, 720px);
+  flex: 0 0 min(40vw, 500px);
+  max-width: min(40vw, 500px);
 }
 @media (max-width: 900px){
   .proj-track{ --padX: 16px; --pb: 18px; }
