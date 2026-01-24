@@ -58,4 +58,23 @@
     initScroll();
     initVideo();
   });
+
+  // --- FORCE: move "К БРИФУ" button to <body> so it can't be hidden by end panel ---
+window.addEventListener("load", () => {
+  const brief = document.querySelector(".proj-brief");
+  if (!brief) return;
+
+  // move to body (break out of any transformed stacking contexts)
+  document.body.appendChild(brief);
+
+  // hard-fix layering + position
+  Object.assign(brief.style, {
+    position: "fixed",
+    top: "18px",
+    right: "28px",
+    zIndex: "2147483647"
+  });
+});
+
 })();
+
