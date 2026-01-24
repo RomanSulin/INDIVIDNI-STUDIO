@@ -301,3 +301,57 @@ body.project-page a{ color: inherit; }
   color: #0b0b0f !important;
   border: 0 !important;
 }
+
+/* ===== v3 tweaks: bring media closer, full-bleed end block, brief button switches on dark ===== */
+
+/* Make spacing controllable */
+.proj-track{
+  --padX: 28px;
+  --pt: 10px;
+  --pb: 26px;
+  gap: 16px; /* was 28 */
+  padding: var(--pt) var(--padX) var(--pb);
+}
+
+/* Intro text-only slide should be narrower so the next media is closer */
+.proj-slide.proj-intro{
+  flex: 0 0 min(56vw, 720px);
+  max-width: min(56vw, 720px);
+}
+@media (max-width: 900px){
+  .proj-track{ --padX: 16px; --pb: 18px; }
+  .proj-slide.proj-intro{
+    flex-basis: 92vw;
+    max-width: 92vw;
+  }
+}
+
+/* End slide: full width, flush to the right edge, full height, no radius */
+.proj-slide--end{
+  flex: 0 0 100vw;
+  max-width: 100vw;
+  margin-right: calc(var(--padX) * -1); /* kill right padding gap */
+}
+
+.proj-end{
+  border-radius: 0 !important;
+  width: 100%;
+  height: calc(100% + var(--pt) + var(--pb));
+  margin-top: calc(var(--pt) * -1);
+  margin-bottom: calc(var(--pb) * -1);
+  padding: 32px;
+}
+
+/* End "brief" button white */
+.proj-end__actions a{
+  background: #fff !important;
+  color: #0b0b0f !important;
+  border: 0 !important;
+}
+
+/* Top brief button becomes white when end block is visible */
+body.on-dark .proj-brief{
+  background: #fff !important;
+  color: #0b0b0f !important;
+  border: 0 !important;
+}
