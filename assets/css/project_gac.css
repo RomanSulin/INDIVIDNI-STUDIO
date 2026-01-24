@@ -557,3 +557,13 @@ body.on-dark .proj-brief{
   border-radius: 0 !important;
   margin: 0 !important;
 }
+
+/* end block to the very bottom */
+.proj-slide--end{
+  margin-bottom: 0 !important;
+  height: 100vh !important;
+}
+
+.proj-end{
+  height: 100vh !important;
+}
