@@ -425,3 +425,58 @@ body.on-dark .proj-brief{
     right: 16px;
   }
 }
+
+/* === End block OVER header, brief button OVER all === */
+.proj-shell{ --headerH: 74px; } /* если хедер другой высоты — поменяй тут */
+
+/* трек должен быть выше хедера и не резать по Y */
+.proj-track{
+  position: relative;
+  z-index: 40;
+  overflow-y: visible !important;
+}
+
+/* хедер ниже (его будет перекрывать чёрный блок) */
+.proj-top{
+  position: relative;
+  z-index: 10;
+}
+
+/* "К БРИФУ" всегда сверху и не перекрывается */
+.proj-brief{
+  position: fixed;
+  top: 18px;
+  right: 28px;
+  z-index: 200;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+@media (max-width: 900px){
+  .proj-brief{ top: 16px; right: 16px; }
+}
+
+/* end-slide: сохраняем твою ширину, убираем правый gap, и поднимаем вверх НАД хедером */
+.proj-slide--end{
+  position: relative;
+  z-index: 80;
+
+  /* ширина как была (узкая панель) — НЕ 100vw */
+  flex: 0 0 min(28vw, 420px);
+  max-width: min(28vw, 420px);
+
+  /* убрать белый зазор справа из-за padding трека */
+  margin-right: calc(var(--padX, 28px) * -1);
+
+  /* поднять панель в область хедера */
+  transform: translateY(calc(-1 * var(--headerH)));
+  height: calc(100% + var(--headerH));
+}
+
+/* сам чёрный блок занимает всю высоту end-slide, без скруглений */
+.proj-end{
+  border-radius: 0 !important;
+  height: 100%;
+  margin: 0 !important; /* отменяет старые margin-top/margin-bottom */
+}
