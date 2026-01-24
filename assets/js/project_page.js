@@ -8,6 +8,7 @@
     const r = endSlide.getBoundingClientRect();
     const visible = r.left < window.innerWidth && r.right > 0;
     document.body.classList.toggle("on-dark", visible);
+    document.body.classList.toggle("end-fixed", visible);
   }
 
   function initVideo(){
