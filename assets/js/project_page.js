@@ -2,6 +2,7 @@
   const track = document.getElementById("projTrack");
   const endSlide = document.querySelector(".proj-slide--end");
   const v = document.querySelector("video[data-autoplay]");
+  const isMobile = window.matchMedia("(max-width: 900px)").matches;
 
   function updateDarkMode(){
     if (!endSlide) return;
@@ -26,6 +27,7 @@
     if (!track) return;
 
     window.addEventListener("wheel", (e) => {
+      if (isMobile) return;
       if (e.ctrlKey) return;
       if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
         track.scrollLeft += e.deltaY;
@@ -36,12 +38,14 @@
 
     let down = false, startX = 0, startLeft = 0;
     track.addEventListener("pointerdown", (e) => {
+      if (isMobile) return;
       down = true;
       startX = e.clientX;
       startLeft = track.scrollLeft;
       track.setPointerCapture(e.pointerId);
     });
     track.addEventListener("pointermove", (e) => {
+      if (isMobile) return;
       if (!down) return;
       track.scrollLeft = startLeft - (e.clientX - startX);
       updateDarkMode();
