@@ -388,3 +388,29 @@ body.on-dark .proj-brief{
 @media (max-width: 900px){
   .proj-intro__left{ padding-top: 0; }
 }
+
+/* END block over header */
+.proj-track{
+  overflow-y: visible; /* разрешаем end-блоку вылезать вверх */
+}
+
+.proj-top{
+  position: relative;
+  z-index: 5;          /* хедер ниже */
+}
+
+.proj-slide--end{
+  position: relative;
+  z-index: 30;         /* end-слайд выше хедера */
+}
+
+.proj-end{
+  position: relative;
+  z-index: 31;
+
+  /* "поднимаем" чёрный блок вверх на высоту хедера */
+  margin-top: calc(var(--pt, 10px) * -1 - 74px);
+
+  /* и увеличиваем его высоту, чтобы компенсировать подъём */
+  height: calc(100% + var(--pt, 10px) + var(--pb, 26px) + 74px);
+}
