@@ -1,10 +1,3 @@
-/* === project_page.js (V7) ===
-   Replace your /assets/js/project_page.js with this.
-   - wheel anywhere -> horizontal
-   - drag to scroll
-   - autoplay muted video
-   - toggles body.on-dark when end slide is visible (optional styling hook)
-*/
 (() => {
   const track = document.getElementById("projTrack");
   const endSlide = document.querySelector(".proj-slide--end");
@@ -33,7 +26,7 @@
     if (!track) return;
 
     window.addEventListener("wheel", (e) => {
-      if (e.ctrlKey) return; // allow zoom
+      if (e.ctrlKey) return;
       if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
         track.scrollLeft += e.deltaY;
         e.preventDefault();
