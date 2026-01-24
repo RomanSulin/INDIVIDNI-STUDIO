@@ -379,8 +379,12 @@ body.on-dark .proj-brief{
 /* shift intro text a bit to the right */
 .proj-intro__left{
   padding-left: 16px;
+   padding-top: 16px;
 }
 
 @media (max-width: 900px){
   .proj-intro__left{ padding-left: 0; }
+}
+@media (max-width: 900px){
+  .proj-intro__left{ padding-top: 0; }
 }
