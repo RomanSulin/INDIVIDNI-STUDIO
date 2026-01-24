@@ -268,3 +268,27 @@ body.on-dark .proj-brief{ border: 0; }
   .proj-brief{ top: 16px; right: var(--padX); }
   .proj-intro__left{ padding-left: 0; }
 }
+
+/* ===== FIX: button colors (force) ===== */
+
+/* bottom button: white bg + BLACK text */
+.proj-end__actions a{
+  background:#fff !important;
+  color:#0b0b0f !important;
+  border:0 !important;
+}
+.proj-end__actions a *{
+  color: inherit !important;
+}
+
+/* just in case: brief styles */
+.proj-brief{
+  background:#fff !important;
+  color:#0b0b0f !important;
+  border:1px solid rgba(0,0,0,0.18) !important;
+}
+body.on-dark .proj-brief{
+  background:#fff !important;
+  color:#0b0b0f !important;
+  border:0 !important;
+}
