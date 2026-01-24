@@ -1,30 +1,47 @@
-/* Project page interactions:
+/* Project page interactions (v2):
    - liquid background (same as first block)
-   - horizontal scroll by wheel + drag
+   - horizontal scroll by wheel anywhere + drag
+   - keep position exactly where you scroll (no snapping)
 */
 (() => {
   const liquidEl = document.getElementById("projectLiquid");
-  // init liquid background
+  const track = document.getElementById("projTrack");
+
   function initLiquid() {
     if (!liquidEl) return;
     if (!window.THREE || !window.LiquidApp) return;
-
-    // avoid double init
     if (liquidEl.__liquid) return;
     liquidEl.__liquid = new LiquidApp(liquidEl);
   }
 
-  // Horizontal scroll track
-  const track = document.getElementById("projTrack");
+  function initVideoAutoplay() {
+    const v = document.querySelector("video[data-autoplay]");
+    if (!v) return;
+    // ensure muted autoplay
+    v.muted = true;
+    v.playsInline = true;
+    v.autoplay = true;
+    // try play after a tick
+    const tryPlay = () => v.play().catch(() => {});
+    v.addEventListener("canplay", tryPlay, { once: true });
+    tryPlay();
+  }
 
   function initScroll() {
     if (!track) return;
 
-    // wheel -> horizontal
-    track.addEventListener(
+    // wheel anywhere -> horizontal
+    window.addEventListener(
       "wheel",
       (e) => {
-        // let touchpads horizontal pass through
+        // allow pinch-zoom / ctrl wheel
+        if (e.ctrlKey) return;
+
+        // don't hijack when over form elements
+        const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : "";
+        if (["input","textarea","select"].includes(tag)) return;
+
+        // if user scrolls vertically, convert to horizontal
         if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
           track.scrollLeft += e.deltaY;
           e.preventDefault();
@@ -33,7 +50,7 @@
       { passive: false }
     );
 
-    // drag to scroll (mouse)
+    // drag to scroll (mouse/touch)
     let isDown = false;
     let startX = 0;
     let startLeft = 0;
@@ -61,9 +78,9 @@
     });
   }
 
-  // liquid.js is deferred; wait a tick
   window.addEventListener("load", () => {
     initLiquid();
     initScroll();
+    initVideoAutoplay();
   });
 })();
