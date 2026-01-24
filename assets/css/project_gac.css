@@ -251,7 +251,7 @@ body.on-dark .proj-brief{ border: 0; }
   border: 0;
 }
 .proj-end__actions a{
-  min-width: 260px !important;   /* попробуй 260–360 */
+  min-width: 370px !important;   /* попробуй 260–360 */
   padding: 0 28px !important;    /* больше воздуха по бокам */
 }
 
