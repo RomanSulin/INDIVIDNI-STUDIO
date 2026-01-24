@@ -152,7 +152,7 @@ body.on-dark .proj-brief{
 .proj-intro{ width: 100%; display: block; }
 .proj-intro__left{
   padding-left: 16px; /* your “a bit right” */
-  padding-top: 16px;
+  padding-top: 200px;
 }
 .proj-title{
   margin: 0 0 18px;
