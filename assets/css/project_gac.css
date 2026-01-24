@@ -243,7 +243,11 @@ body.project-page a{ color: inherit; }
 
 @media (max-width: 900px){
   .proj-top{ padding: 16px 16px; }
-  .proj-track{ padding: 10px 16px 18px; gap: 16px; }
+  .proj-track{
+    --pt: 10px;
+    --pb: 18px;
+    padding: var(--pt) 16px var(--pb);
+     }
   .proj-slide{ flex-basis: 92vw; max-width: 92vw; }
   .proj-intro{ grid-template-columns: 1fr; }
   .proj-slide--end{ flex-basis: 92vw; max-width: 92vw; }
@@ -271,3 +275,29 @@ body.project-page a{ color: inherit; }
   border-radius: 999px;
 }
 .proj-track::-webkit-scrollbar-track{ background: transparent; }
+
+/* intro text-only layout */
+.proj-intro--text{
+  display: block;
+}
+
+/* make track paddings configurable so end card can ignore them */
+.proj-track{
+  --pt: 10px;
+  --pb: 26px;
+  padding: var(--pt) 28px var(--pb);
+}
+
+/* end slide fills full vertical space (cancel track padding), no radius */
+.proj-end{
+  border-radius: 0 !important;
+  margin: calc(var(--pt) * -1) 0 calc(var(--pb) * -1);
+  height: calc(100% + var(--pt) + var(--pb));
+}
+
+/* brief button in end block: solid white */
+.proj-end__actions a{
+  background: #fff !important;
+  color: #0b0b0f !important;
+  border: 0 !important;
+}
