@@ -1,101 +1,270 @@
-/* === PATCH V7 (paste at the VERY END of /assets/css/project_gac.css) ===
-   Fixes:
-   1) Top button "К БРИФУ" always ABOVE the black end panel
-   2) Bottom button label is BLACK on white
-   3) Text block top aligns with media top; media no longer vertically centered
-   4) End panel overlaps the fixed top but remains a real last slide (not "popup")
-*/
+/* Project page: GAC GH4 — CLEAN FINAL */
 
 :root{
-  --proj-header-h: 74px;
-  --proj-pad-x: 28px;
-  --proj-pad-top: 10px;
-  --proj-pad-bot: 26px;
-  --proj-gap: 16px;
+  --H: 74px;          /* высота top */
+  --padX: 28px;       /* горизонтальные паддинги трека */
+  --pt: 10px;         /* верхний паддинг трека */
+  --pb: 26px;         /* нижний паддинг трека */
+  --gap: 16px;
+
+  --slideW: 86vw;
+  --slideWlg: 78vw;
+
+  --introW: min(40vw, 500px);     /* чтобы медиа было ближе к тексту */
+  --endW: min(28vw, 420px);       /* узкая панель next */
 }
 
-/* Top becomes overlay */
+body.project-page{
+  margin: 0;
+  background: #fff;
+  color: #0b0b0f;
+  overflow: hidden;
+}
+body.project-page a{ color: inherit; }
+
+/* slide-in, но финально transform: none (важно для z-index fixed кнопки) */
+.proj-shell{
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  animation: projEnter 560ms cubic-bezier(.2,.8,.2,1) forwards;
+}
+@keyframes projEnter{ to{ transform: none; } }
+
+/* TOP фиксированный, его может перекрывать end-панель */
 .proj-top{
-  position: fixed !important;
+  position: fixed;
   top: 0; left: 0; right: 0;
-  height: var(--proj-header-h) !important;
-  z-index: 80 !important;
-  background: transparent !important;
-  pointer-events: none; /* only links clickable */
+  height: var(--H);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px var(--padX);
+  z-index: 80;
+  background: transparent;
 }
-.proj-top .proj-back,
-.proj-top .proj-brief{ pointer-events: auto; }
 
-/* Brief button: always on top of EVERYTHING */
+.proj-back{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+}
+
+.proj-nav{
+  margin-left: 6px;
+  font-size: 12px;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+  opacity: .55;
+}
+
+/* К БРИФУ — ВСЕГДА поверх всего (включая чёрный) */
 .proj-brief{
-  position: fixed !important;
-  top: 18px !important;
-  right: var(--proj-pad-x) !important;
-  z-index: 2147483647 !important;
+  position: fixed;
+  top: 18px;
+  right: var(--padX);
+  z-index: 2147483647;
 
-  margin-left: 0 !important;
+  height: 44px;
+  padding: 0 18px;
+  border-radius: 999px;
 
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  line-height: 1 !important;
+  background: #fff;
+  color: #0b0b0f;
+  border: 1px solid rgba(0,0,0,0.18);
 
-  background: #fff !important;
-  color: #0b0b0f !important;
-  border: 1px solid rgba(0,0,0,0.18) !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
 }
+/* когда end виден — можно менять бордер */
+body.on-dark .proj-brief{ border: 0; }
 
-/* Track: disable snapping + allow overlap into header area */
+/* TRACK */
 .proj-track{
-  gap: var(--proj-gap) !important;
-  scroll-snap-type: none !important;
-  scroll-behavior: auto !important;
-  overflow-y: visible !important;
-}
+  flex: 1;
+  display: flex;
+  gap: var(--gap);
+  padding: var(--pt) var(--padX) var(--pb);
 
-/* All normal slides keep a safe-area under fixed top */
+  overflow-x: auto;
+  overflow-y: visible;     /* чтобы end мог перекрывать top */
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: auto;   /* без snap */
+
+  scrollbar-width: thin;
+  scrollbar-color: #000 transparent;
+}
+.proj-track::-webkit-scrollbar{ height: 4px; }
+.proj-track::-webkit-scrollbar-thumb{ background:#000; border-radius:999px; }
+.proj-track::-webkit-scrollbar-track{ background:transparent; }
+
+/* Slides */
 .proj-slide{
-  box-sizing: border-box !important;
-  padding-top: var(--proj-header-h) !important;
+  flex: 0 0 var(--slideW);
+  max-width: var(--slideW);
+  height: 100%;
+  display: flex;
+  box-sizing: border-box;
+
+  /* выравниваем всё по одной верхней линии (как у фото) */
+  padding-top: var(--H);
+  align-items: flex-start;
+}
+@media (min-width: 1100px){
+  .proj-slide{ flex-basis: var(--slideWlg); max-width: var(--slideWlg); }
 }
 
-/* Media slides: align to TOP (no vertical centering) */
-.proj-media{
-  place-items: start center !important;
+/* INTRO */
+.proj-slide.proj-intro{
+  flex-basis: var(--introW);
+  max-width: var(--introW);
 }
-
-/* Intro text aligns to the same top line as media */
+.proj-intro{ width: 100%; }
 .proj-intro__left{
-  padding-top: 0 !important;
+  padding-left: 16px; /* “чуть правее” */
+  padding-top: 0;     /* верх по линии фото */
 }
 
-/* End slide overlaps the top and reaches the very bottom */
+.proj-title{
+  margin: 0 0 18px;
+  font-size: clamp(46px, 6.2vw, 104px);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+.proj-text{
+  margin: 0 0 18px;
+  max-width: 56ch;
+  font-size: 14px;
+  line-height: 1.6;
+  opacity: .9;
+}
+.proj-cta{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  padding: 0 22px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.20);
+  background: rgba(255,255,255,0.90);
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+}
+
+.proj-meta{
+  margin-top: 26px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  font-size: 13px;
+}
+.proj-meta h3{
+  margin: 0 0 10px;
+  font-size: 12px;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+  opacity: .55;
+}
+.proj-meta ul{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+/* Media */
+.proj-media{
+  width: 100%;
+  display: block;     /* без центрирования */
+}
+.media-169{
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 32px;
+  overflow: hidden;
+  background: transparent;
+}
+.media-169 img,
+.media-169 video{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* END slide: узкий, но по высоте до низа и перекрывает top */
 .proj-slide--end{
-  position: relative !important;
-  z-index: 120 !important;  /* above .proj-top */
-
+  flex-basis: var(--endW);
+  max-width: var(--endW);
   padding-top: 0 !important;
-  margin-right: calc(var(--proj-pad-x) * -1) !important;
 
-  /* cover track paddings => full height */
-  margin-top: calc(-1 * var(--proj-pad-top)) !important;
-  margin-bottom: calc(-1 * var(--proj-pad-bot)) !important;
-  height: calc(100% + var(--proj-pad-top) + var(--proj-pad-bot)) !important;
+  position: relative;
+  z-index: 120; /* выше top */
+
+  /* убрать белый зазор справа из-за padding трека */
+  margin-right: calc(var(--padX) * -1);
+
+  /* растянуть до низа, компенсируя паддинги трека */
+  margin-top: calc(-1 * var(--pt));
+  margin-bottom: calc(-1 * var(--pb));
+  height: calc(100% + var(--pt) + var(--pb));
 }
 .proj-end{
-  height: 100% !important;
-  border-radius: 0 !important;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  background: #0b0b0f;
+  color: rgba(255,255,255,0.92);
+  padding: 26px;
+  display: grid;
+  align-content: end;
+  gap: 14px;
 }
-
-/* Bottom button: white background + BLACK label */
 .proj-end__actions a{
-  background: #fff !important;
-  color: #0b0b0f !important;
-  border: 0 !important;
+  height: 46px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+
+  background: #fff;
+  color: #0b0b0f;   /* ВАЖНО: чёрный текст */
+  border: 0;
 }
 
-/* Mobile tweaks */
+/* убрать подсказку */
+.proj-hint{ display:none !important; }
+
+/* Mobile */
 @media (max-width: 900px){
-  :root{ --proj-pad-x: 16px; --proj-pad-bot: 18px; }
-  .proj-brief{ top: 16px !important; right: var(--proj-pad-x) !important; }
+  :root{
+    --padX: 16px;
+    --pb: 18px;
+    --slideW: 92vw;
+    --slideWlg: 92vw;
+    --introW: 92vw;
+    --endW: 92vw;
+  }
+  .proj-top{ padding: 16px var(--padX); }
+  .proj-brief{ top: 16px; right: var(--padX); }
+  .proj-intro__left{ padding-left: 0; }
 }
