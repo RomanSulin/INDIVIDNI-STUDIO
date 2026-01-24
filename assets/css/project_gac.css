@@ -292,3 +292,10 @@ body.on-dark .proj-brief{
   color:#0b0b0f !important;
   border:0 !important;
 }
+.proj-end{
+  padding-bottom: 26px !important;
+}
+.proj-end__box,            /* если есть такой контейнер */
+.proj-end__actions{
+  transform: translateY(-18px); /* подними на 18px, меняй число */
+}
