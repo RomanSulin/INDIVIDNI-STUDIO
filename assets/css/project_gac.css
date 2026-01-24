@@ -1,101 +1,114 @@
-/* Project page: GAC GH4 (v2)
-   Place as: /assets/css/project_gac.css
-*/
+/* Project page: GAC GH4 — CLEAN */
 
 body.project-page{
   margin: 0;
   background: #ffffff;
   color: #0b0b0f;
-  overflow: hidden; /* horizontal track handles scrolling */
+  overflow: hidden;
 }
-
 body.project-page a{ color: inherit; }
 
 .proj-shell{
-  position: relative;
-  z-index: 2;
   height: 100vh;
   display: flex;
   flex-direction: column;
-  transform: translateX(100%);
-  animation: projEnter 560ms cubic-bezier(.2,.8,.2,1) forwards;
-}
-@keyframes projEnter{
-  to{ transform: translateX(0); }
 }
 
+/* TOP fixed overlay */
 .proj-top{
+  position: fixed;
+  top: 0; left: 0; right: 0;
   height: 74px;
   display: flex;
   align-items: center;
   gap: 16px;
   padding: 18px 28px;
+  z-index: 80;
+  background: transparent;
 }
-
 .proj-back{
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
-  font-size: 12px;
-  letter-spacing: .10em;
-  text-transform: uppercase;
+  display:inline-flex; align-items:center; gap:10px;
+  text-decoration:none;
+  font-size:12px;
+  letter-spacing:.10em;
+  text-transform:uppercase;
 }
-
 .proj-nav{
-  margin-left: 6px;
-  font-size: 12px;
-  letter-spacing: .10em;
-  text-transform: uppercase;
-  opacity: .55;
+  margin-left:6px;
+  font-size:12px;
+  letter-spacing:.10em;
+  text-transform:uppercase;
+  opacity:.55;
 }
 
+/* brief button always above + centered text */
 .proj-brief{
-  margin-left: auto;
+  position: fixed;
+  top: 18px;
+  right: 28px;
+  z-index: 200;
+
   height: 44px;
   padding: 0 18px;
   border-radius: 999px;
   border: 1px solid rgba(0,0,0,0.18);
-  background: rgba(255,255,255,0.80);
+  background: rgba(255,255,255,0.85);
   text-decoration: none;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+
   font-size: 12px;
   letter-spacing: .08em;
   text-transform: uppercase;
 }
+body.on-dark .proj-brief{
+  background:#fff;
+  color:#0b0b0f;
+  border:0;
+}
 
 .proj-track{
+  --padX: 28px;
+  --pt: 10px;
+  --pb: 26px;
+
   flex: 1;
   display: flex;
-  gap: 28px;
-  padding: 10px 28px 26px;
+  gap: 16px;
+  padding: var(--pt) var(--padX) var(--pb);
+
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: visible; /* allow end slide to overlap top */
   -webkit-overflow-scrolling: touch;
-  scroll-behavior: auto; /* no snapping / no forced smooth */
+  scroll-behavior: auto;
+
+  scrollbar-width: thin;
+  scrollbar-color: #000 transparent;
 }
-.proj-track::-webkit-scrollbar{ height: 10px; }
-.proj-track::-webkit-scrollbar-thumb{
-  background: rgba(0,0,0,0.18);
-  border-radius: 999px;
-}
+.proj-track::-webkit-scrollbar{ height: 4px; }
+.proj-track::-webkit-scrollbar-thumb{ background:#000; border-radius:999px; }
+.proj-track::-webkit-scrollbar-track{ background:transparent; }
 
 .proj-slide{
   flex: 0 0 86vw;
   max-width: 86vw;
   height: 100%;
   display: flex;
+
+  box-sizing: border-box;
+  padding-top: 74px; /* safe-area under fixed top */
 }
 @media (min-width: 1100px){
   .proj-slide{ flex-basis: 78vw; max-width: 78vw; }
 }
 
-/* INTRO */
-.proj-intro{
-  width: 100%;
-  display: grid;
-  grid-template-columns: 0.98fr 0.3fr;
-  gap: 28px;
-  align-items: start;
+/* INTRO text slide narrower so media comes closer */
+.proj-slide.proj-intro{
+  flex: 0 0 min(40vw, 520px);
+  max-width: min(40vw, 520px);
 }
 
 .proj-title{
@@ -104,7 +117,6 @@ body.project-page a{ color: inherit; }
   line-height: 0.9;
   letter-spacing: -0.02em;
 }
-
 .proj-text{
   margin: 0 0 18px;
   max-width: 56ch;
@@ -112,11 +124,8 @@ body.project-page a{ color: inherit; }
   line-height: 1.6;
   opacity: .9;
 }
-
 .proj-cta{
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display:inline-flex; align-items:center; justify-content:center;
   height: 50px;
   padding: 0 22px;
   border-radius: 999px;
@@ -126,6 +135,13 @@ body.project-page a{ color: inherit; }
   font-size: 12px;
   letter-spacing: .10em;
   text-transform: uppercase;
+}
+
+.proj-intro__left{
+  padding-left: 16px; /* твоё “чуть правее” */
+}
+@media (max-width: 900px){
+  .proj-intro__left{ padding-left: 0; }
 }
 
 .proj-meta{
@@ -150,10 +166,10 @@ body.project-page a{ color: inherit; }
   gap: 6px;
 }
 
-/* 16:9 media, no underlay */
+/* media 16:9, no underlay */
 .media-169{
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 16/9;
   border-radius: 32px;
   overflow: hidden;
   background: transparent;
@@ -165,22 +181,32 @@ body.project-page a{ color: inherit; }
   object-fit: cover;
   display: block;
 }
-
 .proj-media{
   width: 100%;
   display: grid;
   place-items: center;
 }
 
-/* END SLIDE (≈3x smaller) */
+/* END SLIDE: narrow width, but overlays top and goes to bottom */
 .proj-slide--end{
   flex: 0 0 min(28vw, 420px);
   max-width: min(28vw, 420px);
+  padding-top: 0 !important;
+
+  position: relative;
+  z-index: 120;
+
+  /* remove right padding gap at the end */
+  margin-right: calc(var(--padX) * -1);
+
+  /* fill full viewport height */
+  height: 100vh;
 }
+
 .proj-end{
   width: 100%;
-  height: 100%;
-  border-radius: 32px;
+  height: 100vh;
+  border-radius: 0;
   background: #0b0b0f;
   color: rgba(255,255,255,0.92);
   padding: 26px;
@@ -188,22 +214,7 @@ body.project-page a{ color: inherit; }
   align-content: end;
   gap: 14px;
 }
-.proj-end__kicker{
-  font-size: 12px;
-  letter-spacing: .10em;
-  text-transform: uppercase;
-  opacity: .6;
-}
-.proj-end__title{
-  font-size: 28px;
-  letter-spacing: .02em;
-  text-transform: uppercase;
-}
-.proj-end__actions{
-  display: grid;
-  gap: 10px;
-  margin-top: 8px;
-}
+
 .proj-end__actions a{
   height: 46px;
   border-radius: 999px;
@@ -214,402 +225,19 @@ body.project-page a{ color: inherit; }
   font-size: 12px;
   letter-spacing: .10em;
   text-transform: uppercase;
-  border: 1px solid rgba(255,255,255,0.18);
-  background: rgba(255,255,255,0.08);
-  color: rgba(255,255,255,0.92);
+  background: #fff;
+  color: #0b0b0f;
+  border: 0;
 }
 
-.proj-hint{
-  padding: 0 28px 18px;
-  font-size: 12px;
-  letter-spacing: .10em;
-  text-transform: uppercase;
-  opacity: .55;
-}
+/* no hint */
+.proj-hint{ display:none; }
 
 @media (max-width: 900px){
   .proj-top{ padding: 16px 16px; }
-  .proj-track{
-    --pt: 10px;
-    --pb: 18px;
-    padding: var(--pt) 16px var(--pb);
-     }
+  .proj-track{ --padX: 16px; --pb: 18px; padding: var(--pt) var(--padX) var(--pb); }
   .proj-slide{ flex-basis: 92vw; max-width: 92vw; }
-  .proj-intro{ grid-template-columns: 1fr; }
+  .proj-slide.proj-intro{ flex-basis: 92vw; max-width: 92vw; }
   .proj-slide--end{ flex-basis: 92vw; max-width: 92vw; }
-}
-
-/* center text inside the top button */
-.proj-brief{
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-}
-
-/* remove hint */
-.proj-hint{ display:none; }
-
-/* thin black scrollbar */
-.proj-track{
-  scrollbar-width: thin;              /* Firefox */
-  scrollbar-color: #000 transparent;  /* Firefox */
-}
-.proj-track::-webkit-scrollbar{ height: 4px; }
-.proj-track::-webkit-scrollbar-thumb{
-  background: #000;
-  border-radius: 999px;
-}
-.proj-track::-webkit-scrollbar-track{ background: transparent; }
-
-/* intro text-only layout */
-.proj-intro--text{
-  display: block;
-}
-
-/* make track paddings configurable so end card can ignore them */
-.proj-track{
-  --pt: 10px;
-  --pb: 26px;
-  padding: var(--pt) 28px var(--pb);
-}
-
-/* end slide fills full vertical space (cancel track padding), no radius */
-.proj-end{
-  border-radius: 0 !important;
-  margin: calc(var(--pt) * -1) 0 calc(var(--pb) * -1);
-  height: calc(100% + var(--pt) + var(--pb));
-}
-
-/* brief button in end block: solid white */
-.proj-end__actions a{
-  background: #fff !important;
-  color: #0b0b0f !important;
-  border: 0 !important;
-}
-
-/* ===== v3 tweaks: bring media closer, full-bleed end block, brief button switches on dark ===== */
-
-/* Make spacing controllable */
-.proj-track{
-  --padX: 28px;
-  --pt: 10px;
-  --pb: 26px;
-  gap: 16px; /* was 28 */
-  padding: var(--pt) var(--padX) var(--pb);
-}
-
-/* Intro text-only slide should be narrower so the next media is closer */
-.proj-slide.proj-intro{
-  flex: 0 0 min(40vw, 500px);
-  max-width: min(40vw, 500px);
-}
-@media (max-width: 900px){
-  .proj-track{ --padX: 16px; --pb: 18px; }
-  .proj-slide.proj-intro{
-    flex-basis: 92vw;
-    max-width: 92vw;
-  }
-}
-
-/* End slide: full width, flush to the right edge, full height, no radius */
-.proj-slide--end{
-  flex: 0 0 100vw;
-  max-width: 100vw;
-  margin-right: calc(var(--padX) * -1); /* kill right padding gap */
-}
-
-.proj-end{
-  border-radius: 0 !important;
-  width: 100%;
-  height: calc(100% + var(--pt) + var(--pb));
-  margin-top: calc(var(--pt) * -1);
-  margin-bottom: calc(var(--pb) * -1);
-  padding: 32px;
-}
-
-/* End "brief" button white */
-.proj-end__actions a{
-  background: #fff !important;
-  color: #0b0b0f !important;
-  border: 0 !important;
-}
-
-/* Top brief button becomes white when end block is visible */
-body.on-dark .proj-brief{
-  background: #fff !important;
-  color: #0b0b0f !important;
-  border: 0 !important;
-}
-
-/* v4: end block width back (narrow), but full height + no right gap */
-.proj-track{
-  --padX: 28px;
-  --pt: 10px;
-  --pb: 26px;
-  gap: 16px;
-  padding: var(--pt) var(--padX) var(--pb);
-}
-
-/* WIDTH: как было раньше (узкий блок), но убираем правый padding трека */
-.proj-slide--end{
-  flex: 0 0 min(28vw, 420px);
-  max-width: min(28vw, 420px);
-  margin-right: calc(var(--padX) * -1); /* убирает белую полосу справа в конце */
-}
-
-/* HEIGHT: на всю высоту трека + без скруглений */
-.proj-end{
-  border-radius: 0 !important;
-  height: calc(100% + var(--pt) + var(--pb));
-  margin-top: calc(var(--pt) * -1);
-  margin-bottom: calc(var(--pb) * -1);
-}
-
-/* MOBILE */
-@media (max-width: 900px){
-  .proj-track{ --padX: 16px; --pb: 18px; }
-  .proj-slide--end{
-    flex-basis: 92vw;
-    max-width: 92vw;
-    margin-right: calc(var(--padX) * -1);
-  }
-}
-
-/* shift intro text a bit to the right */
-.proj-intro__left{
-  padding-left: 16px;
-   padding-top: 16px;
-}
-
-@media (max-width: 900px){
-  .proj-intro__left{ padding-left: 0; }
-}
-@media (max-width: 900px){
-  .proj-intro__left{ padding-top: 0; }
-}
-
-/* ===== Layering fix: end block above header, but brief button above all ===== */
-
-/* поднять весь трек над хедером */
-.proj-track{
-  position: relative;
-  z-index: 40;
-  overflow-y: visible !important; /* чтобы end мог залезать вверх */
-}
-
-/* сам хедер ниже трека (его можно перекрывать) */
-.proj-top{
-  position: relative;
-  z-index: 20;
-}
-
-/* end slide гарантированно поверх */
-.proj-slide--end,
-.proj-end{
-  position: relative;
-  z-index: 60;
-}
-
-/* "К БРИФУ" всегда поверх (и выглядит как в хедере) */
-.proj-brief{
-  position: fixed;
-  top: 18px;
-  right: 28px;
-  z-index: 200;
-}
-
-@media (max-width: 900px){
-  .proj-brief{
-    top: 16px;
-    right: 16px;
-  }
-}
-
-/* === End block OVER header, brief button OVER all === */
-.proj-shell{ --headerH: 74px; } /* если хедер другой высоты — поменяй тут */
-
-/* трек должен быть выше хедера и не резать по Y */
-.proj-track{
-  position: relative;
-  z-index: 40;
-  overflow-y: visible !important;
-}
-
-/* хедер ниже (его будет перекрывать чёрный блок) */
-.proj-top{
-  position: relative;
-  z-index: 10;
-}
-
-/* "К БРИФУ" всегда сверху и не перекрывается */
-.proj-brief{
-  position: fixed;
-  top: 18px;
-  right: 28px;
-  z-index: 200;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-}
-@media (max-width: 900px){
   .proj-brief{ top: 16px; right: 16px; }
-}
-
-/* end-slide: сохраняем твою ширину, убираем правый gap, и поднимаем вверх НАД хедером */
-.proj-slide--end{
-  position: relative;
-  z-index: 80;
-
-  /* ширина как была (узкая панель) — НЕ 100vw */
-  flex: 0 0 min(28vw, 420px);
-  max-width: min(28vw, 420px);
-
-  /* убрать белый зазор справа из-за padding трека */
-  margin-right: calc(var(--padX, 28px) * -1);
-
-  /* поднять панель в область хедера */
-  transform: translateY(calc(-1 * var(--headerH)));
-  height: calc(100% + var(--headerH));
-}
-
-/* сам чёрный блок занимает всю высоту end-slide, без скруглений */
-.proj-end{
-  border-radius: 0 !important;
-  height: 100%;
-  margin: 0 !important; /* отменяет старые margin-top/margin-bottom */
-}
-
-/* === END panel overlays TOP: pin to viewport when visible === */
-
-  /* ширина как было "норм" */
-  width: min(28vw, 420px);
-  border-radius: 0 !important;
-  margin: 0 !important;
-  z-index: 150;
-}
-
-/* кнопка "К БРИФУ" всегда поверх */
-.proj-brief{
-  position: fixed;
-  top: 18px;
-  right: 28px;
-  z-index: 200;
-}
-@media (max-width: 900px){
-  .proj-brief{ top: 16px; right: 16px; }
-}
-
-/* когда конец виден — делаем кнопку белой */
-body.on-dark .proj-brief{
-  background:#fff !important;
-  color:#0b0b0f !important;
-  border:0 !important;
-}
-
-/* === V6: end panel is a REAL slide, but can cover the top === */
-
-/* top becomes fixed overlay */
-.proj-top{
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 80;
-  background: transparent;
-}
-
-/* keep brief always above everything */
-.proj-brief{
-  position: fixed;
-  top: 18px;
-  right: 28px;
-  z-index: 200;
-}
-@media (max-width: 900px){
-  .proj-brief{ top: 16px; right: 16px; }
-}
-
-/* slides get header safe-area, except the end slide (it must reach the top) */
-.proj-slide{
-  box-sizing: border-box;
-  padding-top: 74px;      /* высота top */
-}
-.proj-slide--end{
-  padding-top: 0 !important;
-}
-
-/* end slide overlays top (but still scrolls as normal slide) */
-.proj-slide--end{
-  position: relative;
-  z-index: 120; /* выше .proj-top */
-
-  /* убираем верхний/нижний padding трека ТОЛЬКО для end */
-  margin-top: calc(-1 * var(--pt, 10px));
-  margin-bottom: calc(-1 * var(--pb, 26px));
-  height: calc(100% + var(--pt, 10px) + var(--pb, 26px));
-}
-
-/* black block fills the end slide height, no radius */
-.proj-end{
-  height: 100%;
-  border-radius: 0 !important;
-  margin: 0 !important;
-}
-
-/* end block to the very bottom */
-.proj-slide--end{
-  margin-bottom: 0 !important;
-  height: 100vh !important;
-}
-
-.proj-end{
-  height: 100vh !important;
-}
-
-/* === FINAL: end block reaches full viewport height, over top, as real slide === */
-
-/* header overlay */
-.proj-top{
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 80;
-  background: transparent;
-}
-
-/* slides keep header safe-area, except end */
-.proj-slide{ padding-top: 74px; box-sizing: border-box; }
-.proj-slide--end{ padding-top: 0 !important; }
-
-/* make track not cut vertically */
-.proj-track{ overflow-y: visible !important; }
-
-/* END slide: exactly viewport height (not track height) */
-.proj-slide--end{
-  position: relative;
-  z-index: 120;
-  height: 100vh !important;
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-}
-
-/* Black panel fills the slide to the very bottom */
-.proj-end{
-  height: 100vh !important;
-  border-radius: 0 !important;
-  margin: 0 !important;
-}
-
-/* brief button always above, turns white on dark */
-.proj-brief{
-  position: fixed;
-  top: 18px;
-  right: 28px;
-  z-index: 200;
-}
-body.on-dark .proj-brief{
-  background:#fff !important;
-  color:#0b0b0f !important;
-  border:0 !important;
 }
