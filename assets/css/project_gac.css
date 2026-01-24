@@ -567,3 +567,49 @@ body.on-dark .proj-brief{
 .proj-end{
   height: 100vh !important;
 }
+
+/* === FINAL: end block reaches full viewport height, over top, as real slide === */
+
+/* header overlay */
+.proj-top{
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 80;
+  background: transparent;
+}
+
+/* slides keep header safe-area, except end */
+.proj-slide{ padding-top: 74px; box-sizing: border-box; }
+.proj-slide--end{ padding-top: 0 !important; }
+
+/* make track not cut vertically */
+.proj-track{ overflow-y: visible !important; }
+
+/* END slide: exactly viewport height (not track height) */
+.proj-slide--end{
+  position: relative;
+  z-index: 120;
+  height: 100vh !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* Black panel fills the slide to the very bottom */
+.proj-end{
+  height: 100vh !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+}
+
+/* brief button always above, turns white on dark */
+.proj-brief{
+  position: fixed;
+  top: 18px;
+  right: 28px;
+  z-index: 200;
+}
+body.on-dark .proj-brief{
+  background:#fff !important;
+  color:#0b0b0f !important;
+  border:0 !important;
+}
