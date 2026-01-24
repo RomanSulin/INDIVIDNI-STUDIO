@@ -250,6 +250,10 @@ body.on-dark .proj-brief{ border: 0; }
   color: #0b0b0f;   /* ВАЖНО: чёрный текст */
   border: 0;
 }
+.proj-end__actions a{
+  min-width: 260px !important;   /* попробуй 260–360 */
+  padding: 0 28px !important;    /* больше воздуха по бокам */
+}
 
 /* убрать подсказку */
 .proj-hint{ display:none !important; }
