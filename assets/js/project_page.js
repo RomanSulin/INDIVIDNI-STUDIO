@@ -1,8 +1,9 @@
-/* Project page — FINAL
-   - wheel -> horizontal (no snap)
+/* === project_page.js (V7) ===
+   Replace your /assets/js/project_page.js with this.
+   - wheel anywhere -> horizontal
    - drag to scroll
    - autoplay muted video
-   - toggles body.on-dark when end slide is in view (for brief button styling)
+   - toggles body.on-dark when end slide is visible (optional styling hook)
 */
 (() => {
   const track = document.getElementById("projTrack");
@@ -21,6 +22,8 @@
     v.muted = true;
     v.playsInline = true;
     v.autoplay = true;
+    v.loop = true;
+
     const tryPlay = () => v.play().catch(() => {});
     v.addEventListener("canplay", tryPlay, { once: true });
     tryPlay();
@@ -50,8 +53,8 @@
       track.scrollLeft = startLeft - (e.clientX - startX);
       updateDarkMode();
     });
-    track.addEventListener("pointerup", () => (down = false));
-    track.addEventListener("pointercancel", () => (down = false));
+    track.addEventListener("pointerup", () => down = false);
+    track.addEventListener("pointercancel", () => down = false);
 
     track.addEventListener("scroll", updateDarkMode, { passive: true });
     window.addEventListener("resize", updateDarkMode, { passive: true });
