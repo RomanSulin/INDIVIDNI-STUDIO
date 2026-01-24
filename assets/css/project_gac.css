@@ -248,3 +248,26 @@ body.project-page a{ color: inherit; }
   .proj-intro{ grid-template-columns: 1fr; }
   .proj-slide--end{ flex-basis: 92vw; max-width: 92vw; }
 }
+
+/* center text inside the top button */
+.proj-brief{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* remove hint */
+.proj-hint{ display:none; }
+
+/* thin black scrollbar */
+.proj-track{
+  scrollbar-width: thin;              /* Firefox */
+  scrollbar-color: #000 transparent;  /* Firefox */
+}
+.proj-track::-webkit-scrollbar{ height: 4px; }
+.proj-track::-webkit-scrollbar-thumb{
+  background: #000;
+  border-radius: 999px;
+}
+.proj-track::-webkit-scrollbar-track{ background: transparent; }
