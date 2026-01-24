@@ -1,3 +1,9 @@
+/* Project page — FINAL
+   - wheel -> horizontal (no snap)
+   - drag to scroll
+   - autoplay muted video
+   - toggles body.on-dark when end slide is in view (for brief button styling)
+*/
 (() => {
   const track = document.getElementById("projTrack");
   const endSlide = document.querySelector(".proj-slide--end");
@@ -14,6 +20,7 @@
     if (!v) return;
     v.muted = true;
     v.playsInline = true;
+    v.autoplay = true;
     const tryPlay = () => v.play().catch(() => {});
     v.addEventListener("canplay", tryPlay, { once: true });
     tryPlay();
@@ -23,7 +30,7 @@
     if (!track) return;
 
     window.addEventListener("wheel", (e) => {
-      if (e.ctrlKey) return;
+      if (e.ctrlKey) return; // allow zoom
       if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
         track.scrollLeft += e.deltaY;
         e.preventDefault();
@@ -43,8 +50,8 @@
       track.scrollLeft = startLeft - (e.clientX - startX);
       updateDarkMode();
     });
-    track.addEventListener("pointerup", () => down = false);
-    track.addEventListener("pointercancel", () => down = false);
+    track.addEventListener("pointerup", () => (down = false));
+    track.addEventListener("pointercancel", () => (down = false));
 
     track.addEventListener("scroll", updateDarkMode, { passive: true });
     window.addEventListener("resize", updateDarkMode, { passive: true });
