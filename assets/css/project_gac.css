@@ -482,30 +482,12 @@ body.on-dark .proj-brief{
 }
 
 /* === END panel overlays TOP: pin to viewport when visible === */
-body.end-fixed .proj-end{
-  position: fixed !important;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  height: 100vh !important;
 
   /* ширина как было "норм" */
   width: min(28vw, 420px);
   border-radius: 0 !important;
   margin: 0 !important;
   z-index: 150;
-}
-
-/* чтобы не мешали старые transform/margins у end-слайда */
-body.end-fixed .proj-slide--end{
-  transform: none !important;
-  margin-right: 0 !important;
-  z-index: 140;
-}
-
-/* мобильный */
-@media (max-width: 900px){
-  body.end-fixed .proj-end{ width: 92vw; }
 }
 
 /* кнопка "К БРИФУ" всегда поверх */
@@ -524,4 +506,54 @@ body.on-dark .proj-brief{
   background:#fff !important;
   color:#0b0b0f !important;
   border:0 !important;
+}
+
+/* === V6: end panel is a REAL slide, but can cover the top === */
+
+/* top becomes fixed overlay */
+.proj-top{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 80;
+  background: transparent;
+}
+
+/* keep brief always above everything */
+.proj-brief{
+  position: fixed;
+  top: 18px;
+  right: 28px;
+  z-index: 200;
+}
+@media (max-width: 900px){
+  .proj-brief{ top: 16px; right: 16px; }
+}
+
+/* slides get header safe-area, except the end slide (it must reach the top) */
+.proj-slide{
+  box-sizing: border-box;
+  padding-top: 74px;      /* высота top */
+}
+.proj-slide--end{
+  padding-top: 0 !important;
+}
+
+/* end slide overlays top (but still scrolls as normal slide) */
+.proj-slide--end{
+  position: relative;
+  z-index: 120; /* выше .proj-top */
+
+  /* убираем верхний/нижний padding трека ТОЛЬКО для end */
+  margin-top: calc(-1 * var(--pt, 10px));
+  margin-bottom: calc(-1 * var(--pb, 26px));
+  height: calc(100% + var(--pt, 10px) + var(--pb, 26px));
+}
+
+/* black block fills the end slide height, no radius */
+.proj-end{
+  height: 100%;
+  border-radius: 0 !important;
+  margin: 0 !important;
 }
