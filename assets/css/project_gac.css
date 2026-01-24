@@ -401,12 +401,12 @@ body.on-dark .proj-brief{
 
 .proj-slide--end{
   position: relative;
-  z-index: 30;         /* end-слайд выше хедера */
+  z-index: 60;         /* end-слайд выше хедера */
 }
 
 .proj-end{
   position: relative;
-  z-index: 31;
+  z-index: 60;
 
   /* "поднимаем" чёрный блок вверх на высоту хедера */
   margin-top: calc(var(--pt, 10px) * -1 - 74px);
