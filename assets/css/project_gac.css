@@ -163,6 +163,7 @@ body.on-dark .proj-brief{ border: 0; }
   font-size: 12px;
   letter-spacing: .10em;
   text-transform: uppercase;
+  margin-top: 16px;
 }
 
 .proj-meta{
