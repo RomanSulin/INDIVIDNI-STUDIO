@@ -336,3 +336,36 @@ body.on-dark .proj-brief{
 .proj-end__actions a{
   color: #0b0b0f !important;
 }
+
+/* ===== FORCE: top brief button ALWAYS above the black end panel ===== */
+.proj-brief{
+  position: fixed !important;
+  top: 18px !important;
+  right: 28px !important;
+  margin-left: 0 !important;
+
+  z-index: 2147483647 !important; /* выше всего */
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+
+  background: #fff !important;
+  color: #0b0b0f !important;
+  border: 1px solid rgba(0,0,0,0.18) !important;
+}
+
+@media (max-width: 900px){
+  .proj-brief{
+    top: 16px !important;
+    right: 16px !important;
+  }
+}
+
+/* ===== Bottom button text must be BLACK on white ===== */
+.proj-end__actions a{
+  background: #fff !important;
+  color: #0b0b0f !important;
+  border: 0 !important;
+}
