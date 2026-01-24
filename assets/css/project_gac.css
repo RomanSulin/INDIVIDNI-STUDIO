@@ -1,20 +1,28 @@
-/* Project page: GAC GH4 — CLEAN */
+/* Project page: GAC GH4 — CLEAN (keeps your final decisions, removes the mess)
+   Put as: /assets/css/project_gac.css
+*/
 
 body.project-page{
   margin: 0;
   background: #ffffff;
   color: #0b0b0f;
-  overflow: hidden;
+  overflow: hidden; /* horizontal track handles scrolling */
 }
 body.project-page a{ color: inherit; }
 
+/* slide-in page */
 .proj-shell{
+  position: relative;
+  z-index: 2;
   height: 100vh;
   display: flex;
   flex-direction: column;
+  transform: translateX(100%);
+  animation: projEnter 560ms cubic-bezier(.2,.8,.2,1) forwards;
 }
+@keyframes projEnter{ to{ transform: translateX(0); } }
 
-/* TOP fixed overlay */
+/* TOP is fixed overlay (black end panel can cover it) */
 .proj-top{
   position: fixed;
   top: 0; left: 0; right: 0;
@@ -27,21 +35,23 @@ body.project-page a{ color: inherit; }
   background: transparent;
 }
 .proj-back{
-  display:inline-flex; align-items:center; gap:10px;
-  text-decoration:none;
-  font-size:12px;
-  letter-spacing:.10em;
-  text-transform:uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: .10em;
+  text-transform: uppercase;
 }
 .proj-nav{
-  margin-left:6px;
-  font-size:12px;
-  letter-spacing:.10em;
-  text-transform:uppercase;
-  opacity:.55;
+  margin-left: 6px;
+  font-size: 12px;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+  opacity: .55;
 }
 
-/* brief button always above + centered text */
+/* Brief button is ALWAYS above everything and centered */
 .proj-brief{
   position: fixed;
   top: 18px;
@@ -64,12 +74,14 @@ body.project-page a{ color: inherit; }
   letter-spacing: .08em;
   text-transform: uppercase;
 }
+/* when end slide is visible -> JS toggles body.on-dark */
 body.on-dark .proj-brief{
-  background:#fff;
-  color:#0b0b0f;
-  border:0;
+  background:#fff !important;
+  color:#0b0b0f !important;
+  border:0 !important;
 }
 
+/* HORIZONTAL TRACK */
 .proj-track{
   --padX: 28px;
   --pt: 10px;
@@ -81,17 +93,18 @@ body.on-dark .proj-brief{
   padding: var(--pt) var(--padX) var(--pb);
 
   overflow-x: auto;
-  overflow-y: visible; /* allow end slide to overlap top */
+  overflow-y: visible;      /* allow end slide to extend into top area */
   -webkit-overflow-scrolling: touch;
-  scroll-behavior: auto;
+  scroll-behavior: auto;    /* no snapping, no forced smooth */
 
-  scrollbar-width: thin;
-  scrollbar-color: #000 transparent;
+  scrollbar-width: thin;              /* Firefox */
+  scrollbar-color: #000 transparent;  /* Firefox */
 }
 .proj-track::-webkit-scrollbar{ height: 4px; }
 .proj-track::-webkit-scrollbar-thumb{ background:#000; border-radius:999px; }
 .proj-track::-webkit-scrollbar-track{ background:transparent; }
 
+/* slides */
 .proj-slide{
   flex: 0 0 86vw;
   max-width: 86vw;
@@ -105,12 +118,23 @@ body.on-dark .proj-brief{
   .proj-slide{ flex-basis: 78vw; max-width: 78vw; }
 }
 
-/* INTRO text slide narrower so media comes closer */
+/* INTRO slide is narrower so media is closer */
 .proj-slide.proj-intro{
-  flex: 0 0 min(40vw, 520px);
-  max-width: min(40vw, 520px);
+  flex: 0 0 min(40vw, 500px);
+  max-width: min(40vw, 500px);
+}
+.proj-intro{ width: 100%; display: block; }
+
+/* shift intro text slightly right (your request) */
+.proj-intro__left{
+  padding-left: 16px;
+  padding-top: 16px;
+}
+@media (max-width: 900px){
+  .proj-intro__left{ padding-left: 0; padding-top: 0; }
 }
 
+/* typography */
 .proj-title{
   margin: 0 0 18px;
   font-size: clamp(46px, 6.2vw, 104px);
@@ -125,7 +149,9 @@ body.on-dark .proj-brief{
   opacity: .9;
 }
 .proj-cta{
-  display:inline-flex; align-items:center; justify-content:center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   height: 50px;
   padding: 0 22px;
   border-radius: 999px;
@@ -135,13 +161,6 @@ body.on-dark .proj-brief{
   font-size: 12px;
   letter-spacing: .10em;
   text-transform: uppercase;
-}
-
-.proj-intro__left{
-  padding-left: 16px; /* твоё “чуть правее” */
-}
-@media (max-width: 900px){
-  .proj-intro__left{ padding-left: 0; }
 }
 
 .proj-meta{
@@ -166,13 +185,13 @@ body.on-dark .proj-brief{
   gap: 6px;
 }
 
-/* media 16:9, no underlay */
+/* 16:9 media */
 .media-169{
   width: 100%;
-  aspect-ratio: 16/9;
+  aspect-ratio: 16 / 9;
   border-radius: 32px;
   overflow: hidden;
-  background: transparent;
+  background: transparent; /* no underlay */
 }
 .media-169 img,
 .media-169 video{
@@ -187,26 +206,30 @@ body.on-dark .proj-brief{
   place-items: center;
 }
 
-/* END SLIDE: narrow width, but overlays top and goes to bottom */
+/* END slide: narrow width, reaches FULL viewport height and covers TOP (except brief) */
 .proj-slide--end{
   flex: 0 0 min(28vw, 420px);
   max-width: min(28vw, 420px);
+
+  /* remove safe-area padding, let black panel reach top */
   padding-top: 0 !important;
 
   position: relative;
-  z-index: 120;
+  z-index: 120; /* above .proj-top */
 
-  /* remove right padding gap at the end */
+  /* remove right gap at the very end (track has padding-right) */
   margin-right: calc(var(--padX) * -1);
 
-  /* fill full viewport height */
-  height: 100vh;
+  /* make this slide fill the whole viewport height (track content box + paddings) */
+  margin-top: calc(-1 * var(--pt));
+  margin-bottom: calc(-1 * var(--pb));
+  height: calc(100% + var(--pt) + var(--pb));
 }
 
 .proj-end{
   width: 100%;
-  height: 100vh;
-  border-radius: 0;
+  height: 100%;
+  border-radius: 0 !important; /* no rounding */
   background: #0b0b0f;
   color: rgba(255,255,255,0.92);
   padding: 26px;
@@ -214,7 +237,22 @@ body.on-dark .proj-brief{
   align-content: end;
   gap: 14px;
 }
-
+.proj-end__kicker{
+  font-size: 12px;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+  opacity: .6;
+}
+.proj-end__title{
+  font-size: 28px;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+}
+.proj-end__actions{
+  display: grid;
+  gap: 10px;
+  margin-top: 8px;
+}
 .proj-end__actions a{
   height: 46px;
   border-radius: 999px;
@@ -225,19 +263,21 @@ body.on-dark .proj-brief{
   font-size: 12px;
   letter-spacing: .10em;
   text-transform: uppercase;
-  background: #fff;
+  background: #fff;     /* white button on black */
   color: #0b0b0f;
   border: 0;
 }
 
-/* no hint */
+/* remove hint */
 .proj-hint{ display:none; }
 
 @media (max-width: 900px){
   .proj-top{ padding: 16px 16px; }
+  .proj-brief{ top: 16px; right: 16px; }
+
   .proj-track{ --padX: 16px; --pb: 18px; padding: var(--pt) var(--padX) var(--pb); }
+
   .proj-slide{ flex-basis: 92vw; max-width: 92vw; }
   .proj-slide.proj-intro{ flex-basis: 92vw; max-width: 92vw; }
-  .proj-slide--end{ flex-basis: 92vw; max-width: 92vw; }
-  .proj-brief{ top: 16px; right: 16px; }
+  .proj-slide--end{ flex-basis: 92vw; max-width: 92vw; margin-right: calc(var(--padX) * -1); }
 }
