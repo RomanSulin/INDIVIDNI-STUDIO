@@ -301,3 +301,38 @@ body.on-dark .proj-brief{
   .proj-brief{ top: 16px; right: var(--proj-pad-x); }
   .proj-intro__left{ padding-left: 0; padding-top: 0; }
 }
+
+/* ===== FIX: Brief button always ABOVE the black end panel ===== */
+.proj-brief{
+  position: fixed !important;
+  top: 18px !important;
+  right: 28px !important;
+  z-index: 99999 !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+
+  background: #fff !important;
+  color: #0b0b0f !important;
+  border: 1px solid rgba(0,0,0,0.18) !important;
+}
+
+body.on-dark .proj-brief{
+  background: #fff !important;
+  color: #0b0b0f !important;
+  border: 0 !important;
+}
+
+@media (max-width: 900px){
+  .proj-brief{
+    top: 16px !important;
+    right: 16px !important;
+  }
+}
+
+/* ===== FIX: label on the white button in the black end block ===== */
+.proj-end__actions a{
+  color: #0b0b0f !important;
+}
