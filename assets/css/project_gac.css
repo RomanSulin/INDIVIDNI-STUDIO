@@ -341,3 +341,46 @@ body.on-dark .proj-brief{
   color: #0b0b0f !important;
   border: 0 !important;
 }
+
+/* v4: end block width back (narrow), but full height + no right gap */
+.proj-track{
+  --padX: 28px;
+  --pt: 10px;
+  --pb: 26px;
+  gap: 16px;
+  padding: var(--pt) var(--padX) var(--pb);
+}
+
+/* WIDTH: как было раньше (узкий блок), но убираем правый padding трека */
+.proj-slide--end{
+  flex: 0 0 min(28vw, 420px);
+  max-width: min(28vw, 420px);
+  margin-right: calc(var(--padX) * -1); /* убирает белую полосу справа в конце */
+}
+
+/* HEIGHT: на всю высоту трека + без скруглений */
+.proj-end{
+  border-radius: 0 !important;
+  height: calc(100% + var(--pt) + var(--pb));
+  margin-top: calc(var(--pt) * -1);
+  margin-bottom: calc(var(--pb) * -1);
+}
+
+/* MOBILE */
+@media (max-width: 900px){
+  .proj-track{ --padX: 16px; --pb: 18px; }
+  .proj-slide--end{
+    flex-basis: 92vw;
+    max-width: 92vw;
+    margin-right: calc(var(--padX) * -1);
+  }
+}
+
+/* shift intro text a bit to the right */
+.proj-intro__left{
+  padding-left: 16px;
+}
+
+@media (max-width: 900px){
+  .proj-intro__left{ padding-left: 0; }
+}
