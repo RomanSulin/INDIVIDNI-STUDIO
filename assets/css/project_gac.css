@@ -392,3 +392,26 @@ body.on-dark .proj-brief{
     border-radius: 22px !important; /* можно 0, если хочешь без скруглений и на мобилке */
   }
 }
+
+/* ===== Mobile fix for end button width + spacing ===== */
+@media (max-width: 900px){
+  /* Кнопка должна вписываться в блок */
+  .proj-end__actions a{
+    min-width: 0 !important;     /* убираем 370px */
+    width: 100% !important;      /* растягиваем по ширине блока */
+    max-width: 100% !important;
+    box-sizing: border-box;
+    padding: 0 18px !important;
+    white-space: normal;         /* если длинный текст — перенос */
+    text-align: center;
+  }
+
+  /* Чтобы "Скоро" не налезало на кнопку */
+  .proj-end__title{
+    margin-bottom: 12px;
+  }
+
+  .proj-end__actions{
+    transform: none !important;  /* отменяем translateY(-18px) на мобилке */
+  }
+}
