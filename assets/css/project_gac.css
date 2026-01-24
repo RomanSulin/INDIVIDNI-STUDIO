@@ -480,3 +480,48 @@ body.on-dark .proj-brief{
   height: 100%;
   margin: 0 !important; /* отменяет старые margin-top/margin-bottom */
 }
+
+/* === END panel overlays TOP: pin to viewport when visible === */
+body.end-fixed .proj-end{
+  position: fixed !important;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  height: 100vh !important;
+
+  /* ширина как было "норм" */
+  width: min(28vw, 420px);
+  border-radius: 0 !important;
+  margin: 0 !important;
+  z-index: 150;
+}
+
+/* чтобы не мешали старые transform/margins у end-слайда */
+body.end-fixed .proj-slide--end{
+  transform: none !important;
+  margin-right: 0 !important;
+  z-index: 140;
+}
+
+/* мобильный */
+@media (max-width: 900px){
+  body.end-fixed .proj-end{ width: 92vw; }
+}
+
+/* кнопка "К БРИФУ" всегда поверх */
+.proj-brief{
+  position: fixed;
+  top: 18px;
+  right: 28px;
+  z-index: 200;
+}
+@media (max-width: 900px){
+  .proj-brief{ top: 16px; right: 16px; }
+}
+
+/* когда конец виден — делаем кнопку белой */
+body.on-dark .proj-brief{
+  background:#fff !important;
+  color:#0b0b0f !important;
+  border:0 !important;
+}
