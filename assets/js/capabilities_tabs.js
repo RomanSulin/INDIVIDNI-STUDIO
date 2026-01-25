@@ -160,7 +160,7 @@
   function mapOpacity(dist) {
       const max = Math.max(1, visibleArea.value);
       const t = clamp01(dist / max);
-      return 0.4 + (1 - t) * 0.6; // far=0.4, near=1.0
+      return 0.3 + (1 - t) * 0.6; // far=0.4, near=1.0
   }
 
   function mapPosY(dist) {
