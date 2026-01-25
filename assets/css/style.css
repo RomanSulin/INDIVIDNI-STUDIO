@@ -773,3 +773,12 @@ body.menu-open .drawer{ display:block; }
   .brand-name__main{ font-size: 15px; }
   .brand-name__sub { font-size: 10px; }
 }
+
+@media (max-width: 860px){
+  .liquid-main{
+    padding: 0 14px;
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+}
