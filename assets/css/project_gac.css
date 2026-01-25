@@ -418,3 +418,14 @@ body.on-dark .proj-brief{
 @media (max-width: 900px){
   .proj-brief{ display: none !important; }
 }
+
+@media (min-width: 901px){
+  /* убираем подъём кнопки на ПК, чтобы текст не налезал */
+  .proj-end__actions{ transform: none !important; }
+
+  /* чуть поднимаем весь блок контента выше от низа */
+  .proj-end{ padding-bottom: 54px !important; }
+
+  /* добавим воздух между "Скоро" и кнопкой */
+  .proj-end__title{ margin-bottom: 14px; }
+}
