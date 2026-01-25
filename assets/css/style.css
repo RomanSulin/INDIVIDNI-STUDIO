@@ -989,17 +989,19 @@ body.menu-open .drawer{ display:block; }
 
 .cap-item-detail__inner{
   width: 100%;
-  min-height: 260px; /* “в 2 раза выше” ощущение даже при коротком тексте */
-
+  min-height: 260px;
   border-radius: 18px;
   padding: 16px;
 
-  background: #fff;
   border: 1px solid rgba(0,0,0,0.10);
 
-  /* цвет карточки */
+  /* цветная подложка под каждую карточку */
+  background: color-mix(in srgb, var(--capColor) 22%, #ffffff);
+
+  /* полоса остаётся */
   border-left: 8px solid var(--capColor);
 }
+
 
 .cap-item-detail__top{
   display: flex;
