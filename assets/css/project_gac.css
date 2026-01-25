@@ -429,3 +429,16 @@ body.on-dark .proj-brief{
   /* добавим воздух между "Скоро" и кнопкой */
   .proj-end__title{ margin-bottom: 14px; }
 }
+
+/* Mobile-only reorder: Intro -> Video -> Photo 02 -> Photo 03 -> Photo 04 -> End */
+@media (max-width: 900px){
+  .proj-track{ display:flex; flex-direction:column; }
+
+  /* если у тебя есть aria-label как в наших секциях */
+  .proj-slide[aria-label="Intro"]    { order: 1; }
+  .proj-slide[aria-label="Video"]    { order: 2; }
+  .proj-slide[aria-label="Photo 02"] { order: 3; }
+  .proj-slide[aria-label="Photo 03"] { order: 4; }
+  .proj-slide[aria-label="Photo 04"] { order: 5; }
+  .proj-slide[aria-label="Next project"] { order: 6; }
+}
