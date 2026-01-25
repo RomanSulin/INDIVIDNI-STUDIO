@@ -591,7 +591,7 @@ body.menu-open .drawer{ display:block; }
 /* ЗАГОЛОВОК НАШИ УСЛУГИ ----------------------------------------------------------------------------------------------*/
 .capabilities .cap-title{
   width: 100%;
-  margin: 60px 0 10px;
+  margin: 60px 0 -50px;
   text-align: center;
   font-size: clamp(34px, 6vw, 96px);
   line-height: 1.05;
