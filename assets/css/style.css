@@ -916,25 +916,34 @@ body.menu-open .drawer{ display:block; }
   }
 
   .works-grid{
-    display: grid;
+    display: grid !important;
     grid-template-columns: 1fr 1fr !important;
     gap: 12px !important;
   }
 
-  /* disable desktop spans */
+  /* default: square cards */
   .works-grid .work-card{
-    grid-column: auto !important;
+    grid-column: span 1;
   }
-
-  /* Mobile ratio: 1:1 */
-  .work-media{
+  .works-grid .work-card .work-media{
     border-radius: 18px;
     aspect-ratio: 1 / 1;
   }
 
+  /* every 3rd card in each group of 5 becomes full width 16:9 */
+  .works-grid .work-card:nth-child(5n + 3){
+    grid-column: 1 / -1;
+  }
+  .works-grid .work-card:nth-child(5n + 3) .work-media{
+    aspect-ratio: 16 / 9;
+  }
+
+  /* image always fills */
   .work-media img{
     width: 100% !important;
     height: 100% !important;
+    object-fit: cover;
+    display: block;
   }
 
   .work-meta{
@@ -942,3 +951,4 @@ body.menu-open .drawer{ display:block; }
     letter-spacing: 0.10em;
   }
 }
+
