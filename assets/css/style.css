@@ -832,60 +832,70 @@ body.menu-open .drawer{ display:block; }
 
 /* ===== WORKS: bigger cards + title overlay on image ====================================================================== */
 
+/* wider container only for projects section */
 .works .container{
   width: min(1440px, calc(100% - 48px));
 }
 
+/* Desktop pattern: 3 cards row, then 2 cards row (repeat 3-2) */
 @media (min-width: 861px){
   .works-grid{
     display: grid;
-    grid-template-columns: repeat(6, 1fr); /* база для паттерна 3-2 */
+    grid-template-columns: repeat(6, 1fr); /* base for 3-2 pattern */
     gap: 26px;
   }
 
-  /* по умолчанию: 3 в ряд (каждая = 2/6) */
+  /* default: 3 in a row => each spans 2/6 */
   .works-grid .work-card{
     grid-column: span 2;
   }
 
-  /* 4-я и 5-я карточка в каждой пятёрке: 2 в ряд (каждая = 3/6) */
+  /* 4th and 5th in each group of 5 => 2 in a row => each spans 3/6 */
   .works-grid .work-card:nth-child(5n + 4),
   .works-grid .work-card:nth-child(5n + 5){
     grid-column: span 3;
   }
 }
 
-/* card look: no strip, title under the image */
+/* Card: no strip, title under the image */
 .work-card{
   border: 0 !important;
   background: transparent !important;
   border-radius: 0 !important;
   overflow: visible !important;
+
   display: flex;
   flex-direction: column;
   gap: 10px;
+
   transform: none !important;
 }
 
+/* Media wrapper */
 .work-media{
   border-radius: 28px;
   overflow: hidden;
+
+  /* PC default: 16:9 */
+  aspect-ratio: 16 / 9;
+  position: relative;
 }
 
+/* Image fills ratio box */
 .work-media img{
   width: 100%;
-  height: 360px;            /* карточки крупнее */
+  height: 100%;
   object-fit: cover;
   display: block;
   transition: filter .22s ease;
 }
 
-/* hover darken */
+/* Hover: slightly darken */
 .work-card:hover .work-media img{
   filter: brightness(0.86);
 }
 
-/* title under card (small, "logo-like") */
+/* Title under card (small, "logo-like") */
 .work-meta{
   padding: 0 !important;
   margin: 0 !important;
@@ -895,30 +905,36 @@ body.menu-open .drawer{ display:block; }
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 14px;          /* в ~3 раза меньше твоего предыдущего крупного */
+  font-size: 14px;
   line-height: 1.1;
 }
 
-/* ===== Mobile: 2 cards per row ===== */
+/* ===== Mobile: 2 cards per row, square cards ===== */
 @media (max-width: 860px){
   .works .container{
     width: min(1440px, calc(100% - 24px));
   }
 
   .works-grid{
+    display: grid;
     grid-template-columns: 1fr 1fr !important;
     gap: 12px !important;
   }
 
-  /* отключаем desktop spans */
+  /* disable desktop spans */
   .works-grid .work-card{
     grid-column: auto !important;
   }
 
-  .work-media{ border-radius: 18px; }
+  /* Mobile ratio: 1:1 */
+  .work-media{
+    border-radius: 18px;
+    aspect-ratio: 1 / 1;
+  }
 
   .work-media img{
-    height: 170px;
+    width: 100% !important;
+    height: 100% !important;
   }
 
   .work-meta{
@@ -926,4 +942,3 @@ body.menu-open .drawer{ display:block; }
     letter-spacing: 0.10em;
   }
 }
-
