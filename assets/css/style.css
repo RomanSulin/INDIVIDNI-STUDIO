@@ -643,3 +643,14 @@ body.menu-open .drawer{ display:block; }
 
 /* header is now shorter -> page can start higher on desktop */
 .page{ padding-top: 86px; } /* mobile override у тебя уже есть в @media (max-width:860px) */
+
+.burger{ display:none; }
+
+@media (max-width: 860px){
+  .nav--top{ display:none !important; }
+  .burger{ display:flex !important; }
+}
+
+.drawer{ display:none; }
+body.menu-open .drawer{ display:block; }
+
