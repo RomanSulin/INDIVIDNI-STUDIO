@@ -953,20 +953,27 @@ body.menu-open .drawer{ display:block; }
 }
 
 /* ===== ЦВЕТНЫЕ КАРТОЧКИ ===================================================================================================================================== */
-/* ===== Capabilities: per-card details (one open at a time) ===== */
+/* ===== Capabilities: details per card (one open at a time) ===== */
+
+/* hide accordion for now (optional) */
+.cap-accordion{ display:none !important; }
+
+/* make the SVG cards clickable */
+#mainSVG #container .colorTab{ cursor: pointer; }
+
 .cap-details{
   width: 100%;
   margin-top: 12px;
 }
 
-/* smoother + taller details */
+/* Side animation (no Y jump) */
 .cap-item-detail{
   width: 100%;
   overflow: hidden;
 
   max-height: 0;
   opacity: 0;
-  transform: translateY(-2px); /* было больше — делаем мягче */
+  transform: translateX(14px);
 
   transition:
     max-height .55s cubic-bezier(.2,.8,.2,1),
@@ -975,18 +982,23 @@ body.menu-open .drawer{ display:block; }
 }
 
 .cap-item-detail.is-open{
-  max-height: 520px; /* было ~260, теперь ~2x */
+  max-height: 520px;   /* если текста больше — увеличь */
   opacity: 1;
-  transform: translateY(0);
+  transform: translateX(0);
 }
 
-/* чтобы сам блок был “выше” даже если текста мало */
 .cap-item-detail__inner{
-  min-height: 260px;
+  width: 100%;
+  min-height: 260px; /* “в 2 раза выше” ощущение даже при коротком тексте */
 
-  /* цвет карточки прокинем через CSS переменную */
+  border-radius: 18px;
+  padding: 16px;
+
+  background: #fff;
   border: 1px solid rgba(0,0,0,0.10);
-  background: color-mix(in srgb, var(--capColor) 14%, #ffffff);
+
+  /* цвет карточки */
+  border-left: 8px solid var(--capColor);
 }
 
 .cap-item-detail__top{
@@ -1020,6 +1032,7 @@ body.menu-open .drawer{ display:block; }
   margin: 10px 0 14px;
   line-height: 1.5;
   opacity: .9;
+  max-width: 72ch;
 }
 
 .cap-item-detail__btn{
@@ -1039,12 +1052,6 @@ body.menu-open .drawer{ display:block; }
   letter-spacing: .08em;
   font-size: 12px;
 }
-
-/* курсор на карточках */
-#mainSVG #container .colorTab{ cursor: pointer; }
-
-/* УБИРАЕМ АККАРДИОН =====================================================================================================================================*/
-.cap-accordion{ display:none !important; }
 
 /* Cap details: side fade instead of height animation ===========================================================================================*/
 .cap-details{
