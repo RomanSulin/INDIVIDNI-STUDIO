@@ -987,7 +987,7 @@ body.menu-open .drawer{ display:block; }
 
   /* цвет карточки прокинем через CSS переменную */
   border: 1px solid rgba(0,0,0,0.10);
-  background: color-mix(in srgb, var(--capColor) 40%, #ffffff);
+  background: color-mix(in srgb, var(--capColor) 14%, #ffffff);
 }
 
 .cap-item-detail__top{
