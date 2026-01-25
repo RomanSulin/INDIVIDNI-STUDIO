@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>INDIVIDNI — Brief</title>
+  <link rel="stylesheet" href="./brief.css" />
+</head>
+<body class="brief-body">
+  <div class="brief-bg" aria-hidden="true">
+    <div class="bg-glow bg-glow--a"></div>
+    <div class="bg-glow bg-glow--b"></div>
+    <div class="bg-glow bg-glow--c"></div>
+    <div class="bg-grid"></div>
+  </div>
+
+  <header class="brief-header">
+    <div class="brief-header__inner">
+      <a class="brand" href="#" id="homeBtn" aria-label="В начало">
+        <span class="brand__sub">studio</span>
+        <span class="brand__main">INDIVIDNI</span>
+      </a>
+
+      <nav class="top-tabs" id="progress" aria-label="Шаги"></nav>
+
+      <div class="hdr-actions">
+        <a class="hdr-link" href="/" aria-label="На сайт">Сайт</a>
+        <button class="icon-btn" id="resetBtn" type="button" aria-label="Сбросить">↺</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="brief-page">
+    <div class="brief-container">
+      <aside class="side" aria-label="Навигация">
+        <div class="side__card">
+          <div class="side__title">BRIEF</div>
+          <div class="side__sub">Заполни шаги. Можно вернуться и изменить.</div>
+          <div class="side__steps" id="sideSteps"></div>
+          <div class="side__tip">Нажми на любой завершённый шаг.</div>
+        </div>
+
+        <div class="side__card side__card--mini">
+          <div class="mini-k">Status</div>
+          <div class="mini-v"><span id="doneCount">0</span>/<span id="totalCount">0</span> шагов</div>
+          <div class="mini-bar"><span id="miniBar"></span></div>
+
+          <div class="mini-k" style="margin-top:12px">Export</div>
+          <div class="mini-actions">
+            <button class="mini-btn" id="copyBtn" type="button">Copy JSON</button>
+            <button class="mini-btn" id="dlBtn" type="button">Download</button>
+          </div>
+        </div>
+      </aside>
+
+      <section class="stage" aria-label="Форма">
+        <div class="stage__cardwrap">
+          <div class="stage__card" id="card" aria-live="polite"></div>
+        </div>
+
+        <footer class="footerbar">
+          <button class="btn btn--ghost" id="backBtn" type="button">Назад</button>
+          <button class="btn btn--ghost" id="skipBtn" type="button">Пропустить</button>
+          <button class="btn btn--primary" id="nextBtn" type="button">Продолжить</button>
+        </footer>
+      </section>
+    </div>
+  </main>
+
+  <script src="./brief.js" defer></script>
+</body>
+</html>
