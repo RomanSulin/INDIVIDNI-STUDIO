@@ -5,112 +5,118 @@
 
   if (!svg || !container || !detailsRoot) return;
 
-  // Тексты для каждой карточки (ключ = label на карточке)
+  // 1) Тексты под каждую карточку (ключ = label на карточке)
+  //    Поменяй desc/href под свои услуги.
   const DATA = {
-    "Commercials": { desc: "Описание услуги. Заполни своим текстом.", href: "#contact" },
-    "Brand Films": { desc: "Описание услуги. Заполни своим текстом.", href: "#contact" },
-    "Music Videos": { desc: "Описание услуги. Заполни своим текстом.", href: "#contact" },
-    "Fashion": { desc: "Описание услуги. Заполни своим текстом.", href: "#contact" },
-    "CGI / VFX": { desc: "Описание услуги. Заполни своим текстом.", href: "#contact" },
-    "Color": { desc: "Описание услуги. Заполни своим текстом.", href: "#contact" },
-    "Sound": { desc: "Описание услуги. Заполни своим текстом.", href: "#contact" },
-    "Motion": { desc: "Описание услуги. Заполни своим текстом.", href: "#contact" },
-    "Web": { desc: "Описание услуги. Заполни своим текстом.", href: "#contact" },
-    "Direction": { desc: "Описание услуги. Заполни своим текстом.", href: "#contact" },
+    "Commercials": { desc: "Описание услуги.", href: "#contact" },
+    "Brand Films": { desc: "Описание услуги.", href: "#contact" },
+    "Music Videos": { desc: "Описание услуги.", href: "#contact" },
+    "Fashion": { desc: "Описание услуги.", href: "#contact" },
+    "CGI / VFX": { desc: "Описание услуги.", href: "#contact" },
+    "Color": { desc: "Описание услуги.", href: "#contact" },
+    "Sound": { desc: "Описание услуги.", href: "#contact" },
+    "Motion": { desc: "Описание услуги.", href: "#contact" },
+    "Web": { desc: "Описание услуги.", href: "#contact" },
+    "Direction": { desc: "Описание услуги.", href: "#contact" },
   };
-
-  // Собираем все цветные карточки
-  const tabs = Array.from(container.querySelectorAll(".colorTab"));
-
-  // Создаём индивидуальный detail-блок для каждой карточки
-  const map = new Map(); // tab -> detailEl
-
-  tabs.forEach((tab, idx) => {
-    const label = tab.querySelector("text")?.textContent?.trim() || `Item ${idx + 1}`;
-    const color = tab.querySelector("rect")?.getAttribute("fill") || "#000";
-
-    tab.dataset.capKey = label;
-
-    const item = DATA[label] || { desc: "Описание добавим позже.", href: "#contact" };
-
-    const detail = document.createElement("div");
-    detail.className = "cap-item-detail";
-    detail.dataset.capKey = label;
-    detail.style.setProperty("--capColor", color);
-
-    detail.innerHTML = `
-      <div class="cap-item-detail__inner">
-        <div class="cap-item-detail__top">
-          <h3 class="cap-item-detail__title">${label}</h3>
-          <button class="cap-item-detail__close" type="button" aria-label="Close">×</button>
-        </div>
-        <p class="cap-item-detail__desc">${item.desc}</p>
-        <a class="cap-item-detail__btn" href="${item.href}">Подробнее</a>
-      </div>
-    `;
-
-    detailsRoot.appendChild(detail);
-    map.set(tab, detail);
-
-    // close button
-    detail.querySelector(".cap-item-detail__close")?.addEventListener("click", () => {
-      closeAll();
-    });
-  });
 
   let openDetail = null;
 
   function closeAll() {
-    detailsRoot.querySelectorAll(".cap-item-detail.is-open").forEach(el => el.classList.remove("is-open"));
+    detailsRoot.querySelectorAll(".cap-item-detail.is-open")
+      .forEach(el => el.classList.remove("is-open"));
     openDetail = null;
   }
 
   function openOne(detailEl) {
     if (openDetail && openDetail !== detailEl) openDetail.classList.remove("is-open");
-    // toggle same
+
     const willOpen = !detailEl.classList.contains("is-open");
     closeAll();
+
     if (willOpen) {
       detailEl.classList.add("is-open");
       openDetail = detailEl;
-      
     }
   }
 
-  // Клик по карточке
-  svg.addEventListener("click", (e) => {
-    const tab = e.target.closest(".colorTab");
-    if (!tab || !container.contains(tab)) return;
+  // Ждём пока capabilities_tabs.js создаст карточки
+  let tries = 0;
+  function init() {
+    const tabs = Array.from(container.querySelectorAll(".colorTab"));
+    if (!tabs.length && tries < 30) {
+      tries++;
+      requestAnimationFrame(init);
+      return;
+    }
+    if (!tabs.length) return;
 
-    const detailEl = map.get(tab);
-    if (!detailEl) return;
+    detailsRoot.innerHTML = "";
+    const map = new Map(); // tab -> detail
 
-    openOne(detailEl);
-  });
+    tabs.forEach((tab, idx) => {
+      const label = tab.querySelector("text")?.textContent?.trim() || `Item ${idx + 1}`;
+      const color = tab.querySelector("rect")?.getAttribute("fill") || "#000";
 
-    // auto-open first card when section enters viewport (once)
-  const section = detailsRoot.closest("section");
-  let autoOpened = false;
+      const item = DATA[label] || { desc: "Описание добавим позже.", href: "#contact" };
 
-  if (section && detailsRoot.children.length) {
-    const firstDetail = detailsRoot.querySelector(".cap-item-detail");
+      const detail = document.createElement("div");
+      detail.className = "cap-item-detail";
+      detail.dataset.capKey = label;
+      detail.style.setProperty("--capColor", color);
 
-    const io = new IntersectionObserver((entries) => {
-      if (autoOpened) return;
-      if (!entries.some(e => e.isIntersecting)) return;
+      detail.innerHTML = `
+        <div class="cap-item-detail__inner">
+          <div class="cap-item-detail__top">
+            <h3 class="cap-item-detail__title">${label}</h3>
+            <button class="cap-item-detail__close" type="button" aria-label="Close">×</button>
+          </div>
+          <p class="cap-item-detail__desc">${item.desc}</p>
+          <a class="cap-item-detail__btn" href="${item.href}">Подробнее</a>
+        </div>
+      `;
 
-      // если пользователь уже открыл что-то сам — не мешаем
-      if (openDetail) { autoOpened = true; io.disconnect(); return; }
+      // close button
+      detail.querySelector(".cap-item-detail__close")
+        ?.addEventListener("click", (e) => {
+          e.stopPropagation();
+          closeAll();
+        });
 
-      firstDetail.classList.add("is-open");
-      openDetail = firstDetail;
+      detailsRoot.appendChild(detail);
+      map.set(tab, detail);
+    });
 
-      autoOpened = true;
-      io.disconnect();
-    }, { threshold: 0.35 });
+    // Click on card -> open its own detail (one at a time)
+    svg.addEventListener("click", (e) => {
+      const tab = e.target.closest(".colorTab");
+      if (!tab || !container.contains(tab)) return;
+      const detailEl = map.get(tab);
+      if (!detailEl) return;
+      openOne(detailEl);
+    });
 
-    io.observe(section);
+    // Auto-open first when section enters viewport (once)
+    const section = detailsRoot.closest("section");
+    let autoOpened = false;
+
+    if (section) {
+      const firstDetail = detailsRoot.querySelector(".cap-item-detail");
+      const io = new IntersectionObserver((entries) => {
+        if (autoOpened) return;
+        if (!entries.some(en => en.isIntersecting)) return;
+        if (openDetail) { autoOpened = true; io.disconnect(); return; }
+
+        firstDetail.classList.add("is-open");
+        openDetail = firstDetail;
+
+        autoOpened = true;
+        io.disconnect();
+      }, { threshold: 0.35 });
+
+      io.observe(section);
+    }
   }
 
+  init();
 })();
-
