@@ -11,6 +11,17 @@
     document.body.classList.toggle("menu-open");
     });
   }
+    // brand click -> scroll to top (reliable on all devices)
+  const brand = document.querySelector(".brand");
+  if (brand) {
+    brand.addEventListener("click", (e) => {
+      e.preventDefault();
+      document.body.classList.remove("menu-open"); // если меню открыто
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      history.replaceState(null, "", "#top");
+    });
+  }
+
 
   // close menu when clicking outside drawer / burger + ESC
 const drawer = document.querySelector("[data-drawer]");
