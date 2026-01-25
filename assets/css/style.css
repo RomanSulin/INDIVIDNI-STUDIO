@@ -829,3 +829,86 @@ body.menu-open .drawer{ display:block; }
   object-fit: cover;
   transform-style: preserve-3d;
 }
+
+/* ===== WORKS: bigger cards + title overlay on image ====================================================================== */
+
+/* wider container only for projects section */
+.works .container{
+  width: min(1320px, calc(100% - 48px));
+}
+
+/* bigger grid spacing */
+.works-grid{
+  gap: 20px;
+}
+
+/* make card a positioning context */
+.work-card{
+  position: relative;
+  display: block;
+  border-radius: 26px;            /* чуть больше, если хочешь "премиум" */
+  overflow: hidden;
+}
+
+/* image a bit taller on desktop */
+.work-media{
+  position: relative;
+}
+.work-media img{
+  height: 340px;                  /* было 260px */
+}
+
+/* subtle bottom fade for readability */
+.work-media::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0) 55%);
+  pointer-events:none;
+}
+
+/* move title onto the image (bottom-left) */
+.work-meta{
+  position: absolute;
+  left: 18px;
+  bottom: 16px;
+  padding: 0;                     /* убираем "полоску" */
+  margin: 0;
+  z-index: 2;
+
+  font-family: "Syne", sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: clamp(18px, 2.2vw, 34px);
+  color: rgba(255,255,255,0.95);
+  text-shadow: 0 10px 30px rgba(0,0,0,0.55);
+}
+
+/* hover feels nicer for big cards */
+.work-card:hover{
+  transform: translateY(-3px);
+}
+
+/* ===== Mobile: 2 cards per row ===== */
+@media (max-width: 860px){
+  .works .container{
+    width: min(1320px, calc(100% - 24px)); /* чуть шире визуально на мобилке */
+  }
+
+  .works-grid{
+    grid-template-columns: 1fr 1fr;  /* было 1fr */
+    gap: 10px;
+  }
+
+  .work-media img{
+    height: 180px;                   /* чтобы 2 в ряд смотрелись аккуратно */
+  }
+
+  .work-meta{
+    left: 12px;
+    bottom: 10px;
+    font-size: 12px;
+    letter-spacing: 0.10em;
+  }
+}
