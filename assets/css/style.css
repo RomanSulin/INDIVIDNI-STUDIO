@@ -774,15 +774,6 @@ body.menu-open .drawer{ display:block; }
   .brand-name__sub { font-size: 10px; }
 }
 
-@media (max-width: 860px){
-  .liquid-main{
-    padding: 0 14px;
-    box-sizing: border-box;
-    max-width: 100%;
-    overflow-wrap: anywhere;
-  }
-}
-
 /* ЗАГОЛОВОК ПРОЕКТЫ ----------------------------------------------------------------------------------------------*/
 .works-title{
   margin: 0 0 14px;
@@ -793,4 +784,23 @@ body.menu-open .drawer{ display:block; }
 }
 @media (max-width: 860px){
   .works-title{ margin-bottom: 10px; }
+}
+
+/* ОТСТУПЫ INDIVIDNI ----------------------------------------------------------------------------------------------*/
+@media (max-width: 860px){
+  /* safe gutters for the whole hero content */
+  .liquid-hero{
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    box-sizing: border-box;
+  }
+
+  /* keep the word inside */
+  .liquid-main{
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    white-space: normal;          /* чтобы не упиралось */
+    overflow-wrap: anywhere;
+  }
 }
