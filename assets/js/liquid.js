@@ -108,12 +108,16 @@ class GradientBackground {
       uResolution: { value: new THREE.Vector2(1, 1) },
 
       // цвета (можешь потом менять)
-      uColor1: { value: new THREE.Vector3(0.945, 0.353, 0.133) }, // orange
-      uColor2: { value: new THREE.Vector3(0.039, 0.055, 0.153) }, // navy
-      uColor3: { value: new THREE.Vector3(0.945, 0.353, 0.133) },
-      uColor4: { value: new THREE.Vector3(0.039, 0.055, 0.153) },
-      uColor5: { value: new THREE.Vector3(0.945, 0.353, 0.133) },
-      uColor6: { value: new THREE.Vector3(0.039, 0.055, 0.153) },
+      // colors from your screenshot
+      uColor1: { value: new THREE.Vector3(0, 0, 0) }, // #000000
+      uColor2: { value: new THREE.Vector3(0, 0, 0) }, // #000000
+      uColor3: { value: new THREE.Vector3(0, 0, 0) }, // #000000
+      uColor4: { value: new THREE.Vector3(0.1647, 0.1569, 0.1569) }, // #2A2828
+      uColor5: { value: new THREE.Vector3(0, 0, 0) }, // #000000
+      uColor6: { value: new THREE.Vector3(0, 0, 0) }, // #000000
+
+// фон-микс в шейдере — тоже лучше привести к тёмному
+      uDarkNavy: { value: new THREE.Vector3(0, 0, 0) }, // #000000
 
       uSpeed: { value: 1.5 },
       uIntensity: { value: 1.8 },
