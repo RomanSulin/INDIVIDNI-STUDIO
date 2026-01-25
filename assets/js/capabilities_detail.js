@@ -87,5 +87,30 @@
 
     openOne(detailEl);
   });
+
+    // auto-open first card when section enters viewport (once)
+  const section = detailsRoot.closest("section");
+  let autoOpened = false;
+
+  if (section && detailsRoot.children.length) {
+    const firstDetail = detailsRoot.querySelector(".cap-item-detail");
+
+    const io = new IntersectionObserver((entries) => {
+      if (autoOpened) return;
+      if (!entries.some(e => e.isIntersecting)) return;
+
+      // если пользователь уже открыл что-то сам — не мешаем
+      if (openDetail) { autoOpened = true; io.disconnect(); return; }
+
+      firstDetail.classList.add("is-open");
+      openDetail = firstDetail;
+
+      autoOpened = true;
+      io.disconnect();
+    }, { threshold: 0.35 });
+
+    io.observe(section);
+  }
+
 })();
 
