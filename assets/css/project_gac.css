@@ -430,15 +430,21 @@ body.on-dark .proj-brief{
   .proj-end__title{ margin-bottom: 14px; }
 }
 
-/* Mobile-only reorder: Intro -> Video -> Photo 02 -> Photo 03 -> Photo 04 -> End */
 @media (max-width: 900px){
-  .proj-track{ display:flex; flex-direction:column; }
+  /* отступы для вставленного фото в интро */
+  .proj-intro__left .media-169{
+    margin: 16px 0 14px;
+  }
 
-  /* если у тебя есть aria-label как в наших секциях */
-  .proj-slide[aria-label="Intro"]    { order: 1; }
-  .proj-slide[aria-label="Video"]    { order: 2; }
-  .proj-slide[aria-label="Photo 02"] { order: 3; }
-  .proj-slide[aria-label="Photo 03"] { order: 4; }
-  .proj-slide[aria-label="Photo 04"] { order: 5; }
-  .proj-slide[aria-label="Next project"] { order: 6; }
+  /* второй блок текста под фото */
+  .proj-second{
+    margin-top: 8px;
+  }
+
+  /* чтобы Services/Навигация не были в 2 колонки на телефоне */
+  .proj-meta{
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+    margin-top: 14px !important;
+  }
 }
