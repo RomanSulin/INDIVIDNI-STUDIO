@@ -959,31 +959,35 @@ body.menu-open .drawer{ display:block; }
   margin-top: 12px;
 }
 
+/* smoother + taller details */
 .cap-item-detail{
   width: 100%;
   overflow: hidden;
 
   max-height: 0;
   opacity: 0;
-  transform: translateY(-6px);
+  transform: translateY(-2px); /* было больше — делаем мягче */
 
-  transition: max-height .35s ease, opacity .25s ease, transform .25s ease;
+  transition:
+    max-height .55s cubic-bezier(.2,.8,.2,1),
+    opacity .25s ease,
+    transform .25s ease;
 }
 
 .cap-item-detail.is-open{
-  max-height: 260px; /* если текста больше — увеличь до 340 */
+  max-height: 520px; /* было ~260, теперь ~2x */
   opacity: 1;
   transform: translateY(0);
 }
 
+/* чтобы сам блок был “выше” даже если текста мало */
 .cap-item-detail__inner{
-  width: 100%;
-  border-radius: 18px;
-  padding: 16px;
+  min-height: 260px;
+}
 
   /* цвет карточки прокинем через CSS переменную */
   border: 1px solid rgba(0,0,0,0.10);
-  background: color-mix(in srgb, var(--capColor) 14%, #ffffff);
+  background: color-mix(in srgb, var(--capColor) 40%, #ffffff);
 }
 
 .cap-item-detail__top{
@@ -1039,3 +1043,7 @@ body.menu-open .drawer{ display:block; }
 
 /* курсор на карточках */
 #mainSVG #container .colorTab{ cursor: pointer; }
+
+/* УБИРАЕМ АККАРДИОН =====================================================================================================================================*/
+.cap-accordion{ display:none !important; }
+
