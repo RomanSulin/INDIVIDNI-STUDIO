@@ -6,10 +6,38 @@
   // burger / drawer
   const burger = document.querySelector("[data-burger]");
   if (burger) {
-    burger.addEventListener("click", () => {
-      document.body.classList.toggle("menu-open");
+    burger.addEventListener("click", (e) => {
+    e.stopPropagation();
+    document.body.classList.toggle("menu-open");
     });
   }
+
+  // close menu when clicking outside drawer / burger + ESC
+const drawer = document.querySelector("[data-drawer]");
+
+document.addEventListener("click", (e) => {
+  if (!document.body.classList.contains("menu-open")) return;
+
+  const clickedBurger = e.target.closest("[data-burger]");
+  const clickedDrawer = e.target.closest("[data-drawer]");
+
+  if (!clickedBurger && !clickedDrawer) {
+    document.body.classList.remove("menu-open");
+  }
+});
+  
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") document.body.classList.remove("menu-open");
+});
+
+// optional: click on any menu link closes
+if (drawer) {
+  drawer.addEventListener("click", (e) => {
+    if (e.target.closest("a")) document.body.classList.remove("menu-open");
+  });
+}
+
 
   // accordion (single open)
   const acc = document.querySelector("[data-accordion]");
