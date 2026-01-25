@@ -65,6 +65,7 @@
 
   // --- FORCE: move "К БРИФУ" button to <body> so it can't be hidden by end panel ---
 window.addEventListener("load", () => {
+  if (window.matchMedia("(max-width: 900px)").matches) return;
   const brief = document.querySelector(".proj-brief");
   if (!brief) return;
 
