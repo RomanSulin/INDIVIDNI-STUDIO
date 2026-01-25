@@ -448,3 +448,12 @@ body.on-dark .proj-brief{
     margin-top: 14px !important;
   }
 }
+
+@media (max-width: 900px){
+  .proj-cta{
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    box-sizing: border-box;
+  }
+}
