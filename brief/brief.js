@@ -7,7 +7,7 @@
 
   const card = $("#card");
   const progress = $("#progress");
-  const sideSteps = $("#sideSteps");
+  const sideSteps = $("#sideSteps"); 
   const backBtn = $("#backBtn");
   const nextBtn = $("#nextBtn");
   const skipBtn = $("#skipBtn");
