@@ -705,3 +705,63 @@ body.menu-open .drawer{ display:block; }
     opacity: 1;
   }
 }
+
+@media (max-width: 860px){
+  /* header layout: allow items to fit */
+  .header-row--top{
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* brand becomes 2-line and centered */
+  .brand{
+    flex: 1;
+    min-width: 0;              /* важно: иначе будет давить и резать бургер */
+    display: flex;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .brand-name{
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 2px !important;
+    line-height: 1.05;
+  }
+
+  .brand-name__sub{
+    order: -1;                 /* studio сверху */
+    font-size: 11px;
+    opacity: .75;
+    letter-spacing: .10em;
+    text-transform: uppercase;
+  }
+
+  .brand-name__main{
+    font-size: 16px;           /* чтобы не занимало много места */
+    letter-spacing: .10em;
+  }
+
+  /* actions: keep burger visible */
+  .header-actions{
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .burger{
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+  }
+
+  /* если у бургера span-ы позиционируются — пусть не режется */
+  .burger span{
+    display:block;
+  }
+}
+@media (max-width: 860px){
+  .header, .header-shell{ overflow: visible !important; }
+}
