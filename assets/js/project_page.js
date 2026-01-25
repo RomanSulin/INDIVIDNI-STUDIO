@@ -80,6 +80,47 @@ window.addEventListener("load", () => {
     zIndex: "2147483647"
   });
 });
+  
+  // ===== Mobile-only: Intro layout (text -> photo -> second text) ==============================================================================================================
+  function applyMobileIntroLayout() {
+    if (!window.matchMedia("(max-width: 900px)").matches) return;
+
+    const introLeft = document.querySelector(".proj-slide.proj-intro .proj-intro__left");
+    if (!introLeft) return;
+
+    const firstText = introLeft.querySelector(".proj-text");
+    if (!firstText) return;
+
+    const meta = introLeft.querySelector(".proj-meta");   // "второй текст"
+    const cta  = introLeft.querySelector(".proj-cta");    // твоя кнопка "Рассчитать проект"
+
+    // берем "первое фото" с первого фото-слайда (обычно Photo 02)
+    const photoSlide =
+      document.querySelector('.proj-slide.proj-media[aria-label="Photo 02"]') ||
+      document.querySelector('.proj-slide.proj-media img[src*="/assets/project/1/2.jpg"]')?.closest(".proj-slide");
+
+    if (!photoSlide) return;
+
+    const media = photoSlide.querySelector(".media-169");
+    if (!media) return;
+
+    // вставляем фото сразу после первого текста
+    firstText.insertAdjacentElement("afterend", media);
+
+    // второй текст (meta + cta) переносим ниже фото, в отдельный контейнер
+    const second = document.createElement("div");
+    second.className = "proj-second";
+    media.insertAdjacentElement("afterend", second);
+
+    if (meta) second.appendChild(meta);
+    if (cta) second.appendChild(cta);
+
+    // убираем пустой фото-слайд, чтобы дальше шло видео и остальные как были
+    photoSlide.remove();
+  }
+
+  // вызываем после загрузки
+  window.addEventListener("load", applyMobileIntroLayout);
 
 })();
 
