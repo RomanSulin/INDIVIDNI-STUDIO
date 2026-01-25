@@ -73,8 +73,7 @@
     if (willOpen) {
       detailEl.classList.add("is-open");
       openDetail = detailEl;
-      // прокрутить к блоку деталей (приятно на мобилке)
-      detailEl.scrollIntoView({ behavior: "smooth", block: "start" });
+      
     }
   }
 
