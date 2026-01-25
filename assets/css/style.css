@@ -788,19 +788,22 @@ body.menu-open .drawer{ display:block; }
 
 /* ОТСТУПЫ INDIVIDNI ----------------------------------------------------------------------------------------------*/
 @media (max-width: 860px){
-  /* safe gutters for the whole hero content */
   .liquid-hero{
     padding-left: 14px !important;
     padding-right: 14px !important;
     box-sizing: border-box;
   }
 
-  /* keep the word inside */
   .liquid-main{
+    white-space: nowrap !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+
     max-width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    white-space: normal;          /* чтобы не упиралось */
-    overflow-wrap: anywhere;
+    margin: 0 auto;
+
+    font-size: clamp(38px, 10.5vw, 64px) !important;
+    letter-spacing: 0.06em !important; /* если не влезет — 0.04em */
   }
 }
+
