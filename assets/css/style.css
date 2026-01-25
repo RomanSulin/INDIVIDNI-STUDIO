@@ -597,3 +597,49 @@ body.menu-open .drawer{ display:block; }
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+
+/* ===== Header: single line + logo tweaks ============================================================================================================================================ */
+.header-row--sub{ display:none !important; }     /* на всякий случай */
+.header-row--top{ border-bottom: 0 !important; } /* убрать линию между рядами */
+
+.header-row{
+  flex-wrap: nowrap;
+  gap: 16px;
+}
+
+.nav{ flex-wrap: nowrap; }
+.nav-link{ white-space: nowrap; }
+
+.nav--top{
+  min-width: 0;
+  gap: 16px; /* чуть компактнее, чтобы не переносилось */
+}
+
+.header-actions{
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* remove the ball */
+.brand-mark{ display:none !important; }
+
+/* INDIVIDNI studio */
+.brand-name{
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.brand-name__main{
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+.brand-name__sub{
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  opacity: .75;
+}
+
+/* header is now shorter -> page can start higher on desktop */
+.page{ padding-top: 86px; } /* mobile override у тебя уже есть в @media (max-width:860px) */
