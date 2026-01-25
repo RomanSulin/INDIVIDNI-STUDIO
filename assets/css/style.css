@@ -654,3 +654,54 @@ body.menu-open .drawer{ display:block; }
 .drawer{ display:none; }
 body.menu-open .drawer{ display:block; }
 
+/* ===== Mobile drawer redesign (solid card, rounded) ===== */
+@media (max-width: 860px){
+  .drawer{
+    display: none;
+    margin: 12px 12px 0;
+    padding: 10px 12px;
+    border-radius: 18px;
+
+    background: #0b0b0f;          /* без прозрачности */
+    border: 1px solid rgba(255,255,255,0.10);
+    box-shadow: 0 14px 40px rgba(0,0,0,0.35);
+  }
+
+  body.menu-open .drawer{ display:block; }
+
+  .drawer-link{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 14px 10px;
+    text-decoration: none;
+    color: rgba(255,255,255,0.92);
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    font-size: 12px;
+  }
+
+  /* разделители между пунктами */
+  .drawer-link + .drawer-link{
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  /* hover/active */
+  .drawer-link:active{
+    background: rgba(255,255,255,0.06);
+    border-radius: 12px;
+  }
+}
+
+@media (max-width: 860px){
+  .drawer{
+    transform: translateY(-8px);
+    opacity: 0;
+    transition: transform 220ms ease, opacity 220ms ease;
+  }
+  body.menu-open .drawer{
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
