@@ -765,3 +765,11 @@ body.menu-open .drawer{ display:block; }
 @media (max-width: 860px){
   .header, .header-shell{ overflow: visible !important; }
 }
+
+.brand-name__main{ font-size: 14px; }  /* было больше — уменьши как нужно */
+.brand-name__sub { font-size: 10px; }
+
+@media (max-width: 860px){
+  .brand-name__main{ font-size: 15px; }
+  .brand-name__sub { font-size: 10px; }
+}
