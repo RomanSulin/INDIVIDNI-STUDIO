@@ -15,40 +15,44 @@
 <body>
   <!-- HEADER -->
   <header class="header" id="top">
-    <div class="header-shell">
-      <div class="header-row header-row--top">
+  <div class="header-shell">
+    <div class="header-row header-row--top">
       <a class="brand" href="#top">
-      <span class="brand-name">
-      <span class="brand-name__main">INDIVIDNI</span>
-      <span class="brand-name__sub">studio</span>
-      </span>
-  </a>
+        <span class="brand-name">
+          <span class="brand-name__main">INDIVIDNI</span>
+          <span class="brand-name__sub">studio</span>
+        </span>
+      </a>
 
-  <nav class="nav nav--top">
-      <a class="nav-link" href="#projects">Проекты</a>
-      <a class="nav-link" href="#services">Услуги</a>
-      <a class="nav-link" href="#team">Команда</a>
-      <a class="nav-link" href="#team">Контакты</a>
-  </nav>
+      <!-- desktop nav -->
+      <nav class="nav nav--top" aria-label="Primary">
+        <a class="nav-link" href="#projects">Проекты</a>
+        <a class="nav-link" href="#services">Услуги</a>
+        <a class="nav-link" href="#team">Команда</a>
+        <a class="nav-link" href="#contact">Контакты</a>
+      </nav>
 
       <div class="header-actions">
-      <a class="btn btn--primary" href="#contact">Связаться</a>
-        </div>
+        <a class="btn btn--primary" href="#contact">Связаться</a>
+
+        <!-- burger ONLY for mobile -->
+        <button class="burger" type="button" aria-label="Menu" data-burger>
+          <span></span><span></span><span></span>
+        </button>
       </div>
     </div>
+  </div>
 
-    <!-- mobile drawer -->
-    <div class="drawer" data-drawer>
-      <a class="drawer-link" href="#projects">Проекты</a>
-      <a class="drawer-link" href="#about">О нас</a>
-      <a class="drawer-link" href="#team">Команда</a>
-      <a class="drawer-link" href="#contact">Контакты</a>
-      <a class="drawer-link" href="#services">Бриф</a>
-      <a class="drawer-link" href="./wall.html">Wall prototype</a>
-    </div>
-  </header>
-
-  <main class="page">
+  <!-- mobile drawer -->
+  <div class="drawer" data-drawer>
+    <a class="drawer-link" href="#projects">Проекты</a>
+    <a class="drawer-link" href="#services">Услуги</a>
+    <a class="drawer-link" href="#team">Команда</a>
+    <a class="drawer-link" href="#contact">Контакты</a>
+    <a class="drawer-link" href="#brief">Бриф</a>
+    <a class="drawer-link" href="./wall.html">Wall prototype</a>
+  </div>
+</header>
 
 <!-- HERO (LIQUID) -->
 <section class="liquid-hero" id="about" aria-label="INDIVIDNI hero">
