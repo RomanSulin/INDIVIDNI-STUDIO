@@ -1156,6 +1156,16 @@ body.menu-open .drawer{ display:block; }
   }
 }
 
+/* Fix: убрать "полосу" между фото и подписью + дать нормальные отступы (desktop only) */
+@media (min-width: 861px){
+  .works-grid .work-card{
+    gap: 0 !important;              /* убираем щель-полосу */
+  }
+  .works-grid .work-meta{
+    padding: 12px 6px 0 !important; /* отступы для текста */
+    margin: 0 !important;
+  }
+}
 
 
 
