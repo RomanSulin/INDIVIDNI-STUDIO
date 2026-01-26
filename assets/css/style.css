@@ -1182,17 +1182,16 @@ body.menu-open .drawer{ display:block; }
   }
 }
 
-/* Mobile fix: убрать щель/полосу и вернуть нормальные отступы подписи */
+/* MOBILE: убрать "полосу" (фон карточки) и вернуть нормальные отступы подписи */
 @media (max-width: 860px){
-  .works-grid .work-card{
-    gap: 0 !important; /* убираем "полосу" */
+  .works .works-grid a.work-card{
+    background: transparent !important;
+    border: 0 !important;
   }
 
-  .works-grid .work-meta{
-    padding: 10px 4px 0 !important; /* чтобы текст не прилипал */
+  .works .works-grid a.work-card .work-meta{
+    padding: 10px 4px 0 !important;
     margin: 0 !important;
-    text-align: left;
   }
 }
-
 
