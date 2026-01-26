@@ -462,46 +462,51 @@
   );
 
   // -------------------------
-  // Render loop (pause when hero offscreen)
-  // -------------------------
-  let active = false;
-  let raf = 0;
+// Render loop (pause when hero offscreen)
+// -------------------------
+let active = false;
+let raf = 0;
+let poseTick = 0;
 
-  function render() {
-    if (!active) return;
+function render() {
+  if (!active) return;
 
-    updateVideoTexture();
-    updateGlow();
+  updateVideoTexture();
+  updateGlow();
 
-    // smooth rotation
-tvRoot.rotation.y += (targetRotY - tvRoot.rotation.y) * 0.08;
-tvRoot.rotation.x += (targetRotX - tvRoot.rotation.x) * 0.08;
+  // smooth rotation
+  tvRoot.rotation.y += (targetRotY - tvRoot.rotation.y) * 0.08;
+  tvRoot.rotation.x += (targetRotX - tvRoot.rotation.x) * 0.08;
 
-// чтобы шоурил и кнопка следовали экрану при вращении
-if (!isMobile && model) {
-  if ((poseTick++ % 2) === 0) mountScreenAndButton(); // можно %3 если хочется легче
+  // ВАЖНО: чтобы шоурил и кнопка следовали экрану при вращении
+  if (!isMobile && model) {
+    if ((poseTick++ % 2) === 0) mountScreenAndButton(); // можно %3 если тяжело
+  }
+
+  camera.lookAt(0, 0, 0);
+  renderer.render(scene, camera);
+
+  raf = requestAnimationFrame(render);
 }
 
-renderer.render(scene, camera);
-raf = requestAnimationFrame(render);
+function start() {
+  if (active) return;
+  active = true;
+  raf = requestAnimationFrame(render);
+}
 
-  function start() {
-    if (active) return;
-    active = true;
-    raf = requestAnimationFrame(render);
-  }
+function stop() {
+  active = false;
+  if (raf) cancelAnimationFrame(raf);
+  raf = 0;
+}
 
-  function stop() {
-    active = false;
-    if (raf) cancelAnimationFrame(raf);
-    raf = 0;
-  }
+// pause when not visible
+const io = new IntersectionObserver((entries) => {
+  const ok = entries.some((e) => e.isIntersecting);
+  if (ok) start();
+  else stop();
+}, { threshold: 0.05 });
 
-  // pause when not visible
-  const io = new IntersectionObserver((entries) => {
-    const ok = entries.some((e) => e.isIntersecting);
-    if (ok) start();
-    else stop();
-  }, { threshold: 0.05 });
-  io.observe(stage);
+io.observe(stage);
 })();
