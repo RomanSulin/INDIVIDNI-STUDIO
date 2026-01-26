@@ -107,12 +107,12 @@ class GradientBackground {
   uTime: { value: 0 },
   uResolution: { value: new THREE.Vector2(1, 1) },
 
-  uColor1: { value: new THREE.Vector3(0, 0, 0) },
-  uColor2: { value: new THREE.Vector3(0.02, 0.02, 0.03) }, // лёгкий серый, не синий
-  uColor3: { value: new THREE.Vector3(0, 0, 0) },
-  uColor4: { value: new THREE.Vector3(0.1647, 0.1569, 0.1569) }, // #2A2828
-  uColor5: { value: new THREE.Vector3(0, 0, 0) },
-  uColor6: { value: new THREE.Vector3(0, 0, 0) },
+  uColor1: { value: new THREE.Vector3(0, 0, 0) }, // #000000
+  uColor2: { value: new THREE.Vector3(0, 0, 0) }, // #000000
+  uColor3: { value: new THREE.Vector3(0, 0, 0) }, // #000000
+  uColor4: { value: new THREE.Vector3(0.1412, 0.1412, 0.1412) }, // #242424
+  uColor5: { value: new THREE.Vector3(0.2824, 0.2784, 0.2784) }, // #484747
+  uColor6: { value: new THREE.Vector3(0, 0, 0) }, // #000000
 
   // ВАЖНО: один раз и не синий
   uDarkNavy: { value: new THREE.Vector3(0.02, 0.02, 0.03) }, // ≈ #050507
