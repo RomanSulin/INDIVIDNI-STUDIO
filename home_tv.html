@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>INDIVIDNI — Home TV test</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./assets/css/style.css" />
+  <link rel="stylesheet" href="./assets/css/home_tv.css" />
+</head>
+
+<body>
+  <!-- HEADER (можешь просто скопировать из index.html как есть) -->
+  <header class="header" id="top">
+    <div class="header-shell">
+      <div class="header-row header-row--top">
+        <a class="brand" href="./index.html#top">
+          <span class="brand-name">
+            <span class="brand-name__main">INDIVIDNI</span>
+            <span class="brand-name__sub">studio</span>
+          </span>
+        </a>
+
+        <nav class="nav nav--top" aria-label="Primary">
+          <a class="nav-link" href="#projects">Проекты</a>
+          <a class="nav-link" href="#services">Услуги</a>
+          <a class="nav-link" href="#team">Команда</a>
+          <a class="nav-link" href="#contact">Контакты</a>
+        </nav>
+
+        <div class="header-actions">
+          <a class="btn btn--primary" href="#contact">Связаться</a>
+          <button class="burger" type="button" aria-label="Menu" data-burger>
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="drawer" data-drawer>
+      <a class="drawer-link" href="./index.html#projects">Проекты</a>
+      <a class="drawer-link" href="./index.html#services">Услуги</a>
+      <a class="drawer-link" href="./index.html#team">Команда</a>
+      <a class="drawer-link" href="./index.html#contact">Контакты</a>
+      <a class="drawer-link" href="./home_tv.html">Home TV test</a>
+    </div>
+  </header>
+
+  <!-- HERO: Liquid + TV -->
+  <section class="liquid-hero hero-tv" id="about" aria-label="INDIVIDNI hero with TV">
+    <div id="liquid-bg" aria-hidden="true"></div>
+
+    <div class="hero-tv__inner container">
+      <div class="hero-tv__title">
+        <div class="liquid-title">
+          <div class="liquid-sub">studio</div>
+          <div class="liquid-main">INDIVIDNI</div>
+          <div class="hero-tv__desc">видеопродакшн полного цикла</div>
+        </div>
+      </div>
+
+      <!-- TV in front, below text -->
+      <div class="hero-tv__stage" data-tv-hero>
+        <div class="hero-tv__glow" aria-hidden="true"></div>
+
+        <canvas id="tvHeroCanvas"></canvas>
+
+        <!-- НЕ display:none (как у тебя сейчас сделано для tvflyVideo) -->
+        <video id="tvHeroVideo" class="tvfly__hiddenVideo" muted playsinline webkit-playsinline preload="auto" loop>
+          <source src="./assets/ui/showreel_2.mp4" type="video/mp4" />
+        </video>
+      </div>
+    </div>
+  </section>
+
+  <!-- Заглушка, чтобы проверить скролл + “свет” -->
+  <main>
+    <section class="container" style="padding:60px 0 140px">
+      <h2 class="works-title" id="projects">ПРОЕКТЫ</h2>
+      <p style="color:rgba(255,255,255,.6);max-width:720px;margin:0 auto;text-align:center">
+        Это тестовая страница. Если тут всё ок — переносим в основную.
+      </p>
+    </section>
+  </main>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://unpkg.com/fflate@0.7.4/umd/index.js"></script>
+  <script src="https://unpkg.com/three@0.128.0/examples/js/loaders/FBXLoader.js"></script>
+
+  <!-- ВАЖНО: тут НЕ подключаем tv_showreel.js (он ждёт .tvfly__image и GSAP) -->
+  <script src="./assets/js/tv_hero.js" defer></script>
+  <script src="./assets/js/liquid.js" defer></script>
+  <script src="./assets/js/main.js" defer></script>
+</body>
+</html>
