@@ -839,22 +839,24 @@ body.menu-open .drawer{ display:block; }
 }
 
 /* Desktop pattern: 3 cards row, then 2 cards row (repeat 3-2) */
+/* Desktop: fixed grid, cards only shrink (no reflow) */
 @media (min-width: 861px){
+  .works .container{
+    width: 100%;
+    max-width: none;
+    padding-left: clamp(24px, 3.2vw, 64px);
+    padding-right: clamp(24px, 3.2vw, 64px);
+  }
+
   .works-grid{
     display: grid;
-    grid-template-columns: repeat(6, 1fr); /* base for 3-2 pattern */
-    gap: 26px;
+    grid-template-columns: repeat(4, minmax(0, 1fr)); /* всегда 4, просто сжимаются */
+    gap: clamp(14px, 1.6vw, 26px);
   }
 
-  /* default: 3 in a row => each spans 2/6 */
   .works-grid .work-card{
-    grid-column: span 2;
-  }
-
-  /* 4th and 5th in each group of 5 => 2 in a row => each spans 3/6 */
-  .works-grid .work-card:nth-child(5n + 4),
-  .works-grid .work-card:nth-child(5n + 5){
-    grid-column: span 3;
+    grid-column: auto;
+    min-width: 0; /* важно для Mac/Safari, чтобы не распирало */
   }
 }
 
