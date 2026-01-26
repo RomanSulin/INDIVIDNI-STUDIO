@@ -1195,3 +1195,17 @@ body.menu-open .drawer{ display:block; }
   }
 }
 
+@media (max-width: 860px){
+  .works-grid .work-card{
+    background: transparent !important;
+    border: 0 !important;
+    overflow: visible !important;   /* ВОТ ЭТО главное: убираем клип по радиусу */
+    border-radius: 0 !important;    /* чтобы вообще не было “контейнерного” ощущения */
+    gap: 0 !important;
+  }
+
+  .works-grid .work-meta{
+    padding: 10px 0 0 !important;   /* текст ровно под картинкой */
+    margin: 0 !important;
+  }
+}
