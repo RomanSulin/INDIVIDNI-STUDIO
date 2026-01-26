@@ -458,11 +458,11 @@ body.on-dark .proj-brief{
   }
 }
 
-/* Tenderness: prevent title overflow into next slide (desktop only) */
+/* ОТОДВИГАЕТ 1 ФОТО ОТ ТЕКСТА В ПРОЕКТАХ СТРАНИЦ */
 @media (min-width: 861px){
   /* чуть шире интро, чтобы большие заголовки помещались */
   :root{
-    --introW: clamp(460px, 44vw, 720px);
+    --introW: clamp(460px, 38vw, 720px);
   }
 
   /* если заголовок всё равно длиннее — пусть переносится, а не лезет на фото */
