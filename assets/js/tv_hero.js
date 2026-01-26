@@ -189,7 +189,7 @@
   const tvRoot = new THREE.Group();
   scene.add(tvRoot);
   let model = null;
-
+  let screenAnchor = null;
   // -------------------------
   // 3D sound button (texture)
   // -------------------------
@@ -229,20 +229,40 @@
   }
 
   function findScreenCandidate(root) {
-    const cands = [];
-    root.traverse((o) => {
-      if (!o.isMesh) return;
-      const name = (o.name || "").toLowerCase();
-      if (name.includes("screen") || name.includes("display") || name.includes("monitor") || name.includes("glass")) {
-        const b = new THREE.Box3().setFromObject(o);
-        const s = b.getSize(new THREE.Vector3());
-        const area = s.x * s.y;
-        if (area > 0.0005) cands.push({ o, area });
-      }
-    });
-    cands.sort((a, b) => b.area - a.area);
-    return cands[0] ? cands[0].o : null;
-  }
+  root.updateWorldMatrix(true, true);
+
+  let best = null;
+  let bestArea = 0;
+
+  const size = new THREE.Vector3();
+  const scl  = new THREE.Vector3();
+
+  root.traverse((o) => {
+    if (!o.isMesh || !o.geometry) return;
+
+    const name = (o.name || "").toLowerCase();
+    if (
+      !name.includes("screen") &&
+      !name.includes("display") &&
+      !name.includes("monitor") &&
+      !name.includes("glass")
+    ) return;
+
+    if (!o.geometry.boundingBox) o.geometry.computeBoundingBox();
+    o.geometry.boundingBox.getSize(size);
+
+    o.getWorldScale(scl);
+
+    // стабильная площадь, НЕ зависит от поворота
+    const area = Math.abs((size.x * scl.x) * (size.y * scl.y));
+    if (area > 0.0005 && area > bestArea) {
+      bestArea = area;
+      best = o;
+    }
+  });
+
+  return best;
+}
 
   function getOrientedMetrics(mesh){
   mesh.updateWorldMatrix(true, false);
@@ -294,7 +314,8 @@
   function mountScreenAndButton() {
     if (!model) return;
 
-    const anchor = findScreenCandidate(model);
+    if (!screenAnchor) screenAnchor = findScreenCandidate(model);
+    const anchor = screenAnchor;
 
     let centerW, sizeW, quatW;
    if (anchor && anchor.isMesh && anchor.geometry) {
