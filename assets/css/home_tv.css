@@ -1,0 +1,67 @@
+/* отдельный файл, чтобы не трогать общий style.css */
+
+.hero-tv .hero-inner{ display:none; } /* на всякий — мы используем hero-tv__inner */
+
+.hero-tv__inner{
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display:flex;
+  flex-direction: column;
+  align-items:center;
+  justify-content:center;
+  gap: clamp(18px, 3vh, 28px);
+  padding-top: clamp(70px, 10vh, 120px);
+  padding-bottom: clamp(26px, 6vh, 60px);
+}
+
+.hero-tv__title{
+  text-align:center;
+  pointer-events:none;
+  user-select:none;
+}
+
+.hero-tv__desc{
+  margin-top: 8px;
+  font-family:"Syne", sans-serif;
+  font-weight: 500;
+  font-size: clamp(11px, 1.2vw, 13px);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.72);
+}
+
+.hero-tv__stage{
+  position: relative;
+  width: min(920px, 100%);
+  height: clamp(320px, 52vh, 620px);
+  z-index: 3;
+}
+
+.hero-tv__glow{
+  position:absolute;
+  inset: -18%;
+  border-radius: 999px;
+  filter: blur(70px);
+  background: radial-gradient(circle at 50% 50%,
+    rgba(255,255,255,0.22),
+    rgba(255,255,255,0.06),
+    rgba(0,0,0,0));
+  opacity: var(--tvGlow, 0.18);
+  transition: opacity 120ms linear;
+  pointer-events:none;
+}
+
+#tvHeroCanvas{
+  width:100%;
+  height:100%;
+  display:block;
+  cursor: default;
+}
+
+/* мобилка: телевизор фиксированный (без кручения будет в JS), размер ниже */
+@media (max-width: 860px){
+  .hero-tv__stage{
+    height: min(380px, 46vh);
+  }
+}
