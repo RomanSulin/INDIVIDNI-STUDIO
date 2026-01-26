@@ -1,14 +1,5 @@
 /* global THREE */
 
-/**
- * HERO TV (Liquid + TV in same hero)
- * - No GSAP
- * - No window.png overlay (tvfly__image)
- * - Keeps your working mountScreenAndButton logic (screen + sound button)
- * - Desktop: rotate with cursor (TV faces camera on load)
- * - Mobile: fixed (no rotation)
- */
-
 (() => {
   const stage = document.querySelector("[data-tv-hero]");
   if (!stage) return console.error("[tvhero] [data-tv-hero] not found");
@@ -35,20 +26,6 @@
   video.preload = "auto";
 
   let videoAR = 16 / 9;
-  let lastVideoAR = 0;
-
-  video.addEventListener("loadedmetadata", () => {
-    if (video.videoWidth && video.videoHeight) {
-      videoAR = video.videoWidth / video.videoHeight;
-      lastVideoAR = videoAR;
-      if (model) mountScreenAndButton();
-    }
-  }, { once: true });
-
-  const toggleSound = () => {
-    video.muted = !video.muted;
-    video.play().catch(() => {});
-  };
 
   // -------------------------
   // Renderer / scene (transparent over Liquid)
@@ -85,65 +62,10 @@
   window.addEventListener("resize", resize, { passive: true });
   resize();
 
-  // -------------------------
-  // Video -> CanvasTexture
-  // -------------------------
-  const vCanvas = document.createElement("canvas");
-  const vCtx = vCanvas.getContext("2d", { alpha: false });
-
-  function drawFallback() {
-    if (vCanvas.width !== 512 || vCanvas.height !== 288) {
-      vCanvas.width = 512;
-      vCanvas.height = 288;
-    }
-    vCtx.fillStyle = "#000";
-    vCtx.fillRect(0, 0, vCanvas.width, vCanvas.height);
-    vCtx.fillStyle = "rgba(255,255,255,0.65)";
-    vCtx.font = "24px Arial";
-    vCtx.fillText("SHOWREEL", 24, 52);
-    vCtx.font = "14px Arial";
-    vCtx.fillStyle = "rgba(255,255,255,0.45)";
-    vCtx.fillText("loading…", 26, 80);
-  }
-
-  const canvasTex = new THREE.CanvasTexture(vCanvas);
-  canvasTex.encoding = THREE.sRGBEncoding;
-  canvasTex.minFilter = THREE.LinearFilter;
-  canvasTex.magFilter = THREE.LinearFilter;
-  canvasTex.generateMipmaps = false;
-
-  function updateVideoTexture() {
-    if (video.readyState >= 2 && video.videoWidth && video.videoHeight) {
-      const ar = video.videoWidth / video.videoHeight;
-      if (Number.isFinite(ar) && model && Math.abs(ar - lastVideoAR) > 0.0001) {
-        videoAR = ar;
-        lastVideoAR = ar;
-        mountScreenAndButton();
-      }
-
-      if (vCanvas.width !== video.videoWidth || vCanvas.height !== video.videoHeight) {
-        vCanvas.width = video.videoWidth;
-        vCanvas.height = video.videoHeight;
-      }
-
-      vCtx.drawImage(video, 0, 0, vCanvas.width, vCanvas.height);
-      canvasTex.needsUpdate = true;
-      return true;
-    }
-
-    drawFallback();
-    canvasTex.needsUpdate = true;
-    return false;
-  }
-
-  const screenMat = new THREE.MeshBasicMaterial({
-    map: canvasTex,
-    side: THREE.DoubleSide,
-    transparent: false
-  });
-  screenMat.depthTest = false;
-  screenMat.depthWrite = false;
-  screenMat.toneMapped = false;
+  const toggleSound = () => {
+    video.muted = !video.muted;
+    video.play().catch(() => {});
+  };
 
   // -------------------------
   // LoadingManager (texture remap)
@@ -186,13 +108,7 @@
     color: 0xffffff
   });
 
-  const tvRoot = new THREE.Group();
-  scene.add(tvRoot);
-  let model = null;
-  let screenAnchor = null;
-  // -------------------------
-  // 3D sound button (texture)
-  // -------------------------
+  // Sound button texture
   const soundTex = texLoader.load("./assets/png/sound.png");
   soundTex.encoding = THREE.sRGBEncoding;
 
@@ -202,13 +118,198 @@
     alphaTest: 0.25,
     side: THREE.DoubleSide
   });
-  btnMat.depthTest = false;
   btnMat.depthWrite = false;
+  btnMat.toneMapped = false;
 
+  // -------------------------
+  // TV root
+  // -------------------------
+  const tvRoot = new THREE.Group();
+  scene.add(tvRoot);
+
+  let model = null;
+
+  // Screen overlay objects (now attached in local coords of screen mesh)
+  let screenMesh = null;
+  let screenGroup = null;
   let screenPlane = null;
-  let screenW = 0;
   let soundBtn3D = null;
 
+  // Video texture (native, no canvas-bridge)
+  const videoTex = new THREE.VideoTexture(video);
+  videoTex.encoding = THREE.sRGBEncoding;
+  videoTex.minFilter = THREE.LinearFilter;
+  videoTex.magFilter = THREE.LinearFilter;
+  videoTex.generateMipmaps = false;
+
+  function applyCoverCrop(planeW, planeH) {
+    const planeAR = planeW / planeH;
+    const ar = videoAR || (16 / 9);
+
+    if (ar > planeAR) {
+      // crop left/right
+      const rx = planeAR / ar; // < 1
+      videoTex.repeat.set(rx, 1);
+      videoTex.offset.set((1 - rx) * 0.5, 0);
+    } else {
+      // crop top/bottom
+      const ry = ar / planeAR; // < 1
+      videoTex.repeat.set(1, ry);
+      videoTex.offset.set(0, (1 - ry) * 0.5);
+    }
+    videoTex.needsUpdate = true;
+  }
+
+  // Pick screen mesh robustly: prefer names, plus "flat big plane"
+  function pickScreenMesh(root) {
+    let best = null;
+    let bestScore = -Infinity;
+
+    const size = new THREE.Vector3();
+
+    root.traverse((o) => {
+      if (!o.isMesh || !o.geometry) return;
+
+      const name = (o.name || "").toLowerCase();
+
+      if (!o.geometry.boundingBox) o.geometry.computeBoundingBox();
+      o.geometry.boundingBox.getSize(size);
+
+      const dims = [Math.abs(size.x), Math.abs(size.y), Math.abs(size.z)];
+      const sorted = [...dims].sort((a, b) => a - b);
+
+      const minDim = sorted[0];
+      const a1 = sorted[1];
+      const a2 = sorted[2];
+      const area = a1 * a2;              // two largest dims
+      const flatness = (a2 > 0) ? (1 - (minDim / a2)) : 0; // closer to 1 => flat
+
+      const bonus =
+        (name.includes("screen") ? 4 : 0) +
+        (name.includes("display") ? 3 : 0) +
+        (name.includes("monitor") ? 2 : 0) +
+        (name.includes("glass") ? 1 : 0);
+
+      // area dominates, then name bonus, then flatness
+      const score = area * 1000 + bonus * 10 + flatness;
+
+      // фильтр: не брать микромеши
+      if (area > 0.0005 && score > bestScore) {
+        bestScore = score;
+        best = o;
+      }
+    });
+
+    if (best) console.log("[tvhero] screen mesh:", best.name);
+    return best;
+  }
+
+  function buildScreenOverlay() {
+    if (!screenMesh || !screenMesh.geometry) return;
+
+    const geom = screenMesh.geometry;
+    if (!geom.boundingBox) geom.computeBoundingBox();
+
+    const bb = geom.boundingBox;
+    const size = bb.getSize(new THREE.Vector3());
+    const center = bb.getCenter(new THREE.Vector3());
+
+    // detect "depth axis" (smallest dimension)
+    const dims = [size.x, size.y, size.z].map(Math.abs);
+    const minVal = Math.min(dims[0], dims[1], dims[2]);
+    const depthAxis = dims.indexOf(minVal);
+
+    // width/height in screen local axes
+    let w, h;
+    const rot = new THREE.Euler(0, 0, 0);
+
+    // PlaneGeometry is XY facing +Z
+    if (depthAxis === 2) {
+      // thin in Z => plane is XY already
+      w = Math.abs(size.x);
+      h = Math.abs(size.y);
+      rot.set(0, 0, 0);
+    } else if (depthAxis === 0) {
+      // thin in X => plane should face +X : rotate +90 around Y
+      w = Math.abs(size.z);
+      h = Math.abs(size.y);
+      rot.set(0, Math.PI / 2, 0);
+    } else {
+      // thin in Y => plane should face +Y : rotate -90 around X
+      w = Math.abs(size.x);
+      h = Math.abs(size.z);
+      rot.set(-Math.PI / 2, 0, 0);
+    }
+
+    // group in screenMesh LOCAL space
+    screenGroup = new THREE.Group();
+    screenGroup.position.copy(center);
+    screenGroup.rotation.copy(rot);
+
+    // small offset forward in group's +Z
+    const eps = Math.max(w, h) * 0.002;
+
+    // material for video plane
+    const vidMat = new THREE.MeshBasicMaterial({
+      map: videoTex,
+      side: THREE.DoubleSide
+    });
+    vidMat.toneMapped = false;
+    vidMat.depthWrite = false;
+    vidMat.polygonOffset = true;
+    vidMat.polygonOffsetFactor = -1;
+    vidMat.polygonOffsetUnits = -1;
+
+    // plane + crop
+    screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(w, h), vidMat);
+    screenPlane.position.set(0, 0, eps);
+    screenPlane.renderOrder = 50;
+    screenGroup.add(screenPlane);
+
+    applyCoverCrop(w, h);
+
+    // sound button plane (same group => always glued)
+    const BTN_X_K = 0.40;
+    const BTN_DOWN_K = 0.57;
+
+    const bw = w * 0.16;
+    const bh = bw * 0.45;
+
+    soundBtn3D = new THREE.Mesh(new THREE.PlaneGeometry(bw, bh), btnMat);
+    soundBtn3D.position.set(w * BTN_X_K, -h * BTN_DOWN_K, eps * 1.8);
+    soundBtn3D.renderOrder = 60;
+    screenGroup.add(soundBtn3D);
+
+    // Ensure screen faces camera at start (flip if needed)
+    screenGroup.updateWorldMatrix(true, false);
+    const centerW = screenGroup.getWorldPosition(new THREE.Vector3());
+    const normalW = new THREE.Vector3(0, 0, 1)
+      .applyQuaternion(screenGroup.getWorldQuaternion(new THREE.Quaternion()))
+      .normalize();
+    const toCam = camera.position.clone().sub(centerW).normalize();
+    if (normalW.dot(toCam) < 0) {
+      screenGroup.rotation.y += Math.PI;
+    }
+
+    screenMesh.add(screenGroup);
+  }
+
+  // Update crop when video metadata is ready
+  video.addEventListener("loadedmetadata", () => {
+    if (video.videoWidth && video.videoHeight) {
+      videoAR = video.videoWidth / video.videoHeight;
+      if (screenPlane) {
+        const g = screenPlane.geometry;
+        const w = g?.parameters?.width || 1;
+        const h = g?.parameters?.height || 1;
+        applyCoverCrop(w, h);
+      }
+    }
+  }, { once: true });
+
+  // -------------------------
+  // Hover / click on 3D button
+  // -------------------------
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
   let hoveringBtn = false;
@@ -219,228 +320,31 @@
     pointer.y = -(((e.clientY - r.top) / r.height) * 2 - 1);
   }
 
-  function setPlaneSize(mesh, w, h) {
-  const g = mesh.geometry;
-  const curW = g?.parameters?.width;
-  const curH = g?.parameters?.height;
-
-  if (curW && curH && Math.abs(curW - w) < 1e-4 && Math.abs(curH - h) < 1e-4) return;
-
-  const pos = mesh.position.clone();
-  const quat = mesh.quaternion.clone();
-
-  mesh.geometry?.dispose?.();
-  mesh.geometry = new THREE.PlaneGeometry(w, h);
-  mesh.position.copy(pos);
-  mesh.quaternion.copy(quat);
-}
-
-  function findScreenCandidate(root) {
-  root.updateWorldMatrix(true, true);
-
-  let best = null;
-  let bestScore = -Infinity;
-
-  const size = new THREE.Vector3();
-  const scl  = new THREE.Vector3();
-
-  root.traverse((o) => {
-    if (!o.isMesh || !o.geometry) return;
-
-    const name = (o.name || "").toLowerCase();
-    const isScreenLike =
-      name.includes("screen") || name.includes("display") || name.includes("monitor") || name.includes("glass");
-
-    if (!isScreenLike) return;
-
-    if (!o.geometry.boundingBox) o.geometry.computeBoundingBox();
-    o.geometry.boundingBox.getSize(size);
-    o.getWorldScale(scl);
-
-    // площадь в "своих" осях + scale (НЕ зависит от поворота)
-    const area = Math.abs((size.x * scl.x) * (size.y * scl.y));
-
-    // приоритет: screen/display выше, glass ниже
-    const bonus =
-      (name.includes("screen") ? 3 : 0) +
-      (name.includes("display") ? 2 : 0) +
-      (name.includes("monitor") ? 1 : 0) +
-      (name.includes("glass") ? -1 : 0);
-
-    const score = area * 1000 + bonus; // area доминирует, bonus решает спорные случаи
-
-    if (area > 0.0005 && score > bestScore) {
-      bestScore = score;
-      best = o;
-    }
-  });
-
-  // маленький дебаг (можешь убрать потом)
-  if (best) console.log("[tvhero] screen anchor:", best.name);
-
-  return best;
-}
-
-  function getOrientedMetrics(mesh){
-  mesh.updateWorldMatrix(true, false);
-
-  const geom = mesh.geometry;
-  if (!geom) return null;
-  if (!geom.boundingBox) geom.computeBoundingBox();
-
-  const bb = geom.boundingBox;
-
-  const quatW = mesh.getWorldQuaternion(new THREE.Quaternion());
-  const right = new THREE.Vector3(1,0,0).applyQuaternion(quatW).normalize();
-  const up    = new THREE.Vector3(0,1,0).applyQuaternion(quatW).normalize();
-  const norm  = new THREE.Vector3(0,0,1).applyQuaternion(quatW).normalize();
-
-  const corners = [
-    new THREE.Vector3(bb.min.x, bb.min.y, bb.min.z),
-    new THREE.Vector3(bb.min.x, bb.min.y, bb.max.z),
-    new THREE.Vector3(bb.min.x, bb.max.y, bb.min.z),
-    new THREE.Vector3(bb.min.x, bb.max.y, bb.max.z),
-    new THREE.Vector3(bb.max.x, bb.min.y, bb.min.z),
-    new THREE.Vector3(bb.max.x, bb.min.y, bb.max.z),
-    new THREE.Vector3(bb.max.x, bb.max.y, bb.min.z),
-    new THREE.Vector3(bb.max.x, bb.max.y, bb.max.z),
-  ].map(v => mesh.localToWorld(v));
-
-  const rangeOn = (axis) => {
-    let mn = Infinity, mx = -Infinity;
-    for (const p of corners){
-      const d = p.dot(axis);
-      if (d < mn) mn = d;
-      if (d > mx) mx = d;
-    }
-    return [mn, mx];
-  };
-
-  const [r0, r1] = rangeOn(right);
-  const [u0, u1] = rangeOn(up);
-  const [n0, n1] = rangeOn(norm);
-
-  const sizeW = new THREE.Vector3(r1 - r0, u1 - u0, n1 - n0);
-
-  const centerLocal = bb.getCenter(new THREE.Vector3());
-  const centerW = mesh.localToWorld(centerLocal.clone());
-
-  return { centerW, sizeW, quatW };
-}
-  
-  function mountScreenAndButton() {
-    if (!model) return;
-
-    if (!screenAnchor) screenAnchor = findScreenCandidate(model);
-    const anchor = screenAnchor;
-
-    let centerW, sizeW, quatW;
-   if (anchor && anchor.isMesh && anchor.geometry) {
-  const m = getOrientedMetrics(anchor);
-  if (m) {
-    centerW = m.centerW;
-    sizeW   = m.sizeW;
-    quatW   = m.quatW;
-  } else {
-    const boxW = new THREE.Box3().setFromObject(anchor);
-    centerW = boxW.getCenter(new THREE.Vector3());
-    sizeW   = boxW.getSize(new THREE.Vector3());
-    quatW   = anchor.getWorldQuaternion(new THREE.Quaternion());
-  }
-} else if (anchor) {
-  const boxW = new THREE.Box3().setFromObject(anchor);
-  centerW = boxW.getCenter(new THREE.Vector3());
-  sizeW   = boxW.getSize(new THREE.Vector3());
-  quatW   = anchor.getWorldQuaternion(new THREE.Quaternion());
-} else {
-  const boxW = new THREE.Box3().setFromObject(model);
-  centerW = boxW.getCenter(new THREE.Vector3());
-  sizeW   = boxW.getSize(new THREE.Vector3());
-  quatW   = model.getWorldQuaternion(new THREE.Quaternion());
-}
-
-
-    tvRoot.updateMatrixWorld(true);
-
-    const tvScale = tvRoot.getWorldScale(new THREE.Vector3());
-    const invS = 1 / (tvScale.x || 1);
-
-    const center = tvRoot.worldToLocal(centerW.clone());
-    const size   = sizeW.clone().multiplyScalar(invS);
-
-    const tvInvQuat = tvRoot.getWorldQuaternion(new THREE.Quaternion()).invert();
-    const axisFix = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2);
-    const quatLocal = tvInvQuat.clone().multiply(quatW).multiply(axisFix);
-
-    const right   = new THREE.Vector3(1, 0, 0).applyQuaternion(quatLocal).normalize();
-    const up      = new THREE.Vector3(0, 1, 0).applyQuaternion(quatLocal).normalize();
-    const normalV = new THREE.Vector3(0, 0, 1).applyQuaternion(quatLocal).normalize();
-
-    const SCREEN_UP_K = 0.11;
-    const SCREEN_X_K  = 0.00;
-    const BTN_DOWN_K  = 0.57;
-    const BTN_X_K     = 0.40;
-    const eps = Math.max(size.z, 0.01) * 0.02;
-
-    screenW = Math.max(0.05, size.x * (isMobile ? 0.95 : 1.00));
-    const screenH = screenW / videoAR;
-
-    const screenPos = center.clone()
-      .add(right.clone().multiplyScalar(screenW * SCREEN_X_K))
-      .add(up.clone().multiplyScalar(size.y * SCREEN_UP_K))
-      .add(normalV.clone().multiplyScalar(eps));
-
-    if (!screenPlane) {
-      screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(screenW, screenH), screenMat);
-      screenPlane.renderOrder = 10;
-      tvRoot.add(screenPlane);
-    } else {
-      setPlaneSize(screenPlane, screenW, screenH);
-    }
-    screenPlane.position.copy(screenPos);
-    screenPlane.quaternion.copy(quatLocal);
-
-    // BUTTON
-    const bw = screenW * 0.16;
-    const bh = bw * 0.45;
-
-    const btnPos = center.clone()
-      .add(right.clone().multiplyScalar(screenW * BTN_X_K))
-      .add(up.clone().multiplyScalar(-screenH * BTN_DOWN_K))
-      .add(normalV.clone().multiplyScalar(eps * 1.6));
-
-    if (!soundBtn3D) {
-      soundBtn3D = new THREE.Mesh(new THREE.PlaneGeometry(bw, bh), btnMat);
-      soundBtn3D.renderOrder = 1000;
-      tvRoot.add(soundBtn3D);
-    } else {
-      soundBtn3D.geometry.dispose();
-      soundBtn3D.geometry = new THREE.PlaneGeometry(bw, bh);
-    }
-    soundBtn3D.position.copy(btnPos);
-    soundBtn3D.quaternion.copy(quatLocal);
-  }
-
-  // hover/click sound button
   canvas.addEventListener("pointermove", (e) => {
     if (!soundBtn3D) return;
+
     pointerToNDC(e);
     raycaster.setFromCamera(pointer, camera);
-    const hit = raycaster.intersectObjects([soundBtn3D].filter(Boolean), true);
+
+    const hit = raycaster.intersectObject(soundBtn3D, true);
     hoveringBtn = hit.length > 0;
-    canvas.style.cursor = hoveringBtn ? "pointer" : (isMobile ? "default" : "grab");
+
+    if (!isMobile) canvas.style.cursor = hoveringBtn ? "pointer" : "grab";
+    else canvas.style.cursor = hoveringBtn ? "pointer" : "default";
   });
 
   canvas.addEventListener("pointerdown", (e) => {
     if (!soundBtn3D) return;
+
     pointerToNDC(e);
     raycaster.setFromCamera(pointer, camera);
-    const hit = raycaster.intersectObjects([soundBtn3D].filter(Boolean), true);
+
+    const hit = raycaster.intersectObject(soundBtn3D, true);
     if (hit.length) toggleSound();
   });
 
   // -------------------------
-  // Desktop rotation with cursor
+  // Desktop rotation with cursor (TV only)
   // -------------------------
   let targetRotY = 0;
   let targetRotX = 0;
@@ -454,13 +358,14 @@
     canvas.style.cursor = "grab";
 
     canvas.addEventListener("pointermove", (e) => {
-      if (hoveringBtn) return; // не мешаем нажимать кнопку
+      if (hoveringBtn) return;
+
       const r = canvas.getBoundingClientRect();
       const nx = ((e.clientX - r.left) / r.width) * 2 - 1;
       const ny = ((e.clientY - r.top) / r.height) * 2 - 1;
 
-      targetRotY = nx * 0.45;    // ~25°
-      targetRotX = -ny * 0.12;   // лёгкий наклон
+      targetRotY = nx * 0.45;
+      targetRotX = -ny * 0.12;
     });
 
     canvas.addEventListener("pointerleave", resetRotation);
@@ -474,10 +379,9 @@
   bCanvas.height = 18;
   const bCtx = bCanvas.getContext("2d", { willReadFrequently: true });
 
-  let frame = 0;
+  let glowFrame = 0;
   function updateGlow() {
-    // редко считаем (чтобы не грузить)
-    if ((frame++ % 6) !== 0) return;
+    if ((glowFrame++ % 6) !== 0) return;
 
     try {
       bCtx.drawImage(video, 0, 0, bCanvas.width, bCanvas.height);
@@ -485,12 +389,10 @@
 
       let sum = 0;
       for (let i = 0; i < data.length; i += 4) {
-        // luma
         sum += 0.2126 * data[i] + 0.7152 * data[i + 1] + 0.0722 * data[i + 2];
       }
-      const avg = sum / (data.length / 4) / 255; // 0..1
+      const avg = sum / (data.length / 4) / 255;
 
-      // немного усиливаем + добавляем “реакцию на скролл”
       const hero = document.querySelector(".hero-tv");
       let scrollK = 0;
       if (hero) {
@@ -501,13 +403,11 @@
 
       const glow = Math.min(0.65, Math.max(0.10, 0.12 + avg * 0.45 + scrollK * 0.18));
       stage.style.setProperty("--tvGlow", glow.toFixed(3));
-    } catch (_) {
-      // ignore
-    }
+    } catch (_) {}
   }
 
   // -------------------------
-  // FBX load (same model path as your working setup)
+  // FBX load
   // -------------------------
   const loader = new THREE.FBXLoader(manager);
 
@@ -516,7 +416,7 @@
     (fbx) => {
       model = fbx;
 
-      // твой рабочий базовый поворот (НЕ трогаем)
+      // keep your working base rotation
       model.rotation.y = -Math.PI / 2;
 
       // normalize scale
@@ -530,6 +430,7 @@
       const c1 = b1.getCenter(new THREE.Vector3());
       model.position.sub(c1);
 
+      // assign body material to all meshes
       model.traverse((o) => {
         if (!o.isMesh) return;
         o.frustumCulled = false;
@@ -537,7 +438,7 @@
       });
 
       tvRoot.add(model);
-      screenAnchor = findScreenCandidate(model);
+
       // camera fit
       const box = new THREE.Box3().setFromObject(tvRoot);
       const size = box.getSize(new THREE.Vector3());
@@ -548,11 +449,15 @@
       camera.position.set(0, maxDim * 0.10, dist);
       camera.updateProjectionMatrix();
 
-      // fixed base scale
       tvRoot.scale.setScalar(isMobile ? 1.05 : 1.15);
 
-      mountScreenAndButton();
-      video.play().catch(() => {}); // muted autoplay
+      // pick screen mesh ONCE and build overlay in its LOCAL space
+      screenMesh = pickScreenMesh(model);
+      if (!screenMesh) console.warn("[tvhero] screen mesh not found — overlay skipped");
+      else buildScreenOverlay();
+
+      // play (muted autoplay)
+      video.play().catch(() => {});
       start();
     },
     undefined,
@@ -560,51 +465,43 @@
   );
 
   // -------------------------
-// Render loop (pause when hero offscreen)
-// -------------------------
-let active = false;
-let raf = 0;
-let poseTick = 0;
+  // Render loop (pause when hero offscreen)
+  // -------------------------
+  let active = false;
+  let raf = 0;
 
-function render() {
-  if (!active) return;
+  function render() {
+    if (!active) return;
 
-  updateVideoTexture();
-  updateGlow();
+    updateGlow();
 
-  // smooth rotation
-  tvRoot.rotation.y += (targetRotY - tvRoot.rotation.y) * 0.08;
-  tvRoot.rotation.x += (targetRotX - tvRoot.rotation.x) * 0.08;
+    // rotate TV root smoothly
+    tvRoot.rotation.y += (targetRotY - tvRoot.rotation.y) * 0.08;
+    tvRoot.rotation.x += (targetRotX - tvRoot.rotation.x) * 0.08;
 
-  // ВАЖНО: чтобы шоурил и кнопка следовали экрану при вращении
-  if (!isMobile && model) {
-    if ((poseTick++ % 2) === 0) mountScreenAndButton(); // можно %3 если тяжело
+    camera.lookAt(0, 0, 0);
+    renderer.render(scene, camera);
+
+    raf = requestAnimationFrame(render);
   }
 
-  camera.lookAt(0, 0, 0);
-  renderer.render(scene, camera);
+  function start() {
+    if (active) return;
+    active = true;
+    raf = requestAnimationFrame(render);
+  }
 
-  raf = requestAnimationFrame(render);
-}
+  function stop() {
+    active = false;
+    if (raf) cancelAnimationFrame(raf);
+    raf = 0;
+  }
 
-function start() {
-  if (active) return;
-  active = true;
-  raf = requestAnimationFrame(render);
-}
+  const io = new IntersectionObserver((entries) => {
+    const ok = entries.some((e) => e.isIntersecting);
+    if (ok) start();
+    else stop();
+  }, { threshold: 0.05 });
 
-function stop() {
-  active = false;
-  if (raf) cancelAnimationFrame(raf);
-  raf = 0;
-}
-
-// pause when not visible
-const io = new IntersectionObserver((entries) => {
-  const ok = entries.some((e) => e.isIntersecting);
-  if (ok) start();
-  else stop();
-}, { threshold: 0.05 });
-
-io.observe(stage);
+  io.observe(stage);
 })();
