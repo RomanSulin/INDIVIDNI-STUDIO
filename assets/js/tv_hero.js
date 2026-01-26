@@ -244,23 +244,83 @@
     return cands[0] ? cands[0].o : null;
   }
 
+  function getOrientedMetrics(mesh){
+  mesh.updateWorldMatrix(true, false);
+
+  const geom = mesh.geometry;
+  if (!geom) return null;
+  if (!geom.boundingBox) geom.computeBoundingBox();
+
+  const bb = geom.boundingBox;
+
+  const quatW = mesh.getWorldQuaternion(new THREE.Quaternion());
+  const right = new THREE.Vector3(1,0,0).applyQuaternion(quatW).normalize();
+  const up    = new THREE.Vector3(0,1,0).applyQuaternion(quatW).normalize();
+  const norm  = new THREE.Vector3(0,0,1).applyQuaternion(quatW).normalize();
+
+  const corners = [
+    new THREE.Vector3(bb.min.x, bb.min.y, bb.min.z),
+    new THREE.Vector3(bb.min.x, bb.min.y, bb.max.z),
+    new THREE.Vector3(bb.min.x, bb.max.y, bb.min.z),
+    new THREE.Vector3(bb.min.x, bb.max.y, bb.max.z),
+    new THREE.Vector3(bb.max.x, bb.min.y, bb.min.z),
+    new THREE.Vector3(bb.max.x, bb.min.y, bb.max.z),
+    new THREE.Vector3(bb.max.x, bb.max.y, bb.min.z),
+    new THREE.Vector3(bb.max.x, bb.max.y, bb.max.z),
+  ].map(v => mesh.localToWorld(v));
+
+  const rangeOn = (axis) => {
+    let mn = Infinity, mx = -Infinity;
+    for (const p of corners){
+      const d = p.dot(axis);
+      if (d < mn) mn = d;
+      if (d > mx) mx = d;
+    }
+    return [mn, mx];
+  };
+
+  const [r0, r1] = rangeOn(right);
+  const [u0, u1] = rangeOn(up);
+  const [n0, n1] = rangeOn(norm);
+
+  const sizeW = new THREE.Vector3(r1 - r0, u1 - u0, n1 - n0);
+
+  const centerLocal = bb.getCenter(new THREE.Vector3());
+  const centerW = mesh.localToWorld(centerLocal.clone());
+
+  return { centerW, sizeW, quatW };
+}
+  
   function mountScreenAndButton() {
     if (!model) return;
 
     const anchor = findScreenCandidate(model);
 
     let centerW, sizeW, quatW;
-    if (anchor) {
-      const boxW = new THREE.Box3().setFromObject(anchor);
-      centerW = boxW.getCenter(new THREE.Vector3());
-      sizeW   = boxW.getSize(new THREE.Vector3());
-      quatW   = anchor.getWorldQuaternion(new THREE.Quaternion());
-    } else {
-      const boxW = new THREE.Box3().setFromObject(model);
-      centerW = boxW.getCenter(new THREE.Vector3());
-      sizeW   = boxW.getSize(new THREE.Vector3());
-      quatW   = model.getWorldQuaternion(new THREE.Quaternion());
-    }
+   if (anchor && anchor.isMesh && anchor.geometry) {
+  const m = getOrientedMetrics(anchor);
+  if (m) {
+    centerW = m.centerW;
+    sizeW   = m.sizeW;
+    quatW   = m.quatW;
+  } else {
+    const boxW = new THREE.Box3().setFromObject(anchor);
+    centerW = boxW.getCenter(new THREE.Vector3());
+    sizeW   = boxW.getSize(new THREE.Vector3());
+    quatW   = anchor.getWorldQuaternion(new THREE.Quaternion());
+  }
+} else if (anchor) {
+  const boxW = new THREE.Box3().setFromObject(anchor);
+  centerW = boxW.getCenter(new THREE.Vector3());
+  sizeW   = boxW.getSize(new THREE.Vector3());
+  quatW   = anchor.getWorldQuaternion(new THREE.Quaternion());
+} else {
+  const boxW = new THREE.Box3().setFromObject(model);
+  centerW = boxW.getCenter(new THREE.Vector3());
+  sizeW   = boxW.getSize(new THREE.Vector3());
+  quatW   = model.getWorldQuaternion(new THREE.Quaternion());
+}
+
 
     tvRoot.updateMatrixWorld(true);
 
