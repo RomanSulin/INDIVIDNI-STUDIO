@@ -1182,5 +1182,17 @@ body.menu-open .drawer{ display:block; }
   }
 }
 
+/* Mobile fix: убрать щель/полосу и вернуть нормальные отступы подписи */
+@media (max-width: 860px){
+  .works-grid .work-card{
+    gap: 0 !important; /* убираем "полосу" */
+  }
+
+  .works-grid .work-meta{
+    padding: 10px 4px 0 !important; /* чтобы текст не прилипал */
+    margin: 0 !important;
+    text-align: left;
+  }
+}
 
 
