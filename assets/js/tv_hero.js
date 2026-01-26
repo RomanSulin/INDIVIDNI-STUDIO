@@ -464,44 +464,47 @@
     (err) => console.error("[tvhero] FBX load error", err)
   );
 
-  // -------------------------
-  // Render loop (pause when hero offscreen)
-  // -------------------------
-  let active = false;
-  let raf = 0;
+// -------------------------
+// Render loop (pause when hero offscreen)
+// -------------------------
+let active = false;
+let raf = 0;
 
-  function render() {
-    if (!active) return;
+function render() {
+  if (!active) return;
 
-    updateGlow();
+  updateVideoTexture();
+  updateGlow();
 
-    // rotate TV root smoothly
-    tvRoot.rotation.y += (targetRotY - tvRoot.rotation.y) * 0.08;
-    tvRoot.rotation.x += (targetRotX - tvRoot.rotation.x) * 0.08;
+  // smooth rotation (TV only)
+  tvRoot.rotation.y += (targetRotY - tvRoot.rotation.y) * 0.08;
+  tvRoot.rotation.x += (targetRotX - tvRoot.rotation.x) * 0.08;
 
-    camera.lookAt(0, 0, 0);
-    renderer.render(scene, camera);
+  camera.lookAt(0, 0, 0);
+  renderer.render(scene, camera);
 
-    raf = requestAnimationFrame(render);
-  }
+  raf = requestAnimationFrame(render);
+}
 
-  function start() {
-    if (active) return;
-    active = true;
-    raf = requestAnimationFrame(render);
-  }
+function start() {
+  if (active) return;
+  active = true;
+  raf = requestAnimationFrame(render);
+}
 
-  function stop() {
-    active = false;
-    if (raf) cancelAnimationFrame(raf);
-    raf = 0;
-  }
+function stop() {
+  active = false;
+  if (raf) cancelAnimationFrame(raf);
+  raf = 0;
+}
 
-  const io = new IntersectionObserver((entries) => {
-    const ok = entries.some((e) => e.isIntersecting);
-    if (ok) start();
-    else stop();
-  }, { threshold: 0.05 });
+// pause when not visible
+const io = new IntersectionObserver((entries) => {
+  const ok = entries.some((e) => e.isIntersecting);
+  if (ok) start();
+  else stop();
+}, { threshold: 0.05 });
 
-  io.observe(stage);
+io.observe(stage);
+
 })();
