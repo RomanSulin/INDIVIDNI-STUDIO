@@ -457,3 +457,19 @@ body.on-dark .proj-brief{
     box-sizing: border-box;
   }
 }
+
+/* Tenderness: prevent title overflow into next slide (desktop only) */
+@media (min-width: 861px){
+  /* чуть шире интро, чтобы большие заголовки помещались */
+  :root{
+    --introW: clamp(460px, 44vw, 720px);
+  }
+
+  /* если заголовок всё равно длиннее — пусть переносится, а не лезет на фото */
+  .proj-title{
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    hyphens: auto;
+  }
+}
