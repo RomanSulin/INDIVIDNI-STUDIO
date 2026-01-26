@@ -322,7 +322,7 @@ a{ color: inherit; text-decoration:none; }
   transition: transform .2s ease, border-color .2s ease;
 }
 .work-card:hover{ transform: translateY(-2px); border-color: rgba(255,255,255,0.14); }
-.work-media img{ width:100%; height: 260px; object-fit: cover; display:block; }
+/*.work-media img{ width:100%; height: 260px; object-fit: cover; display:block; } */
 .work-meta{ padding: 14px 14px; font-family:"Syne", sans-serif; font-weight:600; }
 
 .works-bottom{ display:flex; justify-content:center; margin-top: 14px; }
@@ -1115,9 +1115,17 @@ body.menu-open .drawer{ display:block; }
     gap: 24px;
   }
 
-  /* высота превью масштабируется с экраном */
+  /* превью строго 16:9 */
+  .work-media{
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+  }
   .work-media img{
-    height: clamp(220px, 22vw, 380px);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center bottom; /* низ не режем */
+    display: block;
   }
 
   /* заголовок и кнопка не липнут к краям */
@@ -1128,3 +1136,4 @@ body.menu-open .drawer{ display:block; }
     margin-right: auto;
   }
 }
+
