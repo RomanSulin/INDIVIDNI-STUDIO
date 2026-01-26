@@ -1100,22 +1100,32 @@ body.menu-open .drawer{ display:block; }
 
 /* ================================ PROJECTS – FULL WIDTH (DESKTOP) =========================================================================================================== */
 
-@media (min-width: 1024px) {
-  /* контейнер секции Projects растягиваем */
+/* ================================
+   PROJECTS (DESKTOP): FULL WIDTH,
+   CARDS SHRINK (NO RE-FLOW),
+   THUMBS 16:9
+================================ */
+@media (min-width: 1024px){
+  /* full width + safe paddings */
   .works .container{
     width: 100%;
     max-width: none;
-    padding-left: 48px;
-    padding-right: 48px;
+    padding-left: clamp(24px, 3.2vw, 64px);
+    padding-right: clamp(24px, 3.2vw, 64px);
   }
 
-  /* сетка карточек */
+  /* fixed 4 columns: cards shrink, don't jump rows */
   .works-grid{
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(14px, 1.6vw, 26px);
+  }
+  .works-grid .work-card{
+    grid-column: auto;
+    min-width: 0;
   }
 
-  /* превью строго 16:9 */
+  /* thumbs strict 16:9 */
   .work-media{
     aspect-ratio: 16 / 9;
     overflow: hidden;
@@ -1124,11 +1134,11 @@ body.menu-open .drawer{ display:block; }
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center bottom; /* низ не режем */
+    object-position: center bottom;
     display: block;
   }
 
-  /* заголовок и кнопка не липнут к краям */
+  /* keep header/button centered */
   .works-title,
   .works-bottom{
     max-width: 1440px;
@@ -1136,4 +1146,5 @@ body.menu-open .drawer{ display:block; }
     margin-right: auto;
   }
 }
+
 
