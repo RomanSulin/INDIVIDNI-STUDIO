@@ -1,0 +1,459 @@
+/* Project page: GAC GH4 — CLEAN FINAL */
+
+:root{
+  --H: 74px;          /* высота top */
+  --padX: 28px;       /* горизонтальные паддинги трека */
+  --pt: 10px;         /* верхний паддинг трека */
+  --pb: 26px;         /* нижний паддинг трека */
+  --gap: 16px;
+
+  --slideW: 86vw;
+  --slideWlg: 78vw;
+
+  --introW: min(40vw, 500px);     /* чтобы медиа было ближе к тексту */
+  --endW: min(28vw, 420px);       /* узкая панель next */
+}
+
+body.project-page{
+  margin: 0;
+  background: #fff;
+  color: #0b0b0f;
+  overflow: hidden;
+}
+body.project-page a{ color: inherit; }
+
+/* slide-in, но финально transform: none (важно для z-index fixed кнопки) */
+.proj-shell{
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  animation: projEnter 560ms cubic-bezier(.2,.8,.2,1) forwards;
+}
+@keyframes projEnter{ to{ transform: none; } }
+
+/* TOP фиксированный, его может перекрывать end-панель */
+.proj-top{
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--H);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px var(--padX);
+  z-index: 80;
+  background: transparent;
+}
+
+.proj-back{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+}
+
+.proj-nav{
+  margin-left: 6px;
+  font-size: 12px;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+  opacity: .55;
+}
+
+/* К БРИФУ — ВСЕГДА поверх всего (включая чёрный) */
+.proj-brief{
+  position: fixed;
+  top: 18px;
+  right: var(--padX);
+  z-index: 2147483647;
+
+  height: 44px;
+  padding: 0 18px;
+  border-radius: 999px;
+
+  background: #fff;
+  color: #0b0b0f;
+  border: 1px solid rgba(0,0,0,0.18);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+/* когда end виден — можно менять бордер */
+body.on-dark .proj-brief{ border: 0; }
+
+/* TRACK */
+.proj-track{
+  flex: 1;
+  display: flex;
+  gap: var(--gap);
+  padding: var(--pt) var(--padX) var(--pb);
+
+  overflow-x: auto;
+  overflow-y: visible;     /* чтобы end мог перекрывать top */
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: auto;   /* без snap */
+
+  scrollbar-width: thin;
+  scrollbar-color: #000 transparent;
+}
+.proj-track::-webkit-scrollbar{ height: 4px; }
+.proj-track::-webkit-scrollbar-thumb{ background:#000; border-radius:999px; }
+.proj-track::-webkit-scrollbar-track{ background:transparent; }
+
+/* Slides */
+.proj-slide{
+  flex: 0 0 var(--slideW);
+  max-width: var(--slideW);
+  height: 100%;
+  display: flex;
+  box-sizing: border-box;
+
+  /* выравниваем всё по одной верхней линии (как у фото) */
+  padding-top: var(--H);
+  align-items: flex-start;
+}
+@media (min-width: 1100px){
+  .proj-slide{ flex-basis: var(--slideWlg); max-width: var(--slideWlg); }
+}
+
+/* INTRO */
+.proj-slide.proj-intro{
+  flex-basis: var(--introW);
+  max-width: var(--introW);
+}
+.proj-intro{ width: 100%; }
+.proj-intro__left{
+  padding-left: 16px; /* “чуть правее” */
+  padding-top: 0;     /* верх по линии фото */
+}
+
+.proj-title{
+  margin: 0 0 18px;
+  font-size: clamp(46px, 6.2vw, 104px);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+.proj-text{
+  margin: 0 0 18px;
+  max-width: 56ch;
+  font-size: 14px;
+  line-height: 1.6;
+  opacity: .9;
+}
+.proj-cta{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  padding: 0 22px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.20);
+  background: rgba(255,255,255,0.90);
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+  margin-top: 16px;
+}
+
+.proj-meta{
+  margin-top: 26px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  font-size: 13px;
+}
+.proj-meta h3{
+  margin: 0 0 10px;
+  font-size: 12px;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+  opacity: .55;
+}
+.proj-meta ul{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+/* Media */
+.proj-media{
+  width: 100%;
+  display: block;     /* без центрирования */
+}
+.media-169{
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 32px;
+  overflow: hidden;
+  background: transparent;
+}
+.media-169 img,
+.media-169 video{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* END slide: узкий, но по высоте до низа и перекрывает top */
+.proj-slide--end{
+  flex-basis: var(--endW);
+  max-width: var(--endW);
+  padding-top: 0 !important;
+
+  position: relative;
+  z-index: 120; /* выше top */
+
+  /* убрать белый зазор справа из-за padding трека */
+  margin-right: calc(var(--padX) * -1);
+
+  /* растянуть до низа, компенсируя паддинги трека */
+  margin-top: calc(-1 * var(--pt));
+  margin-bottom: calc(-1 * var(--pb));
+  height: calc(100% + var(--pt) + var(--pb));
+}
+.proj-end{
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  background: #0b0b0f;
+  color: rgba(255,255,255,0.92);
+  padding: 26px;
+  display: grid;
+  align-content: end;
+  gap: 14px;
+}
+.proj-end__actions a{
+  height: 46px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+
+  background: #fff;
+  color: #0b0b0f;   /* ВАЖНО: чёрный текст */
+  border: 0;
+}
+.proj-end__actions a{
+  min-width: 370px !important;   /* попробуй 260–360 */
+  padding: 0 28px !important;    /* больше воздуха по бокам */
+}
+
+/* убрать подсказку */
+.proj-hint{ display:none !important; }
+
+/* Mobile */
+@media (max-width: 900px){
+  :root{
+    --padX: 16px;
+    --pb: 18px;
+    --slideW: 92vw;
+    --slideWlg: 92vw;
+    --introW: 92vw;
+    --endW: 92vw;
+  }
+  .proj-top{ padding: 16px var(--padX); }
+  .proj-brief{ top: 16px; right: var(--padX); }
+  .proj-intro__left{ padding-left: 0; }
+}
+
+/* ===== FIX: button colors (force) ===== */
+
+/* bottom button: white bg + BLACK text */
+.proj-end__actions a{
+  background:#fff !important;
+  color:#0b0b0f !important;
+  border:0 !important;
+}
+.proj-end__actions a *{
+  color: inherit !important;
+}
+
+/* just in case: brief styles */
+.proj-brief{
+  background:#fff !important;
+  color:#0b0b0f !important;
+  border:1px solid rgba(0,0,0,0.18) !important;
+}
+body.on-dark .proj-brief{
+  background:#fff !important;
+  color:#0b0b0f !important;
+  border:0 !important;
+}
+.proj-end{
+  padding-bottom: 26px !important;
+}
+.proj-end__box,            /* если есть такой контейнер */
+.proj-end__actions{
+  transform: translateY(-18px); /* подними на 18px, меняй число */
+}
+
+
+/* ===== MOBILE OVERRIDES (<= 900px): vertical scroll, удобный layout ======================================================================================================================== */
+@media (max-width: 900px){
+
+  /* возвращаем нормальный вертикальный скролл */
+  body.project-page{
+    overflow: auto !important;
+  }
+
+  /* убираем "slide-in" анимацию на мобилке (меньше глюков/рывков) */
+  .proj-shell{
+    height: auto !important;
+    min-height: 100vh !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  /* шапка становится sticky (удобно), с белой подложкой */
+  .proj-top{
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1000 !important;
+    height: auto !important;
+    padding: 14px 16px !important;
+    background: rgba(255,255,255,0.92) !important;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+
+  /* кнопку "К БРИФУ" на мобилке делаем обычной (внутри шапки), чтобы не мешала контенту */
+  .proj-brief{
+    position: static !important;
+    margin-left: auto !important;
+    top: auto !important;
+    right: auto !important;
+    z-index: auto !important;
+  }
+
+  /* трек превращаем в обычную колонку */
+  .proj-track{
+    flex: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 18px !important;
+    padding: 18px 16px 24px !important;
+    overflow: visible !important;
+  }
+
+  /* каждый слайд становится обычной секцией */
+  .proj-slide{
+    flex: none !important;
+    max-width: none !important;
+    width: 100% !important;
+    height: auto !important;
+    padding-top: 0 !important;
+    display: block !important;
+  }
+
+  /* интро на всю ширину */
+  .proj-slide.proj-intro{
+    width: 100% !important;
+    max-width: none !important;
+  }
+  .proj-intro__left{
+    padding-left: 0 !important;
+  }
+
+  /* медиа чуть менее “пухлые” по радиусу на мобилке */
+  .media-169{
+    border-radius: 22px !important;
+  }
+
+  /* финальный чёрный блок как отдельный “финальный экран” */
+  .proj-slide--end{
+    position: static !important;
+    z-index: auto !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .proj-end{
+    min-height: 70vh;
+    border-radius: 22px !important; /* можно 0, если хочешь без скруглений и на мобилке */
+  }
+}
+
+/* ===== Mobile fix for end button width + spacing ============================================================================================================================= */
+@media (max-width: 900px){
+  /* Кнопка должна вписываться в блок */
+  .proj-end__actions a{
+    min-width: 0 !important;     /* убираем 370px */
+    width: 100% !important;      /* растягиваем по ширине блока */
+    max-width: 100% !important;
+    box-sizing: border-box;
+    padding: 0 18px !important;
+    white-space: normal;         /* если длинный текст — перенос */
+    text-align: center;
+  }
+
+  /* Чтобы "Скоро" не налезало на кнопку */
+  .proj-end__title{
+    margin-bottom: 12px;
+  }
+
+  .proj-end__actions{
+    transform: none !important;  /* отменяем translateY(-18px) на мобилке */
+  }
+}
+@media (max-width: 900px){
+  .proj-brief{ display: none !important; }
+}
+
+@media (min-width: 901px){
+  /* убираем подъём кнопки на ПК, чтобы текст не налезал */
+  .proj-end__actions{ transform: none !important; }
+
+  /* чуть поднимаем весь блок контента выше от низа */
+  .proj-end{ padding-bottom: 54px !important; }
+
+  /* добавим воздух между "Скоро" и кнопкой */
+  .proj-end__title{ margin-bottom: 14px; }
+}
+
+@media (max-width: 900px){
+  /* отступы для вставленного фото в интро */
+  .proj-intro__left .media-169{
+    margin: 16px 0 14px;
+  }
+
+  /* второй блок текста под фото */
+  .proj-second{
+    margin-top: 8px;
+  }
+
+  /* чтобы Services/Навигация не были в 2 колонки на телефоне */
+  .proj-meta{
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+    margin-top: 14px !important;
+  }
+}
+
+@media (max-width: 900px){
+  .proj-cta{
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    box-sizing: border-box;
+  }
+}
