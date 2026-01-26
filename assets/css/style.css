@@ -1167,5 +1167,20 @@ body.menu-open .drawer{ display:block; }
   }
 }
 
+/* FIX: убрать "полосу" (фон карточки) и дать нормальный отступ подписи — только ПК */
+@media (min-width: 1024px){
+  .works-grid .work-card{
+    background: transparent !important;
+    border: 0 !important;
+    gap: 0 !important;            /* убираем щель между медиа и текстом */
+    transform: none !important;
+  }
+
+  .works-grid .work-meta{
+    padding: 12px 6px 0 !important; /* чтобы текст не прилипал */
+    margin: 0 !important;
+  }
+}
+
 
 
