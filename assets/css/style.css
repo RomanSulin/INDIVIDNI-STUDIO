@@ -1098,3 +1098,33 @@ body.menu-open .drawer{ display:block; }
   color: #ffffff !important;
 }
 
+/* ================================ PROJECTS – FULL WIDTH (DESKTOP) =========================================================================================================== */
+
+@media (min-width: 1024px) {
+  /* контейнер секции Projects растягиваем */
+  .works .container{
+    width: 100%;
+    max-width: none;
+    padding-left: 48px;
+    padding-right: 48px;
+  }
+
+  /* сетка карточек */
+  .works-grid{
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+
+  /* высота превью масштабируется с экраном */
+  .work-media img{
+    height: clamp(220px, 22vw, 380px);
+  }
+
+  /* заголовок и кнопка не липнут к краям */
+  .works-title,
+  .works-bottom{
+    max-width: 1440px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
