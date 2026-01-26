@@ -840,7 +840,7 @@ body.menu-open .drawer{ display:block; }
 
 /* Desktop pattern: 3 cards row, then 2 cards row (repeat 3-2) */
 /* Desktop: fixed grid, cards only shrink (no reflow) */
-@media (min-width: 861px){
+/* @media (min-width: 861px){
   .works .container{
     width: 100%;
     max-width: none;
@@ -858,7 +858,7 @@ body.menu-open .drawer{ display:block; }
     grid-column: auto;
     min-width: 0; /* важно для Mac/Safari, чтобы не распирало */
   }
-}
+}*/
 
 /* Card: no strip, title under the image */
 .work-card{
@@ -1101,11 +1101,10 @@ body.menu-open .drawer{ display:block; }
 }
 
 /* ================================ PROJECTS – FULL WIDTH (DESKTOP) =========================================================================================================== */
-
 /* ================================
-   PROJECTS (DESKTOP): FULL WIDTH,
-   CARDS SHRINK (NO RE-FLOW),
-   THUMBS 16:9
+   PROJECTS (DESKTOP): 3 cards row, then 2 cards row (repeat 3-2)
+   - stable on resize
+   - mobile untouched
 ================================ */
 @media (min-width: 1024px){
   /* full width + safe paddings */
@@ -1116,15 +1115,23 @@ body.menu-open .drawer{ display:block; }
     padding-right: clamp(24px, 3.2vw, 64px);
   }
 
-  /* fixed 4 columns: cards shrink, don't jump rows */
+  /* 12-col grid for stable 3-2 pattern */
   .works-grid{
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(12, minmax(0, 1fr));
     gap: clamp(14px, 1.6vw, 26px);
   }
+
+  /* default: 3 cards per row */
   .works-grid .work-card{
-    grid-column: auto;
-    min-width: 0;
+    grid-column: span 4;
+    min-width: 0; /* критично для Safari/Mac, чтобы не "уезжало" */
+  }
+
+  /* every 4th and 5th card in each group of 5 -> make row of 2 cards */
+  .works-grid .work-card:nth-child(5n + 4),
+  .works-grid .work-card:nth-child(5n + 5){
+    grid-column: span 6;
   }
 
   /* thumbs strict 16:9 */
@@ -1148,5 +1155,7 @@ body.menu-open .drawer{ display:block; }
     margin-right: auto;
   }
 }
+
+
 
 
