@@ -104,32 +104,29 @@ class GradientBackground {
     this.mesh = null;
 
     this.uniforms = {
-      uTime: { value: 0 },
-      uResolution: { value: new THREE.Vector2(1, 1) },
+  uTime: { value: 0 },
+  uResolution: { value: new THREE.Vector2(1, 1) },
 
-      // цвета (можешь потом менять)
-      // colors from your screenshot
-      uColor1: { value: new THREE.Vector3(0, 0, 0) }, // #000000
-      uColor2: { value: new THREE.Vector3(0, 0, 0) }, // #000000
-      uColor3: { value: new THREE.Vector3(0, 0, 0) }, // #000000
-      uColor4: { value: new THREE.Vector3(0.1647, 0.1569, 0.1569) }, // #2A2828
-      uColor5: { value: new THREE.Vector3(0, 0, 0) }, // #000000
-      uColor6: { value: new THREE.Vector3(0, 0, 0) }, // #000000
+  uColor1: { value: new THREE.Vector3(0, 0, 0) },
+  uColor2: { value: new THREE.Vector3(0.02, 0.02, 0.03) }, // лёгкий серый, не синий
+  uColor3: { value: new THREE.Vector3(0, 0, 0) },
+  uColor4: { value: new THREE.Vector3(0.1647, 0.1569, 0.1569) }, // #2A2828
+  uColor5: { value: new THREE.Vector3(0, 0, 0) },
+  uColor6: { value: new THREE.Vector3(0, 0, 0) },
 
-// фон-микс в шейдере — тоже лучше привести к тёмному
-      uDarkNavy: { value: new THREE.Vector3(0, 0, 0) }, // #000000
+  // ВАЖНО: один раз и не синий
+  uDarkNavy: { value: new THREE.Vector3(0.02, 0.02, 0.03) }, // ≈ #050507
 
-      uSpeed: { value: 1.5 },
-      uIntensity: { value: 1.8 },
-      uTouchTexture: { value: null },
-      uGrainIntensity: { value: 0.08 },
+  uSpeed: { value: 1.5 },
+  uIntensity: { value: 1.6 },       // можно 1.4–1.8
+  uTouchTexture: { value: null },
+  uGrainIntensity: { value: 0.08 },
 
-      uDarkNavy: { value: new THREE.Vector3(0.039, 0.055, 0.153) },
-      uGradientSize: { value: 0.45 },
-      uGradientCount: { value: 12.0 },
-      uColor1Weight: { value: 0.5 },
-      uColor2Weight: { value: 1.8 }
-    };
+  uGradientSize: { value: 0.45 },
+  uGradientCount: { value: 12.0 },
+  uColor1Weight: { value: 0.5 },
+  uColor2Weight: { value: 1.8 }
+};
   }
 
   init() {
@@ -271,7 +268,7 @@ class LiquidApp {
     });
 
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x0a0e27);
+    this.scene.background = new THREE.Color(0x050507);
 
     this.camera = new THREE.PerspectiveCamera(45, 1, 0.1, 10000);
     this.camera.position.z = 50;
