@@ -474,14 +474,16 @@
     updateGlow();
 
     // smooth rotation
-    tvRoot.rotation.y += (targetRotY - tvRoot.rotation.y) * 0.08;
-    tvRoot.rotation.x += (targetRotX - tvRoot.rotation.x) * 0.08;
+tvRoot.rotation.y += (targetRotY - tvRoot.rotation.y) * 0.08;
+tvRoot.rotation.x += (targetRotX - tvRoot.rotation.x) * 0.08;
 
-    camera.lookAt(0, 0, 0);
-    renderer.render(scene, camera);
+// чтобы шоурил и кнопка следовали экрану при вращении
+if (!isMobile && model) {
+  if ((poseTick++ % 2) === 0) mountScreenAndButton(); // можно %3 если хочется легче
+}
 
-    raf = requestAnimationFrame(render);
-  }
+renderer.render(scene, camera);
+raf = requestAnimationFrame(render);
 
   function start() {
     if (active) return;
