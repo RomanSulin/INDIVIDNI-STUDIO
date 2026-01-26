@@ -1209,3 +1209,21 @@ body.menu-open .drawer{ display:block; }
     margin: 0 !important;
   }
 }
+
+/* Projects: НЕ клипать подпись по радиусу карточки (и на ПК, и на мобилке) */
+.works .works-grid .work-card{
+  overflow: visible !important;
+  border-radius: 0 !important;
+}
+
+/* нормальные отступы у подписи (у тебя выше стоит padding:0 !important;) */
+.works .works-grid .work-meta{
+  padding: 10px 0 0 !important;
+  margin: 0 !important;
+}
+
+@media (min-width: 861px){
+  .works .works-grid .work-meta{
+    padding: 12px 0 0 !important;
+  }
+}
