@@ -220,19 +220,26 @@
   }
 
   function setPlaneSize(mesh, w, h) {
-    const pos = mesh.position.clone();
-    const quat = mesh.quaternion.clone();
-    mesh.geometry.dispose();
-    mesh.geometry = new THREE.PlaneGeometry(w, h);
-    mesh.position.copy(pos);
-    mesh.quaternion.copy(quat);
-  }
+  const g = mesh.geometry;
+  const curW = g?.parameters?.width;
+  const curH = g?.parameters?.height;
+
+  if (curW && curH && Math.abs(curW - w) < 1e-4 && Math.abs(curH - h) < 1e-4) return;
+
+  const pos = mesh.position.clone();
+  const quat = mesh.quaternion.clone();
+
+  mesh.geometry?.dispose?.();
+  mesh.geometry = new THREE.PlaneGeometry(w, h);
+  mesh.position.copy(pos);
+  mesh.quaternion.copy(quat);
+}
 
   function findScreenCandidate(root) {
   root.updateWorldMatrix(true, true);
 
   let best = null;
-  let bestArea = 0;
+  let bestScore = -Infinity;
 
   const size = new THREE.Vector3();
   const scl  = new THREE.Vector3();
@@ -241,25 +248,35 @@
     if (!o.isMesh || !o.geometry) return;
 
     const name = (o.name || "").toLowerCase();
-    if (
-      !name.includes("screen") &&
-      !name.includes("display") &&
-      !name.includes("monitor") &&
-      !name.includes("glass")
-    ) return;
+    const isScreenLike =
+      name.includes("screen") || name.includes("display") || name.includes("monitor") || name.includes("glass");
+
+    if (!isScreenLike) return;
 
     if (!o.geometry.boundingBox) o.geometry.computeBoundingBox();
     o.geometry.boundingBox.getSize(size);
-
     o.getWorldScale(scl);
 
-    // стабильная площадь, НЕ зависит от поворота
+    // площадь в "своих" осях + scale (НЕ зависит от поворота)
     const area = Math.abs((size.x * scl.x) * (size.y * scl.y));
-    if (area > 0.0005 && area > bestArea) {
-      bestArea = area;
+
+    // приоритет: screen/display выше, glass ниже
+    const bonus =
+      (name.includes("screen") ? 3 : 0) +
+      (name.includes("display") ? 2 : 0) +
+      (name.includes("monitor") ? 1 : 0) +
+      (name.includes("glass") ? -1 : 0);
+
+    const score = area * 1000 + bonus; // area доминирует, bonus решает спорные случаи
+
+    if (area > 0.0005 && score > bestScore) {
+      bestScore = score;
       best = o;
     }
   });
+
+  // маленький дебаг (можешь убрать потом)
+  if (best) console.log("[tvhero] screen anchor:", best.name);
 
   return best;
 }
@@ -520,7 +537,7 @@
       });
 
       tvRoot.add(model);
-
+      screenAnchor = findScreenCandidate(model);
       // camera fit
       const box = new THREE.Box3().setFromObject(tvRoot);
       const size = box.getSize(new THREE.Vector3());
