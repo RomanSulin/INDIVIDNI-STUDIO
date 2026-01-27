@@ -50,14 +50,14 @@ body.project-page a{ color: inherit; }
   align-items: center;
   gap: 10px;
   text-decoration: none;
-  font-size: 12px;
+  font-size: 15px;
   letter-spacing: .10em;
   text-transform: uppercase;
 }
 
 .proj-nav{
   margin-left: 6px;
-  font-size: 12px;
+  font-size: 15px;
   letter-spacing: .10em;
   text-transform: uppercase;
   opacity: .55;
@@ -84,7 +84,7 @@ body.project-page a{ color: inherit; }
   line-height: 1;
 
   text-decoration: none;
-  font-size: 12px;
+  font-size: 15px;
   letter-spacing: .08em;
   text-transform: uppercase;
 }
@@ -139,14 +139,14 @@ body.on-dark .proj-brief{ border: 0; }
 
 .proj-title{
   margin: 0 0 18px;
-  font-size: clamp(46px, 6.2vw, 104px);
+  font-size: clamp(46px, 8.2vw, 104px);
   line-height: 0.9;
   letter-spacing: -0.02em;
 }
 .proj-text{
   margin: 0 0 18px;
   max-width: 56ch;
-  font-size: 14px;
+  font-size: 24px;
   line-height: 1.6;
   opacity: .9;
 }
@@ -171,11 +171,11 @@ body.on-dark .proj-brief{ border: 0; }
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 22px;
-  font-size: 13px;
+  font-size: 24px;
 }
 .proj-meta h3{
   margin: 0 0 10px;
-  font-size: 12px;
+  font-size: 20px;
   letter-spacing: .10em;
   text-transform: uppercase;
   opacity: .55;
@@ -243,9 +243,10 @@ body.on-dark .proj-brief{ border: 0; }
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  font-size: 12px;
+  font-size: 18px;
   letter-spacing: .10em;
   text-transform: uppercase;
+  font-weight: 600;
 
   background: #fff;
   color: #0b0b0f;   /* ВАЖНО: чёрный текст */
