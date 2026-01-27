@@ -478,7 +478,7 @@
       tvRoot.scale.setScalar(isMobile ? 1.05 : 1.15);
 
       // build button pinned by UV
-      buildSoundButtonOnScreen(fbx);
+      // buildSoundButtonOnScreen(fbx);
 
       // play video
       video.play().catch(() => {});
