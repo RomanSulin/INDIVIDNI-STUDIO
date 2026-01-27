@@ -111,3 +111,19 @@
   overflow: visible; /* чтобы ничего не резалось по контейнеру */
 }
 
+/* === Stop global liquid-hero negative offset for this page === */
+.hero-tv.liquid-hero{
+  margin-top: 0 !important;
+  height: 100svh !important;
+}
+
+/* gap from header: tweak numbers here */
+.hero-tv{ --heroGap: 140px; }              /* mobile default */
+@media (min-width: 861px){ .hero-tv{ --heroGap: 200px; } }   /* desktop */
+@media (min-width: 1400px){ .hero-tv{ --heroGap: 240px; } }  /* big screens */
+@media (min-width: 1900px){ .hero-tv{ --heroGap: 280px; } }  /* very big */
+
+.hero-tv__inner{
+  /* header height + gap */
+  padding-top: calc(var(--headerH, 96px) + var(--heroGap)) !important;
+}
