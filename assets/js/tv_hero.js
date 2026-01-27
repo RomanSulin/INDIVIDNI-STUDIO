@@ -2,39 +2,36 @@
 
 (() => {
   const stage = document.querySelector("[data-tv-hero]");
-  if (!stage) return console.error("[tvhero] [data-tv-hero] not found");
+  if (!stage) return console.error("[tvhero] stage not found");
 
   const canvas = stage.querySelector("#tvHeroCanvas");
   const video  = stage.querySelector("#tvHeroVideo");
-  if (!canvas || !video) return console.error("[tvhero] missing canvas/video");
+  if (!canvas || !video) return console.error("[tvhero] canvas/video not found");
 
   if (!window.THREE || !THREE.FBXLoader) {
-    return console.error("[tvhero] missing libs", {
-      THREE: !!window.THREE,
-      FBXLoader: !!(window.THREE && THREE.FBXLoader)
-    });
+    return console.error("[tvhero] missing THREE / FBXLoader");
   }
 
   const isMobile = window.matchMedia("(max-width: 860px)").matches;
 
   // -------------------------
-  // Video
+  // VIDEO
   // -------------------------
   video.loop = true;
-  video.playsInline = true;
   video.muted = true;
+  video.playsInline = true;
   video.preload = "auto";
 
   let videoAR = 16 / 9;
 
   // -------------------------
-  // Renderer / scene (transparent over Liquid)
+  // RENDERER / SCENE
   // -------------------------
   const renderer = new THREE.WebGLRenderer({
     canvas,
     antialias: true,
     alpha: true,
-    powerPreference: "high-performance"
+    powerPreference: "high-performance",
   });
   renderer.setClearColor(0x000000, 0);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -44,12 +41,9 @@
   const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 200);
 
   scene.add(new THREE.AmbientLight(0xffffff, 0.35));
-  const key = new THREE.DirectionalLight(0xffffff, 1.15);
+  const key = new THREE.DirectionalLight(0xffffff, 1.1);
   key.position.set(3, 3, 2);
   scene.add(key);
-  const fill = new THREE.DirectionalLight(0xffffff, 0.35);
-  fill.position.set(-3, 1.2, -2.5);
-  scene.add(fill);
 
   function resize() {
     const r = stage.getBoundingClientRect();
@@ -62,31 +56,50 @@
   window.addEventListener("resize", resize, { passive: true });
   resize();
 
-  const toggleSound = () => {
-    video.muted = !video.muted;
-    video.play().catch(() => {});
-  };
+  // -------------------------
+  // TV ROOT (rotate this)
+  // -------------------------
+  const tvRoot = new THREE.Group();
+  scene.add(tvRoot);
+
+  // cursor rotation (desktop only)
+  let targetRotY = 0;
+  let targetRotX = 0;
+  let hoveringBtn = false;
+
+  if (!isMobile) {
+    canvas.style.cursor = "grab";
+    canvas.addEventListener("pointermove", (e) => {
+      if (hoveringBtn) return;
+      const r = canvas.getBoundingClientRect();
+      const nx = ((e.clientX - r.left) / r.width) * 2 - 1;
+      const ny = ((e.clientY - r.top) / r.height) * 2 - 1;
+      targetRotY = nx * 0.45;
+      targetRotX = -ny * 0.12;
+    });
+    canvas.addEventListener("pointerleave", () => {
+      targetRotY = 0;
+      targetRotX = 0;
+    });
+  }
 
   // -------------------------
-  // LoadingManager (texture remap)
+  // TEXTURES / LOADING MANAGER
   // -------------------------
   const manager = new THREE.LoadingManager();
   manager.setURLModifier((url) => {
     const file = decodeURIComponent(url).split(/[\\/]/).pop();
     const f = (file || "").toLowerCase();
-
     const remap = {
       "retro_tv 1 basecolor.png": "./assets/models/retro_tv/textures/basecolor.png",
       "retro_tv 1 normal.png": "./assets/models/retro_tv/textures/normal.png",
       "retro_tv 1 roughness.png": "./assets/models/retro_tv/textures/roughness.png",
       "retro_tv 1 metallic.png": "./assets/models/retro_tv/textures/metallic.png",
-
       "retro_tv_1_basecolor.png": "./assets/models/retro_tv/textures/basecolor.png",
       "retro_tv_1_normal.png": "./assets/models/retro_tv/textures/normal.png",
       "retro_tv_1_roughness.png": "./assets/models/retro_tv/textures/roughness.png",
-      "retro_tv_1_metallic.png": "./assets/models/retro_tv/textures/metallic.png"
+      "retro_tv_1_metallic.png": "./assets/models/retro_tv/textures/metallic.png",
     };
-
     return remap[f] || url;
   });
 
@@ -96,39 +109,10 @@
   const normal = texLoader.load("./assets/models/retro_tv/textures/normal.png");
   const rough  = texLoader.load("./assets/models/retro_tv/textures/roughness.png");
   const metal  = texLoader.load("./assets/models/retro_tv/textures/metallic.png");
+
   base.encoding = THREE.sRGBEncoding;
 
-  const bodyMat = new THREE.MeshStandardMaterial({
-    map: base,
-    normalMap: normal,
-    roughnessMap: rough,
-    metalnessMap: metal,
-    roughness: 0.9,
-    metalness: 0.08,
-    color: 0xffffff
-  });
-
-  // Sound button texture
-  const soundTex = texLoader.load("./assets/png/sound.png");
-  soundTex.encoding = THREE.sRGBEncoding;
-
-  const btnMat = new THREE.MeshBasicMaterial({
-    map: soundTex,
-    transparent: true,
-    alphaTest: 0.25,
-    side: THREE.DoubleSide
-  });
-  btnMat.depthTest = false;
-  btnMat.depthWrite = false;
-  btnMat.toneMapped = false;
-
-  // -------------------------
-  // TV root
-  // -------------------------
-  const tvRoot = new THREE.Group();
-  scene.add(tvRoot);
-
-  // Video texture (native)
+  // VideoTexture (обновляется сама — никаких updateVideoTexture не нужно)
   const videoTex = new THREE.VideoTexture(video);
   videoTex.encoding = THREE.sRGBEncoding;
   videoTex.minFilter = THREE.LinearFilter;
@@ -136,218 +120,257 @@
   videoTex.generateMipmaps = false;
   videoTex.wrapS = videoTex.wrapT = THREE.ClampToEdgeWrapping;
 
-  function applyCoverCrop(planeW, planeH) {
-    const planeAR = planeW / planeH;
-    const ar = videoAR || (16 / 9);
+  // -------------------------
+  // SCREEN UV RECT (из твоего basecolor атласа)
+  // -------------------------
+  // px bbox: x[36..432], y[524..1036] on 2048x2048
+  // converted to UV (three.js vUv: origin bottom-left)
+  const U0 = 0.017578125;
+  const U1 = 0.2109375;
+  const V0 = 0.494140625;
+  const V1 = 0.744140625;
 
-    if (ar > planeAR) {
-      const rx = planeAR / ar;
-      videoTex.repeat.set(rx, 1);
-      videoTex.offset.set((1 - rx) * 0.5, 0);
-    } else {
-      const ry = ar / planeAR;
-      videoTex.repeat.set(1, ry);
-      videoTex.offset.set(0, (1 - ry) * 0.5);
-    }
-    videoTex.needsUpdate = true;
-  }
+  // -------------------------
+  // MATERIAL: base + lighting, but screen UV gets video
+  // -------------------------
+  const bodyMat = new THREE.MeshStandardMaterial({
+    map: base,
+    normalMap: normal,
+    roughnessMap: rough,
+    metalnessMap: metal,
+    roughness: 0.9,
+    metalness: 0.08,
+    color: 0xffffff,
+  });
 
-  // Update crop when video metadata is ready
+  bodyMat.onBeforeCompile = (shader) => {
+    shader.uniforms.uVideoMap = { value: videoTex };
+    shader.uniforms.uVideoAR  = { value: videoAR };
+    shader.uniforms.uRect     = { value: new THREE.Vector4(U0, V0, U1, V1) };
+
+    // keep reference for later updates
+    bodyMat.userData.shader = shader;
+
+    // inject uniforms + helper
+    shader.fragmentShader = shader.fragmentShader.replace(
+      "#include <common>",
+      `
+      #include <common>
+      uniform sampler2D uVideoMap;
+      uniform float uVideoAR;
+      uniform vec4 uRect; // (u0, v0, u1, v1)
+
+      float rectMask(vec2 uv, vec4 r){
+        float edge = 0.003; // мягкая граница
+        float mx = smoothstep(r.x, r.x + edge, uv.x) * smoothstep(r.z, r.z - edge, uv.x);
+        float my = smoothstep(r.y, r.y + edge, uv.y) * smoothstep(r.w, r.w - edge, uv.y);
+        return mx * my;
+      }
+
+      vec2 coverUV(vec2 uv01, float srcAR, float dstAR){
+        vec2 uv = uv01;
+        if (srcAR > dstAR) {
+          float s = dstAR / srcAR;
+          uv.x = (uv.x - 0.5) * s + 0.5;
+        } else {
+          float s = srcAR / dstAR;
+          uv.y = (uv.y - 0.5) * s + 0.5;
+        }
+        return uv;
+      }
+      `
+    );
+
+    // after base map is applied, mix in video ONLY in screen rect
+    shader.fragmentShader = shader.fragmentShader.replace(
+      "#include <map_fragment>",
+      `
+      #include <map_fragment>
+
+      float m = rectMask(vUv, uRect);
+      if (m > 0.0001) {
+        vec2 rectSize = vec2(uRect.z - uRect.x, uRect.w - uRect.y);
+        float screenAR = rectSize.x / rectSize.y;
+
+        vec2 uv01 = (vUv - uRect.xy) / rectSize;
+        uv01 = coverUV(uv01, uVideoAR, screenAR);
+
+        vec3 vid = texture2D(uVideoMap, uv01).rgb;
+
+        // заменяем цвет в зоне экрана
+        diffuseColor.rgb = mix(diffuseColor.rgb, vid, m);
+
+        // чуть эмиссии, чтобы экран выглядел “живым”
+        // (не лезем в totalEmissiveRadiance, чтобы не зависеть от версии чанков)
+        diffuseColor.rgb += vid * (m * 0.10);
+      }
+      `
+    );
+  };
+
+  // update videoAR when metadata ready
   video.addEventListener("loadedmetadata", () => {
     if (video.videoWidth && video.videoHeight) {
       videoAR = video.videoWidth / video.videoHeight;
-      if (screenPlane) {
-        const g = screenPlane.geometry;
-        const w = g?.parameters?.width || 1;
-        const h = g?.parameters?.height || 1;
-        applyCoverCrop(w, h);
-      }
+      const sh = bodyMat.userData.shader;
+      if (sh && sh.uniforms && sh.uniforms.uVideoAR) sh.uniforms.uVideoAR.value = videoAR;
     }
   }, { once: true });
 
   // -------------------------
-  // Screen overlay attached to screenMesh (local coords)
+  // 3D BUTTON: pin by UV (bottom-right on screen)
   // -------------------------
-  let model = null;
-  let screenMesh = null;
-  let screenPlane = null;
+  const soundTex = texLoader.load("./assets/png/sound.png");
+  soundTex.encoding = THREE.sRGBEncoding;
+
+  const btnMat = new THREE.MeshBasicMaterial({
+    map: soundTex,
+    transparent: true,
+    alphaTest: 0.25,
+    side: THREE.DoubleSide,
+  });
+  btnMat.depthTest = false;
+  btnMat.depthWrite = false;
+
   let soundBtn3D = null;
 
-  function setMaterialTransparent(mesh) {
-    const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-    mats.forEach((m) => {
-      if (!m) return;
-      m.transparent = true;
-      m.opacity = 0.0;       // IMPORTANT: иначе "стекло" перекрывает видео
-      m.depthWrite = false;
-    });
+  function pointInTri2D(p, a, b, c) {
+    // barycentric in 2D
+    const v0 = new THREE.Vector2(c.x - a.x, c.y - a.y);
+    const v1 = new THREE.Vector2(b.x - a.x, b.y - a.y);
+    const v2 = new THREE.Vector2(p.x - a.x, p.y - a.y);
+
+    const dot00 = v0.dot(v0);
+    const dot01 = v0.dot(v1);
+    const dot02 = v0.dot(v2);
+    const dot11 = v1.dot(v1);
+    const dot12 = v1.dot(v2);
+
+    const invDen = 1 / (dot00 * dot11 - dot01 * dot01);
+    const u = (dot11 * dot02 - dot01 * dot12) * invDen;
+    const v = (dot00 * dot12 - dot01 * dot02) * invDen;
+
+    return (u >= -1e-5) && (v >= -1e-5) && (u + v <= 1.00001);
   }
 
-  function computeAverageNormalLocal(mesh) {
-    const geom = mesh.geometry;
-    if (!geom || !geom.attributes || !geom.attributes.position) return new THREE.Vector3(0, 0, 1);
+  function barycentricWeights(p, a, b, c) {
+    const v0 = new THREE.Vector2(b.x - a.x, b.y - a.y);
+    const v1 = new THREE.Vector2(c.x - a.x, c.y - a.y);
+    const v2 = new THREE.Vector2(p.x - a.x, p.y - a.y);
 
-    const pos = geom.attributes.position.array;
-    const idx = geom.index ? geom.index.array : null;
+    const d00 = v0.dot(v0);
+    const d01 = v0.dot(v1);
+    const d11 = v1.dot(v1);
+    const d20 = v2.dot(v0);
+    const d21 = v2.dot(v1);
 
-    let nx = 0, ny = 0, nz = 0;
-
-    function addTri(i0, i1, i2) {
-      const p0x = pos[i0 * 3], p0y = pos[i0 * 3 + 1], p0z = pos[i0 * 3 + 2];
-      const p1x = pos[i1 * 3], p1y = pos[i1 * 3 + 1], p1z = pos[i1 * 3 + 2];
-      const p2x = pos[i2 * 3], p2y = pos[i2 * 3 + 1], p2z = pos[i2 * 3 + 2];
-
-      const v1x = p1x - p0x, v1y = p1y - p0y, v1z = p1z - p0z;
-      const v2x = p2x - p0x, v2y = p2y - p0y, v2z = p2z - p0z;
-
-      const cx = v1y * v2z - v1z * v2y;
-      const cy = v1z * v2x - v1x * v2z;
-      const cz = v1x * v2y - v1y * v2x;
-
-      nx += cx; ny += cy; nz += cz;
-    }
-
-    if (idx) {
-      for (let i = 0; i < idx.length; i += 3) addTri(idx[i], idx[i + 1], idx[i + 2]);
-    } else {
-      for (let i = 0; i < pos.length / 3; i += 3) addTri(i, i + 1, i + 2);
-    }
-
-    const n = new THREE.Vector3(nx, ny, nz);
-    if (n.lengthSq() < 1e-10) return new THREE.Vector3(0, 0, 1);
-    return n.normalize();
+    const denom = d00 * d11 - d01 * d01;
+    const v = (d11 * d20 - d01 * d21) / denom;
+    const w = (d00 * d21 - d01 * d20) / denom;
+    const u = 1 - v - w;
+    return { u, v, w };
   }
 
-  // выбираем самый плоский/большой фронтальный меш (названий в FBX может не быть)
-  function pickScreenMesh(root) {
-    let best = null;
-    let bestScore = -Infinity;
-
-    const size = new THREE.Vector3();
-    const q = new THREE.Quaternion();
-    const p = new THREE.Vector3();
-
-    root.updateWorldMatrix(true, true);
+  function findPointByUV(root, targetUv) {
+    let hit = null;
 
     root.traverse((o) => {
-      if (!o.isMesh || !o.geometry || !o.geometry.attributes?.position) return;
+      if (hit || !o.isMesh) return;
 
-      if (!o.geometry.boundingBox) o.geometry.computeBoundingBox();
-      o.geometry.boundingBox.getSize(size);
+      const g = o.geometry;
+      const posA = g?.attributes?.position;
+      const uvA  = g?.attributes?.uv;
+      if (!g || !posA || !uvA) return;
 
-      const dims = [Math.abs(size.x), Math.abs(size.y), Math.abs(size.z)].sort((a, b) => a - b);
-      const minDim = dims[0], a1 = dims[1], a2 = dims[2];
-      const area = a1 * a2;
-      const flat = (minDim > 0) ? (a2 / minDim) : 0;
+      const idx = g.index ? g.index.array : null;
+      const pos = posA.array;
+      const uv  = uvA.array;
 
-      if (area < 0.0002 || flat < 15) return;
+      const getV2 = (i) => new THREE.Vector2(uv[i * 2], uv[i * 2 + 1]);
+      const getV3 = (i) => new THREE.Vector3(pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2]);
 
-      const nLocal = computeAverageNormalLocal(o);
-      o.getWorldQuaternion(q);
-      const nW = nLocal.clone().applyQuaternion(q).normalize();
-      o.getWorldPosition(p);
-      const toCam = camera.position.clone().sub(p).normalize();
-      const facing = Math.max(0, nW.dot(toCam));
+      const triCount = idx ? (idx.length / 3) : (pos.length / 9);
 
-      const score = area * flat * (0.35 + 0.65 * facing);
+      for (let t = 0; t < triCount; t++) {
+        const i0 = idx ? idx[t * 3] : (t * 3);
+        const i1 = idx ? idx[t * 3 + 1] : (t * 3 + 1);
+        const i2 = idx ? idx[t * 3 + 2] : (t * 3 + 2);
 
-      if (score > bestScore) {
-        bestScore = score;
-        best = o;
+        const a = getV2(i0), b = getV2(i1), c = getV2(i2);
+        if (!pointInTri2D(targetUv, a, b, c)) continue;
+
+        const w = barycentricWeights(targetUv, a, b, c);
+
+        const p0 = getV3(i0), p1 = getV3(i1), p2 = getV3(i2);
+        const p = new THREE.Vector3()
+          .addScaledVector(p0, w.u)
+          .addScaledVector(p1, w.v)
+          .addScaledVector(p2, w.w);
+
+        // normal
+        let n = new THREE.Vector3();
+        const nA = g.attributes.normal;
+        if (nA) {
+          const na = nA.array;
+          const n0 = new THREE.Vector3(na[i0 * 3], na[i0 * 3 + 1], na[i0 * 3 + 2]);
+          const n1 = new THREE.Vector3(na[i1 * 3], na[i1 * 3 + 1], na[i1 * 3 + 2]);
+          const n2 = new THREE.Vector3(na[i2 * 3], na[i2 * 3 + 1], na[i2 * 3 + 2]);
+          n.addScaledVector(n0, w.u).addScaledVector(n1, w.v).addScaledVector(n2, w.w).normalize();
+        } else {
+          // face normal
+          const e1 = p1.clone().sub(p0);
+          const e2 = p2.clone().sub(p0);
+          n.copy(e1.cross(e2).normalize());
+        }
+
+        hit = { mesh: o, pos: p, n };
+        break;
       }
     });
 
-    console.log("[tvhero] screenMesh =", best?.name || "(no name)");
-    return best;
+    return hit;
   }
 
-  function buildOverlayOnScreen(mesh) {
-    const geom = mesh.geometry;
-    const pos = geom.attributes.position.array;
-
-    // local normal
-    let normalL = computeAverageNormalLocal(mesh);
-
-    // flip normal to face camera
-    const qW = mesh.getWorldQuaternion(new THREE.Quaternion());
-    const pW = mesh.getWorldPosition(new THREE.Vector3());
-    const nW = normalL.clone().applyQuaternion(qW).normalize();
-    const toCam = camera.position.clone().sub(pW).normalize();
-    if (nW.dot(toCam) < 0) normalL.multiplyScalar(-1);
-
-    // right/up basis in LOCAL space
-    let upCand = new THREE.Vector3(0, 1, 0);
-    if (Math.abs(normalL.dot(upCand)) > 0.9) upCand = new THREE.Vector3(1, 0, 0);
-
-    const rightL = new THREE.Vector3().crossVectors(upCand, normalL).normalize();
-    const upL = new THREE.Vector3().crossVectors(normalL, rightL).normalize();
-
-    // project vertices to find bounds
-    let rMin = Infinity, rMax = -Infinity;
-    let uMin = Infinity, uMax = -Infinity;
-    let nMin = Infinity, nMax = -Infinity;
-
-    for (let i = 0; i < pos.length; i += 3) {
-      const x = pos[i], y = pos[i + 1], z = pos[i + 2];
-      const r = x * rightL.x + y * rightL.y + z * rightL.z;
-      const u = x * upL.x + y * upL.y + z * upL.z;
-      const n = x * normalL.x + y * normalL.y + z * normalL.z;
-
-      if (r < rMin) rMin = r; if (r > rMax) rMax = r;
-      if (u < uMin) uMin = u; if (u > uMax) uMax = u;
-      if (n < nMin) nMin = n; if (n > nMax) nMax = n;
+  function buildSoundButtonOnScreen(root) {
+    // button uv near bottom-right INSIDE the screen rect
+    const u = U1 - 0.020;
+    const v = V0 + 0.055;
+    const pt = findPointByUV(root, new THREE.Vector2(u, v));
+    if (!pt) {
+      console.warn("[tvhero] sound button UV point not found");
+      return;
     }
 
-    const w = Math.max(0.001, rMax - rMin);
-    const h = Math.max(0.001, uMax - uMin);
+    // estimate screen width using two UV points (left/right mid)
+    const vMid = (V0 + V1) * 0.5;
+    const pL = findPointByUV(root, new THREE.Vector2(U0 + 0.01, vMid));
+    const pR = findPointByUV(root, new THREE.Vector2(U1 - 0.01, vMid));
+    const screenW = (pL && pR) ? pL.pos.distanceTo(pR.pos) : 0.25;
 
-    const eps = Math.max(w, h) * 0.01;
-    const rMid = (rMin + rMax) * 0.5;
-    const uMid = (uMin + uMax) * 0.5;
-    const nFront = nMax + eps;
-
-    const centerL = new THREE.Vector3()
-      .addScaledVector(rightL, rMid)
-      .addScaledVector(upL, uMid)
-      .addScaledVector(normalL, nFront);
-
-    const basis = new THREE.Matrix4().makeBasis(rightL, upL, normalL);
-    const quatL = new THREE.Quaternion().setFromRotationMatrix(basis);
-
-    const vidMat = new THREE.MeshBasicMaterial({ map: videoTex, side: THREE.DoubleSide });
-    vidMat.depthTest = false;
-    vidMat.depthWrite = false;
-    vidMat.toneMapped = false;
-
-    screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(w, h), vidMat);
-    screenPlane.position.copy(centerL);
-    screenPlane.quaternion.copy(quatL);
-    screenPlane.renderOrder = 999;
-
-    applyCoverCrop(w, h);
-
-    // sound button
-    const bw = w * 0.18;
+    const bw = screenW * 0.18;
     const bh = bw * 0.45;
 
     soundBtn3D = new THREE.Mesh(new THREE.PlaneGeometry(bw, bh), btnMat);
-    soundBtn3D.position.copy(centerL)
-      .addScaledVector(rightL, w * 0.42)
-      .addScaledVector(upL, -h * 0.52)
-      .addScaledVector(normalL, eps * 2.0);
-    soundBtn3D.quaternion.copy(quatL);
-    soundBtn3D.renderOrder = 1000;
+    soundBtn3D.renderOrder = 9999;
 
-    mesh.add(screenPlane);
-    mesh.add(soundBtn3D);
+    const q = new THREE.Quaternion().setFromUnitVectors(
+      new THREE.Vector3(0, 0, 1),
+      pt.n.clone().normalize()
+    );
+    soundBtn3D.quaternion.copy(q);
+
+    const eps = bw * 0.02;
+    soundBtn3D.position.copy(pt.pos).add(pt.n.clone().normalize().multiplyScalar(eps));
+
+    // attach to the mesh that owns those UVs (so it rotates perfectly)
+    pt.mesh.add(soundBtn3D);
   }
 
   // -------------------------
-  // Hover / click on 3D button
+  // RAYCAST FOR BUTTON
   // -------------------------
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
-  let hoveringBtn = false;
 
   function pointerToNDC(e) {
     const r = canvas.getBoundingClientRect();
@@ -371,30 +394,14 @@
     raycaster.setFromCamera(pointer, camera);
 
     const hit = raycaster.intersectObject(soundBtn3D, true);
-    if (hit.length) toggleSound();
+    if (!hit.length) return;
+
+    video.muted = !video.muted;
+    video.play().catch(() => {});
   });
 
   // -------------------------
-  // Desktop rotation with cursor
-  // -------------------------
-  let targetRotY = 0;
-  let targetRotX = 0;
-
-  if (!isMobile) {
-    canvas.style.cursor = "grab";
-    canvas.addEventListener("pointermove", (e) => {
-      if (hoveringBtn) return;
-      const r = canvas.getBoundingClientRect();
-      const nx = ((e.clientX - r.left) / r.width) * 2 - 1;
-      const ny = ((e.clientY - r.top) / r.height) * 2 - 1;
-      targetRotY = nx * 0.45;
-      targetRotX = -ny * 0.12;
-    });
-    canvas.addEventListener("pointerleave", () => { targetRotY = 0; targetRotX = 0; });
-  }
-
-  // -------------------------
-  // TV glow from video
+  // GLOW from VIDEO (CSS var)
   // -------------------------
   const bCanvas = document.createElement("canvas");
   bCanvas.width = 32;
@@ -428,35 +435,35 @@
   }
 
   // -------------------------
-  // FBX load
+  // LOAD FBX
   // -------------------------
   const loader = new THREE.FBXLoader(manager);
 
   loader.load(
     "./assets/models/retro_tv/tv.fbx",
     (fbx) => {
-      model = fbx;
-
-      model.rotation.y = -Math.PI / 2;
+      // base rotation as before
+      fbx.rotation.y = -Math.PI / 2;
 
       // normalize scale
-      let b0 = new THREE.Box3().setFromObject(model);
+      let b0 = new THREE.Box3().setFromObject(fbx);
       const s0 = b0.getSize(new THREE.Vector3());
       const max0 = Math.max(s0.x, s0.y, s0.z) || 1;
-      model.scale.setScalar(1.0 / max0);
+      fbx.scale.setScalar(1.0 / max0);
 
       // recenter after scaling
-      b0 = new THREE.Box3().setFromObject(model);
+      b0 = new THREE.Box3().setFromObject(fbx);
       const c0 = b0.getCenter(new THREE.Vector3());
-      model.position.sub(c0);
+      fbx.position.sub(c0);
 
-      model.traverse((o) => {
+      // apply our material (with video injection)
+      fbx.traverse((o) => {
         if (!o.isMesh) return;
         o.frustumCulled = false;
         o.material = bodyMat;
       });
 
-      tvRoot.add(model);
+      tvRoot.add(fbx);
 
       // camera fit
       const box = new THREE.Box3().setFromObject(tvRoot);
@@ -470,16 +477,10 @@
 
       tvRoot.scale.setScalar(isMobile ? 1.05 : 1.15);
 
-      // pick screen & build overlay
-      screenMesh = pickScreenMesh(model);
-      if (!screenMesh) {
-        console.warn("[tvhero] screen mesh not found — TV will render without video");
-      } else {
-        setMaterialTransparent(screenMesh);
-        buildOverlayOnScreen(screenMesh);
-      }
+      // build button pinned by UV
+      buildSoundButtonOnScreen(fbx);
 
-      // play (muted autoplay)
+      // play video
       video.play().catch(() => {});
 
       start();
@@ -489,7 +490,7 @@
   );
 
   // -------------------------
-  // Render loop
+  // RENDER LOOP (paused when offscreen)
   // -------------------------
   let active = false;
   let raf = 0;
