@@ -1250,3 +1250,51 @@ body{
 .liquid-main{        /* INDIVIDNI в первом блоке */
   font-family: var(--font-keep) !important;
 }
+
+/* ==========================
+   FONTS: Alumni everywhere,
+   but keep Syne for logo + hero INDIVIDNI
+========================== */
+:root{
+  --font-main: "Alumni Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-keep: "Syne", sans-serif;
+}
+
+body{ font-family: var(--font-main) !important; }
+
+/* keep Syne only where you asked */
+.brand-name,
+.brand-name__main,
+.brand-name__sub,
+.liquid-main{
+  font-family: var(--font-keep) !important;
+}
+
+/* force Alumni where Syne is hardcoded in your CSS */
+.liquid-sub,
+.hero-tv__desc,
+.work-meta,
+.team-title,
+.member-name,
+.cta-title,
+.acc-title,
+.cap-anim .label{
+  font-family: var(--font-main) !important;
+}
+
+@media (min-width: 861px){
+  .header-row--top{ position: relative; }
+
+  /* brand + actions остаются по краям */
+  .brand, .header-actions{ position: relative; z-index: 2; }
+
+  /* меню — строго по центру окна */
+  .nav--top{
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    flex: 0 !important;
+    justify-content: center;
+    z-index: 1;
+  }
+}
