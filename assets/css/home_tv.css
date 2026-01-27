@@ -117,3 +117,16 @@
   height: 100%;
   display: block;
 }
+
+@media (min-width: 861px){
+  .hero-tv__stage{
+    height: clamp(620px, 74vh, 980px); /* было меньше — теперь с запасом под поворот */
+    width: min(1280px, 100%);
+  }
+}
+
+@media (max-width: 860px){
+  .hero-tv__stage{
+    height: min(520px, 70vh);
+  }
+}
