@@ -23,7 +23,7 @@
 
 .hero-tv__desc{
   margin-top: 8px;
-  font-family:"Syne", sans-serif;
+  font-family: var(--font-main) !important;
   font-weight: 500;
   font-size: clamp(11px, 1.2vw, 13px);
   letter-spacing: 0.14em;
