@@ -100,3 +100,28 @@
     height: min(600px, 62vh);
   }
 }
+
+/* Push title lower (desktop) */
+@media (min-width: 861px){
+  .hero-tv__title{
+    margin-top: 44px !important;
+    transform: none !important;
+  }
+  .hero-tv__stage{
+    margin-top: 26px !important;
+  }
+}
+
+/* Push title lower (mobile) */
+@media (max-width: 860px){
+  .hero-tv__inner{
+    padding-top: 170px !important; /* чтобы точно не упиралось в меню */
+  }
+  .hero-tv__title{
+    margin-top: 22px !important;
+    transform: none !important;
+  }
+  .hero-tv__stage{
+    margin-top: 22px !important;
+  }
+}
