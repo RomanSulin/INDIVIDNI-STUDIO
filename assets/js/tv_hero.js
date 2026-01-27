@@ -130,13 +130,6 @@
   const V0 = 0.494140625;
   const V1 = 0.744140625;
 
-  // BUTTON PANEL UV RECT (на basecolor 2048x2048)
-// top-left (748,1004), size (44x40)
-const BU0 = 0.365234375;
-const BU1 = 0.38671875;
-const BV0 = 0.490234375;
-const BV1 = 0.509765625;
-
   // -------------------------
   // MATERIAL: base + lighting, but screen UV gets video
   // -------------------------
@@ -338,164 +331,40 @@ const BV1 = 0.509765625;
     return hit;
   }
 
-  function findBestPointByUV(root, targetUv, opts = {}) {
-  let best = null;
-  let bestScore = -Infinity;
-
-  const camPos = camera.position.clone();
-
-  root.updateWorldMatrix(true, true);
-
-  root.traverse((o) => {
-    if (!o.isMesh) return;
-
-    const g = o.geometry;
-    const posA = g?.attributes?.position;
-    const uvA  = g?.attributes?.uv;
-    if (!g || !posA || !uvA) return;
-
-    const idx = g.index ? g.index.array : null;
-    const pos = posA.array;
-    const uv  = uvA.array;
-    const nA  = g.attributes.normal;
-
-    const getV2 = (i) => new THREE.Vector2(uv[i * 2], uv[i * 2 + 1]);
-    const getV3 = (i) => new THREE.Vector3(pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2]);
-
-    const triCount = idx ? (idx.length / 3) : (pos.length / 9);
-
-    for (let t = 0; t < triCount; t++) {
-      const i0 = idx ? idx[t * 3] : (t * 3);
-      const i1 = idx ? idx[t * 3 + 1] : (t * 3 + 1);
-      const i2 = idx ? idx[t * 3 + 2] : (t * 3 + 2);
-
-      const a = getV2(i0), b = getV2(i1), c = getV2(i2);
-      if (!pointInTri2D(targetUv, a, b, c)) continue;
-
-      const w = barycentricWeights(targetUv, a, b, c);
-
-      const p0 = getV3(i0), p1 = getV3(i1), p2 = getV3(i2);
-      const pL = new THREE.Vector3()
-        .addScaledVector(p0, w.u)
-        .addScaledVector(p1, w.v)
-        .addScaledVector(p2, w.w);
-
-      // local normal
-      let nL = new THREE.Vector3();
-      if (nA) {
-        const na = nA.array;
-        const n0 = new THREE.Vector3(na[i0 * 3], na[i0 * 3 + 1], na[i0 * 3 + 2]);
-        const n1 = new THREE.Vector3(na[i1 * 3], na[i1 * 3 + 1], na[i1 * 3 + 2]);
-        const n2 = new THREE.Vector3(na[i2 * 3], na[i2 * 3 + 1], na[i2 * 3 + 2]);
-        nL.addScaledVector(n0, w.u).addScaledVector(n1, w.v).addScaledVector(n2, w.w).normalize();
-      } else {
-        const e1 = p1.clone().sub(p0);
-        const e2 = p2.clone().sub(p0);
-        nL.copy(e1.cross(e2).normalize());
-      }
-
-      const pW = o.localToWorld(pL.clone());
-      const nW = nL.clone().transformDirection(o.matrixWorld).normalize();
-
-      const toCam = camPos.clone().sub(pW).normalize();
-      let facing = nW.dot(toCam);
-
-      // хотим наружу — если нормаль внутрь, переворачиваем (и local тоже)
-      let nLFixed = nL.clone();
-      if (facing < 0) {
-        facing = -facing;
-        nLFixed.multiplyScalar(-1);
-      }
-
-      if (opts.minFacing != null && facing < opts.minFacing) continue;
-
-      const dist = camPos.distanceTo(pW);
-
-      // базовый скор: "смотрит на камеру" + "ближе к камере"
-      let score = facing * 1000 - dist * 8;
-
-      // привязка к экрану: ниже экрана и правее экрана
-      if (opts.screenLocal) {
-        const pTV = tvRoot.worldToLocal(pW.clone());
-
-        if (pTV.y < opts.screenLocal.y) score += 220; else score -= 220;
-        if (pTV.x > opts.screenLocal.x) score += 120; else score -= 80;
-
-        // чтобы не улетало слишком далеко
-        score -= Math.abs(pTV.y - (opts.screenLocal.y - 0.25)) * 40;
-      }
-
-      // ориентация похожа на экран (убивает боковые стенки)
-      if (opts.screenNormalW) {
-        const align = Math.max(0, nW.dot(opts.screenNormalW));
-        score += align * 400;
-      }
-
-      if (score > bestScore) {
-        bestScore = score;
-        best = { mesh: o, pos: pL, n: nLFixed };
-      }
+  function buildSoundButtonOnScreen(root) {
+    // button uv near bottom-right INSIDE the screen rect
+    const u = U1 - 0.020;
+    const v = V0 + 0.055;
+    const pt = findPointByUV(root, new THREE.Vector2(u, v));
+    if (!pt) {
+      console.warn("[tvhero] sound button UV point not found");
+      return;
     }
-  });
 
-  return best;
-}
+    // estimate screen width using two UV points (left/right mid)
+    const vMid = (V0 + V1) * 0.5;
+    const pL = findPointByUV(root, new THREE.Vector2(U0 + 0.01, vMid));
+    const pR = findPointByUV(root, new THREE.Vector2(U1 - 0.01, vMid));
+    const screenW = (pL && pR) ? pL.pos.distanceTo(pR.pos) : 0.25;
 
+    const bw = screenW * 0.18;
+    const bh = bw * 0.45;
 
- function buildSoundButtonOnScreen(root) {
-  // 1) берём опорную точку экрана (она у тебя работает идеально)
-  const screenU = (U0 + U1) * 0.5;
-  const screenV = (V0 + V1) * 0.5;
-  const screenHit = findPointByUV(root, new THREE.Vector2(screenU, screenV));
-  const screenPosW = screenHit ? screenHit.mesh.localToWorld(screenHit.pos.clone()) : null;
-  const screenNormalW = screenHit ? screenHit.n.clone().transformDirection(screenHit.mesh.matrixWorld).normalize() : null;
-  const screenLocal = screenPosW ? tvRoot.worldToLocal(screenPosW.clone()) : null;
+    soundBtn3D = new THREE.Mesh(new THREE.PlaneGeometry(bw, bh), btnMat);
+    soundBtn3D.renderOrder = 9999;
 
-  // 2) цель — центр UV прямоугольника кнопочной панели
-  const uC = (BU0 + BU1) * 0.5;
-  const vC = (BV0 + BV1) * 0.5;
+    const q = new THREE.Quaternion().setFromUnitVectors(
+      new THREE.Vector3(0, 0, 1),
+      pt.n.clone().normalize()
+    );
+    soundBtn3D.quaternion.copy(q);
 
-  const pt = findBestPointByUV(root, new THREE.Vector2(uC, vC), {
-    minFacing: 0.15,
-    screenLocal,
-    screenNormalW
-  });
+    const eps = bw * 0.02;
+    soundBtn3D.position.copy(pt.pos).add(pt.n.clone().normalize().multiplyScalar(eps));
 
-  if (!pt) {
-    console.warn("[tvhero] button point not found");
-    return;
+    // attach to the mesh that owns those UVs (so it rotates perfectly)
+    pt.mesh.add(soundBtn3D);
   }
-
-  // 3) размер кнопки берём из UV-рамки самой панели (чтобы было ровно и кликабельно)
-  const m = 0.001;
-  const pL = findBestPointByUV(root, new THREE.Vector2(BU0 + m, vC), { minFacing: 0.1, screenLocal, screenNormalW });
-  const pR = findBestPointByUV(root, new THREE.Vector2(BU1 - m, vC), { minFacing: 0.1, screenLocal, screenNormalW });
-  const pB = findBestPointByUV(root, new THREE.Vector2(uC, BV0 + m), { minFacing: 0.1, screenLocal, screenNormalW });
-  const pT = findBestPointByUV(root, new THREE.Vector2(uC, BV1 - m), { minFacing: 0.1, screenLocal, screenNormalW });
-
-  let bw = 0.22, bh = 0.10;
-  if (pL && pR) bw = pL.pos.distanceTo(pR.pos);
-  if (pB && pT) bh = pB.pos.distanceTo(pT.pos);
-
-  // чуть увеличим для удобства клика
-  bw *= 1.25;
-  bh *= 1.25;
-
-  soundBtn3D = new THREE.Mesh(new THREE.PlaneGeometry(bw, bh), btnMat);
-  soundBtn3D.renderOrder = 9999;
-
-  const q = new THREE.Quaternion().setFromUnitVectors(
-    new THREE.Vector3(0, 0, 1),
-    pt.n.clone().normalize()
-  );
-  soundBtn3D.quaternion.copy(q);
-
-  const eps = bw * 0.03;
-  soundBtn3D.position.copy(pt.pos).add(pt.n.clone().normalize().multiplyScalar(eps));
-
-  pt.mesh.add(soundBtn3D);
-}
-
 
   // -------------------------
   // RAYCAST FOR BUTTON
