@@ -473,3 +473,13 @@ body.on-dark .proj-brief{
     hyphens: auto;
   }
 }
+
+/* unify small UI text size for Alumni */
+.proj-back,
+.proj-nav,
+.proj-brief,
+.proj-cta,
+.proj-meta h3,
+.proj-end__actions a{
+  font-size: var(--fs-small) !important;
+}
