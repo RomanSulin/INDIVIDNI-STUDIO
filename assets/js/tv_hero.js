@@ -74,8 +74,9 @@
       const r = canvas.getBoundingClientRect();
       const nx = ((e.clientX - r.left) / r.width) * 2 - 1;
       const ny = ((e.clientY - r.top) / r.height) * 2 - 1;
-      targetRotY = nx * 0.36;
-      targetRotX = -ny * 0.10;
+      const isLaptop = window.matchMedia("(max-height: 900px)").matches;
+      targetRotY = nx * (isLaptop ? 0.34 : 0.45);
+      targetRotX = -ny * (isLaptop ? 0.09 : 0.12);
     });
     canvas.addEventListener("pointerleave", () => {
       targetRotY = 0;
