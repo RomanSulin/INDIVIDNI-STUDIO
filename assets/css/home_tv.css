@@ -84,44 +84,24 @@
   }
 }
 
-/* === Mobile: text lower (not under header) + TV lower/bigger === */
-@media (max-width: 860px){
-  .hero-tv__inner{
-    padding-top: 140px; /* чтобы не упиралось в меню */
-    gap: 18px;
-  }
-
-  .hero-tv__title{
-    transform: translateY(14px);
-  }
-
-  .hero-tv__stage{
-    margin-top: 16px;
-    height: min(600px, 62vh);
-  }
+/* Unified hero spacing: always below header by fixed gap */
+.hero-tv{
+  --hero-gap-from-header: 80px; /* хочешь 200px от меню — ставь 200px */
 }
 
-/* Push title lower (desktop) */
+.hero-tv__inner{
+  padding-top: calc(var(--headerH, 88px) + var(--hero-gap-from-header)) !important;
+}
+
+/* device tweaks (optional) */
 @media (min-width: 861px){
-  .hero-tv__title{
-    margin-top: 44px !important;
-    transform: none !important;
-  }
-  .hero-tv__stage{
-    margin-top: 26px !important;
+  .hero-tv{
+    --hero-gap-from-header: 110px; /* на больших экранах ниже */
   }
 }
 
-/* Push title lower (mobile) */
-@media (max-width: 860px){
-  .hero-tv__inner{
-    padding-top: 170px !important; /* чтобы точно не упиралось в меню */
-  }
-  .hero-tv__title{
-    margin-top: 22px !important;
-    transform: none !important;
-  }
-  .hero-tv__stage{
-    margin-top: 22px !important;
+@media (min-width: 1400px){
+  .hero-tv{
+    --hero-gap-from-header: 140px; /* ещё ниже на очень больших */
   }
 }
