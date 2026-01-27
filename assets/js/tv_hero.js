@@ -130,6 +130,12 @@
   const V0 = 0.494140625;
   const V1 = 0.744140625;
 
+  // BUTTON UV RECT (зона "кнопки" на атласе 2048x2048)
+const BU0 = 0.365234375;
+const BU1 = 0.38671875;
+const BV0 = 0.490234375;
+const BV1 = 0.509765625;
+
   // -------------------------
   // MATERIAL: base + lighting, but screen UV gets video
   // -------------------------
@@ -332,39 +338,50 @@
   }
 
   function buildSoundButtonOnScreen(root) {
-    // button uv near bottom-right INSIDE the screen rect
-    const u = U1 - 0.020;
-    const v = V0 + 0.055;
-    const pt = findPointByUV(root, new THREE.Vector2(u, v));
-    if (!pt) {
-      console.warn("[tvhero] sound button UV point not found");
-      return;
-    }
+  const uC = (BU0 + BU1) * 0.5;
+  const vC = (BV0 + BV1) * 0.5;
 
-    // estimate screen width using two UV points (left/right mid)
-    const vMid = (V0 + V1) * 0.5;
-    const pL = findPointByUV(root, new THREE.Vector2(U0 + 0.01, vMid));
-    const pR = findPointByUV(root, new THREE.Vector2(U1 - 0.01, vMid));
-    const screenW = (pL && pR) ? pL.pos.distanceTo(pR.pos) : 0.25;
-
-    const bw = screenW * 0.18;
-    const bh = bw * 0.45;
-
-    soundBtn3D = new THREE.Mesh(new THREE.PlaneGeometry(bw, bh), btnMat);
-    soundBtn3D.renderOrder = 9999;
-
-    const q = new THREE.Quaternion().setFromUnitVectors(
-      new THREE.Vector3(0, 0, 1),
-      pt.n.clone().normalize()
-    );
-    soundBtn3D.quaternion.copy(q);
-
-    const eps = bw * 0.02;
-    soundBtn3D.position.copy(pt.pos).add(pt.n.clone().normalize().multiplyScalar(eps));
-
-    // attach to the mesh that owns those UVs (so it rotates perfectly)
-    pt.mesh.add(soundBtn3D);
+  const pt = findPointByUV(root, new THREE.Vector2(uC, vC));
+  if (!pt) {
+    console.warn("[tvhero] button UV point not found");
+    return;
   }
+
+  // измеряем реальный размер области кнопки в 3D (по UV)
+  const m = 0.001; // маленький отступ внутрь прямоугольника
+  const pL = findPointByUV(root, new THREE.Vector2(BU0 + m, vC));
+  const pR = findPointByUV(root, new THREE.Vector2(BU1 - m, vC));
+  const pB = findPointByUV(root, new THREE.Vector2(uC, BV0 + m));
+  const pT = findPointByUV(root, new THREE.Vector2(uC, BV1 - m));
+
+  const w3d = (pL && pR) ? pL.pos.distanceTo(pR.pos) : 0.20;
+  const h3d = (pB && pT) ? pB.pos.distanceTo(pT.pos) : (w3d * 0.45);
+
+  // чуть увеличим, чтобы и видно было, и кликабельно
+  const bw = w3d * 1.18;
+  const bh = h3d * 1.18;
+
+  soundBtn3D = new THREE.Mesh(new THREE.PlaneGeometry(bw, bh), btnMat);
+  soundBtn3D.renderOrder = 9999;
+
+  // ориентируем plane по нормали поверхности
+  const q = new THREE.Quaternion().setFromUnitVectors(
+    new THREE.Vector3(0, 0, 1),
+    pt.n.clone().normalize()
+  );
+  soundBtn3D.quaternion.copy(q);
+
+  // выдвигаем чуть наружу, чтобы не проваливалась в корпус
+  const eps = bw * 0.03;
+  soundBtn3D.position.copy(pt.pos).add(pt.n.clone().normalize().multiplyScalar(eps));
+
+  // ВАЖНО: привязываем к тому мешу, где нашли UV — тогда 100% “живет с телеком”
+  pt.mesh.add(soundBtn3D);
+
+  // Если вдруг окажется повернута вверх ногами — раскомментируй:
+  // soundBtn3D.rotateZ(Math.PI);
+}
+
 
   // -------------------------
   // RAYCAST FOR BUTTON
