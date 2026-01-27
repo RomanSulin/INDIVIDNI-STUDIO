@@ -193,9 +193,9 @@
         float screenAR = rectSize.x / rectSize.y;
 
         vec2 uv01 = (vUv - uRect.xy) / rectSize;
-        uv01 = coverUV(uv01, uVideoAR, screenAR);
-
-        vec3 vid = texture2D(uVideoMap, uv01).rgb;
+        uv01 = coverUV(uv01, 1.0 / uVideoAR, screenAR);
+        vec2 uvRot = vec2(uv01.y, 1.0 - uv01.x);
+        vec3 vid = texture2D(uVideoMap, uvRot).rgb;
 
         // заменяем цвет в зоне экрана
         diffuseColor.rgb = mix(diffuseColor.rgb, vid, m);
