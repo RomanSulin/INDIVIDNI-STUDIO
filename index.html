@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" href="./assets/css/style.css" />
+  <link rel="stylesheet" href="./assets/css/home_tv.css" />
 </head>
 
 <body>
@@ -54,37 +54,27 @@
   </div>
 </header>
 
-<!-- HERO (LIQUID) -->
-<section class="liquid-hero" id="about" aria-label="INDIVIDNI hero">
+<!-- HERO: Liquid + TV -->
+<section class="liquid-hero hero-tv" id="about" aria-label="INDIVIDNI hero with TV">
   <div id="liquid-bg" aria-hidden="true"></div>
 
-  <div class="hero-inner container">
-    <div class="hero-title-wrap">
+  <div class="hero-tv__inner container">
+    <div class="hero-tv__title">
       <div class="liquid-title">
         <div class="liquid-sub">studio</div>
         <div class="liquid-main">INDIVIDNI</div>
+        <div class="hero-tv__desc">видеопродакшн полного цикла</div>
       </div>
     </div>
-  </div>
-</section>
 
-    <!-- TV FLY-THROUGH SHOWREEL -->
-<section class="tvfly" id="showreel">
-  <div class="tvfly__wrapper">
-    <div class="tvfly__stage" aria-hidden="true">
-      <canvas id="tvflyCanvas"></canvas>
+    <div class="hero-tv__stage" data-tv-hero>
+      <div class="hero-tv__glow" aria-hidden="true"></div>
 
-      <!-- НЕ display:none -->
-      <video id="tvflyVideo" class="tvfly__hiddenVideo" muted playsinline webkit-playsinline preload="auto" loop>
+      <canvas id="tvHeroCanvas"></canvas>
+
+      <video id="tvHeroVideo" class="tvfly__hiddenVideo" muted playsinline webkit-playsinline preload="auto" loop>
         <source src="./assets/ui/showreel_2.mp4" type="video/mp4" />
       </video>
-    </div>
-
-    <div class="tvfly__image-container">
-    <picture>
-    <source media="(max-width: 860px)" srcset="./assets/ui/window_phone.png">
-    <img class="tvfly__image" src="./assets/ui/window.png" alt="window" />
-    </picture>
     </div>
   </div>
 </section>
@@ -381,9 +371,7 @@
 
 <script src="https://unpkg.com/fflate@0.7.4/umd/index.js"></script>
 <script src="https://unpkg.com/three@0.128.0/examples/js/loaders/FBXLoader.js"></script>
-
-<script src="./assets/js/tv_showreel.js" defer></script>
-
+<script src="./assets/js/tv_hero.js" defer></script>
 <script src="./assets/js/liquid.js" defer></script>
 <script src="./assets/js/capabilities_tabs.js" defer></script>
 <script src="./assets/js/capabilities_detail.js" defer></script>
