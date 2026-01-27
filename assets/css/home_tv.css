@@ -127,3 +127,18 @@
   /* header height + gap */
   padding-top: calc(var(--headerH, 96px) + var(--heroGap)) !important;
 }
+
+/* ВАЖНО: базовый .liquid-hero режет всё (overflow:hidden). Для home_tv отключаем. */
+.hero-tv.liquid-hero{
+  overflow: visible !important;
+}
+
+/* Дай запас снизу, чтобы телек не упирался в нижнюю границу hero */
+.hero-tv__inner{
+  padding-bottom: clamp(70px, 12vh, 170px) !important;
+}
+
+/* На всякий: stage тоже не режет */
+.hero-tv__stage{
+  overflow: visible;
+}
