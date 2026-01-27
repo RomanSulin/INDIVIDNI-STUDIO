@@ -142,3 +142,12 @@
 .hero-tv__stage{
   overflow: visible;
 }
+
+/* hero can overflow vertically (TV), but NOT horizontally (glow) */
+.hero-tv.liquid-hero{
+  overflow-x: clip !important;
+  overflow-y: visible !important;
+}
+@supports not (overflow: clip){
+  .hero-tv.liquid-hero{ overflow-x: hidden !important; }
+}
