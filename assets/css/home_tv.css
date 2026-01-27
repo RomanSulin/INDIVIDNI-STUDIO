@@ -105,3 +105,15 @@
     --hero-gap-from-header: 140px; /* ещё ниже на очень больших */
   }
 }
+
+/* Prevent TV clipping when rotated */
+.hero-tv__stage{
+  overflow: visible; /* чтобы ничего не резалось по контейнеру */
+}
+
+/* canvas пусть тоже не режется и занимает блок */
+#tvHeroCanvas{
+  width: 100%;
+  height: 100%;
+  display: block;
+}
