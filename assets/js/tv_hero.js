@@ -277,75 +277,126 @@ const BV1 = 0.509765625;
     return { u, v, w };
   }
 
-  function findPointByUV(root, targetUv) {
-    let hit = null;
+  function findPointByUV(root, targetUv, opts = {}) {
+  let best = null;
+  let bestScore = -Infinity;
 
-    root.traverse((o) => {
-      if (hit || !o.isMesh) return;
+  const camPos = camera.position.clone();
+  const qW = new THREE.Quaternion();
+  const tmp = new THREE.Vector3();
 
-      const g = o.geometry;
-      const posA = g?.attributes?.position;
-      const uvA  = g?.attributes?.uv;
-      if (!g || !posA || !uvA) return;
+  root.updateWorldMatrix(true, true);
 
-      const idx = g.index ? g.index.array : null;
-      const pos = posA.array;
-      const uv  = uvA.array;
+  root.traverse((o) => {
+    if (!o.isMesh) return;
 
-      const getV2 = (i) => new THREE.Vector2(uv[i * 2], uv[i * 2 + 1]);
-      const getV3 = (i) => new THREE.Vector3(pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2]);
+    const g = o.geometry;
+    const posA = g?.attributes?.position;
+    const uvA  = g?.attributes?.uv;
+    if (!g || !posA || !uvA) return;
 
-      const triCount = idx ? (idx.length / 3) : (pos.length / 9);
+    const idx = g.index ? g.index.array : null;
+    const pos = posA.array;
+    const uv  = uvA.array;
+    const nA  = g.attributes.normal;
 
-      for (let t = 0; t < triCount; t++) {
-        const i0 = idx ? idx[t * 3] : (t * 3);
-        const i1 = idx ? idx[t * 3 + 1] : (t * 3 + 1);
-        const i2 = idx ? idx[t * 3 + 2] : (t * 3 + 2);
+    const getV2 = (i) => new THREE.Vector2(uv[i * 2], uv[i * 2 + 1]);
+    const getV3 = (i) => new THREE.Vector3(pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2]);
 
-        const a = getV2(i0), b = getV2(i1), c = getV2(i2);
-        if (!pointInTri2D(targetUv, a, b, c)) continue;
+    const triCount = idx ? (idx.length / 3) : (pos.length / 9);
 
-        const w = barycentricWeights(targetUv, a, b, c);
+    o.getWorldQuaternion(qW);
 
-        const p0 = getV3(i0), p1 = getV3(i1), p2 = getV3(i2);
-        const p = new THREE.Vector3()
-          .addScaledVector(p0, w.u)
-          .addScaledVector(p1, w.v)
-          .addScaledVector(p2, w.w);
+    for (let t = 0; t < triCount; t++) {
+      const i0 = idx ? idx[t * 3] : (t * 3);
+      const i1 = idx ? idx[t * 3 + 1] : (t * 3 + 1);
+      const i2 = idx ? idx[t * 3 + 2] : (t * 3 + 2);
 
-        // normal
-        let n = new THREE.Vector3();
-        const nA = g.attributes.normal;
-        if (nA) {
-          const na = nA.array;
-          const n0 = new THREE.Vector3(na[i0 * 3], na[i0 * 3 + 1], na[i0 * 3 + 2]);
-          const n1 = new THREE.Vector3(na[i1 * 3], na[i1 * 3 + 1], na[i1 * 3 + 2]);
-          const n2 = new THREE.Vector3(na[i2 * 3], na[i2 * 3 + 1], na[i2 * 3 + 2]);
-          n.addScaledVector(n0, w.u).addScaledVector(n1, w.v).addScaledVector(n2, w.w).normalize();
-        } else {
-          // face normal
-          const e1 = p1.clone().sub(p0);
-          const e2 = p2.clone().sub(p0);
-          n.copy(e1.cross(e2).normalize());
-        }
+      const a = getV2(i0), b = getV2(i1), c = getV2(i2);
+      if (!pointInTri2D(targetUv, a, b, c)) continue;
 
-        hit = { mesh: o, pos: p, n };
-        break;
+      const w = barycentricWeights(targetUv, a, b, c);
+
+      const p0 = getV3(i0), p1 = getV3(i1), p2 = getV3(i2);
+      const pL = new THREE.Vector3()
+        .addScaledVector(p0, w.u)
+        .addScaledVector(p1, w.v)
+        .addScaledVector(p2, w.w);
+
+      // normal local
+      let nL;
+      if (nA) {
+        const na = nA.array;
+        const n0 = new THREE.Vector3(na[i0 * 3], na[i0 * 3 + 1], na[i0 * 3 + 2]);
+        const n1 = new THREE.Vector3(na[i1 * 3], na[i1 * 3 + 1], na[i1 * 3 + 2]);
+        const n2 = new THREE.Vector3(na[i2 * 3], na[i2 * 3 + 1], na[i2 * 3 + 2]);
+        nL = new THREE.Vector3()
+          .addScaledVector(n0, w.u)
+          .addScaledVector(n1, w.v)
+          .addScaledVector(n2, w.w)
+          .normalize();
+      } else {
+        // face normal
+        const e1 = p1.clone().sub(p0);
+        const e2 = p2.clone().sub(p0);
+        nL = e1.cross(e2).normalize();
       }
-    });
 
-    return hit;
-  }
+      // world pos / normal
+      const pW = o.localToWorld(pL.clone());
+      const nW = nL.clone().applyQuaternion(qW).normalize();
+
+      const toCam = camPos.clone().sub(pW).normalize();
+      let facing = nW.dot(toCam);
+
+      // хотим наружную поверхность; если normal внутрь — переворачиваем
+      if (facing < 0) {
+        nW.multiplyScalar(-1);
+        facing = -facing;
+      }
+
+      if (opts.minFacing != null && facing < opts.minFacing) continue;
+
+      const dist = camPos.distanceTo(pW);
+
+      // базовый скор: "смотрит на камеру" + "ближе к камере"
+      let score = facing * 1000 - dist * 10;
+
+      // если дали ориентир (центр экрана) — выбираем ближе к нему
+      if (opts.refPosW) {
+        score -= pW.distanceTo(opts.refPosW) * 5;
+      }
+
+      // лёгкий bias вправо-вниз (на случай дублей)
+      if (opts.biasTvRoot && opts.biasTvRoot.isObject3D) {
+        const pTV = opts.biasTvRoot.worldToLocal(pW.clone());
+        score += (pTV.x * 2.0) + (-pTV.y * 0.5);
+      }
+
+      if (score > bestScore) {
+        bestScore = score;
+        best = { mesh: o, pos: pL, n: nW.clone(), posW: pW };
+      }
+    }
+  });
+
+  return best;
+}
+
 
   function buildSoundButtonOnScreen(root) {
   const uC = (BU0 + BU1) * 0.5;
-  const vC = (BV0 + BV1) * 0.5;
+const vC = (BV0 + BV1) * 0.5;
 
-  const pt = findPointByUV(root, new THREE.Vector2(uC, vC));
-  if (!pt) {
-    console.warn("[tvhero] button UV point not found");
-    return;
-  }
+const pt = findPointByUV(
+  root,
+  new THREE.Vector2(uC, vC),
+  { minFacing: 0.20, refPosW: screenRefPosW, biasTvRoot: tvRoot }
+);
+if (!pt) {
+  console.warn("[tvhero] button UV point not found");
+  return;
+}
 
   // измеряем реальный размер области кнопки в 3D (по UV)
   const m = 0.001; // маленький отступ внутрь прямоугольника
@@ -493,6 +544,15 @@ const BV1 = 0.509765625;
       camera.updateProjectionMatrix();
 
       tvRoot.scale.setScalar(isMobile ? 1.05 : 1.15);
+
+      /* ====== ВОТ СЮДА ВСТАВЛЯЕМ ЯКОРЬ (ОДИН РАЗ) ====== */
+const screenCenter = findPointByUV(
+  fbx,
+  new THREE.Vector2((U0 + U1) * 0.5, (V0 + V1) * 0.5),
+  { minFacing: 0.20, biasTvRoot: tvRoot }
+);
+const screenRefPosW = screenCenter ? screenCenter.posW : null;
+/* ====== КОНЕЦ ЯКОРЯ ====== */
 
       // build button pinned by UV
       buildSoundButtonOnScreen(fbx);
