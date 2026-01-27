@@ -96,5 +96,21 @@
   <script src="./assets/js/tv_hero.js" defer></script>
   <script src="./assets/js/liquid.js" defer></script>
   <script src="./assets/js/main.js" defer></script>
+  <script>
+(() => {
+  const header = document.querySelector('.header');
+  if (!header) return;
+
+  const setH = () => {
+    const h = Math.round(header.getBoundingClientRect().height || 0);
+    document.documentElement.style.setProperty('--headerH', `${h}px`);
+  };
+
+  setH();
+  window.addEventListener('resize', setH, { passive: true });
+  if (window.ResizeObserver) new ResizeObserver(setH).observe(header);
+})();
+</script>
+
 </body>
 </html>
