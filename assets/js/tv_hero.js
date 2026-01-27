@@ -470,7 +470,7 @@
       const size = box.getSize(new THREE.Vector3());
       const maxDim = Math.max(size.x, size.y, size.z) || 1;
       const fov = (camera.fov * Math.PI) / 180;
-      const zoomK = 2.0; // x2 размер телека
+      const zoomK = 1.3; // x2 размер телека
       const dist = (maxDim / 2) / Math.tan(fov / 2) * (isMobile ? 2.2 : 2.0) / zoomK;
 
 
