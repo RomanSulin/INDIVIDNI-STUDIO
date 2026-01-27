@@ -1313,3 +1313,18 @@ html, body{
 @supports not (overflow: clip){
   html, body{ overflow-x: hidden; }
 }
+
+html{
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+:root{
+  /* базовый текст под Alumni: чуть больше на десктопе, чуть меньше на мобилке */
+  --fs-base: clamp(13px, 0.9vw, 16px);
+  --fs-small: clamp(11px, 0.75vw, 13px);
+}
+
+body{
+  font-size: var(--fs-base);
+}
