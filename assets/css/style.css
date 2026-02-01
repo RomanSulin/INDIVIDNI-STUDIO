@@ -421,6 +421,123 @@ a{ color: inherit; text-decoration:none; }
 
 body.menu-open .drawer{ display:block; }
 
+/* =====================================================================================
+   HERO TV (desktop layout + typed line + actions + liquid mirror overlay)
+   NOTE: home_tv.css is loaded after style.css, so we use stronger selectors + !important.
+===================================================================================== */
+
+/* overlay that makes the background feel like a liquid mirror (glass + sheen) */
+.hero-tv.liquid-hero{ position: relative; }
+.hero-tv.liquid-hero .liquid-mirror{
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+
+  /* highlight follows cursor via CSS vars set in JS */
+  background:
+    radial-gradient(900px 600px at var(--mx, 55%) var(--my, 45%), rgba(255,255,255,0.14), rgba(255,255,255,0.03) 38%, rgba(0,0,0,0) 66%),
+    linear-gradient(135deg, rgba(255,255,255,0.06), rgba(0,0,0,0) 55%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.018) 0 1px, rgba(0,0,0,0) 1px 6px);
+
+  opacity: 0.55;
+  mix-blend-mode: screen;
+  backdrop-filter: blur(16px) saturate(1.1) contrast(1.05);
+  -webkit-backdrop-filter: blur(16px) saturate(1.1) contrast(1.05);
+
+  /* soft fade so it doesn't wash everything equally */
+  mask-image: radial-gradient(circle at var(--mx, 55%) var(--my, 45%), rgba(0,0,0,1) 0 52%, rgba(0,0,0,0) 78%);
+  -webkit-mask-image: radial-gradient(circle at var(--mx, 55%) var(--my, 45%), rgba(0,0,0,1) 0 52%, rgba(0,0,0,0) 78%);
+}
+
+/* Make hero content always above the mirror */
+.hero-tv.liquid-hero .hero-tv__inner{ position: relative; z-index: 3; }
+.hero-tv.liquid-hero .hero-tv__title{ position: relative; z-index: 5; pointer-events: auto; }
+.hero-tv.liquid-hero .hero-tv__stage{ position: relative; z-index: 3; }
+
+/* Typed line */
+.hero-tv__typed{
+  margin-top: 14px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  font-family: "Syne", sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 12px;
+  color: rgba(255,255,255,0.82);
+}
+.hero-tv__typedPrefix{ opacity: 0.65; }
+.hero-tv__typedText{
+  display: inline-block;
+  min-height: 1.2em;
+  white-space: nowrap;
+}
+.hero-tv__typedCursor{
+  width: 10px;
+  height: 1em;
+  border-right: 2px solid rgba(255,255,255,0.7);
+  transform: translateY(1px);
+  opacity: 0.9;
+  animation: heroCursorBlink 0.9s steps(1) infinite;
+}
+@keyframes heroCursorBlink{ 50%{ opacity: 0; } }
+
+/* Actions under typed line */
+.hero-tv__actions{
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.btn--hero{
+  height: 44px;
+  padding: 0 18px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* Desktop: text left (center vertically), TV bigger + shifted right */
+@media (min-width: 861px){
+  .hero-tv.liquid-hero .hero-tv__inner{
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: clamp(18px, 4vw, 72px) !important;
+    height: 100% !important;
+  }
+
+  .hero-tv.liquid-hero .hero-tv__title{
+    width: min(520px, 46%) !important;
+    text-align: left !important;
+  }
+  .hero-tv.liquid-hero .hero-tv__title .liquid-title{
+    text-align: left !important;
+    white-space: normal !important;
+  }
+
+  .hero-tv.liquid-hero .hero-tv__stage{
+    /* IMPORTANT: we only resize/move the stage; tv_hero.js stays intact */
+    flex: 0 0 auto !important;
+    width: clamp(420px, 54vw, 820px) !important;
+    height: clamp(360px, 62vh, 720px) !important;
+    transform: translateX(clamp(20px, 3vw, 70px)) !important;
+  }
+
+  .hero-tv.liquid-hero #tvHeroCanvas{
+    width: 100% !important;
+    height: 100% !important;
+    display: block !important;
+  }
+}
+
+/* Mobile: keep existing layout; only make the new line/buttons fit nicely */
+@media (max-width: 860px){
+  .hero-tv__actions{ justify-content: center; }
+  .hero-tv__typed{ justify-content: center; }
+  .hero-tv__typedText{ white-space: normal; text-align: center; }
+}
+
 /* ===== TV fly-through ================================================================================ */
 .tvfly{ position: relative; border-bottom: 1px solid var(--border); }
 
