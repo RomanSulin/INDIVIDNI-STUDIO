@@ -166,6 +166,31 @@ class GradientBackground {
 
         varying vec2 vUv;
 
+        // -------------------- noise / fbm --------------------
+        float hash(vec2 p){
+          return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+        }
+        float noise(vec2 p){
+          vec2 i = floor(p);
+          vec2 f = fract(p);
+          float a = hash(i);
+          float b = hash(i + vec2(1.0, 0.0));
+          float c = hash(i + vec2(0.0, 1.0));
+          float d = hash(i + vec2(1.0, 1.0));
+          vec2 u = f * f * (3.0 - 2.0 * f);
+          return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
+        }
+        float fbm(vec2 p){
+          float v = 0.0;
+          float a = 0.5;
+          for (int i = 0; i < 5; i++){
+            v += a * noise(p);
+            p *= 2.0;
+            a *= 0.5;
+          }
+          return v;
+        }
+
         float grain(vec2 uv, float time) {
           vec2 gUv = uv * uResolution * 0.5;
           float g = fract(sin(dot(gUv + time, vec2(12.9898, 78.233))) * 43758.5453);
@@ -210,6 +235,54 @@ class GradientBackground {
           return clamp(col, vec3(0.0), vec3(1.0));
         }
 
+        // -------------------- liquid silver / metal shading --------------------
+        vec3 silverMetal(vec2 uv, float time, float inten){
+          // большие "потоки" + мелкая детализация
+          vec2 p = uv * 2.8;
+          p += vec2(0.12 * sin(time * 0.25), 0.10 * cos(time * 0.22));
+
+          float n1 = fbm(p + time * 0.08);
+          float n2 = fbm(p * 1.7 - time * 0.06);
+          float h  = (n1 * 0.65 + n2 * 0.35);
+          h += inten * 0.55;
+
+          vec2 e = vec2(1.0 / max(uResolution.x, 1.0), 1.0 / max(uResolution.y, 1.0));
+          float hx1 = fbm((uv + vec2(e.x, 0.0)) * 2.8 + time * 0.08);
+          float hx2 = fbm((uv + vec2(e.x, 0.0)) * 2.8 * 1.7 - time * 0.06);
+          float hy1 = fbm((uv + vec2(0.0, e.y)) * 2.8 + time * 0.08);
+          float hy2 = fbm((uv + vec2(0.0, e.y)) * 2.8 * 1.7 - time * 0.06);
+          float hx  = (hx1 * 0.65 + hx2 * 0.35) + inten * 0.55;
+          float hy  = (hy1 * 0.65 + hy2 * 0.35) + inten * 0.55;
+
+          // нормаль из "высоты"
+          vec3 normal = normalize(vec3((h - hx) * 5.2, (h - hy) * 5.2, 1.0));
+
+          vec3 lightDir = normalize(vec3(0.35, 0.55, 1.0));
+          vec3 viewDir  = vec3(0.0, 0.0, 1.0);
+
+          float diff = clamp(dot(normal, lightDir), 0.0, 1.0);
+          vec3 halfDir = normalize(lightDir + viewDir);
+          float spec = pow(clamp(dot(normal, halfDir), 0.0, 1.0), 120.0);
+          float fres = pow(1.0 - clamp(dot(normal, viewDir), 0.0, 1.0), 3.0);
+
+          // фейковое окружение (чтобы было похоже на "хром")
+          vec3 refl = reflect(-viewDir, normal);
+          float envT = smoothstep(-0.18, 0.80, refl.y);
+          vec3 envCol = mix(vec3(0.10, 0.10, 0.11), vec3(0.96, 0.96, 0.98), envT);
+
+          // виньетка, чтобы края уходили в тёмный
+          float vign = smoothstep(0.98, 0.30, length(uv - vec2(0.52, 0.52)));
+
+          vec3 col = envCol * (0.52 + 0.70 * diff);
+          col += spec * vec3(1.40);
+          col += fres * 0.28;
+          col = mix(vec3(0.06, 0.06, 0.07), col, vign);
+
+          // чуть контраста
+          col = pow(col, vec3(0.90));
+          return clamp(col, 0.0, 1.0);
+        }
+
         void main() {
           vec2 uv = vUv;
 
@@ -218,6 +291,7 @@ class GradientBackground {
           float vy = -(touch.g * 2.0 - 1.0);
           float inten = touch.b;
 
+          // touch + небольшие волны
           uv.x += vx * 0.8 * inten;
           uv.y += vy * 0.8 * inten;
 
@@ -227,10 +301,22 @@ class GradientBackground {
           float wave   = sin(dist * 15.0 - uTime * 2.0) * 0.03 * inten;
           uv += vec2(ripple + wave);
 
-          vec3 color = getGradientColor(uv, uTime);
+          // базовый цвет (твой текущий фон)
+          vec3 base = getGradientColor(uv, uTime);
 
+          // серебряная "жидкость" сверху
+          vec3 metal = silverMetal(uv, uTime, inten);
+
+          // blend: 0.88 = практически полностью "серебро", но немного сохраняем фирменный фон
+          vec3 color = mix(base, metal, 0.88);
+
+          // зерно (слабее, чтобы не убить "хром")
           float g = grain(uv, uTime);
-          color += g * uGrainIntensity;
+          color += g * (uGrainIntensity * 0.35);
+
+          // почти монохром, но с живостью
+          float l = dot(color, vec3(0.299, 0.587, 0.114));
+          color = mix(vec3(l), color, 0.08);
 
           gl_FragColor = vec4(clamp(color, 0.0, 1.0), 1.0);
         }
