@@ -142,107 +142,105 @@ if (drawer) {
 })();
 
 
-/* ================================
-   HERO TV UX v2
-   - Typewriter services list
-   - "Showreel" button starts hero video
-   - Pointer-driven liquid mirror highlight
-================================ */
-(() => {
-  const hero = document.querySelector(".liquid-hero.hero-tv");
+// =========================================== HERO TV: typed text + buttons + silver mirror ===========================================
+(function () {
+  const hero = document.querySelector(".hero-tv");
   if (!hero) return;
 
-  // ---- Liquid mirror highlight (CSS vars) ----
-  let targetX = 0.5, targetY = 0.45;
-  let raf = 0;
+  const typedEl = document.getElementById("heroTyped");
+  const mirror = hero.querySelector(".silver-mirror");
+  const showreelBtn = hero.querySelector("[data-hero-showreel]");
+  const tvVideo = document.getElementById("tvHeroVideo");
 
-  const setVars = () => {
-    raf = 0;
-    hero.style.setProperty("--mx", (targetX * 100).toFixed(2) + "%");
-    hero.style.setProperty("--my", (targetY * 100).toFixed(2) + "%");
-  };
-
-  const onMove = (e) => {
+  // --- liquid mirror pointer highlight ---
+  function setMirrorVars(clientX, clientY){
+    if (!mirror) return;
     const r = hero.getBoundingClientRect();
-    const x = (e.clientX - r.left) / Math.max(1, r.width);
-    const y = (e.clientY - r.top) / Math.max(1, r.height);
-    targetX = Math.min(1, Math.max(0, x));
-    targetY = Math.min(1, Math.max(0, y));
-    if (!raf) raf = requestAnimationFrame(setVars);
-  };
-
-  hero.addEventListener("pointermove", onMove, { passive: true });
-  hero.addEventListener("pointerdown", onMove, { passive: true });
-
-  // ---- Typewriter ----
-  const el = document.getElementById("heroTyped");
-  if (el) {
-    const phrases = [
-      "Подкаст под ключ",
-      "Имиджевый ролик",
-      "Реклама",
-      "Видео-отчет о мероприятии",
-      "Многокамерная трансляция",
-      "Монтаж",
-      "AI проекты",
-      "Фото проекты"
-    ];
-
-    let p = 0;
-    let i = 0;
-    let dir = 1; // 1 typing, -1 deleting
-    let hold = 0;
-
-    const step = () => {
-      const current = phrases[p];
-
-      if (hold > 0) {
-        hold -= 1;
-        return setTimeout(step, 40);
-      }
-
-      i += dir;
-
-      if (i <= 0) {
-        i = 0;
-        dir = 1;
-        p = (p + 1) % phrases.length;
-        hold = 6;
-      }
-
-      if (i >= current.length) {
-        i = current.length;
-        dir = -1;
-        hold = 22; // pause on full phrase
-      }
-
-      el.textContent = current.slice(0, i);
-
-      const speed =
-        dir === 1 ? (i < 4 ? 70 : 45) : 28;
-
-      setTimeout(step, speed);
-    };
-
-    step();
+    const x = Math.min(1, Math.max(0, (clientX - r.left) / r.width));
+    const y = Math.min(1, Math.max(0, (clientY - r.top) / r.height));
+    mirror.style.setProperty("--mx", (x * 100).toFixed(2) + "%");
+    mirror.style.setProperty("--my", (y * 100).toFixed(2) + "%");
   }
 
-  // ---- Showreel button ----
-  const btn = hero.querySelector("[data-hero-showreel]");
-  const video = document.getElementById("tvHeroVideo");
-  if (btn && video) {
-    btn.addEventListener("click", async () => {
+  // defaults (so it looks alive even без движения мыши)
+  setMirrorVars(window.innerWidth * 0.55, window.innerHeight * 0.45);
+
+  hero.addEventListener("mousemove", (e) => setMirrorVars(e.clientX, e.clientY), { passive: true });
+  hero.addEventListener("touchmove", (e) => {
+    const t = e.touches && e.touches[0];
+    if (t) setMirrorVars(t.clientX, t.clientY);
+  }, { passive: true });
+
+  // --- showreel button: включаем звук и play ---
+  if (showreelBtn && tvVideo) {
+    showreelBtn.addEventListener("click", async () => {
       try {
-        video.muted = false;
-        video.volume = 1;
-        await video.play();
+        tvVideo.muted = false;
+        await tvVideo.play();
       } catch (e) {
-        // If autoplay policy blocks, try muted play as fallback
-        try {
-          video.muted = true;
-          await video.play();
-        } catch (_) {}
+        // если браузер не дал авто-play со звуком — оставим play без обещаний
+        try { tvVideo.muted = true; await tvVideo.play(); } catch (_) {}
       }
     });
   }
+
+  // --- typed text ---
+  if (!typedEl) return;
+
+  const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const phrases = [
+    "Подкаст под ключ",
+    "Имиджевый ролик",
+    "Реклама",
+    "Видео-отчет о мероприятии",
+    "Многокамерная трансляция",
+    "Монтаж",
+    "AI проекты",
+    "Фото проекты",
+  ];
+
+  if (prefersReduced) {
+    let i = 0;
+    typedEl.textContent = phrases[i];
+    setInterval(() => {
+      i = (i + 1) % phrases.length;
+      typedEl.textContent = phrases[i];
+    }, 2200);
+    return;
+  }
+
+  let p = 0;
+  let c = 0;
+  let deleting = false;
+
+  const TYPE_SPEED = 36;
+  const DELETE_SPEED = 22;
+  const HOLD_MS = 900;
+
+  function tick() {
+    const text = phrases[p];
+    if (!deleting) {
+      c++;
+      typedEl.textContent = text.slice(0, c);
+      if (c >= text.length) {
+        deleting = true;
+        setTimeout(tick, HOLD_MS);
+        return;
+      }
+      setTimeout(tick, TYPE_SPEED);
+    } else {
+      c--;
+      typedEl.textContent = text.slice(0, Math.max(0, c));
+      if (c <= 0) {
+        deleting = false;
+        p = (p + 1) % phrases.length;
+        setTimeout(tick, 220);
+        return;
+      }
+      setTimeout(tick, DELETE_SPEED);
+    }
+  }
+
+  tick();
 })();
