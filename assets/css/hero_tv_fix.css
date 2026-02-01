@@ -1,0 +1,70 @@
+:root{
+  --heroPad: clamp(28px, 4vw, 76px);
+}
+
+@media (min-width: 861px){
+  .liquid-hero.hero-tv .hero-tv__inner.container{
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding-left: var(--heroPad) !important;
+    padding-right: var(--heroPad) !important;
+  }
+
+  .liquid-hero.hero-tv .hero-tv__inner{
+    position: relative !important;
+    height: 100% !important;
+  }
+
+  .liquid-hero.hero-tv .hero-tv__title{
+    position: absolute !important;
+    left: var(--heroPad) !important;
+    top: 50% !important;
+    transform: translateY(-56%) !important;
+    z-index: 6 !important;
+    max-width: min(820px, 56vw) !important;
+    text-align: left !important;
+    pointer-events: none;
+  }
+
+  .liquid-hero.hero-tv .liquid-title{ text-align:left !important; }
+
+  .liquid-hero.hero-tv .hero-tv__actions{
+    margin-top: 20px !important;
+    display: flex !important;
+    gap: 14px !important;
+    pointer-events: auto;
+  }
+  .liquid-hero.hero-tv .hero-tv__actions .btn,
+  .liquid-hero.hero-tv .hero-tv__actions a{
+    height: 46px !important;
+    padding: 0 18px !important;
+    font-size: 15px !important;
+  }
+
+  /* TV: bigger and a bit LEFT */
+  .liquid-hero.hero-tv .hero-tv__stage{
+    position: absolute !important;
+    top: 50% !important;
+    right: calc(var(--heroPad) + 64px) !important; /* больше right => смещение ТВ влево */
+    transform: translateY(-50%) !important;
+    z-index: 3 !important;
+    width: clamp(900px, 74vw, 1740px) !important;
+    height: clamp(580px, 84vh, 1040px) !important;
+  }
+}
+
+@media (max-width: 860px){
+  .liquid-hero.hero-tv .hero-tv__actions{
+    margin-top: 14px !important;
+    display: flex !important;
+    gap: 10px !important;
+    flex-wrap: wrap;
+  }
+  .liquid-hero.hero-tv .hero-tv__actions .btn,
+  .liquid-hero.hero-tv .hero-tv__actions a{
+    height: 42px !important;
+    padding: 0 16px !important;
+    font-size: 14px !important;
+  }
+}
