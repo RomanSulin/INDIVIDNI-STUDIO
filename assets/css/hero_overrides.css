@@ -1,0 +1,190 @@
+/* ===========================
+   HERO OVERRIDES (v3)
+   Порядок: этот файл подключён ПОСЛЕ home_tv.css
+   =========================== */
+
+.hero-tv{
+  position: relative;
+}
+
+/* гарантируем слои (home_tv.css может перебивать) */
+.hero-tv #liquid-bg{ z-index: 0 !important; }
+.hero-tv .silver-mirror{ z-index: 2 !important; }
+.hero-tv .hero-tv__inner{ z-index: 5 !important; }
+
+/* --- Silver liquid mirror overlay --- */
+.hero-tv .silver-mirror{
+  position:absolute;
+  inset:-18%;
+  z-index: 2;
+  pointer-events:none;
+  opacity: 1;
+  /* базовая "металлическая" фактура */
+  background:
+    linear-gradient(115deg,
+      rgba(255,255,255,0.18) 0%,
+      rgba(255,255,255,0.02) 35%,
+      rgba(255,255,255,0.12) 65%,
+      rgba(255,255,255,0.04) 100%),
+    radial-gradient(circle at var(--mx, 50%) var(--my, 45%),
+      rgba(255,255,255,0.92) 0%,
+      rgba(255,255,255,0.18) 28%,
+      rgba(255,255,255,0.06) 42%,
+      rgba(0,0,0,0.00) 68%),
+    conic-gradient(from 120deg at 50% 50%,
+      rgba(255,255,255,0.26),
+      rgba(170,170,170,0.10),
+      rgba(255,255,255,0.22),
+      rgba(110,110,110,0.10),
+      rgba(255,255,255,0.28),
+      rgba(160,160,160,0.10),
+      rgba(255,255,255,0.24));
+  background-size: 150% 150%, 180% 180%, 240% 240%;
+  background-position: 50% 50%, 50% 50%, 50% 50%;
+  mix-blend-mode: screen;
+  filter: url(#silverLiquid) contrast(1.18) brightness(1.18) saturate(0.15);
+  transform: translate3d(0,0,0);
+  animation: silverFlow 10.5s linear infinite;
+}
+
+/* дополнительный "блик" сверху (делает эффект более "жидким") */
+.hero-tv .silver-mirror::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(115deg,
+      rgba(255,255,255,0.18) 0%,
+      rgba(255,255,255,0.02) 35%,
+      rgba(255,255,255,0.12) 65%,
+      rgba(255,255,255,0.04) 100%),
+    radial-gradient(circle at var(--mx, 50%) var(--my, 45%),
+      rgba(255,255,255,0.85),
+      rgba(255,255,255,0.00) 55%);
+  mix-blend-mode: screen;
+  filter: blur(18px);
+  opacity: .95;
+}
+
+@keyframes silverFlow{
+  0%{ background-position: 45% 48%, 50% 50%, 50% 50%; }
+  50%{ background-position: 58% 54%, 62% 40%, 46% 58%; }
+  100%{ background-position: 45% 48%, 50% 50%, 50% 50%; }
+}
+
+/* --- Hero content: always above mirror --- */
+.hero-tv .hero-tv__inner{
+  position: relative;
+  z-index: 5;
+  height: 100%;
+}
+
+/* убрать глобальные ограничения liquid-title для hero */
+.hero-tv .liquid-title{
+  text-align: left;
+  pointer-events: auto;
+  user-select: none;
+  white-space: nowrap;
+}
+
+/* typed line */
+.hero-tv .hero-tv__typed{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  margin-top: 14px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 14px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.80);
+  min-height: 20px;
+}
+.hero-tv .typed-prefix{
+  opacity: .65;
+}
+.hero-tv .typed-cursor{
+  display:inline-block;
+  margin-left: 4px;
+  opacity: .8;
+  animation: cursorBlink 1s steps(1) infinite;
+}
+@keyframes cursorBlink{ 0%,49%{opacity:.85} 50%,100%{opacity:0} }
+
+/* actions */
+.hero-tv .hero-tv__actions{
+  display:flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+.hero-tv .btn--hero{
+  height: 52px;
+  padding: 0 20px;
+  font-size: 16px;
+  letter-spacing: .01em;
+}
+.hero-tv .btn--hero.btn--ghost{
+  background: rgba(0,0,0,0.18);
+  backdrop-filter: blur(10px);
+}
+.hero-tv .btn--hero.btn--ghost:hover{
+  background: rgba(255,255,255,0.10);
+}
+
+/* ===========================
+   DESKTOP LAYOUT
+   Текст слева (почти к краю), TV — правее и больше, по вертикальному центру
+   =========================== */
+@media (min-width: 861px){
+  /* hero inner на всю ширину, с контролируемым отступом от края браузера */
+  .hero-tv .hero-tv__inner{
+    width: 100%;
+    padding-left: clamp(18px, 4vw, 64px);
+    padding-right: clamp(18px, 3.5vw, 56px);
+  }
+
+  /* title — абсолютом, можно заходить на телек */
+  .hero-tv .hero-tv__title{
+    position:absolute !important;
+    left: clamp(18px, 4vw, 64px) !important;
+    top: 50% !important;
+    transform: translateY(-50%) translateX(-2.6vw) !important; /* немного "за пределы контейнера" */
+    z-index: 8 !important;
+    max-width: min(680px, 56vw);
+  }
+
+  /* делаем заголовок чуть агрессивнее влево */
+  .hero-tv .liquid-main{
+    text-align:left;
+    margin-left: -0.8vw; /* увод влево */
+  }
+
+  .hero-tv .hero-tv__desc{
+    margin-top: 12px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.72);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+
+  /* TV stage — абсолютом справа, больше и ещё правее */
+  .hero-tv .hero-tv__stage{
+    position:absolute !important;
+    right: clamp(0px, 1.6vw, 24px) !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    z-index: 6 !important;
+    width: clamp(720px, 60vw, 1260px) !important;
+    height: clamp(460px, 72vh, 920px) !important;
+  }
+}
+
+/* ===========================
+   MOBILE/TABLET: ничего не ломаем, просто показываем новые элементы
+   =========================== */
+@media (max-width: 860px){
+  .hero-tv .liquid-title{ text-align:center; white-space: normal; }
+  .hero-tv .hero-tv__actions{ justify-content:center; }
+  .hero-tv .btn--hero{ height: 46px; padding: 0 16px; font-size: 14px; }
+  .hero-tv .hero-tv__typed{ justify-content:center; font-size: 13px; }
+}
