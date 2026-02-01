@@ -107,25 +107,25 @@ class GradientBackground {
   uTime: { value: 0 },
   uResolution: { value: new THREE.Vector2(1, 1) },
 
-  uColor1: { value: new THREE.Vector3(0, 0, 0) }, // #000000
-  uColor2: { value: new THREE.Vector3(0, 0, 0) }, // #000000
-  uColor3: { value: new THREE.Vector3(0, 0, 0) }, // #000000
-  uColor4: { value: new THREE.Vector3(0.1412, 0.1412, 0.1412) }, // #242424
-  uColor5: { value: new THREE.Vector3(0.2824, 0.2784, 0.2784) }, // #484747
-  uColor6: { value: new THREE.Vector3(0, 0, 0) }, // #000000
+    uColor1: { value: new THREE.Vector3(0.060, 0.062, 0.068) }, // #0f1011
+    uColor2: { value: new THREE.Vector3(0.105, 0.110, 0.122) }, // #1b1c1f
+    uColor3: { value: new THREE.Vector3(0.185, 0.192, 0.210) }, // #2f3136
+    uColor4: { value: new THREE.Vector3(0.310, 0.325, 0.350) }, // #4f5359
+    uColor5: { value: new THREE.Vector3(0.520, 0.540, 0.575) }, // #858a92
+    uColor6: { value: new THREE.Vector3(0.720, 0.740, 0.785) }, // #b8bdc8
 
   // ВАЖНО: один раз и не синий
-  uDarkNavy: { value: new THREE.Vector3(0.02, 0.02, 0.03) }, // ≈ #050507
+    uDarkNavy: { value: new THREE.Vector3(0.055, 0.058, 0.070) }, // deep silver shadow
 
-  uSpeed: { value: 1.5 },
-  uIntensity: { value: 1.6 },       // можно 1.4–1.8
+    uSpeed: { value: 1.15 },
+    uIntensity: { value: 1.22 },       // ниже контраст, больше "металл"
   uTouchTexture: { value: null },
-  uGrainIntensity: { value: 0.08 },
+    uGrainIntensity: { value: 0.035 },
 
-  uGradientSize: { value: 0.45 },
+    uGradientSize: { value: 0.62 },
   uGradientCount: { value: 12.0 },
-  uColor1Weight: { value: 0.5 },
-  uColor2Weight: { value: 1.8 }
+    uColor1Weight: { value: 0.9 },
+    uColor2Weight: { value: 1.1 }
 };
   }
 
@@ -166,31 +166,6 @@ class GradientBackground {
 
         varying vec2 vUv;
 
-        // -------------------- noise / fbm --------------------
-        float hash(vec2 p){
-          return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
-        }
-        float noise(vec2 p){
-          vec2 i = floor(p);
-          vec2 f = fract(p);
-          float a = hash(i);
-          float b = hash(i + vec2(1.0, 0.0));
-          float c = hash(i + vec2(0.0, 1.0));
-          float d = hash(i + vec2(1.0, 1.0));
-          vec2 u = f * f * (3.0 - 2.0 * f);
-          return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
-        }
-        float fbm(vec2 p){
-          float v = 0.0;
-          float a = 0.5;
-          for (int i = 0; i < 5; i++){
-            v += a * noise(p);
-            p *= 2.0;
-            a *= 0.5;
-          }
-          return v;
-        }
-
         float grain(vec2 uv, float time) {
           vec2 gUv = uv * uResolution * 0.5;
           float g = fract(sin(dot(gUv + time, vec2(12.9898, 78.233))) * 43758.5453);
@@ -225,62 +200,14 @@ class GradientBackground {
           col = clamp(col, vec3(0.0), vec3(1.0)) * uIntensity;
 
           float lum = dot(col, vec3(0.299, 0.587, 0.114));
-          col = mix(vec3(lum), col, 1.35);
-          col = pow(col, vec3(0.92));
+          col = mix(vec3(lum), col, 0.78);
+          col = pow(col, vec3(1.06));
 
           float b = length(col);
           float mixF = max(b * 1.2, 0.15);
           col = mix(uDarkNavy, col, mixF);
 
           return clamp(col, vec3(0.0), vec3(1.0));
-        }
-
-        // -------------------- liquid silver / metal shading --------------------
-        vec3 silverMetal(vec2 uv, float time, float inten){
-          // большие "потоки" + мелкая детализация
-          vec2 p = uv * 2.8;
-          p += vec2(0.12 * sin(time * 0.25), 0.10 * cos(time * 0.22));
-
-          float n1 = fbm(p + time * 0.08);
-          float n2 = fbm(p * 1.7 - time * 0.06);
-          float h  = (n1 * 0.65 + n2 * 0.35);
-          h += inten * 0.55;
-
-          vec2 e = vec2(1.0 / max(uResolution.x, 1.0), 1.0 / max(uResolution.y, 1.0));
-          float hx1 = fbm((uv + vec2(e.x, 0.0)) * 2.8 + time * 0.08);
-          float hx2 = fbm((uv + vec2(e.x, 0.0)) * 2.8 * 1.7 - time * 0.06);
-          float hy1 = fbm((uv + vec2(0.0, e.y)) * 2.8 + time * 0.08);
-          float hy2 = fbm((uv + vec2(0.0, e.y)) * 2.8 * 1.7 - time * 0.06);
-          float hx  = (hx1 * 0.65 + hx2 * 0.35) + inten * 0.55;
-          float hy  = (hy1 * 0.65 + hy2 * 0.35) + inten * 0.55;
-
-          // нормаль из "высоты"
-          vec3 normal = normalize(vec3((h - hx) * 5.2, (h - hy) * 5.2, 1.0));
-
-          vec3 lightDir = normalize(vec3(0.35, 0.55, 1.0));
-          vec3 viewDir  = vec3(0.0, 0.0, 1.0);
-
-          float diff = clamp(dot(normal, lightDir), 0.0, 1.0);
-          vec3 halfDir = normalize(lightDir + viewDir);
-          float spec = pow(clamp(dot(normal, halfDir), 0.0, 1.0), 120.0);
-          float fres = pow(1.0 - clamp(dot(normal, viewDir), 0.0, 1.0), 3.0);
-
-          // фейковое окружение (чтобы было похоже на "хром")
-          vec3 refl = reflect(-viewDir, normal);
-          float envT = smoothstep(-0.18, 0.80, refl.y);
-          vec3 envCol = mix(vec3(0.10, 0.10, 0.11), vec3(0.96, 0.96, 0.98), envT);
-
-          // виньетка, чтобы края уходили в тёмный
-          float vign = smoothstep(0.98, 0.30, length(uv - vec2(0.52, 0.52)));
-
-          vec3 col = envCol * (0.52 + 0.70 * diff);
-          col += spec * vec3(1.40);
-          col += fres * 0.28;
-          col = mix(vec3(0.06, 0.06, 0.07), col, vign);
-
-          // чуть контраста
-          col = pow(col, vec3(0.90));
-          return clamp(col, 0.0, 1.0);
         }
 
         void main() {
@@ -291,34 +218,48 @@ class GradientBackground {
           float vy = -(touch.g * 2.0 - 1.0);
           float inten = touch.b;
 
-          // touch + небольшие волны
           uv.x += vx * 0.8 * inten;
           uv.y += vy * 0.8 * inten;
 
           vec2 center = vec2(0.5);
           float dist = length(uv - center);
-          float ripple = sin(dist * 20.0 - uTime * 3.0) * 0.04 * inten;
-          float wave   = sin(dist * 15.0 - uTime * 2.0) * 0.03 * inten;
+          float ripple = sin(dist * 20.0 - uTime * 3.0) * 0.018 * inten;
+          float wave   = sin(dist * 15.0 - uTime * 2.0) * 0.014 * inten;
           uv += vec2(ripple + wave);
 
-          // базовый цвет (твой текущий фон)
-          vec3 base = getGradientColor(uv, uTime);
+          // base (multi-sample) to get a softer, more "liquid" look
+vec3 c0 = getGradientColor(uv, uTime);
+vec3 c1 = getGradientColor(uv + vec2( 0.004, -0.003), uTime);
+vec3 c2 = getGradientColor(uv + vec2(-0.003,  0.004), uTime);
+vec3 color = (c0 + c1 + c2) / 3.0;
 
-          // серебряная "жидкость" сверху
-          vec3 metal = silverMetal(uv, uTime, inten);
+// pseudo-normal from luminance for metallic highlights
+float h  = dot(color, vec3(0.3333));
+float hx = dot(getGradientColor(uv + vec2(0.006, 0.000), uTime), vec3(0.3333));
+float hy = dot(getGradientColor(uv + vec2(0.000, 0.006), uTime), vec3(0.3333));
+vec3 n = normalize(vec3((h - hx) * 4.2, (h - hy) * 4.2, 1.0));
 
-          // blend: 0.88 = практически полностью "серебро", но немного сохраняем фирменный фон
-          vec3 color = mix(base, metal, 0.88);
+vec3 v = vec3(0.0, 0.0, 1.0);
+vec3 l = normalize(vec3(-0.35, 0.55, 0.75));
+vec3 hdir = normalize(l + v);
 
-          // зерно (слабее, чтобы не убить "хром")
-          float g = grain(uv, uTime);
-          color += g * (uGrainIntensity * 0.35);
+float diff = clamp(dot(n, l), 0.0, 1.0);
+float spec = pow(clamp(dot(n, hdir), 0.0, 1.0), 72.0);
+float fres = pow(1.0 - clamp(dot(n, v), 0.0, 1.0), 2.2);
 
-          // почти монохром, но с живостью
-          float l = dot(color, vec3(0.299, 0.587, 0.114));
-          color = mix(vec3(l), color, 0.08);
+// build "silver liquid metal" response (less contrast, more chrome)
+vec3 base = mix(vec3(0.20, 0.21, 0.23), color, 0.70);
+vec3 metal = base + diff * 0.11 + spec * 0.28 + fres * 0.07;
 
-          gl_FragColor = vec4(clamp(color, 0.0, 1.0), 1.0);
+// soft tonemapping + contrast compression
+metal = metal / (metal + vec3(1.05));
+metal = mix(metal, vec3(dot(metal, vec3(0.3333))), 0.38); // push to silver
+metal = 0.5 + (metal - 0.5) * 0.72;
+
+float g = grain(uv, uTime);
+metal += g * uGrainIntensity;
+
+gl_FragColor = vec4(clamp(metal, 0.0, 1.0), 1.0);
         }
       `
     });
