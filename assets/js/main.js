@@ -140,3 +140,118 @@ if (drawer) {
   window.addEventListener("resize", req, { passive: true });
   update();
 })();
+
+// =========================================== HERO: typed line + showreel button + liquid mirror cursor highlight =================
+(function () {
+  const typed = document.getElementById("heroTyped");
+  if (!typed) return;
+
+  const phrases = [
+    "Подкаст под ключ",
+    "Имиджевый ролик",
+    "Реклама",
+    "Видео-отчет о мероприятии",
+    "Многокамерная трансляция",
+    "Монтаж",
+    "AI проекты",
+    "Фото проекты"
+  ];
+
+  // --- typewriter
+  let pi = 0;
+  let ci = 0;
+  let deleting = false;
+  let hold = 0;
+
+  function tick() {
+    const word = phrases[pi % phrases.length];
+
+    if (hold > 0) {
+      hold -= 1;
+      setTimeout(tick, 50);
+      return;
+    }
+
+    if (!deleting) {
+      ci = Math.min(ci + 1, word.length);
+      typed.textContent = word.slice(0, ci);
+      if (ci >= word.length) {
+        deleting = true;
+        hold = 24; // ~1.2s
+      }
+      setTimeout(tick, 38);
+    } else {
+      ci = Math.max(ci - 1, 0);
+      typed.textContent = word.slice(0, ci);
+      if (ci <= 0) {
+        deleting = false;
+        pi += 1;
+        hold = 6;
+      }
+      setTimeout(tick, 22);
+    }
+  }
+  tick();
+
+  // --- "Шоурил" button: unmute + play hero TV video (no changes to the TV engine)
+  const showBtn = document.querySelector("[data-hero-showreel]");
+  const heroVideo = document.getElementById("tvHeroVideo");
+
+  if (showBtn && heroVideo) {
+    showBtn.addEventListener("click", () => {
+      try {
+        heroVideo.muted = false;
+        heroVideo.volume = 1;
+        heroVideo.play().catch(() => {});
+      } catch (_) {}
+
+      // small UI feedback
+      showBtn.classList.add("is-playing");
+      window.setTimeout(() => showBtn.classList.remove("is-playing"), 600);
+    });
+  }
+
+  // --- liquid mirror highlight follows pointer (CSS vars)
+  const mirror = document.querySelector(".liquid-mirror");
+  const hero = document.querySelector(".hero-tv.liquid-hero") || mirror?.parentElement;
+  if (mirror && hero) {
+    let raf = 0;
+    let mx = 0.55;
+    let my = 0.45;
+
+    const apply = () => {
+      raf = 0;
+      mirror.style.setProperty("--mx", (mx * 100).toFixed(2) + "%");
+      mirror.style.setProperty("--my", (my * 100).toFixed(2) + "%");
+    };
+
+    const onMove = (clientX, clientY) => {
+      const r = hero.getBoundingClientRect();
+      if (!r.width || !r.height) return;
+      mx = (clientX - r.left) / r.width;
+      my = (clientY - r.top) / r.height;
+      mx = Math.min(1, Math.max(0, mx));
+      my = Math.min(1, Math.max(0, my));
+      if (!raf) raf = requestAnimationFrame(apply);
+    };
+
+    hero.addEventListener(
+      "pointermove",
+      (e) => onMove(e.clientX, e.clientY),
+      { passive: true }
+    );
+
+    hero.addEventListener(
+      "touchmove",
+      (e) => {
+        const t = e.touches && e.touches[0];
+        if (!t) return;
+        onMove(t.clientX, t.clientY);
+      },
+      { passive: true }
+    );
+
+    // init to center-ish
+    apply();
+  }
+})();
