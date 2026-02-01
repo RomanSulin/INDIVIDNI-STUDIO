@@ -1,77 +1,100 @@
 /* global THREE */
 
+/**
+ * Liquid Silver background (WebGL)
+ * - Subtle idle motion
+ * - Strong pointer/touch-driven "finger drag" deformation
+ * - Metallic lighting (specular + fresnel + env)
+ */
+
 class TouchTexture {
   constructor() {
     this.size = 128;
     this.width = this.height = this.size;
     this.maxAge = 120;
     this.radius = 0.34 * this.size;
+
     this.speed = 1 / this.maxAge;
     this.trail = [];
     this.last = null;
 
-    this.canvas = document.createElement("canvas");
+    this.canvas = document.createElement('canvas');
     this.canvas.width = this.width;
     this.canvas.height = this.height;
-    this.ctx = this.canvas.getContext("2d", { alpha: false });
 
-    this.ctx.fillStyle = "black";
-    this.ctx.fillRect(0, 0, this.width, this.height);
+    // alpha:false => быстрее
+    this.ctx = this.canvas.getContext('2d', { alpha: false });
+    this.clear();
 
     this.texture = new THREE.Texture(this.canvas);
     this.texture.needsUpdate = true;
   }
 
+  clear() {
+    this.ctx.fillStyle = 'black';
+    this.ctx.fillRect(0, 0, this.width, this.height);
+  }
+
+  resetLast() {
+    this.last = null;
+  }
+
   addTouch(point) {
-    let force = 0;
+    let force = 0.35; // чтобы «первое касание» было видно
     let vx = 0;
     let vy = 0;
 
     if (this.last) {
       const dx = point.x - this.last.x;
       const dy = point.y - this.last.y;
-      if (dx === 0 && dy === 0) return;
-
       const dd = dx * dx + dy * dy;
+      if (dd < 1e-8) return;
+
       const d = Math.sqrt(dd);
       vx = dx / d;
       vy = dy / d;
-      force = Math.min(dd * 12000, 1.25);
+
+      // force зависит от СКОРОСТИ, не от квадрата расстояния
+      // так эффект есть даже при медленном движении мыши
+      force = Math.min(Math.max(d * 220.0, 0.08), 1.0);
     }
 
     this.last = { x: point.x, y: point.y };
     this.trail.push({ x: point.x, y: point.y, age: 0, force, vx, vy });
   }
 
-  clear() {
-    this.ctx.fillStyle = "black";
-    this.ctx.fillRect(0, 0, this.width, this.height);
-  }
-
   drawPoint(p) {
+    // touch texture UV: 0..1, WebGL uv y снизу -> рисуем с инверсией
     const pos = { x: p.x * this.width, y: (1 - p.y) * this.height };
 
-    let intensity = 1;
-    if (p.age < this.maxAge * 0.3) {
-      intensity = Math.sin((p.age / (this.maxAge * 0.3)) * (Math.PI / 2));
+    // fade-in / fade-out
+    let t = 1;
+    const inT = this.maxAge * 0.22;
+    if (p.age < inT) {
+      t = Math.sin((p.age / inT) * (Math.PI / 2));
     } else {
-      const t = 1 - (p.age - this.maxAge * 0.3) / (this.maxAge * 0.7);
-      intensity = -t * (t - 2);
+      const k = 1 - (p.age - inT) / (this.maxAge - inT);
+      t = k * k;
     }
-    intensity *= p.force;
 
+    const strength = Math.min(1, (0.25 + 0.75 * p.force) * t);
     const radius = this.radius;
-    const offset = this.size * 3;
 
-    const color = `${((p.vx + 1) / 2) * 255}, ${((p.vy + 1) / 2) * 255}, ${intensity * 255}`;
+    // Shadow trick: рисуем круг далеко, а цвет/интенсивность идёт в shadowColor
+    const offset = this.size * 2.2;
+
+    // R,G = направление, B = сила
+    const r = ((p.vx + 1) * 0.5) * 255;
+    const g = ((p.vy + 1) * 0.5) * 255;
+    const b = strength * 255;
 
     this.ctx.shadowOffsetX = offset;
     this.ctx.shadowOffsetY = offset;
     this.ctx.shadowBlur = radius;
-    this.ctx.shadowColor = `rgba(${color},${0.34 * intensity})`;
+    this.ctx.shadowColor = `rgba(${r}, ${g}, ${b}, ${0.55 * strength})`;
 
     this.ctx.beginPath();
-    this.ctx.fillStyle = "rgba(255,0,0,1)"; // не видно, это “карта” для искажений
+    this.ctx.fillStyle = 'rgba(255,0,0,1)';
     this.ctx.arc(pos.x - offset, pos.y - offset, radius, 0, Math.PI * 2);
     this.ctx.fill();
   }
@@ -81,8 +104,9 @@ class TouchTexture {
 
     for (let i = this.trail.length - 1; i >= 0; i--) {
       const p = this.trail[i];
-      const f = p.force * this.speed * (1 - p.age / this.maxAge);
+      const f = (0.6 + 0.4 * p.force) * this.speed * (1 - p.age / this.maxAge);
 
+      // лёгкое «растекание» следа
       p.x += p.vx * f;
       p.y += p.vy * f;
       p.age++;
@@ -98,35 +122,22 @@ class TouchTexture {
   }
 }
 
-class GradientBackground {
+class LiquidBackground {
   constructor(sceneManager) {
     this.sceneManager = sceneManager;
     this.mesh = null;
 
     this.uniforms = {
-  uTime: { value: 0 },
-  uResolution: { value: new THREE.Vector2(1, 1) },
-
-    uColor1: { value: new THREE.Vector3(0.060, 0.062, 0.068) }, // #0f1011
-    uColor2: { value: new THREE.Vector3(0.105, 0.110, 0.122) }, // #1b1c1f
-    uColor3: { value: new THREE.Vector3(0.185, 0.192, 0.210) }, // #2f3136
-    uColor4: { value: new THREE.Vector3(0.310, 0.325, 0.350) }, // #4f5359
-    uColor5: { value: new THREE.Vector3(0.520, 0.540, 0.575) }, // #858a92
-    uColor6: { value: new THREE.Vector3(0.720, 0.740, 0.785) }, // #b8bdc8
-
-  // ВАЖНО: один раз и не синий
-    uDarkNavy: { value: new THREE.Vector3(0.055, 0.058, 0.070) }, // deep silver shadow
-
-    uSpeed: { value: 1.15 },
-    uIntensity: { value: 1.22 },       // ниже контраст, больше "металл"
-  uTouchTexture: { value: null },
-    uGrainIntensity: { value: 0.035 },
-
-    uGradientSize: { value: 0.62 },
-  uGradientCount: { value: 12.0 },
-    uColor1Weight: { value: 0.9 },
-    uColor2Weight: { value: 1.1 }
-};
+      uTime: { value: 0 },
+      uResolution: { value: new THREE.Vector2(1, 1) },
+      uSpeed: { value: 1.0 },
+      uTouchTexture: { value: null },
+      uIdle: { value: 0.10 },         // насколько сильно фон «живёт» сам
+      uTouchPower: { value: 1.0 },    // усиление реакции на касание
+      uRoughness: { value: 0.28 },    // 0..1 (меньше = более зеркало)
+      uGrain: { value: 0.035 },       // зерно/микрошум
+      uExposure: { value: 1.10 }      // общая яркость
+    };
   }
 
   init() {
@@ -137,135 +148,162 @@ class GradientBackground {
       uniforms: this.uniforms,
       vertexShader: `
         varying vec2 vUv;
-        void main() {
+        void main(){
           vUv = uv;
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
       `,
-
       fragmentShader: `
-  uniform float uTime;
-  uniform vec2 uResolution;
-  uniform float uSpeed;
-  uniform float uIntensity;
-  uniform sampler2D uTouchTexture;
-  uniform float uGrainIntensity;
+        precision highp float;
 
-  varying vec2 vUv;
+        uniform float uTime;
+        uniform vec2 uResolution;
+        uniform float uSpeed;
+        uniform sampler2D uTouchTexture;
+        uniform float uIdle;
+        uniform float uTouchPower;
+        uniform float uRoughness;
+        uniform float uGrain;
+        uniform float uExposure;
 
-  float hash12(vec2 p){
-    vec3 p3  = fract(vec3(p.xyx) * 0.1031);
-    p3 += dot(p3, p3.yzx + 33.33);
-    return fract((p3.x + p3.y) * p3.z);
-  }
+        varying vec2 vUv;
 
-  float noise(vec2 p){
-    vec2 i = floor(p);
-    vec2 f = fract(p);
-    f = f*f*(3.0-2.0*f);
-    float a = hash12(i + vec2(0.0,0.0));
-    float b = hash12(i + vec2(1.0,0.0));
-    float c = hash12(i + vec2(0.0,1.0));
-    float d = hash12(i + vec2(1.0,1.0));
-    return mix(mix(a,b,f.x), mix(c,d,f.x), f.y);
-  }
+        float hash12(vec2 p){
+          vec3 p3 = fract(vec3(p.xyx) * 0.1031);
+          p3 += dot(p3, p3.yzx + 33.33);
+          return fract((p3.x + p3.y) * p3.z);
+        }
 
-  float fbm(vec2 p){
-    float v = 0.0;
-    float a = 0.55;
-    mat2 m = mat2(1.6, -1.2, 1.2, 1.6);
-    for(int i=0;i<5;i++){
-      v += a * noise(p);
-      p = m * p;
-      a *= 0.55;
-    }
-    return v;
-  }
+        float noise(vec2 p){
+          vec2 i = floor(p);
+          vec2 f = fract(p);
+          f = f*f*(3.0-2.0*f);
+          float a = hash12(i + vec2(0.0,0.0));
+          float b = hash12(i + vec2(1.0,0.0));
+          float c = hash12(i + vec2(0.0,1.0));
+          float d = hash12(i + vec2(1.0,1.0));
+          return mix(mix(a,b,f.x), mix(c,d,f.x), f.y);
+        }
 
-  vec2 rot(vec2 p, float a){
-    float s = sin(a), c = cos(a);
-    return mat2(c,-s,s,c) * p;
-  }
+        float fbm(vec2 p){
+          float v = 0.0;
+          float a = 0.55;
+          mat2 m = mat2(1.6, -1.2, 1.2, 1.6);
+          for(int i=0;i<5;i++){
+            v += a * noise(p);
+            p = m * p;
+            a *= 0.55;
+          }
+          return v;
+        }
 
-  vec2 curl(vec2 p){
-    float e = 0.0025;
-    float n1 = fbm(p + vec2(0.0, e));
-    float n2 = fbm(p - vec2(0.0, e));
-    float a  = (n1 - n2) / (2.0 * e);
-    float n3 = fbm(p + vec2(e, 0.0));
-    float n4 = fbm(p - vec2(e, 0.0));
-    float b  = (n3 - n4) / (2.0 * e);
-    return vec2(a, -b);
-  }
+        vec2 rot(vec2 p, float a){
+          float s = sin(a), c = cos(a);
+          return mat2(c,-s,s,c) * p;
+        }
 
-  float grain(vec2 uv, float time){
-    vec2 gUv = uv * uResolution * 0.35;
-    float g = fract(sin(dot(gUv + time*11.17, vec2(12.9898, 78.233))) * 43758.5453);
-    return g * 2.0 - 1.0;
-  }
+        float heightField(vec2 uv, float t, float inten){
+          // базовый рельеф
+          float h = fbm(uv * 3.2 + vec2(0.0, t));
+          h += fbm(uv * 7.8 - vec2(t*0.85, t*0.55)) * 0.40;
+          // усиление под касанием (как «палец продавил металл»)
+          h += inten * 0.75;
+          return h;
+        }
 
-  void main(){
-    vec2 uv = vUv;
+        float grain(vec2 uv, float time){
+          vec2 gUv = uv * uResolution * 0.35;
+          float g = fract(sin(dot(gUv + time*11.17, vec2(12.9898, 78.233))) * 43758.5453);
+          return g * 2.0 - 1.0;
+        }
 
-    vec4 touch = texture2D(uTouchTexture, uv);
-    vec2 v = (touch.rg * 2.0 - 1.0);
-    float inten = clamp(touch.b * 1.65, 0.0, 1.0);
+        void main(){
+          vec2 uv = vUv;
 
-    float t = uTime * (0.18 * uSpeed);
+          // touch map: RG = направление, B = сила
+          vec4 touch = texture2D(uTouchTexture, uv);
+          vec2 v = (touch.rg * 2.0 - 1.0);
+          float inten = clamp(touch.b * uTouchPower, 0.0, 1.0);
 
-    vec2 p = uv * 2.35;
-    vec2 flow = curl(p + t);
-    uv += flow * 0.025;
-    uv += v * (0.12 * inten);
+          float t = uTime * (0.12 * uSpeed);
 
-    vec2 q = uv;
-    q = rot(q - 0.5, 0.35 * sin(t*1.3)) + 0.5;
+          // idle flow (очень мягко) + touch drag (сильно)
+          float drive = mix(uIdle, 1.0, smoothstep(0.03, 0.22, inten));
 
-    float h = fbm(q*3.25 + vec2(0.0, t));
-    h += fbm(q*7.8 - vec2(t*0.85, t*0.55)) * 0.34;
-    h += inten * 0.75;
-    h = smoothstep(0.20, 0.86, h);
+          vec2 p = uv * 2.2;
+          vec2 drift = vec2(
+            fbm(p + vec2(0.0, t)) - 0.5,
+            fbm(p + vec2(4.2, 1.7) - t) - 0.5
+          );
 
-    float dx = dFdx(h);
-    float dy = dFdy(h);
-    vec3 n = normalize(vec3(-dx*7.2, -dy*7.2, 1.0));
+          uv += drift * (0.030 * drive);
+          uv += v * (0.18 * inten); // "тащим" жидкий металл
 
-    vec3 vDir = vec3(0.0, 0.0, 1.0);
-    vec3 lDir = normalize(vec3(-0.24, 0.42, 0.86));
+          // вращаем поле чуть-чуть, чтобы было более живо
+          vec2 q = rot(uv - 0.5, 0.18 * sin(t*1.4)) + 0.5;
 
-    float ndl  = clamp(dot(n, lDir), 0.0, 1.0);
-    float spec = pow(clamp(dot(reflect(-lDir, n), vDir), 0.0, 1.0), 72.0);
-    float fres = pow(1.0 - clamp(dot(n, vDir), 0.0, 1.0), 4.6);
+          // height
+          float h = heightField(q, t, inten);
 
-    vec3 r = reflect(-vDir, n);
-    float sky = smoothstep(-0.25, 0.95, r.y*0.5 + 0.5);
-    vec3 env = mix(vec3(0.16,0.165,0.175), vec3(0.86,0.88,0.90), sky);
+          // нормаль из height (finite diff)
+          vec2 e = vec2(1.0 / uResolution.x, 1.0 / uResolution.y);
+          float hx = heightField(q + vec2(e.x, 0.0), t, inten);
+          float hy = heightField(q + vec2(0.0, e.y), t, inten);
 
-    float stripY = exp(-pow((r.y - 0.55) * 7.5, 2.0));
-    float stripX = smoothstep(0.95, 0.15, abs(r.x));
-    env += (stripY * stripX) * 0.52;
+          // bump amount зависит от roughness (более зеркало => сильнее нормали)
+          float bump = mix(10.5, 6.5, clamp(uRoughness, 0.0, 1.0));
+          vec3 n = normalize(vec3(-(hx - h) * bump, -(hy - h) * bump, 1.0));
 
-    vec3 base = vec3(0.26,0.265,0.275);
-    vec3 col = mix(base, env, 0.72 + 0.18*fres);
-    col += ndl * 0.10;
-    col += spec * 0.82;
+          // lighting
+          vec3 vDir = vec3(0.0, 0.0, 1.0);
+          vec3 lDir = normalize(vec3(-0.22, 0.44, 0.86));
 
-    float g = grain(uv, uTime);
-    col += g * (uGrainIntensity * 0.24);
-    col += vec3(0.012, 0.012, 0.016) * (h - 0.5);
+          float ndl = clamp(dot(n, lDir), 0.0, 1.0);
 
-    col = mix(vec3(dot(col, vec3(0.333))), col, 0.90);
-    col = clamp(col, 0.0, 1.0);
-    col = pow(col, vec3(0.92));
-    col *= (0.95 + 0.08 * uIntensity);
+          // fresnel
+          float fres = pow(1.0 - clamp(dot(n, vDir), 0.0, 1.0), 5.0);
 
-    float vgn = smoothstep(0.98, 0.25, length(vUv - 0.5));
-    col *= 0.92 + 0.08 * vgn;
+          // specular
+          float specPow = mix(55.0, 120.0, 1.0 - clamp(uRoughness, 0.0, 1.0));
+          float spec = pow(clamp(dot(reflect(-lDir, n), vDir), 0.0, 1.0), specPow);
 
-    gl_FragColor = vec4(col, 1.0);
-  }
-`
+          // fake env reflection (sky vs ground + bright stripe)
+          vec3 r = reflect(-vDir, n);
+          float sky = smoothstep(-0.30, 0.95, r.y*0.55 + 0.45);
+          vec3 env = mix(vec3(0.16,0.165,0.175), vec3(0.92,0.93,0.95), sky);
 
+          float stripY = exp(-pow((r.y - 0.58) * 7.2, 2.0));
+          float stripX = smoothstep(0.98, 0.18, abs(r.x));
+          env += (stripY * stripX) * 0.55;
+
+          // base silver
+          vec3 base = vec3(0.27,0.275,0.285);
+          vec3 col = mix(base, env, 0.70 + 0.22*fres);
+          col += ndl * 0.06;
+
+          // roughness reduces spec
+          float specAmt = mix(0.95, 0.35, clamp(uRoughness, 0.0, 1.0));
+          col += spec * specAmt;
+
+          // micro shading from height (subtle)
+          col += vec3(0.010,0.010,0.014) * (h - 0.55);
+
+          // grain
+          float g = grain(uv, uTime);
+          col += g * (uGrain * 0.25);
+
+          // exposure / gamma
+          col *= uExposure;
+          col = clamp(col, 0.0, 1.0);
+          col = pow(col, vec3(0.92));
+
+          // vignette
+          float vgn = smoothstep(0.98, 0.25, length(vUv - 0.5));
+          col *= 0.93 + 0.07 * vgn;
+
+          gl_FragColor = vec4(col, 1.0);
+        }
+      `
     });
 
     this.mesh = new THREE.Mesh(geometry, material);
@@ -292,14 +330,14 @@ class LiquidApp {
 
     this.renderer = new THREE.WebGLRenderer({
       antialias: true,
-      powerPreference: "high-performance",
+      powerPreference: 'high-performance',
       alpha: false,
       stencil: false,
       depth: false
     });
 
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x050507);
+    this.scene.background = new THREE.Color(0x0a0a0c);
 
     this.camera = new THREE.PerspectiveCamera(45, 1, 0.1, 10000);
     this.camera.position.z = 50;
@@ -307,13 +345,13 @@ class LiquidApp {
     this.clock = new THREE.Clock();
 
     this.touchTexture = new TouchTexture();
-    this.gradient = new GradientBackground(this);
-    this.gradient.uniforms.uTouchTexture.value = this.touchTexture.texture;
+    this.bg = new LiquidBackground(this);
+    this.bg.uniforms.uTouchTexture.value = this.touchTexture.texture;
 
     this.resize();
     this.container.appendChild(this.renderer.domElement);
 
-    this.gradient.init();
+    this.bg.init();
     this.bindEvents();
     this.tick();
   }
@@ -328,9 +366,14 @@ class LiquidApp {
   }
 
   bindEvents() {
-    const hero = this.container.closest(".liquid-hero") || this.container;
+    const hero = this.container.closest('.liquid-hero') || this.container;
 
-    const onMove = (clientX, clientY) => {
+    const inHero = (x, y) => {
+      const r = hero.getBoundingClientRect();
+      return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+    };
+
+    const push = (clientX, clientY) => {
       const r = hero.getBoundingClientRect();
       const x = (clientX - r.left) / r.width;
       const y = 1 - (clientY - r.top) / r.height;
@@ -340,13 +383,32 @@ class LiquidApp {
       });
     };
 
-    hero.addEventListener("pointermove", (e) => onMove(e.clientX, e.clientY), { passive: true });
-    hero.addEventListener("touchmove", (e) => {
-      if (!e.touches || !e.touches[0]) return;
-      onMove(e.touches[0].clientX, e.touches[0].clientY);
+    // Важно: слушаем на window, чтобы не терять события над canvas/video
+    window.addEventListener('pointermove', (e) => {
+      if (!inHero(e.clientX, e.clientY)) {
+        this.touchTexture.resetLast();
+        return;
+      }
+      push(e.clientX, e.clientY);
     }, { passive: true });
 
-    window.addEventListener("resize", () => this.resize());
+    window.addEventListener('pointerdown', (e) => {
+      if (!inHero(e.clientX, e.clientY)) return;
+      this.touchTexture.resetLast();
+      push(e.clientX, e.clientY);
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (!e.touches || !e.touches[0]) return;
+      const t = e.touches[0];
+      if (!inHero(t.clientX, t.clientY)) {
+        this.touchTexture.resetLast();
+        return;
+      }
+      push(t.clientX, t.clientY);
+    }, { passive: true });
+
+    window.addEventListener('resize', () => this.resize());
   }
 
   resize() {
@@ -359,14 +421,14 @@ class LiquidApp {
     this.camera.aspect = w / h;
     this.camera.updateProjectionMatrix();
 
-    this.gradient.onResize();
+    this.bg.onResize();
   }
 
   tick() {
     const delta = Math.min(this.clock.getDelta(), 0.1);
 
     this.touchTexture.update();
-    this.gradient.update(delta);
+    this.bg.update(delta);
 
     this.renderer.render(this.scene, this.camera);
     requestAnimationFrame(() => this.tick());
@@ -375,11 +437,11 @@ class LiquidApp {
 
 // Start
 (function initLiquid() {
-  const mount = document.getElementById("liquid-bg");
+  const mount = document.getElementById('liquid-bg');
   if (!mount) return;
-
-  // если three.js не загрузился — не падаем
   if (!window.THREE) return;
 
-  new LiquidApp(mount);
+  // Prevent double init (if hot reload)
+  if (mount.__liquidApp) return;
+  mount.__liquidApp = new LiquidApp(mount);
 })();
