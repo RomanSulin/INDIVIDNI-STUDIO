@@ -2,10 +2,10 @@
 
 class TouchTexture {
   constructor() {
-    this.size = 64;
+    this.size = 128;
     this.width = this.height = this.size;
-    this.maxAge = 64;
-    this.radius = 0.25 * this.size;
+    this.maxAge = 120;
+    this.radius = 0.34 * this.size;
     this.speed = 1 / this.maxAge;
     this.trail = [];
     this.last = null;
@@ -36,7 +36,7 @@ class TouchTexture {
       const d = Math.sqrt(dd);
       vx = dx / d;
       vy = dy / d;
-      force = Math.min(dd * 20000, 2.0);
+      force = Math.min(dd * 12000, 1.25);
     }
 
     this.last = { x: point.x, y: point.y };
@@ -61,14 +61,14 @@ class TouchTexture {
     intensity *= p.force;
 
     const radius = this.radius;
-    const offset = this.size * 5;
+    const offset = this.size * 3;
 
     const color = `${((p.vx + 1) / 2) * 255}, ${((p.vy + 1) / 2) * 255}, ${intensity * 255}`;
 
     this.ctx.shadowOffsetX = offset;
     this.ctx.shadowOffsetY = offset;
     this.ctx.shadowBlur = radius;
-    this.ctx.shadowColor = `rgba(${color},${0.2 * intensity})`;
+    this.ctx.shadowColor = `rgba(${color},${0.34 * intensity})`;
 
     this.ctx.beginPath();
     this.ctx.fillStyle = "rgba(255,0,0,1)"; // не видно, это “карта” для искажений
@@ -142,126 +142,130 @@ class GradientBackground {
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
       `,
+
       fragmentShader: `
-        uniform float uTime;
-        uniform vec2 uResolution;
+  uniform float uTime;
+  uniform vec2 uResolution;
+  uniform float uSpeed;
+  uniform float uIntensity;
+  uniform sampler2D uTouchTexture;
+  uniform float uGrainIntensity;
 
-        uniform vec3 uColor1;
-        uniform vec3 uColor2;
-        uniform vec3 uColor3;
-        uniform vec3 uColor4;
-        uniform vec3 uColor5;
-        uniform vec3 uColor6;
+  varying vec2 vUv;
 
-        uniform float uSpeed;
-        uniform float uIntensity;
-        uniform sampler2D uTouchTexture;
-        uniform float uGrainIntensity;
+  float hash12(vec2 p){
+    vec3 p3  = fract(vec3(p.xyx) * 0.1031);
+    p3 += dot(p3, p3.yzx + 33.33);
+    return fract((p3.x + p3.y) * p3.z);
+  }
 
-        uniform vec3 uDarkNavy;
-        uniform float uGradientSize;
-        uniform float uGradientCount;
-        uniform float uColor1Weight;
-        uniform float uColor2Weight;
+  float noise(vec2 p){
+    vec2 i = floor(p);
+    vec2 f = fract(p);
+    f = f*f*(3.0-2.0*f);
+    float a = hash12(i + vec2(0.0,0.0));
+    float b = hash12(i + vec2(1.0,0.0));
+    float c = hash12(i + vec2(0.0,1.0));
+    float d = hash12(i + vec2(1.0,1.0));
+    return mix(mix(a,b,f.x), mix(c,d,f.x), f.y);
+  }
 
-        varying vec2 vUv;
+  float fbm(vec2 p){
+    float v = 0.0;
+    float a = 0.55;
+    mat2 m = mat2(1.6, -1.2, 1.2, 1.6);
+    for(int i=0;i<5;i++){
+      v += a * noise(p);
+      p = m * p;
+      a *= 0.55;
+    }
+    return v;
+  }
 
-        float grain(vec2 uv, float time) {
-          vec2 gUv = uv * uResolution * 0.5;
-          float g = fract(sin(dot(gUv + time, vec2(12.9898, 78.233))) * 43758.5453);
-          return g * 2.0 - 1.0;
-        }
+  vec2 rot(vec2 p, float a){
+    float s = sin(a), c = cos(a);
+    return mat2(c,-s,s,c) * p;
+  }
 
-        vec3 getGradientColor(vec2 uv, float time) {
-          float r = uGradientSize;
+  vec2 curl(vec2 p){
+    float e = 0.0025;
+    float n1 = fbm(p + vec2(0.0, e));
+    float n2 = fbm(p - vec2(0.0, e));
+    float a  = (n1 - n2) / (2.0 * e);
+    float n3 = fbm(p + vec2(e, 0.0));
+    float n4 = fbm(p - vec2(e, 0.0));
+    float b  = (n3 - n4) / (2.0 * e);
+    return vec2(a, -b);
+  }
 
-          vec2 c1 = vec2(0.5 + sin(time*uSpeed*0.40)*0.40, 0.5 + cos(time*uSpeed*0.50)*0.40);
-          vec2 c2 = vec2(0.5 + cos(time*uSpeed*0.60)*0.50, 0.5 + sin(time*uSpeed*0.45)*0.50);
-          vec2 c3 = vec2(0.5 + sin(time*uSpeed*0.35)*0.45, 0.5 + cos(time*uSpeed*0.55)*0.45);
-          vec2 c4 = vec2(0.5 + cos(time*uSpeed*0.50)*0.40, 0.5 + sin(time*uSpeed*0.40)*0.40);
-          vec2 c5 = vec2(0.5 + sin(time*uSpeed*0.70)*0.35, 0.5 + cos(time*uSpeed*0.60)*0.35);
-          vec2 c6 = vec2(0.5 + cos(time*uSpeed*0.45)*0.50, 0.5 + sin(time*uSpeed*0.65)*0.50);
+  float grain(vec2 uv, float time){
+    vec2 gUv = uv * uResolution * 0.35;
+    float g = fract(sin(dot(gUv + time*11.17, vec2(12.9898, 78.233))) * 43758.5453);
+    return g * 2.0 - 1.0;
+  }
 
-          float i1 = 1.0 - smoothstep(0.0, r, length(uv - c1));
-          float i2 = 1.0 - smoothstep(0.0, r, length(uv - c2));
-          float i3 = 1.0 - smoothstep(0.0, r, length(uv - c3));
-          float i4 = 1.0 - smoothstep(0.0, r, length(uv - c4));
-          float i5 = 1.0 - smoothstep(0.0, r, length(uv - c5));
-          float i6 = 1.0 - smoothstep(0.0, r, length(uv - c6));
+  void main(){
+    vec2 uv = vUv;
 
-          vec3 col = vec3(0.0);
-          col += uColor1 * i1 * (0.55 + 0.45 * sin(time*uSpeed)) * uColor1Weight;
-          col += uColor2 * i2 * (0.55 + 0.45 * cos(time*uSpeed*1.2)) * uColor2Weight;
-          col += uColor3 * i3 * (0.55 + 0.45 * sin(time*uSpeed*0.8)) * uColor1Weight;
-          col += uColor4 * i4 * (0.55 + 0.45 * cos(time*uSpeed*1.3)) * uColor2Weight;
-          col += uColor5 * i5 * (0.55 + 0.45 * sin(time*uSpeed*1.1)) * uColor1Weight;
-          col += uColor6 * i6 * (0.55 + 0.45 * cos(time*uSpeed*0.9)) * uColor2Weight;
+    vec4 touch = texture2D(uTouchTexture, uv);
+    vec2 v = (touch.rg * 2.0 - 1.0);
+    float inten = clamp(touch.b * 1.65, 0.0, 1.0);
 
-          col = clamp(col, vec3(0.0), vec3(1.0)) * uIntensity;
+    float t = uTime * (0.18 * uSpeed);
 
-          float lum = dot(col, vec3(0.299, 0.587, 0.114));
-          col = mix(vec3(lum), col, 0.78);
-          col = pow(col, vec3(1.06));
+    vec2 p = uv * 2.35;
+    vec2 flow = curl(p + t);
+    uv += flow * 0.025;
+    uv += v * (0.12 * inten);
 
-          float b = length(col);
-          float mixF = max(b * 1.2, 0.15);
-          col = mix(uDarkNavy, col, mixF);
+    vec2 q = uv;
+    q = rot(q - 0.5, 0.35 * sin(t*1.3)) + 0.5;
 
-          return clamp(col, vec3(0.0), vec3(1.0));
-        }
+    float h = fbm(q*3.25 + vec2(0.0, t));
+    h += fbm(q*7.8 - vec2(t*0.85, t*0.55)) * 0.34;
+    h += inten * 0.75;
+    h = smoothstep(0.20, 0.86, h);
 
-        void main() {
-          vec2 uv = vUv;
+    float dx = dFdx(h);
+    float dy = dFdy(h);
+    vec3 n = normalize(vec3(-dx*7.2, -dy*7.2, 1.0));
 
-          vec4 touch = texture2D(uTouchTexture, uv);
-          float vx = -(touch.r * 2.0 - 1.0);
-          float vy = -(touch.g * 2.0 - 1.0);
-          float inten = touch.b;
+    vec3 vDir = vec3(0.0, 0.0, 1.0);
+    vec3 lDir = normalize(vec3(-0.24, 0.42, 0.86));
 
-          uv.x += vx * 0.8 * inten;
-          uv.y += vy * 0.8 * inten;
+    float ndl  = clamp(dot(n, lDir), 0.0, 1.0);
+    float spec = pow(clamp(dot(reflect(-lDir, n), vDir), 0.0, 1.0), 72.0);
+    float fres = pow(1.0 - clamp(dot(n, vDir), 0.0, 1.0), 4.6);
 
-          vec2 center = vec2(0.5);
-          float dist = length(uv - center);
-          float ripple = sin(dist * 20.0 - uTime * 3.0) * 0.018 * inten;
-          float wave   = sin(dist * 15.0 - uTime * 2.0) * 0.014 * inten;
-          uv += vec2(ripple + wave);
+    vec3 r = reflect(-vDir, n);
+    float sky = smoothstep(-0.25, 0.95, r.y*0.5 + 0.5);
+    vec3 env = mix(vec3(0.16,0.165,0.175), vec3(0.86,0.88,0.90), sky);
 
-          // base (multi-sample) to get a softer, more "liquid" look
-vec3 c0 = getGradientColor(uv, uTime);
-vec3 c1 = getGradientColor(uv + vec2( 0.004, -0.003), uTime);
-vec3 c2 = getGradientColor(uv + vec2(-0.003,  0.004), uTime);
-vec3 color = (c0 + c1 + c2) / 3.0;
+    float stripY = exp(-pow((r.y - 0.55) * 7.5, 2.0));
+    float stripX = smoothstep(0.95, 0.15, abs(r.x));
+    env += (stripY * stripX) * 0.52;
 
-// pseudo-normal from luminance for metallic highlights
-float h  = dot(color, vec3(0.3333));
-float hx = dot(getGradientColor(uv + vec2(0.006, 0.000), uTime), vec3(0.3333));
-float hy = dot(getGradientColor(uv + vec2(0.000, 0.006), uTime), vec3(0.3333));
-vec3 n = normalize(vec3((h - hx) * 4.2, (h - hy) * 4.2, 1.0));
+    vec3 base = vec3(0.26,0.265,0.275);
+    vec3 col = mix(base, env, 0.72 + 0.18*fres);
+    col += ndl * 0.10;
+    col += spec * 0.82;
 
-vec3 v = vec3(0.0, 0.0, 1.0);
-vec3 l = normalize(vec3(-0.35, 0.55, 0.75));
-vec3 hdir = normalize(l + v);
+    float g = grain(uv, uTime);
+    col += g * (uGrainIntensity * 0.24);
+    col += vec3(0.012, 0.012, 0.016) * (h - 0.5);
 
-float diff = clamp(dot(n, l), 0.0, 1.0);
-float spec = pow(clamp(dot(n, hdir), 0.0, 1.0), 72.0);
-float fres = pow(1.0 - clamp(dot(n, v), 0.0, 1.0), 2.2);
+    col = mix(vec3(dot(col, vec3(0.333))), col, 0.90);
+    col = clamp(col, 0.0, 1.0);
+    col = pow(col, vec3(0.92));
+    col *= (0.95 + 0.08 * uIntensity);
 
-// build "silver liquid metal" response (less contrast, more chrome)
-vec3 base = mix(vec3(0.20, 0.21, 0.23), color, 0.70);
-vec3 metal = base + diff * 0.11 + spec * 0.28 + fres * 0.07;
+    float vgn = smoothstep(0.98, 0.25, length(vUv - 0.5));
+    col *= 0.92 + 0.08 * vgn;
 
-// soft tonemapping + contrast compression
-metal = metal / (metal + vec3(1.05));
-metal = mix(metal, vec3(dot(metal, vec3(0.3333))), 0.38); // push to silver
-metal = 0.5 + (metal - 0.5) * 0.72;
+    gl_FragColor = vec4(col, 1.0);
+  }
+`
 
-float g = grain(uv, uTime);
-metal += g * uGrainIntensity;
-
-gl_FragColor = vec4(clamp(metal, 0.0, 1.0), 1.0);
-        }
-      `
     });
 
     this.mesh = new THREE.Mesh(geometry, material);
