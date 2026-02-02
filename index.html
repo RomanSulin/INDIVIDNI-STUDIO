@@ -10,8 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./assets/css/style.css" />
   <link rel="stylesheet" href="./assets/css/home_tv.css" />
-  <!-- overrides must be AFTER home_tv.css, otherwise they get overwritten -->
-  <link rel="stylesheet" href="./assets/css/hero_tv_fix.css?v=7" />
+  <link rel="stylesheet" href="./assets/css/hero_tv_fix.css?v=1" />
 </head>
 
 <body>
@@ -66,7 +65,16 @@
         <div class="liquid-sub">studio</div>
         <div class="liquid-main">INDIVIDNI</div>
         <div class="hero-tv__desc">видеопродакшн полного цикла</div>
-      </div>
+      <div class="hero-tv__typed" aria-label="Услуги">
+  <span class="hero-tv__typedLead">↳</span>
+  <span id="heroTyped" class="hero-tv__typedText"></span><span class="hero-tv__cursor" aria-hidden="true"></span>
+</div>
+
+<div class="hero-tv__actions">
+  <button class="btn btn--primary" type="button" data-hero-showreel>Шоурил</button>
+  <a class="btn btn--ghost" href="#contact">Рассчитать проект</a>
+</div>
+</div>
     </div>
 
     <div class="hero-tv__stage" data-tv-hero>
@@ -374,8 +382,7 @@
 <script src="https://unpkg.com/fflate@0.7.4/umd/index.js"></script>
 <script src="https://unpkg.com/three@0.128.0/examples/js/loaders/FBXLoader.js"></script>
 <script src="./assets/js/tv_hero.js" defer></script>
-<!-- cache-bust on updates -->
-<script src="./assets/js/liquid.js?v=7" defer></script>
+<script src="./assets/js/liquid.js" defer></script>
 <script src="./assets/js/capabilities_tabs.js" defer></script>
 <script src="./assets/js/capabilities_detail.js" defer></script>
 <script src="./assets/js/main.js" defer></script>
