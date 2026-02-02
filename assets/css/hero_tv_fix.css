@@ -1,62 +1,143 @@
+/* HERO TV FIX (load AFTER home_tv.css) */
 :root{
-  --heroPad: clamp(28px, 3.8vw, 78px);
+  --heroPad: clamp(24px, 4vw, 80px);
+  --tvRight: clamp(-10px, -1vw, 40px);
 }
 
-/* Desktop composition: title left with safe padding, TV bigger on the right */
+.liquid-hero.hero-tv{
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.liquid-hero.hero-tv #liquid-bg{
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.liquid-hero.hero-tv .hero-tv__inner{
+  position: relative;
+  z-index: 5;
+  min-height: 100vh;
+}
+
+.liquid-hero.hero-tv .hero-tv__actions{ display:flex; }
+
+.hero-tv__cursor{
+  display:inline-block;
+  width: 8px;
+  height: 14px;
+  margin-left: 6px;
+  border-radius: 2px;
+  background: rgba(255,255,255,.75);
+  transform: translateY(2px);
+  animation: heroBlink 1s steps(2,end) infinite;
+}
+@keyframes heroBlink{ 50%{ opacity:0; } }
+
 @media (min-width: 861px){
+  /* убираем ограничение container, чтобы текст мог уйти влево, но с безопасным паддингом */
   .liquid-hero.hero-tv .hero-tv__inner.container{
-    width: 100% !important;
     max-width: none !important;
+    width: 100% !important;
     padding-left: var(--heroPad) !important;
     padding-right: var(--heroPad) !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
   }
 
-  .liquid-hero.hero-tv .hero-tv__inner{
-    position: relative !important;
-    min-height: 100vh !important;
-  }
-
+  /* текст — слева по центру, поверх ТВ */
   .liquid-hero.hero-tv .hero-tv__title{
     position: absolute !important;
     left: var(--heroPad) !important;
     top: 50% !important;
-    transform: translateY(-55%) !important;
-    z-index: 10 !important;
-    text-align: left !important;
-    max-width: min(780px, 55vw) !important;
+    transform: translateY(-56%) !important;
+    z-index: 30 !important;
+    max-width: min(56vw, 860px) !important;
+    pointer-events: auto !important;
   }
 
   .liquid-hero.hero-tv .liquid-title{ text-align:left !important; }
 
-  /* Optional action buttons under the title, if present */
+  /* большая типографика */
+  .liquid-hero.hero-tv .liquid-main{
+    font-size: clamp(88px, 10.6vw, 156px) !important;
+    line-height: 0.86 !important;
+    letter-spacing: 0.02em !important;
+  }
+
+  .liquid-hero.hero-tv .hero-tv__desc{
+    margin-top: 16px !important;
+    font-size: 14px !important;
+    opacity: .78 !important;
+  }
+
+  .liquid-hero.hero-tv .hero-tv__typed{
+    margin-top: 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    font-size: 13px !important;
+    opacity: .78 !important;
+    letter-spacing: .02em;
+  }
+
+  .liquid-hero.hero-tv .hero-tv__typedLead{
+    opacity: .7;
+  }
+
   .liquid-hero.hero-tv .hero-tv__actions{
     margin-top: 18px !important;
     display: flex !important;
-    gap: 14px !important;
-    flex-wrap: wrap;
-  }
-  .liquid-hero.hero-tv .hero-tv__actions .btn,
-  .liquid-hero.hero-tv .hero-tv__actions a{
-    height: 46px !important;
-    padding: 0 18px !important;
-    font-size: 15px !important;
+    gap: 12px !important;
+    align-items: center !important;
   }
 
+  .liquid-hero.hero-tv .hero-tv__actions .btn{
+    height: 48px !important;
+    padding: 0 20px !important;
+    font-size: 14px !important;
+    border-radius: 999px !important;
+    white-space: nowrap;
+  }
+
+  /* ТВ — больше, правее, по вертикальному центру */
   .liquid-hero.hero-tv .hero-tv__stage{
     position: absolute !important;
-    right: var(--heroPad) !important;
     top: 50% !important;
+    right: var(--tvRight) !important;
     transform: translateY(-50%) !important;
-    z-index: 6 !important;
-    width: clamp(760px, 58vw, 1280px) !important;
-    height: clamp(520px, 74vh, 940px) !important;
+    z-index: 10 !important;
+    width: clamp(720px, 52vw, 1120px) !important;
+    height: clamp(460px, 70vh, 860px) !important;
+    pointer-events: none; /* чтобы курсор не “гасился” ТВ */
   }
+
+  /* но кнопки должны быть кликабельны */
+  .liquid-hero.hero-tv .hero-tv__actions{ pointer-events: auto !important; }
 }
 
-/* Mobile: keep existing layout, only ensure safe side padding */
 @media (max-width: 860px){
-  .liquid-hero.hero-tv .hero-tv__inner.container{
-    padding-left: 20px !important;
-    padding-right: 20px !important;
+  /* на мобиле раскладку не ломаем — просто добавляем typed + кнопки */
+  .liquid-hero.hero-tv .hero-tv__typed{
+    margin-top: 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    font-size: 13px !important;
+    opacity: .78 !important;
+  }
+  .liquid-hero.hero-tv .hero-tv__actions{
+    margin-top: 14px !important;
+    display: flex !important;
+    gap: 10px !important;
+    flex-wrap: wrap;
+  }
+  .liquid-hero.hero-tv .hero-tv__actions .btn{
+    height: 44px !important;
+    padding: 0 16px !important;
+    font-size: 14px !important;
+    border-radius: 999px !important;
   }
 }
