@@ -1,100 +1,79 @@
 /* global THREE */
 
-/**
- * Liquid background v7 — "chrome / liquid metal" look + reliable cursor/touch interaction.
- * - Strong studio-like reflections (softboxes + strips) for metallic feel
- * - TouchTexture encodes velocity (RG) and intensity (B) for "finger drag" trails
- * - Uses window pointermove so TV canvas / overlays can't block the effect
- */
+// Liquid chrome background for the HERO
+// - studio-like reflections (softboxes)
+// - strong, "finger drag" interaction via a touch texture
+// - pointer tracking is window-level, so overlays won't break it
 
 class TouchTexture {
   constructor() {
-    this.size = 128;
+    this.size = 256;
     this.width = this.height = this.size;
 
-    // Longer trail for "drag"
-    this.maxAge = 140;
-    this.radius = 0.38 * this.size;
-
+    // How long the trail lives (frames).
+    this.maxAge = 130;
     this.speed = 1 / this.maxAge;
+    this.radius = 0.40 * this.size;
+
     this.trail = [];
     this.last = null;
+    this.isDown = false;
 
-    this.canvas = document.createElement("canvas");
+    this.canvas = document.createElement('canvas');
     this.canvas.width = this.width;
     this.canvas.height = this.height;
+    this.ctx = this.canvas.getContext('2d', { alpha: false });
 
-    this.ctx = this.canvas.getContext("2d", { alpha: false });
-    this.clear();
+    this.ctx.fillStyle = 'black';
+    this.ctx.fillRect(0, 0, this.width, this.height);
 
     this.texture = new THREE.Texture(this.canvas);
-    this.texture.minFilter = THREE.LinearFilter;
-    this.texture.magFilter = THREE.LinearFilter;
-    this.texture.generateMipmaps = false;
     this.texture.needsUpdate = true;
   }
 
-  clear() {
-    this.ctx.fillStyle = "black";
-    this.ctx.fillRect(0, 0, this.width, this.height);
+  setPointerDown(v) {
+    this.isDown = !!v;
+    if (!v) this.last = null; // prevents long jumps when re-entering
+  }
+
+  resetLast() {
+    this.last = null;
   }
 
   addTouch(point) {
-    let force = 0.6; // show effect immediately even for first point
+    let force = 0.22; // floor so slow movement still shows
     let vx = 0;
     let vy = 0;
 
     if (this.last) {
       const dx = point.x - this.last.x;
       const dy = point.y - this.last.y;
-      if (dx === 0 && dy === 0) return;
-
       const dd = dx * dx + dy * dy;
-      const d = Math.sqrt(dd);
+      if (dd < 1e-9) return;
 
+      const d = Math.sqrt(dd);
       vx = dx / d;
       vy = dy / d;
 
-      // More sensitive to slow motion; clamp for stability
-      force = Math.min(dd * 90000 + 0.10, 2.0);
-      force = Math.max(force, 0.18);
+      // Stable force: based on distance, not dd*huge. Clamp to [0..1].
+      force = Math.min(1.0, Math.max(0.22, d * 10.0));
     }
+
+    if (this.isDown) force = Math.min(1.0, force * 1.35);
 
     this.last = { x: point.x, y: point.y };
-
-    this.trail.push({
-      x: point.x,
-      y: point.y,
-      age: 0,
-      force,
-      vx,
-      vy
-    });
+    this.trail.push({ x: point.x, y: point.y, age: 0, force, vx, vy });
   }
 
-  update(delta) {
-    // fade to black (cheap decay)
-    this.ctx.fillStyle = "rgba(0,0,0,0.07)";
+  clear() {
+    this.ctx.fillStyle = 'black';
     this.ctx.fillRect(0, 0, this.width, this.height);
-
-    // draw points
-    for (let i = 0; i < this.trail.length; i++) {
-      const p = this.trail[i];
-      p.age += 1;
-      if (p.age > this.maxAge) {
-        this.trail.splice(i, 1);
-        i--;
-        continue;
-      }
-      this.drawPoint(p);
-    }
-
-    this.texture.needsUpdate = true;
   }
 
   drawPoint(p) {
-    const pos = { x: p.x * this.width, y: (1 - p.y) * this.height };
+    const pos = { x: p.x * this.width, y: p.y * this.height };
 
+    // Ease in/out for better "viscous" look.
     let intensity = 1;
     if (p.age < this.maxAge * 0.25) {
       intensity = Math.sin((p.age / (this.maxAge * 0.25)) * (Math.PI / 2));
@@ -102,25 +81,45 @@ class TouchTexture {
       const t = 1 - (p.age - this.maxAge * 0.25) / (this.maxAge * 0.75);
       intensity = -t * (t - 2);
     }
-
     intensity *= p.force;
-    intensity = Math.max(0, Math.min(1, intensity));
 
     const radius = this.radius;
-    const offset = this.size * 3;
+    const offset = this.size * 2.2;
 
-    // RG: velocity in 0..255, B: intensity in 0..255
-    const color = `${((p.vx + 1) / 2) * 255}, ${((p.vy + 1) / 2) * 255}, ${intensity * 255}`;
+    // Encode velocity (rg) + intensity (b) into the "shadow" color.
+    const r = ((p.vx + 1) / 2) * 255;
+    const g = ((p.vy + 1) / 2) * 255;
+    const b = intensity * 255;
+    const color = `${r}, ${g}, ${b}`;
 
     this.ctx.shadowOffsetX = offset;
     this.ctx.shadowOffsetY = offset;
     this.ctx.shadowBlur = radius;
-    this.ctx.shadowColor = `rgba(${color},${0.36 * intensity})`;
+    this.ctx.shadowColor = `rgba(${color},${0.42 * intensity})`;
 
     this.ctx.beginPath();
-    this.ctx.fillStyle = "rgba(255,0,0,1)"; // hidden; only shadow matters
+    this.ctx.fillStyle = 'rgba(255,0,0,1)'; // not visible; only writes to the shadow
     this.ctx.arc(pos.x - offset, pos.y - offset, radius, 0, Math.PI * 2);
     this.ctx.fill();
+  }
+
+  update() {
+    this.clear();
+
+    for (let i = this.trail.length - 1; i >= 0; i--) {
+      const p = this.trail[i];
+      const f = p.force * this.speed * (1 - p.age / this.maxAge);
+
+      // A small "follow" makes it feel viscous
+      p.x += p.vx * f * 0.65;
+      p.y += p.vy * f * 0.65;
+      p.age++;
+
+      if (p.age > this.maxAge) this.trail.splice(i, 1);
+      else this.drawPoint(p);
+    }
+
+    this.texture.needsUpdate = true;
   }
 }
 
@@ -132,19 +131,14 @@ class GradientBackground {
     this.uniforms = {
       uTime: { value: 0 },
       uResolution: { value: new THREE.Vector2(1, 1) },
-
-      uSpeed: { value: 1.25 },
-      uIntensity: { value: 1.0 },
-
       uTouchTexture: { value: null },
-      uTouchStrength: { value: 0.30 },   // "finger drag" strength
-      uIdleMotion: { value: 0.04 },      // idle waves; keep subtle
 
-      uMetalness: { value: 0.98 },
-      uSpecular: { value: 1.75 },
-      uRoughness: { value: 0.10 },       // lower = sharper highlights
-
-      uGrainIntensity: { value: 0.035 }
+      // Tuning
+      uIdleMotion: { value: 0.022 },  // 0.0..0.06
+      uTouchStrength: { value: 0.38 }, // 0.15..0.55
+      uRoughness: { value: 0.075 },   // lower = sharper reflections
+      uSpecular: { value: 2.05 },     // higher = brighter softboxes
+      uGrain: { value: 0.020 }
     };
   }
 
@@ -156,35 +150,26 @@ class GradientBackground {
       uniforms: this.uniforms,
       vertexShader: `
         varying vec2 vUv;
-        void main() {
+        void main(){
           vUv = uv;
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
       `,
       fragmentShader: `
-        precision highp float;
-
         uniform float uTime;
         uniform vec2 uResolution;
-
-        uniform float uSpeed;
-        uniform float uIntensity;
-
         uniform sampler2D uTouchTexture;
-        uniform float uTouchStrength;
+
         uniform float uIdleMotion;
-
-        uniform float uMetalness;
-        uniform float uSpecular;
+        uniform float uTouchStrength;
         uniform float uRoughness;
-
-        uniform float uGrainIntensity;
+        uniform float uSpecular;
+        uniform float uGrain;
 
         varying vec2 vUv;
 
-        // hash / noise
         float hash12(vec2 p){
-          vec3 p3  = fract(vec3(p.xyx) * 0.1031);
+          vec3 p3 = fract(vec3(p.xyx) * 0.1031);
           p3 += dot(p3, p3.yzx + 33.33);
           return fract((p3.x + p3.y) * p3.z);
         }
@@ -202,18 +187,18 @@ class GradientBackground {
 
         float fbm(vec2 p){
           float v = 0.0;
-          float a = 0.52;
-          mat2 m = mat2(1.7, -1.2, 1.2, 1.7);
-          for(int i=0;i<6;i++){
+          float a = 0.55;
+          mat2 m = mat2(1.6, -1.2, 1.2, 1.6);
+          for(int i=0;i<4;i++){
             v += a * noise(p);
             p = m * p;
-            a *= 0.52;
+            a *= 0.55;
           }
           return v;
         }
 
         vec2 curl(vec2 p){
-          float e = 0.0028;
+          float e = 0.002;
           float n1 = fbm(p + vec2(0.0, e));
           float n2 = fbm(p - vec2(0.0, e));
           float a  = (n1 - n2) / (2.0 * e);
@@ -223,115 +208,103 @@ class GradientBackground {
           return vec2(a, -b);
         }
 
-        float grain(vec2 uv, float time){
-          vec2 gUv = uv * uResolution * 0.35;
-          float g = fract(sin(dot(gUv + time*11.17, vec2(12.9898, 78.233))) * 43758.5453);
-          return g * 2.0 - 1.0;
+        float softRect(vec2 p, vec2 c, vec2 s, float blur){
+          vec2 d = abs(p - c) - s;
+          float outside = length(max(d, 0.0));
+          float inside = min(max(d.x, d.y), 0.0);
+          return 1.0 - smoothstep(0.0, blur, outside + inside);
         }
 
-        // "studio" environment — bright softboxes on dark stage
         vec3 envColor(vec3 r){
-          r = normalize(r);
+          // Project to 2D "environment plane" (studio wall)
+          vec2 p = r.xy / (abs(r.z) + 0.65);
 
-          float y = clamp(r.y * 0.5 + 0.5, 0.0, 1.0);
-          vec3 base = mix(vec3(0.006,0.0065,0.008), vec3(0.14,0.145,0.155), pow(y, 1.6));
+          // Base studio gradient
+          float sky = smoothstep(-0.55, 0.95, r.y);
+          vec3 base = mix(vec3(0.05,0.05,0.055), vec3(0.70,0.72,0.76), sky);
 
-          // overhead softbox
-          float sb1 = pow(max(dot(r, normalize(vec3(0.0, 0.86, 0.52))), 0.0), 34.0);
-          base += sb1 * vec3(2.6);
+          // Softboxes (big white reflections)
+          float sb1 = softRect(p, vec2(-0.10, 0.22), vec2(0.85, 0.11), 0.08);
+          float sb2 = softRect(p, vec2( 0.30, 0.04), vec2(0.60, 0.07), 0.06);
+          float sb3 = softRect(p, vec2(-0.05,-0.30), vec2(0.90, 0.18), 0.12);
 
-          // side softbox
-          float sb2 = pow(max(dot(r, normalize(vec3(0.78, 0.22, 0.58))), 0.0), 52.0);
-          base += sb2 * vec3(1.6);
+          // Thin strip highlight (photostudio tube)
+          float strip = softRect(p, vec2(0.35, 0.44), vec2(0.70, 0.03), 0.06);
 
-          // long strip light
-          float stripY = exp(-pow((r.y - 0.14) * 10.0, 2.0));
-          float stripX = smoothstep(0.92, 0.18, abs(r.x));
-          base += (stripY * stripX) * vec3(1.8);
+          vec3 lights = vec3(0.0);
+          lights += vec3(1.0) * sb1 * 1.00;
+          lights += vec3(1.0) * sb2 * 0.70;
+          lights += vec3(1.0) * sb3 * 0.26;
+          lights += vec3(1.0) * strip * 0.90;
 
-          // subtle floor bounce
-          float floorB = smoothstep(-0.85, 0.25, r.y);
-          base += floorB * vec3(0.035,0.037,0.04);
+          base += lights;
+          return clamp(base, 0.0, 2.0);
+        }
 
-          return base;
+        float filmGrain(vec2 uv, float t){
+          vec2 g = uv * uResolution * 0.35;
+          float n = fract(sin(dot(g + t*11.7, vec2(12.9898, 78.233))) * 43758.5453);
+          return n * 2.0 - 1.0;
         }
 
         void main(){
           vec2 uv = vUv;
+          float t = uTime * 0.18;
 
-          // Touch vector field
+          // Touch map encodes velocity and intensity
           vec4 touch = texture2D(uTouchTexture, uv);
-          vec2 v = (touch.rg * 2.0 - 1.0);
-          float inten = clamp(touch.b * 1.75, 0.0, 1.0);
+          vec2 dir = (touch.rg * 2.0 - 1.0);
+          float inten = clamp(touch.b, 0.0, 1.0);
 
-          float t = uTime * (0.22 * uSpeed);
+          // A very small idle flow (so it doesn't feel "alive" when you don't touch)
+          vec2 flow = curl(uv * 2.2 + t);
+          uv += flow * uIdleMotion;
 
-          // base flow (idle)
-          vec2 p = (uv - 0.5) * 2.2;
-          vec2 flow = curl(p * 1.35 + vec2(t, -t*0.9));
-          uv += flow * (0.020 * uIdleMotion);
+          // Interaction displacement
+          uv += dir * (inten * uTouchStrength * 0.18);
 
-          // finger drag: warp uv along velocity field
-          uv += v * (uTouchStrength * inten);
+          // Height field (continuous => no "islands")
+          float h  = fbm(uv * 2.0 + vec2(0.0, t));
+          h += fbm(uv * 5.0 - vec2(t*0.6, t*0.35)) * 0.22;
+          h += inten * 0.55;
 
-          // height field (more "metal" when highlights have structure)
-          vec2 q = (uv - 0.5) * 2.6;
-          float h = fbm(q * 1.85 + vec2(0.0, t));
-          h += fbm(q * 4.25 - vec2(t*0.8, t*0.55)) * 0.52;
-          h += fbm(q * 8.0 + vec2(t*1.15, -t*0.7)) * 0.22;
-
-          // emboss from touch
-          h += inten * 1.05;
-
-          // tighten midrange for crisper highlights (avoid "cotton")
-          h = smoothstep(0.18, 0.92, h);
-
-          // normal from height derivatives
+          // Screen-space normal from height derivatives
           float dx = dFdx(h);
           float dy = dFdy(h);
-          vec3 n = normalize(vec3(-dx * 14.0, -dy * 14.0, 1.0));
+          vec3 n = normalize(vec3(-dx * 10.0, -dy * 10.0, 1.0));
 
           vec3 vDir = vec3(0.0, 0.0, 1.0);
           vec3 r = reflect(-vDir, n);
 
-          // fresnel
-          float NdV = clamp(dot(n, vDir), 0.0, 1.0);
-          float fres = pow(1.0 - NdV, 5.0);
+          // Fresnel for metallic edges
+          float ndv = clamp(dot(n, vDir), 0.0, 1.0);
+          float fres = pow(1.0 - ndv, 4.5);
 
-          // metal F0 (silver)
-          vec3 F0 = mix(vec3(0.62,0.63,0.64), vec3(0.96,0.97,0.98), uMetalness);
-          vec3 F = mix(F0, vec3(1.0), fres);
-
-          // env reflection + spec highlight
+          // Environment (studio reflections)
           vec3 env = envColor(r);
 
-          // cheap microfacet-ish spec shaping with roughness
-          float gloss = 1.0 - clamp(uRoughness, 0.02, 0.55);
-          float specBoost = mix(0.9, 1.45, gloss);
-          vec3 col = env * F * (uSpecular * specBoost);
+          // Specular highlight from a key light
+          vec3 lDir = normalize(vec3(-0.35, 0.55, 0.72));
+          float specPow = mix(50.0, 180.0, 1.0 - uRoughness);
+          float spec = pow(clamp(dot(reflect(-lDir, n), vDir), 0.0, 1.0), specPow);
 
-          // add subtle directional light response (helps form)
-          vec3 lDir = normalize(vec3(-0.20, 0.42, 0.88));
-          float ndl = clamp(dot(n, lDir), 0.0, 1.0);
-          col += env * (ndl * 0.08);
+          // Base metal (dark) + reflections
+          vec3 base = vec3(0.06, 0.06, 0.065);
+          vec3 col = mix(base, env, 0.78 + 0.18 * fres);
+          col += spec * uSpecular;
 
-          // grain (very subtle)
-          float g = grain(vUv, uTime);
-          col += g * (uGrainIntensity * 0.22);
+          // Subtle shading from height (gives depth without looking "cotton")
+          col += (h - 0.5) * vec3(0.08, 0.08, 0.10);
 
-          // tiny "oil" darkening in troughs
-          col += vec3(-0.03, -0.03, -0.032) * (0.55 - h);
+          // Grain
+          float g = filmGrain(vUv, uTime);
+          col += g * uGrain;
 
-          // tone map
+          // Gentle tone mapping & gamma-ish
           col = col / (1.0 + col);
-          col = pow(col, vec3(0.92));
-          col *= (0.95 + 0.10 * uIntensity);
+          col = pow(clamp(col, 0.0, 1.0), vec3(0.92));
 
-          // vignette to keep text readable
-          float vgn = smoothstep(0.98, 0.25, length(vUv - vec2(0.48, 0.52)));
-          col *= 0.88 + 0.12 * vgn;
-
-          gl_FragColor = vec4(clamp(col, 0.0, 1.0), 1.0);
+          gl_FragColor = vec4(col, 1.0);
         }
       `
     });
@@ -360,7 +333,7 @@ class LiquidApp {
 
     this.renderer = new THREE.WebGLRenderer({
       antialias: true,
-      powerPreference: "high-performance",
+      powerPreference: 'high-performance',
       alpha: false,
       stencil: false,
       depth: false
@@ -378,24 +351,12 @@ class LiquidApp {
     this.gradient = new GradientBackground(this);
     this.gradient.uniforms.uTouchTexture.value = this.touchTexture.texture;
 
-    this.init();
-    this.bindEvents();
-    this.tick();
-  }
-
-  init() {
-    this.container.innerHTML = "";
+    this.resize();
     this.container.appendChild(this.renderer.domElement);
 
-    // make canvas fill the mount
-    this.renderer.domElement.style.width = "100%";
-    this.renderer.domElement.style.height = "100%";
-    this.renderer.domElement.style.display = "block";
-
     this.gradient.init();
-    this.resize();
-
-    requestAnimationFrame(() => this.tick());
+    this.bindEvents();
+    this.tick();
   }
 
   get width() { return this.container.clientWidth; }
@@ -408,31 +369,38 @@ class LiquidApp {
   }
 
   bindEvents() {
-    const hero = this.container.closest(".liquid-hero") || this.container;
-    let rect = hero.getBoundingClientRect();
+    const hero = this.container.closest('.liquid-hero') || this.container;
 
-    const refreshRect = () => { rect = hero.getBoundingClientRect(); };
-
-    const handleMove = (clientX, clientY) => {
-      // fast bounds check
-      const x = (clientX - rect.left) / rect.width;
-      const y = 1 - (clientY - rect.top) / rect.height;
-      if (x < 0 || x > 1 || y < 0 || y > 1) return;
-      this.touchTexture.addTouch({ x, y });
+    const insideHero = (clientX, clientY) => {
+      const r = hero.getBoundingClientRect();
+      const x = (clientX - r.left) / r.width;
+      const y = (clientY - r.top) / r.height;
+      return {
+        ok: x >= 0 && x <= 1 && y >= 0 && y <= 1,
+        x: Math.min(1, Math.max(0, x)),
+        y: Math.min(1, Math.max(0, y))
+      };
     };
 
-    // use window so other canvases can't swallow the event
-    window.addEventListener("pointermove", (e) => handleMove(e.clientX, e.clientY), { passive: true });
+    // Window-level pointer tracking (so TV canvas / overlays can't break it)
+    const onPointerMove = (e) => {
+      const p = insideHero(e.clientX, e.clientY);
+      if (!p.ok) return;
+      this.touchTexture.addTouch({ x: p.x, y: p.y });
+    };
 
-    // mobile touch (fallback)
-    window.addEventListener("touchmove", (e) => {
-      if (!e.touches || !e.touches[0]) return;
-      handleMove(e.touches[0].clientX, e.touches[0].clientY);
-    }, { passive: true });
+    const onPointerDown = () => this.touchTexture.setPointerDown(true);
+    const onPointerUp = () => this.touchTexture.setPointerDown(false);
 
-    window.addEventListener("resize", refreshRect, { passive: true });
-    window.addEventListener("scroll", refreshRect, { passive: true, capture: true });
-    refreshRect();
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
+    window.addEventListener('pointerdown', onPointerDown, { passive: true });
+    window.addEventListener('pointerup', onPointerUp, { passive: true });
+    window.addEventListener('pointercancel', onPointerUp, { passive: true });
+
+    // If the pointer leaves the hero, reset last to avoid long jumps.
+    hero.addEventListener('pointerleave', () => this.touchTexture.resetLast(), { passive: true });
+
+    window.addEventListener('resize', () => this.resize());
   }
 
   resize() {
@@ -451,22 +419,18 @@ class LiquidApp {
   tick() {
     const delta = Math.min(this.clock.getDelta(), 0.1);
 
-    this.touchTexture.update(delta);
+    this.touchTexture.update();
     this.gradient.update(delta);
 
     this.renderer.render(this.scene, this.camera);
-
     requestAnimationFrame(() => this.tick());
   }
 }
 
 // Start
 (function initLiquid() {
-  const mount = document.getElementById("liquid-bg");
+  const mount = document.getElementById('liquid-bg');
   if (!mount) return;
-
-  // if three.js isn't loaded — fail silently
   if (!window.THREE) return;
-
   new LiquidApp(mount);
 })();
