@@ -1,78 +1,62 @@
-/* HERO TV FIX v6 (load AFTER home_tv.css)
-   - safe left padding
-   - text always above TV
-   - TV bigger + slightly left
-   - buttons bigger + lower
-*/
-
 :root{
-  --heroPad: clamp(28px, 3.2vw, 76px);
+  --heroPad: clamp(28px, 3.8vw, 78px);
 }
 
+/* Desktop composition: title left with safe padding, TV bigger on the right */
 @media (min-width: 861px){
-  .liquid-hero.hero-tv{
-    position: relative !important;
-    overflow: hidden !important;
-  }
-
   .liquid-hero.hero-tv .hero-tv__inner.container{
     width: 100% !important;
     max-width: none !important;
-    margin: 0 !important;
     padding-left: var(--heroPad) !important;
     padding-right: var(--heroPad) !important;
+  }
+
+  .liquid-hero.hero-tv .hero-tv__inner{
+    position: relative !important;
+    min-height: 100vh !important;
   }
 
   .liquid-hero.hero-tv .hero-tv__title{
     position: absolute !important;
     left: var(--heroPad) !important;
     top: 50% !important;
-    transform: translateY(-56%) !important;
-    z-index: 50 !important;
-    max-width: min(860px, 56vw) !important;
-    pointer-events: none;
+    transform: translateY(-55%) !important;
+    z-index: 10 !important;
+    text-align: left !important;
+    max-width: min(780px, 55vw) !important;
   }
 
+  .liquid-hero.hero-tv .liquid-title{ text-align:left !important; }
+
+  /* Optional action buttons under the title, if present */
   .liquid-hero.hero-tv .hero-tv__actions{
     margin-top: 18px !important;
     display: flex !important;
     gap: 14px !important;
-    align-items: center !important;
-    pointer-events: auto;
+    flex-wrap: wrap;
   }
-
   .liquid-hero.hero-tv .hero-tv__actions .btn,
   .liquid-hero.hero-tv .hero-tv__actions a{
-    height: 48px !important;
+    height: 46px !important;
     padding: 0 18px !important;
     font-size: 15px !important;
   }
 
-  /* TV bigger and slightly LEFT */
   .liquid-hero.hero-tv .hero-tv__stage{
     position: absolute !important;
+    right: var(--heroPad) !important;
     top: 50% !important;
-    right: clamp(64px, 7vw, 240px) !important; /* больше => левее */
     transform: translateY(-50%) !important;
-    z-index: 20 !important;
-
-    width: clamp(980px, 74vw, 1700px) !important;
-    height: clamp(640px, 82vh, 1040px) !important;
+    z-index: 6 !important;
+    width: clamp(760px, 58vw, 1280px) !important;
+    height: clamp(520px, 74vh, 940px) !important;
   }
 }
 
+/* Mobile: keep existing layout, only ensure safe side padding */
 @media (max-width: 860px){
-  .liquid-hero.hero-tv .hero-tv__actions{
-    margin-top: 14px !important;
-    display: flex !important;
-    gap: 10px !important;
-    flex-wrap: wrap;
-  }
-
-  .liquid-hero.hero-tv .hero-tv__actions .btn,
-  .liquid-hero.hero-tv .hero-tv__actions a{
-    height: 42px !important;
-    padding: 0 16px !important;
-    font-size: 14px !important;
+  .liquid-hero.hero-tv .hero-tv__inner.container{
+    padding-left: 20px !important;
+    padding-right: 20px !important;
   }
 }
