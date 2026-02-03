@@ -142,69 +142,142 @@ if (drawer) {
 })();
 
 
-// ========================= HERO: typewriter + buttons =========================
+// ===========================================
+// HERO TV: typed services + showreel button + parallax tilt (doesn't touch TV internals)
+// ===========================================
 (function () {
   const typedEl = document.getElementById("heroTyped");
-  if (typedEl) {
-    const phrases = [
-      "Подкаст под ключ",
-      "Имиджевый ролик",
-      "Реклама",
-      "Видео-отчет о мероприятии",
-      "Многокамерная трансляция",
-      "Монтаж",
-      "AI проекты",
-      "Фото проекты"
-    ];
-
-    let i = 0;
-    let j = 0;
-    let deleting = false;
-
-    const typeSpeed = 42;
-    const deleteSpeed = 24;
-    const holdMs = 950;
-
-    function tick() {
-      const full = phrases[i];
-
-      if (!deleting) {
-        j = Math.min(full.length, j + 1);
-        typedEl.textContent = full.slice(0, j);
-        if (j === full.length) {
-          deleting = true;
-          setTimeout(tick, holdMs);
-          return;
-        }
-        setTimeout(tick, typeSpeed);
-      } else {
-        j = Math.max(0, j - 1);
-        typedEl.textContent = full.slice(0, j);
-        if (j === 0) {
-          deleting = false;
-          i = (i + 1) % phrases.length;
-          setTimeout(tick, 200);
-          return;
-        }
-        setTimeout(tick, deleteSpeed);
-      }
-    }
-
-    tick();
-  }
-
-  const btn = document.querySelector("[data-hero-showreel]");
+  const showreelBtn = document.querySelector("[data-hero-showreel]");
   const video = document.getElementById("tvHeroVideo");
-  if (btn && video) {
-    btn.addEventListener("click", () => {
-      try {
-        video.muted = false;
-        const p = video.play();
-        if (p && typeof p.catch === "function") p.catch(() => {});
-      } catch (_) {}
+  const stage = document.querySelector("[data-tv-hero]");
+  if (!typedEl || !stage) return;
 
-      const stage = document.querySelector(".hero-tv__stage");
-      if (stage) stage.scrollIntoView({ behavior: "smooth", block: "center" });
+  // ---- Typewriter ----
+  const phrases = [
+    "Подкаст под ключ",
+    "Имиджевый ролик",
+    "Реклама",
+    "Видео-отчет о мероприятии",
+    "Многокамерная трансляция",
+    "Монтаж",
+    "AI проекты",
+    "Фото проекты"
+  ];
+
+  let pi = 0;
+  let char = 0;
+  let dir = 1; // 1 typing, -1 deleting
+  let pause = 0;
+
+  function tick() {
+    if (!typedEl) return;
+
+    const full = phrases[pi];
+    if (pause > 0) { pause--; requestAnimationFrame(tick); return; }
+
+    char += dir * 0.9; // speed
+    if (dir === 1) {
+      const len = Math.floor(char);
+      typedEl.textContent = full.slice(0, len);
+      if (len >= full.length) { dir = -1; pause = 70; }
+    } else {
+      const len = Math.max(0, Math.floor(char));
+      typedEl.textContent = full.slice(0, len);
+      if (len <= 0) { dir = 1; pi = (pi + 1) % phrases.length; pause = 20; }
+    }
+    requestAnimationFrame(tick);
+  }
+  // init
+  typedEl.textContent = phrases[0];
+  tick();
+
+  // ---- Showreel button ----
+  if (showreelBtn && video) {
+    showreelBtn.addEventListener("click", () => {
+      // try unmute + play (user gesture)
+      video.muted = false;
+      video.volume = 1;
+      video.play().catch(() => {});
     });
   }
+
+  // ---- Parallax tilt ----
+  // Create a wrapper to animate without overriding stage positioning/transforms.
+  let wrap = stage.querySelector(".tv-hero-parallax");
+  if (!wrap) {
+    wrap = document.createElement("div");
+    wrap.className = "tv-hero-parallax";
+    // move existing children into wrapper
+    const kids = Array.from(stage.childNodes);
+    kids.forEach((n) => wrap.appendChild(n));
+    stage.appendChild(wrap);
+  }
+
+  // Ensure background doesn't eat pointer events
+  const bg = document.getElementById("liquid-bg");
+  if (bg) bg.style.pointerEvents = "none";
+
+  let mx = 0, my = 0;
+  let tx = 0, ty = 0;
+  let rx = 0, ry = 0;
+  let targetRX = 0, targetRY = 0, targetTX = 0, targetTY = 0;
+  let active = false;
+
+  function updateTargets(clientX, clientY) {
+    const r = stage.getBoundingClientRect();
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    const dx = (clientX - cx) / (r.width / 2);
+    const dy = (clientY - cy) / (r.height / 2);
+
+    const ndx = Math.max(-1, Math.min(1, dx));
+    const ndy = Math.max(-1, Math.min(1, dy));
+
+    // tilt
+    targetRY = ndx * 10;      // deg
+    targetRX = -ndy * 8;      // deg
+
+    // subtle translation
+    targetTX = ndx * 18;      // px
+    targetTY = ndy * 12;      // px
+  }
+
+  function onMove(e) {
+    // Only react when hero is visible
+    const r = stage.getBoundingClientRect();
+    const inView = r.bottom > 0 && r.top < window.innerHeight;
+    if (!inView) return;
+
+    active = true;
+    updateTargets(e.clientX, e.clientY);
+  }
+
+  function onLeave() {
+    active = false;
+    targetRX = 0; targetRY = 0; targetTX = 0; targetTY = 0;
+  }
+
+  window.addEventListener("pointermove", onMove, { passive: true });
+  window.addEventListener("pointerdown", onMove, { passive: true });
+  window.addEventListener("blur", onLeave);
+
+  // if pointer leaves the viewport, relax
+  document.addEventListener("mouseleave", onLeave);
+
+  function animate() {
+    // smooth lerp
+    rx += (targetRX - rx) * 0.08;
+    ry += (targetRY - ry) * 0.08;
+    tx += (targetTX - tx) * 0.10;
+    ty += (targetTY - ty) * 0.10;
+
+    // apply
+    if (wrap) {
+      wrap.style.transform =
+        `translate3d(${tx.toFixed(2)}px, ${ty.toFixed(2)}px, 0px) ` +
+        `rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
+    }
+    requestAnimationFrame(animate);
+  }
+  animate();
 })();
