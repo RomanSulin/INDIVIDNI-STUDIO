@@ -234,12 +234,12 @@ if (drawer) {
     const ndy = Math.max(-1, Math.min(1, dy));
 
     // tilt
-    targetRY = ndx * 10;      // deg
-    targetRX = -ndy * 8;      // deg
+    targetRY = ndx * 14;      // deg
+    targetRX = -ndy * 11;     // deg
 
     // subtle translation
-    targetTX = ndx * 18;      // px
-    targetTY = ndy * 12;      // px
+    targetTX = ndx * 26;      // px
+    targetTY = ndy * 18;      // px
   }
 
   function onMove(e) {
