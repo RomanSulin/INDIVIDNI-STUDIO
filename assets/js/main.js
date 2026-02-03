@@ -140,3 +140,59 @@ if (drawer) {
   window.addEventListener("resize", req, { passive: true });
   update();
 })();
+
+// ============================= HERO TV: typed + buttons (does NOT touch tv_hero.js) =============================
+(() => {
+  const el = document.getElementById("heroTyped");
+  if (!el) return;
+
+  const heroTypedPhrases = [
+    "Подкаст под ключ",
+    "Имиджевый ролик",
+    "Реклама",
+    "Видео-отчет о мероприятии",
+    "Многокамерная трансляция",
+    "Монтаж",
+    "AI проекты",
+    "Фото проекты",
+  ];
+
+  let p = 0, i = 0, del = false;
+
+  const TYPE = 42;
+  const DEL = 26;
+  const HOLD_FULL = 900;
+  const HOLD_EMPTY = 240;
+
+  function tick() {
+    const s = heroTypedPhrases[p];
+    if (!del) {
+      i = Math.min(i + 1, s.length);
+      el.textContent = s.slice(0, i);
+      if (i === s.length) { del = true; return setTimeout(tick, HOLD_FULL); }
+      return setTimeout(tick, TYPE);
+    } else {
+      i = Math.max(i - 1, 0);
+      el.textContent = s.slice(0, i);
+      if (i === 0) { del = false; p = (p + 1) % heroTypedPhrases.length; return setTimeout(tick, HOLD_EMPTY); }
+      return setTimeout(tick, DEL);
+    }
+  }
+  tick();
+})();
+
+(() => {
+  const btn = document.getElementById("btnShowreel");
+  const video = document.getElementById("tvHeroVideo");
+  if (!btn || !video) return;
+
+  btn.addEventListener("click", async () => {
+    try {
+      video.muted = false;
+      video.volume = 1;
+      await video.play();
+    } catch (e) {
+      // ignore autoplay errors
+    }
+  });
+})();
