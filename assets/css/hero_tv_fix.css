@@ -87,8 +87,8 @@
     top: 50% !important;
     left: 70% !important;
     transform: translate(-50%, -50%) !important;
-    width: clamp(840px, 58vw, 1400px) !important;
-    height: clamp(520px, 76vh, 900px) !important;
+    width: clamp(840px, 60vw, 1400px) !important;
+    height: clamp(520px, 80vh, 900px) !important;
   }
 }
 
