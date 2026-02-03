@@ -142,105 +142,69 @@ if (drawer) {
 })();
 
 
-// =========================================== HERO TV: typed text + buttons + silver mirror ===========================================
+// ========================= HERO: typewriter + buttons =========================
 (function () {
-  const hero = document.querySelector(".hero-tv");
-  if (!hero) return;
-
   const typedEl = document.getElementById("heroTyped");
-  const mirror = hero.querySelector(".silver-mirror");
-  const showreelBtn = hero.querySelector("[data-hero-showreel]");
-  const tvVideo = document.getElementById("tvHeroVideo");
+  if (typedEl) {
+    const phrases = [
+      "Подкаст под ключ",
+      "Имиджевый ролик",
+      "Реклама",
+      "Видео-отчет о мероприятии",
+      "Многокамерная трансляция",
+      "Монтаж",
+      "AI проекты",
+      "Фото проекты"
+    ];
 
-  // --- liquid mirror pointer highlight ---
-  function setMirrorVars(clientX, clientY){
-    if (!mirror) return;
-    const r = hero.getBoundingClientRect();
-    const x = Math.min(1, Math.max(0, (clientX - r.left) / r.width));
-    const y = Math.min(1, Math.max(0, (clientY - r.top) / r.height));
-    mirror.style.setProperty("--mx", (x * 100).toFixed(2) + "%");
-    mirror.style.setProperty("--my", (y * 100).toFixed(2) + "%");
+    let i = 0;
+    let j = 0;
+    let deleting = false;
+
+    const typeSpeed = 42;
+    const deleteSpeed = 24;
+    const holdMs = 950;
+
+    function tick() {
+      const full = phrases[i];
+
+      if (!deleting) {
+        j = Math.min(full.length, j + 1);
+        typedEl.textContent = full.slice(0, j);
+        if (j === full.length) {
+          deleting = true;
+          setTimeout(tick, holdMs);
+          return;
+        }
+        setTimeout(tick, typeSpeed);
+      } else {
+        j = Math.max(0, j - 1);
+        typedEl.textContent = full.slice(0, j);
+        if (j === 0) {
+          deleting = false;
+          i = (i + 1) % phrases.length;
+          setTimeout(tick, 200);
+          return;
+        }
+        setTimeout(tick, deleteSpeed);
+      }
+    }
+
+    tick();
   }
 
-  // defaults (so it looks alive even без движения мыши)
-  setMirrorVars(window.innerWidth * 0.55, window.innerHeight * 0.45);
-
-  hero.addEventListener("mousemove", (e) => setMirrorVars(e.clientX, e.clientY), { passive: true });
-  hero.addEventListener("touchmove", (e) => {
-    const t = e.touches && e.touches[0];
-    if (t) setMirrorVars(t.clientX, t.clientY);
-  }, { passive: true });
-
-  // --- showreel button: включаем звук и play ---
-  if (showreelBtn && tvVideo) {
-    showreelBtn.addEventListener("click", async () => {
+  const btn = document.querySelector("[data-hero-showreel]");
+  const video = document.getElementById("tvHeroVideo");
+  if (btn && video) {
+    btn.addEventListener("click", () => {
       try {
-        tvVideo.muted = false;
-        await tvVideo.play();
-      } catch (e) {
-        // если браузер не дал авто-play со звуком — оставим play без обещаний
-        try { tvVideo.muted = true; await tvVideo.play(); } catch (_) {}
-      }
+        video.muted = false;
+        const p = video.play();
+        if (p && typeof p.catch === "function") p.catch(() => {});
+      } catch (_) {}
+
+      const stage = document.querySelector(".hero-tv__stage");
+      if (stage) stage.scrollIntoView({ behavior: "smooth", block: "center" });
     });
   }
-
-  // --- typed text ---
-  if (!typedEl) return;
-
-  const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  const phrases = [
-    "Подкаст под ключ",
-    "Имиджевый ролик",
-    "Реклама",
-    "Видео-отчет о мероприятии",
-    "Многокамерная трансляция",
-    "Монтаж",
-    "AI проекты",
-    "Фото проекты",
-  ];
-
-  if (prefersReduced) {
-    let i = 0;
-    typedEl.textContent = phrases[i];
-    setInterval(() => {
-      i = (i + 1) % phrases.length;
-      typedEl.textContent = phrases[i];
-    }, 2200);
-    return;
-  }
-
-  let p = 0;
-  let c = 0;
-  let deleting = false;
-
-  const TYPE_SPEED = 36;
-  const DELETE_SPEED = 22;
-  const HOLD_MS = 900;
-
-  function tick() {
-    const text = phrases[p];
-    if (!deleting) {
-      c++;
-      typedEl.textContent = text.slice(0, c);
-      if (c >= text.length) {
-        deleting = true;
-        setTimeout(tick, HOLD_MS);
-        return;
-      }
-      setTimeout(tick, TYPE_SPEED);
-    } else {
-      c--;
-      typedEl.textContent = text.slice(0, Math.max(0, c));
-      if (c <= 0) {
-        deleting = false;
-        p = (p + 1) % phrases.length;
-        setTimeout(tick, 220);
-        return;
-      }
-      setTimeout(tick, DELETE_SPEED);
-    }
-  }
-
-  tick();
 })();
