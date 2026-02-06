@@ -777,27 +777,36 @@ body.menu-open .drawer{ display:block; }
 }
 
 /* ЗАГОЛОВОК ПРОЕКТЫ ----------------------------------------------------------------------------------------------*/
-.works-title{
-  margin: 0;
-  text-align: left;
-  font-size: clamp(22px, 4vw, 64px); /* ~1.5x меньше */
-  line-height: 1.05;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+/* WORKS: заголовок + табы */
+.works{
+  padding: 70px 0 90px; /* БОЛЬШЕ отступы секции */
 }
 
-/* header row: title left + category tabs */
 .works-head{
-  margin: 60px 0 18px;
+  margin: 0 0 32px;     /* БОЛЬШЕ отступ вниз от шапки */
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 18px;
 }
 
-/* works-grid already has margin-top elsewhere; reset so spacing is controlled by .works-head */
-.works .works-grid{ margin-top: 0 !important; }
+.works-title{
+  margin: 0;
+  text-align: left;
+  font-size: clamp(22px, 4vw, 64px); /* ~в 1.5 раза меньше */
+  line-height: 1.05;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 
+  /* “левей” визуально, как у INDIVIDNI */
+  transform: translateX(-8px);
+}
+
+/* чтобы грид не отталкивался сверху своим margin */
+.works-grid{
+  margin-top: 0;
+  gap: 22px; /* БОЛЬШЕ расстояние между карточками */
+}
 .works-tabs{
   display: flex;
   align-items: center;
@@ -811,8 +820,8 @@ body.menu-open .drawer{ display:block; }
   border: 1px solid rgba(255,255,255,0.12);
   background: rgba(255,255,255,0.04);
   color: rgba(255,255,255,0.72);
-
   border-radius: 999px;
+
   height: 32px;
   padding: 0 12px;
   cursor: pointer;
@@ -836,25 +845,6 @@ body.menu-open .drawer{ display:block; }
   border-color: rgba(255,255,255,0.22);
 }
 
-@media (max-width: 860px){
-  .works-head{
-    margin: 44px 0 14px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-  /* tabs become a horizontal scroll bar (like iOS topbar) */
-  .works-tabs{
-    width: 100%;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding-bottom: 2px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  .works-tabs::-webkit-scrollbar{ display:none; }
-}
 
 /* ОТСТУПЫ INDIVIDNI ----------------------------------------------------------------------------------------------*/
 @media (max-width: 860px){
