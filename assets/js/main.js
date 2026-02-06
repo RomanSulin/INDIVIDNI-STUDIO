@@ -246,32 +246,41 @@ if (drawer) {
   });
 })();
 
-// Works tabs (projects filter)
+
+// Subtle hover "light" that follows cursor (no glass)
 (() => {
-  const tabs = document.querySelector("[data-works-tabs]");
-  const grid = document.querySelector("[data-works-grid]");
-  if (!tabs || !grid) return;
+  const selector = [
+    ".work-card",
+    ".svc-card",
+    ".stat-card",
+    ".process-item",
+    ".process-aside .aside-card",
+    ".mosaic-center",
+    ".price-card",
+    ".role-card",
+    ".value-card",
+    ".wf-card",
+    ".acc-item",
+    ".footer-col",
+    ".footer-cta"
+  ].join(",");
 
-  const buttons = Array.from(tabs.querySelectorAll(".works-tab"));
-  const cards = Array.from(grid.querySelectorAll(".work-card"));
+  const els = Array.from(document.querySelectorAll(selector));
+  if (!els.length) return;
 
-  const setActive = (btn) => {
-    buttons.forEach((b) => b.classList.toggle("is-active", b === btn));
-  };
-
-  const applyFilter = (filter) => {
-    cards.forEach((card) => {
-      const cat = (card.getAttribute("data-cat") || "other").toLowerCase();
-      const show = filter === "all" ? true : cat === filter;
-      card.style.display = show ? "" : "none";
+  els.forEach((el) => {
+    el.classList.add("hover-glow");
+    el.addEventListener("pointermove", (e) => {
+      const r = el.getBoundingClientRect();
+      const x = e.clientX - r.left;
+      const y = e.clientY - r.top;
+      el.style.setProperty("--gx", `${x}px`);
+      el.style.setProperty("--gy", `${y}px`);
     });
-  };
-
-  tabs.addEventListener("click", (e) => {
-    const btn = e.target.closest(".works-tab");
-    if (!btn) return;
-    const filter = (btn.getAttribute("data-filter") || "all").toLowerCase();
-    setActive(btn);
-    applyFilter(filter);
+    el.addEventListener("pointerleave", () => {
+      el.style.removeProperty("--gx");
+      el.style.removeProperty("--gy");
+    });
   });
 })();
+
