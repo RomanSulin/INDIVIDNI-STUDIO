@@ -196,3 +196,16 @@ if (drawer) {
     }
   });
 })();
+
+// ПРОЕКТЫ: category tabs (active state) ------------------------------------------------------------------------------------------------------------
+(() => {
+  const tabs = document.querySelector(".works-tabs");
+  if (!tabs) return;
+
+  tabs.addEventListener("click", (e) => {
+    const btn = e.target.closest(".works-tab");
+    if (!btn) return;
+    tabs.querySelectorAll(".works-tab").forEach((b) => b.classList.remove("is-active"));
+    btn.classList.add("is-active");
+  });
+})();
