@@ -245,3 +245,33 @@ if (drawer) {
     }
   });
 })();
+
+// Works tabs (projects filter)
+(() => {
+  const tabs = document.querySelector("[data-works-tabs]");
+  const grid = document.querySelector("[data-works-grid]");
+  if (!tabs || !grid) return;
+
+  const buttons = Array.from(tabs.querySelectorAll(".works-tab"));
+  const cards = Array.from(grid.querySelectorAll(".work-card"));
+
+  const setActive = (btn) => {
+    buttons.forEach((b) => b.classList.toggle("is-active", b === btn));
+  };
+
+  const applyFilter = (filter) => {
+    cards.forEach((card) => {
+      const cat = (card.getAttribute("data-cat") || "other").toLowerCase();
+      const show = filter === "all" ? true : cat === filter;
+      card.style.display = show ? "" : "none";
+    });
+  };
+
+  tabs.addEventListener("click", (e) => {
+    const btn = e.target.closest(".works-tab");
+    if (!btn) return;
+    const filter = (btn.getAttribute("data-filter") || "all").toLowerCase();
+    setActive(btn);
+    applyFilter(filter);
+  });
+})();
