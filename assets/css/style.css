@@ -1205,13 +1205,22 @@ body.menu-open .drawer{ display:block; }
     object-position: center bottom;
     display: block;
   }
-
-  /* keep header/button centered */
+}
+/* FIX: Projects title align with grid (like INDIVIDNI) + bigger spacing */
+@media (min-width: 1024px){
   .works-title,
   .works-bottom{
-    max-width: 1440px;
-    margin-left: auto;
-    margin-right: auto;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .works-title{
+    transform: none !important; /* убираем “нудж”, теперь ровно по левому краю сетки */
+  }
+
+  .works-head{
+    margin-bottom: 56px !important; /* БОЛЬШЕ отступ вниз до карточек */
   }
 }
 
