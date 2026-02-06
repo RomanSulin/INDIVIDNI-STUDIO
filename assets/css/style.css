@@ -2560,3 +2560,114 @@ body{
   padding: 8px 0;
 }
 .footer-link:hover{ color: #fff; }
+
+
+/* ========================= PROJECTS FIX (clean, not messy) ========================================================================================================================================================================= */
+
+.works{
+  padding: 84px 0 70px !important;
+}
+
+.works-head{
+  display:flex !important;
+  align-items:flex-end !important;
+  justify-content:space-between !important;
+  gap: 18px !important;
+  margin-bottom: 26px !important;
+}
+
+.works-title{
+  width:auto !important;
+  margin: 0 !important;
+  text-align:left !important;
+  font-size: clamp(44px, 5.2vw, 84px) !important;
+  letter-spacing: -0.03em !important;
+  line-height: 1.02 !important;
+}
+
+/* Tabs = аккуратные “пилюли”, без переноса в кашу */
+.works-tabs{
+  display:flex !important;
+  align-items:center !important;
+  gap: 10px !important;
+  flex-wrap: nowrap !important;
+  overflow-x: auto !important;
+  max-width: 760px;
+  padding-bottom: 6px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.works-tabs::-webkit-scrollbar{ display:none; }
+
+.works-tab{
+  white-space: nowrap;
+  height: 34px !important;
+  padding: 0 14px !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  border: 1px solid rgba(242,242,242,0.14) !important;
+  color: rgba(242,242,242,0.70) !important;
+  font-size: 12px !important;
+  letter-spacing: .08em !important;
+  text-transform: uppercase !important;
+}
+.works-tab:hover{ color: rgba(242,242,242,0.92) !important; }
+.works-tab.is-active{
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: #fff !important;
+}
+
+/* Grid = как в рефе: большой слева + 2 справа */
+.works-grid{
+  margin-top: 0 !important;
+  display:grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 18px !important;
+}
+@media (min-width: 980px){
+  .work-card:nth-child(1){ grid-column: span 2 !important; }
+}
+@media (max-width: 900px){
+  .works-head{
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+  .works-tabs{
+    max-width: 100% !important;
+  }
+  .works-grid{
+    grid-template-columns: 1fr !important;
+  }
+  .work-card:nth-child(1){ grid-column: auto !important; }
+}
+
+/* Самое важное: картинка должна жить в контейнере */
+.work-card{
+  display:flex !important;
+  flex-direction: column !important;
+  overflow:hidden !important;
+}
+
+.work-media{
+  aspect-ratio: 16/9 !important;
+}
+.work-media img{
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+/* Подпись ВНИЗУ (убираем “плавающую пилюлю”, она и даёт ощущение хаоса) */
+.work-meta{
+  position: static !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 14px 14px 16px !important;
+  border-radius: 0 !important;
+  font-size: 16px !important;
+  letter-spacing: 0.02em !important;
+  text-transform: none !important;
+}
+
