@@ -24,22 +24,22 @@
 
   // EDIT TEXTS HERE (same count as colors)
   const labels = [
-    "Commercials",
-    "Brand Films",
-    "Music Videos",
+    "Рекламный ролик",
+    "Имиджевый ролик",
+    "Музыкальный клип",
     "Fashion",
     "CGI / VFX",
-    "Color",
-    "Sound",
+    "Цвет",
+    "Звук",
     "Motion",
     "Web",
-    "Direction",
+    "Режиссура",
   ];
 
   // You can swap colors later
   const colors = [
-    "#001219", "#005f73", "#0a9396", "#94d2bd", "#e9d8a6",
-    "#ee9b00", "#ca6702", "#bb3e03", "#ae2012", "#9b2226"
+    "#B9FF7A", "#7AE7FF", "#B0A3FF", "#FFD56B", "#FF8DC7",
+    "#7AFFC9", "#A2FFEA", "#FFB38A", "#A6B5FF", "#C9FFB2"
   ];
 
   // Build tabs once
