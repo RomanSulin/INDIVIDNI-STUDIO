@@ -209,3 +209,29 @@ if (drawer) {
     btn.classList.add("is-active");
   });
 })();
+
+// FOOTER: lead form -> mailto --------------------------------------------------------------------------------------------------------------------
+(() => {
+  const form = document.getElementById("leadForm");
+  if (!form) return;
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const fd = new FormData(form);
+    const name = (fd.get("name") || "").toString().trim();
+    const contact = (fd.get("contact") || "").toString().trim();
+    const type = (fd.get("type") || "").toString().trim();
+    const message = (fd.get("message") || "").toString().trim();
+
+    const subject = `Заявка — ${type || "видеоролик"} — ${name || "без имени"}`;
+    const body =
+      `Имя: ${name}\n` +
+      `Контакт: ${contact}\n` +
+      `Тип: ${type}\n\n` +
+      `Задача:\n${message}\n`;
+
+    const mailto = `mailto:hello@individnistudio.ru?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailto;
+  });
+})();
