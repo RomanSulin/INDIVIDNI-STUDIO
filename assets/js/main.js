@@ -1,9 +1,10 @@
 (function () {
   // year in footer
-  const y = document.getElementById("year");
-  if (y) y.textContent = new Date().getFullYear();
+  document.querySelectorAll("[data-year]").forEach((el) => {
+    el.textContent = new Date().getFullYear();
+  });
 
-  // burger / drawer
+// burger / drawer
   const burger = document.querySelector("[data-burger]");
   if (burger) {
     burger.addEventListener("click", (e) => {
@@ -50,52 +51,100 @@ if (drawer) {
 }
 
 
-  // accordion (single open)
-  const acc = document.querySelector("[data-accordion]");
-  if (!acc) return;
+  // accordions (single open per accordion)
+  const accordions = document.querySelectorAll("[data-accordion]");
+  accordions.forEach((acc) => {
+    const items = Array.from(acc.querySelectorAll("[data-acc-item]"));
+    if (!items.length) return;
 
-  const items = Array.from(acc.querySelectorAll("[data-acc-item]"));
+    function closeItem(item) {
+      const btn = item.querySelector(".acc-btn");
+      const panel = item.querySelector("[data-acc-panel]");
+      if (!btn || !panel) return;
 
-  function closeItem(item) {
-    const btn = item.querySelector(".acc-btn");
-    const panel = item.querySelector("[data-acc-panel]");
-    item.removeAttribute("data-open");
-    btn.setAttribute("aria-expanded", "false");
-    panel.style.height = panel.scrollHeight + "px";
-    requestAnimationFrame(() => { panel.style.height = "0px"; });
-  }
+      item.removeAttribute("data-open");
+      btn.setAttribute("aria-expanded", "false");
+      panel.style.height = panel.scrollHeight + "px";
+      requestAnimationFrame(() => {
+        panel.style.height = "0px";
+      });
+    }
 
-  function openItem(item) {
-    const btn = item.querySelector(".acc-btn");
-    const panel = item.querySelector("[data-acc-panel]");
-    item.setAttribute("data-open", "");
-    btn.setAttribute("aria-expanded", "true");
-    panel.style.height = panel.scrollHeight + "px";
+    function openItem(item) {
+      const btn = item.querySelector(".acc-btn");
+      const panel = item.querySelector("[data-acc-panel]");
+      if (!btn || !panel) return;
 
-    panel.addEventListener("transitionend", function te(e) {
-      if (e.propertyName === "height" && item.hasAttribute("data-open")) {
-        panel.style.height = "auto";
-        panel.removeEventListener("transitionend", te);
-      }
-    });
-  }
+      item.setAttribute("data-open", "");
+      btn.setAttribute("aria-expanded", "true");
+      panel.style.height = panel.scrollHeight + "px";
 
-  // init closed panels
-  items.forEach((item) => {
-    const panel = item.querySelector("[data-acc-panel]");
-    if (!item.hasAttribute("data-open")) panel.style.height = "0px";
-  });
+      panel.addEventListener(
+        "transitionend",
+        function te(e) {
+          if (e.propertyName === "height" && item.hasAttribute("data-open")) {
+            panel.style.height = "auto";
+            panel.removeEventListener("transitionend", te);
+          }
+        },
+        { once: false }
+      );
+    }
 
-  // click handlers
-  items.forEach((item) => {
-    const btn = item.querySelector(".acc-btn");
-    btn.addEventListener("click", () => {
+    // init panels
+    items.forEach((item) => {
+      const panel = item.querySelector("[data-acc-panel]");
+      const btn = item.querySelector(".acc-btn");
+      if (!panel || !btn) return;
+
       const isOpen = item.hasAttribute("data-open");
-      items.forEach((it) => { if (it !== item && it.hasAttribute("data-open")) closeItem(it); });
-      if (isOpen) closeItem(item); else openItem(item);
+      btn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      panel.style.height = isOpen ? "auto" : "0px";
+    });
+
+    // click handlers
+    items.forEach((item) => {
+      const btn = item.querySelector(".acc-btn");
+      if (!btn) return;
+
+      btn.addEventListener("click", () => {
+        const isOpen = item.hasAttribute("data-open");
+        items.forEach((it) => {
+          if (it !== item && it.hasAttribute("data-open")) closeItem(it);
+        });
+        if (isOpen) closeItem(item);
+        else openItem(item);
+      });
+    });
+
+    // keep open panels sized on resize
+    window.addEventListener("resize", () => {
+      items.forEach((item) => {
+        const panel = item.querySelector("[data-acc-panel]");
+        if (!panel) return;
+        if (item.hasAttribute("data-open")) panel.style.height = "auto";
+      });
     });
   });
+
+  // footer form -> mailto
+  const footerForm = document.querySelector("[data-footer-form]");
+  if (footerForm) {
+    footerForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const fd = new FormData(footerForm);
+      const contact = String(fd.get("contact") || "").trim();
+      const subject = encodeURIComponent("INDIVIDNI — заявка с сайта");
+      const body = encodeURIComponent(
+        `Контакт: ${contact}\n\nКоротко о задаче:`
+      );
+      window.location.href = `mailto:hello@individnistudio.ru?subject=${subject}&body=${body}`;
+      footerForm.reset();
+    });
+  }
+
 })();
+
 
 // =========================================== SHOWREEL Laptop: open/close on scroll + play/pause + sound =================================================================
 (function () {
@@ -194,44 +243,5 @@ if (drawer) {
     } catch (e) {
       // ignore autoplay errors
     }
-  });
-})();
-
-// ПРОЕКТЫ: category tabs (active state) ------------------------------------------------------------------------------------------------------------
-(() => {
-  const tabs = document.querySelector(".works-tabs");
-  if (!tabs) return;
-
-  tabs.addEventListener("click", (e) => {
-    const btn = e.target.closest(".works-tab");
-    if (!btn) return;
-    tabs.querySelectorAll(".works-tab").forEach((b) => b.classList.remove("is-active"));
-    btn.classList.add("is-active");
-  });
-})();
-
-// FOOTER: lead form -> mailto --------------------------------------------------------------------------------------------------------------------
-(() => {
-  const form = document.getElementById("leadForm");
-  if (!form) return;
-
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const fd = new FormData(form);
-    const name = (fd.get("name") || "").toString().trim();
-    const contact = (fd.get("contact") || "").toString().trim();
-    const type = (fd.get("type") || "").toString().trim();
-    const message = (fd.get("message") || "").toString().trim();
-
-    const subject = `Заявка — ${type || "видеоролик"} — ${name || "без имени"}`;
-    const body =
-      `Имя: ${name}\n` +
-      `Контакт: ${contact}\n` +
-      `Тип: ${type}\n\n` +
-      `Задача:\n${message}\n`;
-
-    const mailto = `mailto:hello@individnistudio.ru?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.location.href = mailto;
   });
 })();
