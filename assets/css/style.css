@@ -2760,3 +2760,241 @@ body{
 .value-card--accent.hover-glow:hover::after{
   opacity: .7;
 }
+
+
+
+/* ======================================================================
+   INDIVIDNI — cleanup v4 (no glass, no cursor-follow glow, more variety)
+   ====================================================================== */
+
+/* Lock fonts back to what you had */
+:root{
+  --font-main: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-keep: "Syne", sans-serif;
+}
+body{ font-family: var(--font-main) !important; }
+*{ font-family: inherit; }
+.brand-name, .brand-name__main, .brand-name__sub, .liquid-main{ font-family: var(--font-keep) !important; }
+
+/* Make the huge INDIVIDNI in liquid section subtle (not red, not screaming) */
+.liquid-main{
+  color: rgba(242,242,242,0.10) !important;
+}
+
+/* Kill all blur/glass feels */
+.header-shell,
+.drawer,
+.slat{
+  backdrop-filter: none !important;
+}
+.header-shell,
+.drawer{
+  background: var(--panel) !important;
+  border-color: rgba(242,242,242,0.10) !important;
+}
+
+/* Disable cursor-follow glow */
+.hover-glow::after{ display:none !important; }
+
+/* Simple, clean hover: border + slight lift (no spotlight) */
+.work-card,
+.svc-card,
+.stat-card,
+.process-item,
+.process-aside .aside-card,
+.price-card,
+.role-card,
+.value-card,
+.wf-card,
+.acc-item,
+.footer-col,
+.footer-cta{
+  transition: transform .18s ease, border-color .18s ease, background-color .18s ease;
+}
+.work-card:hover,
+.svc-card:hover,
+.stat-card:hover,
+.process-item:hover,
+.process-aside .aside-card:hover,
+.price-card:hover,
+.role-card:hover,
+.value-card:hover,
+.wf-card:hover,
+.acc-item:hover,
+.footer-col:hover,
+.footer-cta:hover{
+  transform: translateY(-2px);
+  border-color: rgba(242,242,242,0.22) !important;
+  background: var(--panel-2) !important;
+}
+
+/* ===================== PROJECTS: fixed grid (3 + 2) + 16:9 ===================== */
+#projects .works-head{
+  display:flex !important;
+  align-items:flex-end !important;
+  justify-content:space-between !important;
+  gap: 18px !important;
+  flex-wrap: wrap !important;
+  margin-bottom: 18px !important;
+}
+#projects .works-title{
+  margin: 0 !important;
+  text-align: left !important;
+  font-size: clamp(28px, 4.4vw, 72px) !important;
+  letter-spacing: .06em !important;
+}
+#projects .works-tabs{
+  justify-content: flex-end !important;
+  gap: 10px !important;
+}
+#projects .works-grid{
+  display:grid !important;
+  grid-template-columns: repeat(3, minmax(0,1fr)) !important;
+  gap: 18px !important;
+}
+#projects .works-grid > *{ grid-column: auto !important; }
+#projects .work-card{ grid-column: auto !important; }
+#projects .work-media{ aspect-ratio: 16 / 9 !important; border-radius: 26px !important; }
+#projects .work-media img{ width:100% !important; height:100% !important; object-fit:cover !important; display:block !important; }
+
+@media (max-width: 1024px){
+  #projects .works-grid{ grid-template-columns: repeat(2, minmax(0,1fr)) !important; }
+}
+@media (max-width: 620px){
+  #projects .works-grid{ grid-template-columns: 1fr !important; }
+}
+
+/* ===================== SHOTS (visual break between blocks) ===================== */
+.gcv-section.shots{ padding-top: 86px; padding-bottom: 86px; }
+.gcv-head--split{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.shots-grid{
+  display:grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 18px;
+  margin-top: 18px;
+}
+.shot-card{
+  position: relative;
+  border-radius: 28px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  aspect-ratio: 16 / 9;
+}
+.shot-card--wide{ grid-column: span 2; }
+.shot-card img{
+  width:100%;
+  height:100%;
+  object-fit: cover;
+  display:block;
+  transform: scale(1.03);
+  filter: saturate(.95) contrast(1.05);
+  transition: transform .35s ease, filter .35s ease;
+}
+.shot-card:hover img{
+  transform: scale(1.07);
+  filter: saturate(1.05) contrast(1.08);
+}
+.shot-cap{
+  position:absolute;
+  left: 14px;
+  bottom: 14px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: rgba(8,8,10,0.78);
+  border: 1px solid rgba(255,255,255,0.14);
+  color: var(--text);
+  font-size: 12px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+/* Stack shots nicely on small screens */
+@media (max-width: 860px){
+  .shots-grid{ grid-template-columns: 1fr; }
+  .shot-card--wide{ grid-column: auto; }
+}
+
+/* ===================== MEDIA MODIFIERS (adds variety without “glass”) ===================== */
+.stat-card--media,
+.aside-card--media,
+.value-card--media{
+  position: relative;
+  overflow: hidden;
+}
+.stat-card--media::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: url("./assets/project/2/1.jpg") center/cover no-repeat;
+  opacity: .45;
+  filter: saturate(.90) contrast(1.05);
+}
+.stat-card--media::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: linear-gradient(180deg, rgba(8,8,10,0.10), rgba(8,8,10,0.92));
+}
+.aside-card--media::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: url("./assets/project/1/1.jpg") center/cover no-repeat;
+  opacity: .28;
+  filter: saturate(.95) contrast(1.05);
+}
+.aside-card--media::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: linear-gradient(180deg, rgba(8,8,10,0.55), rgba(8,8,10,0.95));
+}
+.value-card--media::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: url("./assets/project/3/1.jpg") center/cover no-repeat;
+  opacity: .22;
+  filter: saturate(.95) contrast(1.05);
+}
+.value-card--media::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: linear-gradient(180deg, rgba(8,8,10,0.70), rgba(8,8,10,0.96));
+}
+.stat-card--media > *,
+.aside-card--media > *,
+.value-card--media > *{
+  position: relative;
+  z-index: 1;
+}
+
+/* Slightly “filled” stat for variety (still in your palette) */
+.stat-card--fill{
+  background: var(--panel-2) !important;
+  border-color: rgba(225,59,36,0.22) !important;
+}
+
+/* Workflow — add a real frame at top (breaks endless text cards) */
+.wf-shot{
+  border-radius: 28px;
+  overflow:hidden;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  aspect-ratio: 21 / 9;
+  margin-bottom: 16px;
+}
+.wf-shot img{
+  width:100%;
+  height:100%;
+  object-fit: cover;
+  display:block;
+}
