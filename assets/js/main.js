@@ -247,40 +247,9 @@ if (drawer) {
 })();
 
 
-// Subtle hover "light" that follows cursor (no glass)
-(() => {
-  const selector = [
-    ".work-card",
-    ".svc-card",
-    ".stat-card",
-    ".process-item",
-    ".process-aside .aside-card",
-    ".mosaic-center",
-    ".price-card",
-    ".role-card",
-    ".value-card",
-    ".wf-card",
-    ".acc-item",
-    ".footer-col",
-    ".footer-cta"
-  ].join(",");
 
-  const els = Array.from(document.querySelectorAll(selector));
-  if (!els.length) return;
 
-  els.forEach((el) => {
-    el.classList.add("hover-glow");
-    el.addEventListener("pointermove", (e) => {
-      const r = el.getBoundingClientRect();
-      const x = e.clientX - r.left;
-      const y = e.clientY - r.top;
-      el.style.setProperty("--gx", `${x}px`);
-      el.style.setProperty("--gy", `${y}px`);
-    });
-    el.addEventListener("pointerleave", () => {
-      el.style.removeProperty("--gx");
-      el.style.removeProperty("--gy");
-    });
-  });
-})();
+// Hover glow disabled (v4): оставили только CSS hover.
+
+;
 
