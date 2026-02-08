@@ -2998,3 +2998,48 @@ body{ font-family: var(--font-main) !important; }
   object-fit: cover;
   display:block;
 }
+
+/* === WORKS / PROJECTS: строгая сетка 3+2, все превью 16:9 === */
+@media (min-width: 861px){
+  .works-grid{
+    display: grid !important;
+    grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+    gap: 18px !important;
+  }
+  .works-grid .work-card{
+    grid-column: span 4 !important; /* 3 в ряд */
+  }
+  /* 2 во втором ряду — по центру и той же ширины */
+  .works-grid .work-card:nth-child(5n + 4){
+    grid-column: 3 / span 4 !important;
+  }
+  .works-grid .work-card:nth-child(5n + 5){
+    grid-column: 7 / span 4 !important;
+  }
+
+  .works-grid .work-media{
+    aspect-ratio: 16 / 9 !important;
+  }
+  .works-grid .work-media img{
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+  }
+}
+
+/* На мобилке убираем “квадраты” и “каждая 3-я на всю ширину” */
+@media (max-width: 860px){
+  .works-grid{
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .works-grid .work-card:nth-child(5n + 3){
+    grid-column: auto !important;
+  }
+  .works-grid .work-card .work-media{
+    aspect-ratio: 16 / 9 !important;
+  }
+}
+@media (max-width: 520px){
+  .works-grid{ grid-template-columns: 1fr !important; }
+}
