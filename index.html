@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru"> 
+<html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="./assets/css/style.css" />
   <link rel="stylesheet" href="./assets/css/home_tv.css" />
   <link rel="stylesheet" href="./assets/css/hero_tv_fix.css?v=1" />
@@ -16,682 +17,604 @@
 <body>
   <!-- HEADER -->
   <header class="header" id="top">
-  <div class="header-shell">
-    <div class="header-row header-row--top">
-      <a class="brand" href="#top">
-        <span class="brand-name">
-          <span class="brand-name__main">INDIVIDNI</span>
-          <span class="brand-name__sub">studio</span>
-        </span>
-      </a>
-
-      <!-- desktop nav -->
-      <nav class="nav nav--top" aria-label="Primary">
-        <a class="nav-link" href="#projects">Проекты</a>
-        <a class="nav-link" href="#services">Услуги</a>
-        <a class="nav-link" href="#team">Команда</a>
-        <a class="nav-link" href="#contact">Контакты</a>
-      </nav>
-
-      <div class="header-actions">
-        <a class="btn btn--primary" href="#contact">Связаться</a>
-
-        <!-- burger ONLY for mobile -->
-        <button class="burger" type="button" aria-label="Menu" data-burger>
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- mobile drawer -->
-  <div class="drawer" data-drawer>
-    <a class="drawer-link" href="#projects">Проекты</a>
-    <a class="drawer-link" href="#services">Услуги</a>
-    <a class="drawer-link" href="#team">Команда</a>
-    <a class="drawer-link" href="#contact">Контакты</a>
-    <a class="drawer-link" href="#brief">Бриф</a>
-    <a class="drawer-link" href="./wall.html">Wall prototype</a>
-  </div>
-</header>
-
-  <main class="main">
-
-
-<!-- HERO: Liquid + TV -->
-<section class="liquid-hero hero-tv" id="about" aria-label="INDIVIDNI hero with TV">
-  <div id="liquid-bg" aria-hidden="true"></div>
-
-  <div class="hero-tv__inner container">
-    <div class="hero-tv__title">
-      <div class="liquid-title">
-        <div class="liquid-sub">studio</div>
-        <div class="liquid-main">INDIVIDNI</div>
-        <div class="hero-tv__desc">видеопродакшн полного цикла</div>
-      
-      <div class="hero-tv__typed" aria-label="Направления">
-        <span id="heroTyped"></span><span class="typed-caret" aria-hidden="true"></span>
-      </div>
-
-      <div class="hero-tv__actions" aria-label="Действия">
-        <button class="btn btn--primary" type="button" id="btnShowreel">Шоурил</button>
-        <a class="btn btn--ghost" href="#contact" id="btnCalc">Рассчитать проект</a>
-      </div>
-
-    </div>
-    </div>
-
-    <div class="hero-tv__stage" data-tv-hero>
-      <div class="hero-tv__glow" aria-hidden="true"></div>
-
-      <canvas id="tvHeroCanvas"></canvas>
-
-      <video id="tvHeroVideo" class="tvfly__hiddenVideo" muted playsinline webkit-playsinline preload="auto" loop>
-        <source src="./assets/ui/showreel_2.mp4" type="video/mp4" />
-      </video>
-    </div>
-  </div>
-</section>
-
-    <!-- WORKS -->
-        <section class="works" id="projects">
-        <div class="container">
-          <div class="works-head">
-            <h2 class="works-title">ПРОЕКТЫ</h2>
-
-            <nav class="works-tabs" aria-label="Категории проектов">
-  <a class="works-tab" href="./projects/image/">Имиджевый ролик</a>
-  <a class="works-tab" href="./projects/animation/">Анимационный ролик</a>
-  <a class="works-tab" href="./projects/education/">Обучающие видеоролики</a>
-  <a class="works-tab" href="./projects/ads/">Рекламный ролик</a>
-  <a class="works-tab" href="./projects/presentation/">Презентационный ролик</a>
-</nav>
-          </div>
-
-          <div class="works-grid">
-      
-        <a class="work-card" href="./project_gac/" data-cat="image">
-        <div class="work-media">
-        <img alt="GAC GH4" src="./assets/project/1/1.jpg">
-        </div>
-        <div class="work-meta">GAC GH4</div>
+    <div class="header-shell">
+      <div class="header-row header-row--top">
+        <a class="brand" href="#top">
+          <span class="brand-name">
+            <span class="brand-name__main">INDIVIDNI</span>
+            <span class="brand-name__sub">studio</span>
+          </span>
         </a>
 
-          <a class="work-card" href="project_tenderness" data-cat="image">
+        <nav class="nav nav--top" aria-label="Primary">
+          <a class="nav-link" href="#projects">Проекты</a>
+          <a class="nav-link" href="#services">Услуги</a>
+          <a class="nav-link" href="#process">Этапы</a>
+          <a class="nav-link" href="#pricing">Стоимость</a>
+          <a class="nav-link" href="#contact">Контакты</a>
+        </nav>
+
+        <div class="header-actions">
+          <a class="btn btn--primary" href="#contact">Связаться</a>
+          <button class="burger" type="button" aria-label="Menu" data-burger>
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- mobile drawer -->
+    <div class="drawer" data-drawer>
+      <a class="drawer-link" href="#projects">Проекты</a>
+      <a class="drawer-link" href="#services">Услуги</a>
+      <a class="drawer-link" href="#numbers">Мы в цифрах</a>
+      <a class="drawer-link" href="#process">Этапы</a>
+      <a class="drawer-link" href="#pricing">Стоимость</a>
+      <a class="drawer-link" href="#team">Команда</a>
+      <a class="drawer-link" href="#faq">FAQ</a>
+      <a class="drawer-link" href="#contact">Контакты</a>
+      <a class="drawer-link" href="#brief">Бриф</a>
+      <a class="drawer-link" href="./wall.html">Wall prototype</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO: Liquid + TV -->
+    <section class="liquid-hero hero-tv" id="about" aria-label="INDIVIDNI hero with TV">
+      <div id="liquid-bg" aria-hidden="true"></div>
+
+      <div class="hero-tv__inner container">
+        <div class="hero-tv__title">
+          <div class="liquid-title">
+            <div class="liquid-sub">studio</div>
+            <div class="liquid-main">INDIVIDNI</div>
+            <div class="hero-tv__desc">видеопродакшн полного цикла</div>
+          </div>
+
+          <div class="hero-tv__typed" aria-label="Направления">
+            <span id="heroTyped"></span><span class="typed-caret" aria-hidden="true"></span>
+          </div>
+
+          <div class="hero-tv__actions" aria-label="Действия">
+            <button class="btn btn--primary" type="button" id="btnShowreel">Шоурил</button>
+            <a class="btn btn--ghost" href="#contact" id="btnCalc">Рассчитать проект</a>
+          </div>
+        </div>
+
+        <div class="hero-tv__stage" data-tv-hero>
+          <div class="hero-tv__glow" aria-hidden="true"></div>
+          <canvas id="tvHeroCanvas"></canvas>
+
+          <video id="tvHeroVideo" class="tvfly__hiddenVideo" muted playsinline webkit-playsinline preload="auto" loop>
+            <source src="./assets/ui/showreel_2.mp4" type="video/mp4" />
+          </video>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORKS -->
+    <section class="works" id="projects" aria-label="Проекты">
+      <div class="container">
+        <div class="works-head" data-reveal>
+          <h2 class="works-title">ПРОЕКТЫ</h2>
+
+          <nav class="works-tabs" aria-label="Категории проектов">
+            <a class="works-tab is-active" href="./projects/brand/" data-stinger>Имиджевый ролик</a>
+            <a class="works-tab" href="./projects/animation/" data-stinger>Анимационный ролик</a>
+            <a class="works-tab" href="./projects/education/" data-stinger>Обучающие видеоролики</a>
+            <a class="works-tab" href="./projects/ads/" data-stinger>Рекламный ролик</a>
+            <a class="works-tab" href="./projects/presentation/" data-stinger>Презентационный ролик</a>
+          </nav>
+        </div>
+
+        <div class="works-grid">
+          <a class="work-card" href="./project_gac/" data-stinger data-reveal>
+            <div class="work-media">
+              <img alt="GAC GH4" src="./assets/project/1/1.jpg">
+            </div>
+            <div class="work-meta">GAC GH4</div>
+          </a>
+
+          <a class="work-card" href="./project_tenderness/" data-stinger data-reveal>
             <div class="work-media">
               <img alt="Tenderness" src="./assets/project/2/1.jpg">
             </div>
             <div class="work-meta">«Нежность»</div>
           </a>
 
-          <a class="work-card" href="#" data-cat="other">
+          <a class="work-card" href="./project_03/" data-stinger data-reveal>
             <div class="work-media">
-              <img alt="Nayzak Patterns" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='900'%3E%3Crect width='100%25' height='100%25' rx='40' fill='%2312141f'/%3E%3C/svg%3E">
+              <img alt="Project 03" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='900'%3E%3Crect width='100%25' height='100%25' rx='40' fill='%2312141f'/%3E%3C/svg%3E">
             </div>
-            <div class="work-meta">Nayzak Patterns</div>
+            <div class="work-meta">PROJECT 03</div>
           </a>
 
-          <a class="work-card" href="#" data-cat="other">
+          <a class="work-card" href="./project_04/" data-stinger data-reveal>
             <div class="work-media">
-              <img src="./assets/project/1/1.jpg" alt="Project 05">
-              </div>
+              <img alt="Project 04" src="./assets/project/1/1.jpg">
+            </div>
+            <div class="work-meta">PROJECT 04</div>
+          </a>
+
+          <a class="work-card" href="./project_05/" data-stinger data-reveal>
+            <div class="work-media">
+              <img alt="Project 05" src="./assets/project/2/1.jpg">
+            </div>
             <div class="work-meta">PROJECT 05</div>
-            </a>
-
-          <a class="work-card" href="#" data-cat="other">
-            <div class="work-media">
-              <img alt="Crave Chips" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='900'%3E%3Crect width='100%25' height='100%25' rx='40' fill='%2312141f'/%3E%3C/svg%3E">
-            </div>
-            <div class="work-meta">Crave Chips</div>
           </a>
         </div>
 
-        <div class="works-bottom">
-          <a class="btn btn--ghost" href="#all">Смотреть все проекты <span aria-hidden="true">↗</span></a>
+        <div class="works-bottom" data-reveal>
+          <a class="btn btn--ghost" href="./projects/" data-stinger>Смотреть все проекты <span aria-hidden="true">↗</span></a>
         </div>
       </div>
     </section>
 
-    <!-- CAPABILITIES (blocks + accordion) -->
-    
-    <!-- SERVICES -->
-    <section class="capabilities" id="services">
-      <div class="container">
-        <div class="gcv-head">
-          <div class="pill">Услуги</div>
-          <h2 class="gcv-title">ЧЕМ ЗАНИМАЕМСЯ</h2>
-          <p class="gcv-sub">Полный цикл видеопродакшена: от идеи и сценария — до съёмки, поста и финального мастера под площадку.</p>
-        </div>
-
-        <div class="services-grid" role="list">
-          <a class="svc-card" href="#contact" role="listitem">
-            <div class="svc-top">
-              <span class="pill pill--sm">Имидж</span>
-              <span class="svc-cta" aria-hidden="true">Запросить ↗</span>
-            </div>
-            <h3 class="svc-title">Имиджевый ролик</h3>
-            <p class="svc-desc">Строим бренд‑восприятие: настроение, ценности, стиль, киноязык.</p>
-            <ul class="svc-list">
-              <li>креатив / сценарий / раскадровка</li>
-              <li>съёмка + свет + арт‑дирекшн</li>
-              <li>монтаж + цвет + звук</li>
-            </ul>
-          </a>
-
-          <a class="svc-card" href="#contact" role="listitem">
-            <div class="svc-top">
-              <span class="pill pill--sm">CGI / VFX</span>
-              <span class="svc-cta" aria-hidden="true">Запросить ↗</span>
-            </div>
-            <h3 class="svc-title">Анимационный ролик</h3>
-            <p class="svc-desc">2D/3D, motion, композит — когда нужно объяснить или усилить эффект.</p>
-            <ul class="svc-list">
-              <li>сториборд + аниматик</li>
-              <li>моушн / 3D / композит</li>
-              <li>финальные форматы под площадки</li>
-            </ul>
-          </a>
-
-          <a class="svc-card" href="#contact" role="listitem">
-            <div class="svc-top">
-              <span class="pill pill--sm">Edu</span>
-              <span class="svc-cta" aria-hidden="true">Запросить ↗</span>
-            </div>
-            <h3 class="svc-title">Обучающие видео</h3>
-            <p class="svc-desc">Чётко, структурно, без воды — чтобы зритель понял и сделал.</p>
-            <ul class="svc-list">
-              <li>структура + текст + графика</li>
-              <li>съёмка в студии / на локации</li>
-              <li>монтаж + титры + упаковка</li>
-            </ul>
-          </a>
-
-          <a class="svc-card" href="#contact" role="listitem">
-            <div class="svc-top">
-              <span class="pill pill--sm">Ads</span>
-              <span class="svc-cta" aria-hidden="true">Запросить ↗</span>
-            </div>
-            <h3 class="svc-title">Рекламный ролик</h3>
-            <p class="svc-desc">Быстрый хук, ясный оффер, чистая сборка под performance.</p>
-            <ul class="svc-list">
-              <li>скрипт / оффер / тезисы</li>
-              <li>съёмка + постановка кадра</li>
-              <li>версии под разные форматы</li>
-            </ul>
-          </a>
-
-          <a class="svc-card" href="#contact" role="listitem">
-            <div class="svc-top">
-              <span class="pill pill--sm">Pitch</span>
-              <span class="svc-cta" aria-hidden="true">Запросить ↗</span>
-            </div>
-            <h3 class="svc-title">Презентационный ролик</h3>
-            <p class="svc-desc">Понятно “что это”, “зачем” и “почему вам можно доверять”.</p>
-            <ul class="svc-list">
-              <li>сценарий + структура</li>
-              <li>интервью + b‑roll</li>
-              <li>графика + финальная упаковка</li>
-            </ul>
-          </a>
-
-          <a class="svc-card svc-card--wide" href="#contact" role="listitem">
-            <div class="svc-top">
-              <span class="pill pill--sm">Web</span>
-              <span class="svc-cta" aria-hidden="true">Запросить ↗</span>
-            </div>
-            <h3 class="svc-title">Лендинги / motion‑web</h3>
-            <p class="svc-desc">Сильный “дом” для вашего визуала: лендинг, витрина проектов, motion‑сайт.</p>
-            <ul class="svc-list">
-              <li>дизайн + верстка</li>
-              <li>анимации / 3D (по задаче)</li>
-              <li>оптимизация и запуск</li>
-            </ul>
-          </a>
-        </div>
-
-        <div class="svc-bottom">
-          <div class="svc-bottom__text">Нужна смета под задачу — без созвонов на 40 минут. Короткий бриф → расчёт и варианты.</div>
-          <a class="btn btn--primary" href="#contact">Получить расчёт ↗</a>
-        </div>
-      </div>
-    </section>
-
-        <!-- NUMBERS -->
-    
-    <!-- SHOTS -->
-    <section class="gcv-section shots" id="shots">
-      <div class="container">
-        <div class="gcv-head gcv-head--split">
-          <div>
-            <div class="pill">Кадры</div>
-            <h2 class="gcv-title">АТМОСФЕРА</h2>
-            <p class="gcv-sub">Несколько кадров из недавних проектов — чтобы было понятно “как это выглядит”.</p>
+    <!-- MARQUEE: divider -->
+    <section class="marquee-band" aria-label="Бегущая строка">
+      <div class="marquee-band__inner">
+        <div class="marquee" data-reveal>
+          <div class="marquee__track">
+            <span>INDIVIDNI STUDIO</span><span>•</span><span>DIRECTING</span><span>•</span><span>PRODUCTION</span><span>•</span><span>POST</span><span>•</span><span>SOUND</span><span>•</span>
+            <span>INDIVIDNI STUDIO</span><span>•</span><span>DIRECTING</span><span>•</span><span>PRODUCTION</span><span>•</span><span>POST</span><span>•</span><span>SOUND</span><span>•</span>
+            <span>INDIVIDNI STUDIO</span><span>•</span><span>DIRECTING</span><span>•</span><span>PRODUCTION</span><span>•</span><span>POST</span><span>•</span><span>SOUND</span><span>•</span>
           </div>
-          <a class="btn btn--ghost" href="#projects">Смотреть проекты ↗</a>
-        </div>
-
-        <div class="shots-grid">
-          <a class="shot-card shot-card--wide" href="./project_gac/">
-            <img src="./assets/project/1/1.jpg" alt="Кадр проекта GAC">
-            <div class="shot-cap">GAC GH4</div>
-          </a>
-          <a class="shot-card" href="./project_choir/">
-            <img src="./assets/project/2/1.jpg" alt="Кадр проекта Choir">
-            <div class="shot-cap">Choir</div>
-          </a>
-          <a class="shot-card" href="#">
-            <img src="./assets/project/3/1.jpg" alt="Кадр проекта">
-            <div class="shot-cap">Project</div>
-          </a>
-          <a class="shot-card shot-card--wide" href="#">
-            <img src="./assets/project/4/1.jpg" alt="Кадр проекта">
-            <div class="shot-cap">Project</div>
-          </a>
-          <a class="shot-card" href="#">
-            <img src="./assets/project/5/1.jpg" alt="Кадр проекта">
-            <div class="shot-cap">Project</div>
-          </a>
         </div>
       </div>
     </section>
 
-<section class="gcv-section numbers" id="numbers">
+    <!-- CAPABILITIES -->
+    <section class="capabilities" id="services" aria-label="Услуги">
       <div class="container">
-        <div class="gcv-head gcv-head--split">
-          <div>
-            <div class="pill">Мы в цифрах</div>
-            <h2 class="gcv-title">МЫ В ЦИФРАХ</h2>
-            <p class="gcv-sub">Не “про красивую картинку”, а про контроль, скорость и результат. Цифры — заглушки.</p>
+        <div class="section-head" data-reveal>
+          <div class="section-kicker">↳ Услуги</div>
+          <h2 class="section-title">Чем занимаемся</h2>
+          <div class="section-sub">От идеи и препродакшна до съёмки, поста и финальных файлов под любые площадки.</div>
+        </div>
+
+        <div class="cap-anim" aria-hidden="true">
+          <svg id="mainSVG" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Capabilities animation">
+            <defs>
+              <clipPath id="mask"><rect x="0" y="0" width="800" height="400" /></clipPath>
+              <g class="colorTab">
+                <rect x="0" y="0" rx="20" width="130" height="320" />
+                <text x="12" y="120" class="label"></text>
+              </g>
+            </defs>
+            <g id="container" clip-path="url(#mask)"></g>
+          </svg>
+        </div>
+
+        <div class="cap-details" id="capDetails"></div>
+
+        <div class="cap-accordion">
+          <div class="accordion" data-accordion>
+            <div class="acc-item" data-acc-item data-open>
+              <button class="acc-btn" type="button" aria-expanded="true">
+                <span class="acc-left">
+                  <span class="acc-thumb">
+                    <img alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='56'%3E%3Crect width='100%25' height='100%25' rx='14' fill='%2312141f'/%3E%3C/svg%3E">
+                  </span>
+                  <span class="acc-title">Имиджевые и рекламные ролики</span>
+                </span>
+                <span class="acc-plus" aria-hidden="true"></span>
+              </button>
+              <div class="acc-panel" data-acc-panel style="height:auto">
+                <div class="acc-panel-inner">
+                  Концепт, режиссура, продюсирование, съёмка, монтаж и финальная выдача под digital/TV.
+                </div>
+              </div>
+            </div>
+
+            <div class="acc-item" data-acc-item>
+              <button class="acc-btn" type="button" aria-expanded="false">
+                <span class="acc-left">
+                  <span class="acc-thumb">
+                    <img alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='56'%3E%3Crect width='100%25' height='100%25' rx='14' fill='%2312141f'/%3E%3C/svg%3E">
+                  </span>
+                  <span class="acc-title">Музыкальные клипы</span>
+                </span>
+                <span class="acc-plus" aria-hidden="true"></span>
+              </button>
+              <div class="acc-panel" data-acc-panel>
+                <div class="acc-panel-inner">
+                  Тритмент, сторителлинг, постановка, свет и монтаж — клипы, которые смотрят до конца.
+                </div>
+              </div>
+            </div>
+
+            <div class="acc-item" data-acc-item>
+              <button class="acc-btn" type="button" aria-expanded="false">
+                <span class="acc-left">
+                  <span class="acc-thumb">
+                    <img alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='56'%3E%3Crect width='100%25' height='100%25' rx='14' fill='%2312141f'/%3E%3C/svg%3E">
+                  </span>
+                  <span class="acc-title">Постпродакшн</span>
+                </span>
+                <span class="acc-plus" aria-hidden="true"></span>
+              </button>
+              <div class="acc-panel" data-acc-panel>
+                <div class="acc-panel-inner">
+                  Монтаж, цвет, звук, графика — доводим до «дорого» без компромиссов.
+                </div>
+              </div>
+            </div>
+
+            <div class="acc-item" data-acc-item>
+              <button class="acc-btn" type="button" aria-expanded="false">
+                <span class="acc-left">
+                  <span class="acc-thumb">
+                    <img alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='56'%3E%3Crect width='100%25' height='100%25' rx='14' fill='%2312141f'/%3E%3C/svg%3E">
+                  </span>
+                  <span class="acc-title">CGI / VFX</span>
+                </span>
+                <span class="acc-plus" aria-hidden="true"></span>
+              </button>
+              <div class="acc-panel" data-acc-panel>
+                <div class="acc-panel-inner">
+                  3D, композитинг, клинапы, motion — аккуратно, чисто, в нужной дозе.
+                </div>
+              </div>
+            </div>
+
+            <div class="acc-item" data-acc-item>
+              <button class="acc-btn" type="button" aria-expanded="false">
+                <span class="acc-left">
+                  <span class="acc-thumb">
+                    <img alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='56'%3E%3Crect width='100%25' height='100%25' rx='14' fill='%2312141f'/%3E%3C/svg%3E">
+                  </span>
+                  <span class="acc-title">Интерактив / сайты</span>
+                </span>
+                <span class="acc-plus" aria-hidden="true"></span>
+              </button>
+              <div class="acc-panel" data-acc-panel>
+                <div class="acc-panel-inner">
+                  Лендинги и интерактив — сильная «упаковка» для видео и бренда.
+                </div>
+              </div>
+            </div>
           </div>
-          <a class="btn btn--ghost" href="#pricing">Смотреть стоимость ↗</a>
         </div>
 
-        <div class="numbers-grid">
-          <article class="stat-card stat-card--hero stat-card--media">
-            <div class="stat-kicker">(01) Проекты</div>
-            <div class="stat-value">120+</div>
-            <div class="stat-label">видео‑проектов</div>
-            <p class="stat-note">Имидж, реклама, обучение, презентации — под формат и площадку.</p>
-          </article>
-
-          <article class="stat-card">
-            <div class="stat-kicker">(02) Опыт</div>
-            <div class="stat-value">7+ лет</div>
-            <div class="stat-label">в продакшене</div>
-            <p class="stat-note">Съёмка, свет, режиссура, монтаж, графика.</p>
-          </article>
-
-          <article class="stat-card">
-            <div class="stat-kicker">(03) Скорость</div>
-            <div class="stat-value">24–72ч</div>
-            <div class="stat-label">первый монтаж</div>
-            <p class="stat-note">Если материал и ТЗ готовы — не тянем резину.</p>
-          </article>
-
-          <article class="stat-card">
-            <div class="stat-kicker">(04) Коммуникация</div>
-            <div class="stat-value">1</div>
-            <div class="stat-label">ответственный продюсер</div>
-            <p class="stat-note">Одна точка входа. Сроки, правки, контроль.</p>
-          </article>
+        <div class="cap-actions" data-reveal>
+          <a class="btn btn--primary" href="#brief">Заполнить бриф</a>
+          <a class="btn btn--ghost" href="#contact">Обсудить задачу</a>
         </div>
       </div>
     </section>
 
-    <!-- PROCESS -->
-    <section class="gcv-section process" id="process">
+    <!-- NUMBERS -->
+    <section class="numbers" id="numbers" aria-label="Мы в цифрах">
       <div class="container">
-        <div class="gcv-head">
-          <div class="pill">Процесс</div>
-          <h2 class="gcv-title">ЭТАПЫ СОЗДАНИЯ ВИДЕОРОЛИКА</h2>
-          <p class="gcv-sub">Пайплайн, который держит сроки и качество. Согласуем ключевые точки — дальше просто делаем.</p>
+        <div class="section-head" data-reveal>
+          <div class="section-kicker">↳ Мы в цифрах</div>
+          <h2 class="section-title">Дисциплина продакшна — это тоже креатив.</h2>
+        </div>
+
+        <div class="numbers-layout">
+          <div class="numbers-media" data-reveal>
+            <div class="frame-rail">
+              <img src="./assets/project/1/1.jpg" alt="" loading="lazy">
+              <img src="./assets/project/2/1.jpg" alt="" loading="lazy">
+              <img src="./assets/project/1/1.jpg" alt="" loading="lazy">
+              <img src="./assets/project/2/1.jpg" alt="" loading="lazy">
+            </div>
+            <div class="numbers-note">Кадры — из реальных проектов. Без стокового «пластика».</div>
+          </div>
+
+          <div class="numbers-grid">
+            <div class="num-card num-card--fill" data-reveal>
+              <div class="num">7+</div>
+              <div class="label">лет в продакшене</div>
+            </div>
+            <div class="num-card" data-reveal>
+              <div class="num">120+</div>
+              <div class="label">съёмочных смен</div>
+            </div>
+            <div class="num-card" data-reveal>
+              <div class="num">48ч</div>
+              <div class="label">минимальный turnaround для срочных задач</div>
+            </div>
+            <div class="num-card" data-reveal>
+              <div class="num">4K</div>
+              <div class="label">стандарт выдачи и мастер-файлы</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROCESS (interactive) -->
+    <section class="process" id="process" aria-label="Этапы создания" data-process>
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <div class="section-kicker">↳ Процесс</div>
+          <h2 class="section-title">Этапы создания видеоролика</h2>
         </div>
 
         <div class="process-grid">
-          <ol class="process-list">
-            <li class="process-item">
-              <div class="process-num">(01)</div>
-              <div class="process-body">
-                <h3 class="process-title">Бриф и цели</h3>
-                <p class="process-desc">Что продаём/объясняем, кому, где крутится, какие KPI.</p>
-                <div class="process-tags">
-                  <span class="tag">KPI</span><span class="tag">аудитория</span><span class="tag">форматы</span>
-                </div>
-              </div>
+          <ol class="steps" aria-label="Этапы" data-reveal>
+            <li class="step is-active" data-step data-img="./assets/project/1/1.jpg">
+              <button class="step-btn" type="button">
+                <span class="step-num">01</span>
+                <span class="step-content">
+                  <span class="step-title">Бриф + цель</span>
+                  <span class="step-text">Понимаем задачу, аудиторию, дедлайны и KPI.</span>
+                </span>
+              </button>
             </li>
-
-            <li class="process-item">
-              <div class="process-num">(02)</div>
-              <div class="process-body">
-                <h3 class="process-title">Креатив и сценарий</h3>
-                <p class="process-desc">Идея, структура, текст, референсы, тональность.</p>
-                <div class="process-tags">
-                  <span class="tag">скрипт</span><span class="tag">сториборд</span><span class="tag">раскадровка</span>
-                </div>
-              </div>
+            <li class="step" data-step data-img="./assets/project/2/1.jpg">
+              <button class="step-btn" type="button">
+                <span class="step-num">02</span>
+                <span class="step-content">
+                  <span class="step-title">Идея + препродакшн</span>
+                  <span class="step-text">Концепт, референсы, сценарий/шотлист, локации, каст.</span>
+                </span>
+              </button>
             </li>
-
-            <li class="process-item">
-              <div class="process-num">(03)</div>
-              <div class="process-body">
-                <h3 class="process-title">Подготовка</h3>
-                <p class="process-desc">Локации, каст, реквизит, план съёмки, тайминг, смета.</p>
-                <div class="process-tags">
-                  <span class="tag">препрод</span><span class="tag">тайминг</span><span class="tag">план</span>
-                </div>
-              </div>
+            <li class="step" data-step data-img="./assets/project/1/1.jpg">
+              <button class="step-btn" type="button">
+                <span class="step-num">03</span>
+                <span class="step-content">
+                  <span class="step-title">Съёмка</span>
+                  <span class="step-text">Свет, камера, режиссура — снимаем чисто и быстро.</span>
+                </span>
+              </button>
             </li>
-
-            <li class="process-item">
-              <div class="process-num">(04)</div>
-              <div class="process-body">
-                <h3 class="process-title">Съёмка</h3>
-                <p class="process-desc">Свет, камера, постановка — собираем материал “в кадре”.</p>
-                <div class="process-tags">
-                  <span class="tag">свет</span><span class="tag">камера</span><span class="tag">режиссура</span>
-                </div>
-              </div>
+            <li class="step" data-step data-img="./assets/project/2/1.jpg">
+              <button class="step-btn" type="button">
+                <span class="step-num">04</span>
+                <span class="step-content">
+                  <span class="step-title">Пост</span>
+                  <span class="step-text">Монтаж → цвет → звук → графика. Делаем «дорого».</span>
+                </span>
+              </button>
             </li>
-
-            <li class="process-item">
-              <div class="process-num">(05)</div>
-              <div class="process-body">
-                <h3 class="process-title">Пост‑продакшн</h3>
-                <p class="process-desc">Монтаж → цвет → звук → графика/VFX → правки.</p>
-                <div class="process-tags">
-                  <span class="tag">монтаж</span><span class="tag">цвет</span><span class="tag">CGI/VFX</span>
-                </div>
-              </div>
-            </li>
-
-            <li class="process-item">
-              <div class="process-num">(06)</div>
-              <div class="process-body">
-                <h3 class="process-title">Мастер и версии</h3>
-                <p class="process-desc">Форматы под площадки, титры/субтитры, превью.</p>
-                <div class="process-tags">
-                  <span class="tag">16:9</span><span class="tag">9:16</span><span class="tag">1:1</span>
-                </div>
-              </div>
+            <li class="step" data-step data-img="./assets/project/1/1.jpg">
+              <button class="step-btn" type="button">
+                <span class="step-num">05</span>
+                <span class="step-content">
+                  <span class="step-title">Выдача</span>
+                  <span class="step-text">Форматы под платформы + мастер-файлы + архив.</span>
+                </span>
+              </button>
             </li>
           </ol>
 
-          <aside class="process-aside">
-            <div class="aside-card aside-card--media">
-              <div class="aside-title">Контрольные точки</div>
-              <ul class="aside-list">
-                <li>Сценарий / структура → утверждение</li>
-                <li>План съёмки → утверждение</li>
-                <li>Черновой монтаж → правки</li>
-                <li>Финал → версии под площадки</li>
-              </ul>
-              <a class="btn btn--primary" href="#contact">Обсудить проект ↗</a>
+          <div class="process-preview" data-reveal>
+            <div class="preview-frame">
+              <img data-process-preview src="./assets/project/1/1.jpg" alt="Превью этапа" loading="lazy">
             </div>
-          </aside>
+            <div class="preview-meta">
+              <span class="preview-chip">live preview</span>
+              <span class="preview-tip">Наведи/кликни на этап — кадр справа сменится.</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- MOSAIC CALLOUT -->
-    <section class="gcv-section mosaic" aria-label="Бриф и заявка">
-      <div class="container">
-        <div class="mosaic-grid">
-          <div class="mosaic-tile" style="--img:url('./assets/project/1/1.jpg')"></div>
-          <div class="mosaic-tile" style="--img:url('./assets/project/2/1.jpg')"></div>
-          <div class="mosaic-tile mosaic-tile--wide" style="--img:url('./assets/project/1/1.jpg')"></div>
-
-          <a class="mosaic-center" href="#contact">
-            <div class="pill">Бриф</div>
-            <div class="mosaic-title">Быстрый расчёт и варианты</div>
-            <div class="mosaic-sub">Оставьте контакт — уточним 5–7 вопросов и вернёмся со сметой.</div>
-            <span class="mosaic-cta">Запросить ↗</span>
-          </a>
-
-          <div class="mosaic-tile" style="--img:url('./assets/project/2/1.jpg')"></div>
-          <div class="mosaic-tile" style="--img:url('./assets/project/1/1.jpg')"></div>
-          <div class="mosaic-tile mosaic-tile--wide" style="--img:url('./assets/project/2/1.jpg')"></div>
+    <!-- MARQUEE 2 -->
+    <section class="marquee-band marquee-band--thin" aria-label="Бегущая строка 2">
+      <div class="marquee-band__inner">
+        <div class="marquee marquee--thin">
+          <div class="marquee__track">
+            <span>СВЕТ</span><span>•</span><span>КАМЕРА</span><span>•</span><span>МОНТАЖ</span><span>•</span><span>ЦВЕТ</span><span>•</span><span>ЗВУК</span><span>•</span><span>CGI</span><span>•</span>
+            <span>СВЕТ</span><span>•</span><span>КАМЕРА</span><span>•</span><span>МОНТАЖ</span><span>•</span><span>ЦВЕТ</span><span>•</span><span>ЗВУК</span><span>•</span><span>CGI</span><span>•</span>
+            <span>СВЕТ</span><span>•</span><span>КАМЕРА</span><span>•</span><span>МОНТАЖ</span><span>•</span><span>ЦВЕТ</span><span>•</span><span>ЗВУК</span><span>•</span><span>CGI</span><span>•</span>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- PRICING -->
-    <section class="gcv-section pricing" id="pricing">
+    <section class="pricing" id="pricing" aria-label="Стоимость">
       <div class="container">
-        <div class="gcv-head">
-          <div class="pill">Стоимость</div>
-          <h2 class="gcv-title">СКОЛЬКО СТОИТ ВИДЕОРОЛИК</h2>
-          <p class="gcv-sub">Три ориентировочных уровня. Финальная смета зависит от препрода, съёмок, графики и сроков.</p>
+        <div class="section-head" data-reveal>
+          <div class="section-kicker">↳ Стоимость</div>
+          <h2 class="section-title">Сколько стоит видеоролик</h2>
+          <div class="section-sub">Честно: цена зависит от задачи. Ниже — ориентиры, чтобы было от чего отталкиваться.</div>
         </div>
 
         <div class="pricing-grid">
-          <article class="price-card">
-            <div class="price-kicker">(01) Базовый</div>
-            <h3 class="price-title">Обучающее / презентационное</h3>
-            <div class="price-value">от 70 000 ₽</div>
+          <article class="price-card price-card--fill" data-reveal>
+            <div class="price-top">
+              <div class="price-name">Лайт</div>
+              <div class="price-sum">от 60 000 ₽</div>
+            </div>
             <ul class="price-list">
-              <li>1 съёмочный день (лайт)</li>
-              <li>монтаж + титры</li>
-              <li>1–2 раунда правок</li>
+              <li>1 съёмочный день (небольшая команда)</li>
+              <li>Монтаж + базовый цвет</li>
+              <li>Звук/музыка (лицензия или сток)</li>
+              <li>Выдача под соцсети</li>
             </ul>
-            <a class="price-cta" href="#contact">Запросить смету ↗</a>
+            <a class="btn btn--primary" href="#contact">Запросить смету</a>
           </article>
 
-          <article class="price-card price-card--accent">
-            <div class="price-kicker">(02) Оптимум</div>
-            <h3 class="price-title">Рекламный ролик</h3>
-            <div class="price-value">от 150 000 ₽</div>
+          <article class="price-card" data-reveal>
+            <div class="price-top">
+              <div class="price-name">Стандарт</div>
+              <div class="price-sum">от 150 000 ₽</div>
+            </div>
             <ul class="price-list">
-              <li>постановка + свет</li>
-              <li>монтаж + цвет + звук</li>
-              <li>версии 16:9 / 9:16 / 1:1</li>
+              <li>Препродакшн + шотлист</li>
+              <li>Свет/камера расширенно</li>
+              <li>Монтаж + цвет + звук</li>
+              <li>Графика / титры / пакет форматов</li>
             </ul>
-            <a class="price-cta" href="#contact">Запросить смету ↗</a>
+            <a class="btn btn--ghost" href="#contact">Обсудить задачу</a>
           </article>
 
-          <article class="price-card">
-            <div class="price-kicker">(03) Премиум</div>
-            <h3 class="price-title">Имиджевый ролик</h3>
-            <div class="price-value">от 250 000 ₽</div>
+          <article class="price-card" data-reveal>
+            <div class="price-top">
+              <div class="price-name">Премиум</div>
+              <div class="price-sum">от 350 000 ₽</div>
+            </div>
             <ul class="price-list">
-              <li>креатив + сценарий + режиссура</li>
-              <li>расширенный препрод / каст / локации</li>
-              <li>саунд‑дизайн + графика/VFX (по задаче)</li>
+              <li>Концепт/сценарий/кастинг</li>
+              <li>Несколько локаций / смен</li>
+              <li>Пост: цвет, звук, VFX/CGI</li>
+              <li>TV/Digital пакет</li>
             </ul>
-            <a class="price-cta" href="#contact">Запросить смету ↗</a>
+            <a class="btn btn--ghost" href="#contact">Сделать расчёт</a>
           </article>
-        </div>
-
-        <div class="pricing-foot">
-          <div class="pricing-note">
-            В стоимость обычно не входит: актёры, аренда студии/локаций, реквизит, лицензии на музыку — это считается отдельно.
-          </div>
-          <a class="btn btn--ghost" href="#contact">Получить точный расчёт ↗</a>
         </div>
       </div>
     </section>
 
-    <!-- TEAM / WHO DOES WHAT -->
-    <section class="gcv-section team" id="team">
+    <!-- TEAM -->
+    <section class="team" id="team" aria-label="Команда">
       <div class="container">
-        <div class="gcv-head">
-          <div class="pill">Команда</div>
-          <h2 class="gcv-title">КТО ДЕЛАЕТ ПРОЕКТ</h2>
-          <p class="gcv-sub">Не “детский сад”. Роли, ответственность, зона контроля. Подключаем специалистов ровно там, где это даёт качество.</p>
+        <div class="section-head" data-reveal>
+          <div class="section-kicker">↳ Команда</div>
+          <h2 class="section-title">Кто чем занимается</h2>
+          <div class="section-sub">Не «один человек на всё». Роли разделены — поэтому быстро, предсказуемо и качественно.</div>
         </div>
 
         <div class="roles-grid">
-          <article class="role-card role-card--accent">
+          <article class="role-card role-card--fill" data-reveal>
             <div class="role-top">
-              <div class="role-no">(01)</div>
-              <h3 class="role-title">Продюсер</h3>
+              <div class="role-name">Продюсер</div>
+              <div class="role-tag">сроки / бюджет</div>
             </div>
             <ul class="role-list">
-              <li>бриф, смета, договорённости</li>
-              <li>тайминг, логистика, команда</li>
-              <li>контроль сроков и качества</li>
+              <li>смета и договорённости</li>
+              <li>локации, реквизит, подрядчики</li>
+              <li>контроль дедлайнов и логистики</li>
             </ul>
-            <div class="role-out">На выходе: план, сроки, контроль</div>
           </article>
 
-          <article class="role-card">
+          <article class="role-card" data-reveal>
             <div class="role-top">
-              <div class="role-no">(02)</div>
-              <h3 class="role-title">Режиссёр</h3>
+              <div class="role-name">Режиссёр</div>
+              <div class="role-tag">идея / сторителлинг</div>
             </div>
             <ul class="role-list">
-              <li>идея, сценарий, раскадровка</li>
-              <li>постановка и работа с героем</li>
-              <li>визуальная драматургия</li>
+              <li>концепт и тритмент</li>
+              <li>работа с героями/кадром</li>
+              <li>контроль художественного качества</li>
             </ul>
-            <div class="role-out">На выходе: смысл + история</div>
           </article>
 
-          <article class="role-card">
+          <article class="role-card" data-reveal>
             <div class="role-top">
-              <div class="role-no">(03)</div>
-              <h3 class="role-title">Оператор / свет</h3>
+              <div class="role-name">Оператор</div>
+              <div class="role-tag">свет / камера</div>
             </div>
             <ul class="role-list">
-              <li>кадр, оптика, движение камеры</li>
-              <li>свет и экспозиция</li>
-              <li>“чистый” материал под пост</li>
+              <li>световые схемы и постановка</li>
+              <li>оптика, движение камеры</li>
+              <li>технический контроль картинки</li>
             </ul>
-            <div class="role-out">На выходе: картинка в кадре</div>
           </article>
 
-          <article class="role-card">
+          <article class="role-card" data-reveal>
             <div class="role-top">
-              <div class="role-no">(04)</div>
-              <h3 class="role-title">Монтаж</h3>
+              <div class="role-name">Постпродакшн</div>
+              <div class="role-tag">монтаж / цвет</div>
             </div>
             <ul class="role-list">
-              <li>структура, ритм, драматургия</li>
-              <li>правки и версии</li>
-              <li>подготовка мастера</li>
+              <li>монтаж под ритм и смысл</li>
+              <li>цвет и доводка</li>
+              <li>звук + графика / VFX</li>
             </ul>
-            <div class="role-out">На выходе: цельный ролик</div>
-          </article>
-
-          <article class="role-card">
-            <div class="role-top">
-              <div class="role-no">(05)</div>
-              <h3 class="role-title">CGI / VFX</h3>
-            </div>
-            <ul class="role-list">
-              <li>моушн‑графика / 3D</li>
-              <li>композитинг</li>
-              <li>инфографика и “объяснялки”</li>
-            </ul>
-            <div class="role-out">На выходе: эффект / ясность</div>
-          </article>
-
-          <article class="role-card">
-            <div class="role-top">
-              <div class="role-no">(06)</div>
-              <h3 class="role-title">Цвет / звук</h3>
-            </div>
-            <ul class="role-list">
-              <li>color grading</li>
-              <li>саунд‑дизайн, чистка, мастер</li>
-              <li>музыка / лицензии (по задаче)</li>
-            </ul>
-            <div class="role-out">На выходе: “дорого звучит”</div>
           </article>
         </div>
       </div>
     </section>
 
     <!-- VALUE -->
-    <section class="gcv-section value" id="value">
+    <section class="value" id="value" aria-label="За что нас ценят">
       <div class="container">
-        <div class="gcv-head">
-          <div class="pill">Почему мы</div>
-          <h2 class="gcv-title">ЗА ЧТО НАС ЦЕНЯТ</h2>
+        <div class="section-head" data-reveal>
+          <div class="section-kicker">↳ Ценность</div>
+          <h2 class="section-title">За что нас ценят</h2>
         </div>
 
         <div class="value-grid">
-          <article class="value-card value-card--accent">
-            <div class="value-no">(01)</div>
-            <h3 class="value-title">Одна точка входа</h3>
-            <p class="value-desc">Продюсер ведёт проект: собирает правки, держит сроки, делает прозрачный процесс.</p>
-          </article>
-
-          <article class="value-card value-card--media">
-            <div class="value-no">(02)</div>
-            <h3 class="value-title">Сильная картинка</h3>
-            <p class="value-desc">Свет, композиция, движение. Мы не “снимем как-нибудь” — мы строим кадр.</p>
-          </article>
-
-          <article class="value-card">
-            <div class="value-no">(03)</div>
-            <h3 class="value-title">Понятно и по делу</h3>
-            <p class="value-desc">Структура, смысл, текст. Без воды — чтобы ролик работал на задачу.</p>
-          </article>
+          <div class="value-card value-card--fill" data-reveal>
+            <div class="value-title">Сроки — не «примерно»</div>
+            <div class="value-text">Фиксируем этапы и сдаём по плану. Без сюрпризов в конце.</div>
+          </div>
+          <div class="value-card" data-reveal>
+            <div class="value-title">Картинка «дорого»</div>
+            <div class="value-text">Свет, оптика, композиция и цвет — без «пластика».</div>
+          </div>
+          <div class="value-card" data-reveal>
+            <div class="value-title">Понимание задачи</div>
+            <div class="value-text">Мы не просто «снимаем». Мы решаем задачу бренда.</div>
+          </div>
+          <div class="value-card" data-reveal>
+            <div class="value-title">Коммуникация</div>
+            <div class="value-text">Короткие апдейты, понятные решения, без тумана.</div>
+          </div>
+          <div class="value-card" data-reveal>
+            <div class="value-title">Гибкость под площадки</div>
+            <div class="value-text">Вертикали/квадраты/TV — пакетом, без боли.</div>
+          </div>
+          <div class="value-card" data-reveal>
+            <div class="value-title">Упаковка результата</div>
+            <div class="value-text">Мастер-файлы, версии, архив — всё аккуратно.</div>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- FAQ -->
-    <section class="gcv-section faq" id="faq">
+    <section class="faq" id="faq" aria-label="Частые вопросы">
       <div class="container">
-        <div class="gcv-head">
-          <div class="pill">FAQ</div>
-          <h2 class="gcv-title">ЧАСТЫЕ ВОПРОСЫ</h2>
+        <div class="section-head" data-reveal>
+          <div class="section-kicker">↳ FAQ</div>
+          <h2 class="section-title">Частые вопросы</h2>
         </div>
 
-        <div class="accordion" data-accordion>
+        <div class="accordion accordion--clean" data-accordion data-reveal>
           <div class="acc-item" data-acc-item data-open>
             <button class="acc-btn" type="button" aria-expanded="true">
               <span class="acc-left">
-                <span class="acc-title">Сколько времени занимает проект?</span>
+                <span class="acc-title">Сколько правок входит?</span>
               </span>
-              <span class="acc-ico" aria-hidden="true"></span>
+              <span class="acc-plus" aria-hidden="true"></span>
             </button>
-            <div class="acc-panel" data-acc-panel>
-              <div class="acc-inner">
-                Типично: 7–21 день. Точный срок зависит от препрода, количества съёмок, графики и правок.
+            <div class="acc-panel" data-acc-panel style="height:auto">
+              <div class="acc-panel-inner">
+                Обычно закладываем 2 круга правок. Если нужна “многоитерационная” работа — это тоже нормально, просто фиксируем условия в смете.
               </div>
             </div>
           </div>
 
           <div class="acc-item" data-acc-item>
             <button class="acc-btn" type="button" aria-expanded="false">
-              <span class="acc-left">
-                <span class="acc-title">Сколько раундов правок входит?</span>
-              </span>
-              <span class="acc-ico" aria-hidden="true"></span>
+              <span class="acc-left"><span class="acc-title">Можно без съёмки — только монтаж?</span></span>
+              <span class="acc-plus" aria-hidden="true"></span>
             </button>
             <div class="acc-panel" data-acc-panel>
-              <div class="acc-inner">
-                Обычно 1–2 раунда. Если проект большой — фиксируем в смете и тайминге.
+              <div class="acc-panel-inner">
+                Да. Соберём ролик из вашего материала или из стока: монтаж, цвет, звук, графика.
               </div>
             </div>
           </div>
 
           <div class="acc-item" data-acc-item>
             <button class="acc-btn" type="button" aria-expanded="false">
-              <span class="acc-left">
-                <span class="acc-title">Делаете версии под Reels/TikTok?</span>
-              </span>
-              <span class="acc-ico" aria-hidden="true"></span>
+              <span class="acc-left"><span class="acc-title">Сколько времени занимает производство?</span></span>
+              <span class="acc-plus" aria-hidden="true"></span>
             </button>
             <div class="acc-panel" data-acc-panel>
-              <div class="acc-inner">
-                Да. 16:9 / 9:16 / 1:1, плюс превью и субтитры — по задаче.
+              <div class="acc-panel-inner">
+                Средний проект — 1–3 недели. Срочные задачи тоже делаем, если есть окно в графике.
               </div>
             </div>
           </div>
 
           <div class="acc-item" data-acc-item>
             <button class="acc-btn" type="button" aria-expanded="false">
-              <span class="acc-left">
-                <span class="acc-title">Можно начать без чёткого ТЗ?</span>
-              </span>
-              <span class="acc-ico" aria-hidden="true"></span>
+              <span class="acc-left"><span class="acc-title">Какие форматы вы отдаёте?</span></span>
+              <span class="acc-plus" aria-hidden="true"></span>
             </button>
             <div class="acc-panel" data-acc-panel>
-              <div class="acc-inner">
-                Можно. Мы поможем собрать бриф, референсы и цели — и уже от этого посчитаем смету.
+              <div class="acc-panel-inner">
+                Мастер-файл + версии под YouTube/Instagram/TikTok/сайт. По запросу — TV и медиа-пакет.
               </div>
             </div>
           </div>
@@ -700,110 +623,115 @@
     </section>
 
     <!-- WORKFLOW -->
-    <section class="gcv-section workflow" id="workflow">
+    <section class="workflow" id="workflow" aria-label="Как мы работаем">
       <div class="container">
         <div class="workflow-grid">
-          <div class="workflow-left">
-            <div class="pill">Подход</div>
-            <h2 class="gcv-title">КАК МЫ РАБОТАЕМ</h2>
-            <p class="gcv-sub">Чёткие этапы, прозрачные файлы, предсказуемый результат. Никакого “сделаем креативчик”.</p>
-            <a class="btn btn--primary" href="#contact">Обсудить проект ↗</a>
+          <div class="workflow-text" data-reveal>
+            <div class="section-kicker">↳ Как мы работаем</div>
+            <h2 class="section-title">Прозрачно. По этапам. Без хаоса.</h2>
+            <div class="workflow-sub">
+              Самое большое удовольствие — когда клиент не «контролирует», а спокойно ждёт результат, потому что всё под контролем у нас.
+            </div>
+
+            <div class="workflow-steps">
+              <div class="wf">
+                <div class="wf-n">01</div><div class="wf-t">Собираем вводные</div>
+              </div>
+              <div class="wf">
+                <div class="wf-n">02</div><div class="wf-t">Фиксируем план и смету</div>
+              </div>
+              <div class="wf">
+                <div class="wf-n">03</div><div class="wf-t">Снимаем и делаем пост</div>
+              </div>
+              <div class="wf">
+                <div class="wf-n">04</div><div class="wf-t">Отдаём пакет финалов</div>
+              </div>
+            </div>
           </div>
 
-          <div class="workflow-right">
-            <figure class="wf-shot" aria-label="Кадр из проекта">
-              <img src="./assets/project/2/1.jpg" alt="Кадр из проекта">
-            </figure>
-            <article class="wf-card">
-              <div class="wf-no">(01)</div>
-              <h3 class="wf-title">Одна точка входа</h3>
-              <p class="wf-desc">Продюсер ведёт проект, собирает правки и держит сроки.</p>
-            </article>
-
-            <article class="wf-card wf-card--accent">
-              <div class="wf-no">(02)</div>
-              <h3 class="wf-title">Контроль этапов</h3>
-              <p class="wf-desc">Согласуем сценарий → план → черновик → финал. Без сюрпризов.</p>
-            </article>
-
-            <article class="wf-card">
-              <div class="wf-no">(03)</div>
-              <h3 class="wf-title">Версии и упаковка</h3>
-              <p class="wf-desc">Делаем форматы под площадки + превью и субтитры (если нужно).</p>
-            </article>
+          <div class="workflow-card" data-reveal>
+            <div class="workflow-card__title">Нужно посчитать проект?</div>
+            <div class="workflow-card__text">Напиши, что за задача и сроки. Ответим с предложением и ориентиром по бюджету.</div>
+            <a class="btn btn--primary" href="#contact">Связаться</a>
+            <a class="btn btn--ghost" href="#brief">Заполнить бриф</a>
           </div>
         </div>
       </div>
     </section>
-</main>
+
+  </main>
 
   <!-- FOOTER -->
-  <footer class="footer" id="contact">
+  <footer class="footer" id="contact" aria-label="Контакты">
     <div class="container">
-      <div class="footer-top">
-        <div class="footer-cta">
-          <div class="pill">Связаться</div>
-          <div class="footer-title">Давайте обсудим проект</div>
-          <div class="footer-sub">Оставьте контакт — мы ответим, уточним задачу и вернёмся со сметой.</div>
+      <div class="footer-shell">
+        <div class="footer-left">
+          <div class="footer-brand">
+            <span class="brand-name">INDIVIDNI</span>
+            <span class="footer-sub">studio — videoproduction</span>
+          </div>
 
-          <form class="footer-form" data-footer-form>
-            <input class="footer-input" type="text" name="contact" placeholder="Email или Telegram" autocomplete="email" required>
-            <button class="btn btn--primary" type="submit">Отправить ↗</button>
+          <div class="footer-cols">
+            <div class="footer-col">
+              <div class="footer-col__t">Навигация</div>
+              <a class="footer-link" href="#projects">Проекты</a>
+              <a class="footer-link" href="#services">Услуги</a>
+              <a class="footer-link" href="#process">Этапы</a>
+              <a class="footer-link" href="#pricing">Стоимость</a>
+              <a class="footer-link" href="#team">Команда</a>
+            </div>
+
+            <div class="footer-col">
+              <div class="footer-col__t">Контакты</div>
+              <a class="footer-link" href="mailto:hello@individnistudio.ru">hello@individnistudio.ru</a>
+              <a class="footer-link" href="https://t.me/" target="_blank" rel="noreferrer">Telegram</a>
+              <a class="footer-link" href="https://instagram.com/" target="_blank" rel="noreferrer">Instagram</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-right">
+          <div class="footer-form-title">Заявка</div>
+          <form class="footer-form" data-contact-form>
+            <label class="field">
+              <span class="field-label">Имя</span>
+              <input class="field-input" name="name" type="text" autocomplete="name" placeholder="Как к вам обращаться" />
+            </label>
+            <label class="field">
+              <span class="field-label">Контакт</span>
+              <input class="field-input" name="contact" type="text" autocomplete="email" placeholder="Telegram / Email / Телефон" required />
+            </label>
+            <label class="field">
+              <span class="field-label">Задача</span>
+              <textarea class="field-input field-input--ta" name="message" rows="4" placeholder="Что нужно снять? Сроки? Примерный бюджет?"></textarea>
+            </label>
+            <button class="btn btn--primary" type="submit">Отправить</button>
           </form>
 
-          <div class="footer-hint">
-            или пишите на <a class="footer-link" href="mailto:hello@individnistudio.ru">hello@individnistudio.ru</a>
+          <div class="footer-meta">
+            <span>© <span id="year"></span> INDIVIDNI</span>
+            <span class="footer-dot">•</span>
+            <a class="footer-link footer-link--tiny" href="#top">Наверх</a>
           </div>
         </div>
-
-        <div class="footer-cols">
-          <div class="footer-col">
-            <div class="footer-col__title">Навигация</div>
-            <a class="footer-link" href="#projects">Проекты</a>
-            <a class="footer-link" href="#services">Услуги</a>
-            <a class="footer-link" href="#process">Этапы</a>
-            <a class="footer-link" href="#pricing">Стоимость</a>
-            <a class="footer-link" href="#faq">FAQ</a>
-          </div>
-
-          <div class="footer-col">
-            <div class="footer-col__title">Соцсети</div>
-            <a class="footer-link" href="#" rel="noopener">Telegram</a>
-            <a class="footer-link" href="#" rel="noopener">Instagram</a>
-            <a class="footer-link" href="#" rel="noopener">Vimeo</a>
-          </div>
-
-          <div class="footer-col">
-            <div class="footer-col__title">Контакты</div>
-            <a class="footer-link" href="mailto:hello@individnistudio.ru">hello@individnistudio.ru</a>
-            <a class="footer-link" href="#" rel="noopener">Заполнить бриф</a>
-            <div class="footer-small">© <span data-year></span> INDIVIDNI STUDIO</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="footer-bottom">
-        <div class="footer-small">© <span data-year></span> INDIVIDNI STUDIO</div>
-        <div class="footer-small">Политика конфиденциальности</div>
       </div>
     </div>
-
-    <div class="footer-word" aria-hidden="true">INDIVIDNI</div>
   </footer>
 
+  <!-- page transition stinger -->
+  <div class="page-stinger" data-stinger aria-hidden="true"></div>
+
   <!-- Scripts -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/fflate@0.7.4/umd/index.js"></script>
+  <script src="https://unpkg.com/three@0.128.0/examples/js/loaders/FBXLoader.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
-
-<script src="https://unpkg.com/fflate@0.7.4/umd/index.js"></script>
-<script src="https://unpkg.com/three@0.128.0/examples/js/loaders/FBXLoader.js"></script>
-<script src="./assets/js/tv_hero.js" defer></script>
-<script src="./assets/js/liquid.js" defer></script>
-<script src="./assets/js/capabilities_tabs.js" defer></script>
-<script src="./assets/js/capabilities_detail.js" defer></script>
-<script src="./assets/js/main.js" defer></script>
-
+  <script src="./assets/js/tv_hero.js" defer></script>
+  <script src="./assets/js/liquid.js" defer></script>
+  <script src="./assets/js/capabilities_tabs.js" defer></script>
+  <script src="./assets/js/capabilities_detail.js" defer></script>
+  <script src="./assets/js/main.js" defer></script>
 </body>
 </html>
