@@ -12,9 +12,9 @@
 <link href="./assets/css/home_tv.css" rel="stylesheet">
 <link href="./assets/css/hero_tv_fix.css?v=1" rel="stylesheet">
 <link href="./assets/css/home_v6.css?v=1" rel="stylesheet"/>
-<link href="./assets/css/magnet_layer.css?v=1" rel="stylesheet"/>
+<link rel="stylesheet" href="./assets/css/ml_panels.css?v=1"/>
 </link></link></link></head>
-<body class="home">
+<body class="home ml-panels">
 <!-- HEADER -->
 <header class="header" id="top">
 <div class="header-shell">
@@ -82,22 +82,11 @@
 </div>
 </div>
 </section>
-
-<!-- MAGNET SHELL (everything after HERO; HERO TV untouched) -->
-<div class="ml-shell" id="mlShell">
-  <div class="ml-board" id="mlBoard">
-
 <!-- WORKS -->
-<section aria-label="Проекты" class="works ml-panel" id="projects" data-ml="IND — 001">
+<section aria-label="Проекты" class="works ml-panel" id="projects" data-sticker-a="ON SET" data-sticker-b="SOUND">
 <div class="container">
 <div class="works-head" data-reveal="">
 <h2 class="works-title">ПРОЕКТЫ</h2>
-</div>
-<div class="ml-stickers" aria-hidden="true">
-  <div class="ml-sticker ml-sticker--pink" style="--x: 12%; --y: 18%; --r: -14deg;">ON&nbsp;SET</div>
-  <div class="ml-sticker ml-sticker--lime" style="--x: 6%; --y: 62%; --r: 10deg;">TAKE&nbsp;01</div>
-  <div class="ml-sticker ml-sticker--sky" style="--x: 88%; --y: 22%; --r: 12deg;">SOUND</div>
-  <div class="ml-sticker ml-sticker--cream" style="--x: 92%; --y: 62%; --r: -8deg;">EDIT</div>
 </div>
 <div class="works-grid">
 <a class="work-card" data-reveal="" data-stinger="" href="./project_gac/">
@@ -136,133 +125,109 @@
 </div>
 </div>
 </section>
-<div class="ml-divider" aria-hidden="true">
-  <div class="ml-divider__rail"></div>
-  <div class="ml-divider__track">SCROLL <span class="dot">•</span> SCROLL <span class="dot">•</span> SCROLL</div>
-</div>
-
-<!-- CAPABILITIES -->
-<section aria-label="Услуги" class="capabilities ml-panel" id="services" data-ml="IND — 002">
-<div class="container">
-<div class="section-head" data-reveal="">
-<div class="section-kicker">↳ Услуги</div>
-<h2 class="section-title">Чем занимаемся</h2>
-<div class="section-sub">От идеи и препродакшна до съёмки, поста и финальных файлов под любые площадки.</div>
-</div>
-<div aria-hidden="true" class="cap-anim">
-<svg aria-label="Capabilities animation" id="mainSVG" role="img" viewbox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<clippath id="mask"><rect height="400" width="800" x="0" y="0"></rect></clippath>
-<g class="colorTab">
-<rect height="320" rx="20" width="130" x="0" y="0"></rect>
-<text class="label" x="12" y="120"></text>
-</g>
-</defs>
-<g clip-path="url(#mask)" id="container"></g>
-</svg>
-</div>
-<div class="cap-details" id="capDetails"></div>
-<div class="cap-accordion">
-<div class="accordion" data-accordion="">
-<div class="acc-item" data-acc-item="" data-open="">
-<button aria-expanded="true" class="acc-btn" type="button">
-<span class="acc-left">
-<span class="acc-thumb">
-<img alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='56'%3E%3Crect width='100%25' height='100%25' rx='14' fill='%2312141f'/%3E%3C/svg%3E"/>
-</span>
-<span class="acc-title">Имиджевые и рекламные ролики</span>
-</span>
-<span aria-hidden="true" class="acc-plus"></span>
-</button>
-<div class="acc-panel" data-acc-panel="" style="height:auto">
-<div class="acc-panel-inner">
-                  Концепт, режиссура, продюсирование, съёмка, монтаж и финальная выдача под digital/TV.
-                </div>
+<div aria-hidden="true" class="tape">
+<div class="tape__track">
+<span>PRE-PRODUCTION</span><span class="tape__dot">•</span>
+<span>SHOOT</span><span class="tape__dot">•</span>
+<span>EDIT</span><span class="tape__dot">•</span>
+<span>COLOR</span><span class="tape__dot">•</span>
+<span>SOUND</span><span class="tape__dot">•</span>
+<span>DELIVERY</span><span class="tape__dot">•</span>
+<span>INDIVIDNI STUDIO</span><span class="tape__dot">•</span>
 </div>
 </div>
-<div class="acc-item" data-acc-item="">
-<button aria-expanded="false" class="acc-btn" type="button">
-<span class="acc-left">
-<span class="acc-thumb">
-<img alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='56'%3E%3Crect width='100%25' height='100%25' rx='14' fill='%2312141f'/%3E%3C/svg%3E"/>
-</span>
-<span class="acc-title">Музыкальные клипы</span>
-</span>
-<span aria-hidden="true" class="acc-plus"></span>
-</button>
-<div class="acc-panel" data-acc-panel="">
-<div class="acc-panel-inner">
-                  Тритмент, сторителлинг, постановка, свет и монтаж — клипы, которые смотрят до конца.
-                </div>
+<!-- MARQUEE: divider -->
+<section aria-label="Бегущая строка" class="marquee-band">
+<div class="marquee-band__inner">
+<div class="marquee" data-reveal="">
+<div class="marquee__track">
+<span>INDIVIDNI STUDIO</span><span>•</span><span>DIRECTING</span><span>•</span><span>PRODUCTION</span><span>•</span><span>POST</span><span>•</span><span>SOUND</span><span>•</span>
+<span>INDIVIDNI STUDIO</span><span>•</span><span>DIRECTING</span><span>•</span><span>PRODUCTION</span><span>•</span><span>POST</span><span>•</span><span>SOUND</span><span>•</span>
+<span>INDIVIDNI STUDIO</span><span>•</span><span>DIRECTING</span><span>•</span><span>PRODUCTION</span><span>•</span><span>POST</span><span>•</span><span>SOUND</span><span>•</span>
 </div>
-</div>
-<div class="acc-item" data-acc-item="">
-<button aria-expanded="false" class="acc-btn" type="button">
-<span class="acc-left">
-<span class="acc-thumb">
-<img alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='56'%3E%3Crect width='100%25' height='100%25' rx='14' fill='%2312141f'/%3E%3C/svg%3E"/>
-</span>
-<span class="acc-title">Постпродакшн</span>
-</span>
-<span aria-hidden="true" class="acc-plus"></span>
-</button>
-<div class="acc-panel" data-acc-panel="">
-<div class="acc-panel-inner">
-                  Монтаж, цвет, звук, графика — доводим до «дорого» без компромиссов.
-                </div>
-</div>
-</div>
-<div class="acc-item" data-acc-item="">
-<button aria-expanded="false" class="acc-btn" type="button">
-<span class="acc-left">
-<span class="acc-thumb">
-<img alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='56'%3E%3Crect width='100%25' height='100%25' rx='14' fill='%2312141f'/%3E%3C/svg%3E"/>
-</span>
-<span class="acc-title">CGI / VFX</span>
-</span>
-<span aria-hidden="true" class="acc-plus"></span>
-</button>
-<div class="acc-panel" data-acc-panel="">
-<div class="acc-panel-inner">
-                  3D, композитинг, клинапы, motion — аккуратно, чисто, в нужной дозе.
-                </div>
-</div>
-</div>
-<div class="acc-item" data-acc-item="">
-<button aria-expanded="false" class="acc-btn" type="button">
-<span class="acc-left">
-<span class="acc-thumb">
-<img alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='56'%3E%3Crect width='100%25' height='100%25' rx='14' fill='%2312141f'/%3E%3C/svg%3E"/>
-</span>
-<span class="acc-title">Интерактив / сайты</span>
-</span>
-<span aria-hidden="true" class="acc-plus"></span>
-</button>
-<div class="acc-panel" data-acc-panel="">
-<div class="acc-panel-inner">
-                  Лендинги и интерактив — сильная «упаковка» для видео и бренда.
-                </div>
-</div>
-</div>
-</div>
-</div>
-<div class="cap-actions" data-reveal="">
-<a class="btn btn--primary" href="#brief">Заполнить бриф</a>
-<a class="btn btn--ghost" href="#contact">Обсудить задачу</a>
 </div>
 </div>
 </section>
-<div aria-hidden="true" class="stills-strip">
-<div class="stills-track">
-<div class="stills-frame"><img alt="" loading="lazy" src="./assets/project/1/1.jpg"/></div>
-<div class="stills-frame"><img alt="" loading="lazy" src="./assets/project/2/1.jpg"/></div>
-<div class="stills-frame"><img alt="" loading="lazy" src="./assets/project/1/1.jpg"/></div>
-<div class="stills-frame"><img alt="" loading="lazy" src="./assets/project/2/1.jpg"/></div>
-<div class="stills-frame"><img alt="" loading="lazy" src="./assets/project/1/1.jpg"/></div>
-</div>
-</div>
+<!-- CAPABILITIES -->
+<section aria-label="Услуги" class="capabilities ml-panel" id="services" data-sticker-a="CGI" data-sticker-b="VFX" data-panel-theme="paper">
+  <div class="container">
+    <div class="ml-split ml-services">
+      <header class="ml-head">
+        <div class="section-kicker">↳ Услуги</div>
+        <h2 class="section-title">Чем занимаемся</h2>
+        <p class="section-sub">От идеи и препродакшна до съёмки, поста и финальных файлов под любые площадки.</p>
+
+        <div class="ml-actions">
+          <a class="btn btn--primary" data-stinger="" href="./brief/">Заполнить бриф</a>
+          <a class="btn btn--ghost" data-stinger="" href="#contact">Обсудить задачу</a>
+        </div>
+
+        <div class="ml-tags" aria-label="Направления">
+          <span class="ml-tag" data-tag="c1">Реклама</span>
+          <span class="ml-tag" data-tag="c2">Имидж</span>
+          <span class="ml-tag" data-tag="c3">Клипы</span>
+          <span class="ml-tag" data-tag="c4">Пост</span>
+          <span class="ml-tag" data-tag="c1">CGI</span>
+          <span class="ml-tag" data-tag="c2">Звук</span>
+        </div>
+      </header>
+
+      <div class="ml-tiles" role="list">
+        <article class="ml-tile" role="listitem" data-tile="c2">
+          <div class="ml-tile__top">
+            <span class="ml-chip">01</span>
+            <h3>Имиджевые / рекламные ролики</h3>
+          </div>
+          <p>Концепт, режиссура, продюсирование, съёмка, выдача под digital/TV.</p>
+        </article>
+
+        <article class="ml-tile" role="listitem" data-tile="c3">
+          <div class="ml-tile__top">
+            <span class="ml-chip">02</span>
+            <h3>Музыкальные клипы</h3>
+          </div>
+          <p>Тритмент, сторителлинг, постановка, свет и монтаж — клипы, которые досматривают.</p>
+        </article>
+
+        <article class="ml-tile" role="listitem" data-tile="c1">
+          <div class="ml-tile__top">
+            <span class="ml-chip">03</span>
+            <h3>Съёмка / продакшн</h3>
+          </div>
+          <p>Локации, команда, техника, свет — организуем съёмку без хаоса и сюрпризов.</p>
+        </article>
+
+        <article class="ml-tile" role="listitem" data-tile="c4">
+          <div class="ml-tile__top">
+            <span class="ml-chip">04</span>
+            <h3>Монтаж / цвет / графика</h3>
+          </div>
+          <p>Монтаж под ритм и смысл, цвет и доводка, титры/пакеты форматов.</p>
+        </article>
+
+        <article class="ml-tile" role="listitem" data-tile="c2">
+          <div class="ml-tile__top">
+            <span class="ml-chip">05</span>
+            <h3>CGI / VFX</h3>
+          </div>
+          <p>3D, композитинг, клинапы, motion — аккуратно, чисто, в нужной дозе.</p>
+        </article>
+
+        <article class="ml-tile" role="listitem" data-tile="c3">
+          <div class="ml-tile__top">
+            <span class="ml-chip">06</span>
+            <h3>Звук</h3>
+          </div>
+          <p>Сведение, саунд-дизайн, лицензии — чтобы ролик звучал «дорого».</p>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+
 <!-- NUMBERS -->
-<section aria-label="Мы в цифрах" class="numbers" id="numbers">
+<section aria-label="Мы в цифрах" class="numbers ml-panel" id="numbers">
 <div class="container">
 <div class="section-head" data-reveal="">
 <div class="section-kicker">↳ Мы в цифрах</div>
@@ -379,7 +344,7 @@
 </div>
 </section>
 <!-- PRICING -->
-<section aria-label="Стоимость" class="pricing ml-panel" id="pricing" data-ml="IND — 004">
+<section aria-label="Стоимость" class="pricing ml-panel" id="pricing">
 <div class="container">
 <div class="section-head" data-reveal="">
 <div class="section-kicker">↳ Стоимость</div>
@@ -441,7 +406,7 @@
 </div>
 </div>
 <!-- TEAM -->
-<section aria-label="Команда" class="team" id="team">
+<section aria-label="Команда" class="team ml-panel" id="team">
 <div class="container">
 <div class="section-head" data-reveal="">
 <div class="section-kicker">↳ Команда</div>
@@ -497,7 +462,7 @@
 </div>
 </section>
 <!-- VALUE -->
-<section aria-label="За что нас ценят" class="value" id="value">
+<section aria-label="За что нас ценят" class="value ml-panel" id="value">
 <div class="container">
 <div class="section-head" data-reveal="">
 <div class="section-kicker">↳ Ценность</div>
@@ -532,7 +497,7 @@
 </div>
 </section>
 <!-- FAQ -->
-<section aria-label="Частые вопросы" class="faq" id="faq">
+<section aria-label="Частые вопросы" class="faq ml-panel" id="faq">
 <div class="container">
 <div class="section-head" data-reveal="">
 <div class="section-kicker">↳ FAQ</div>
@@ -589,7 +554,7 @@
 </div>
 </section>
 <!-- WORKFLOW -->
-<section aria-label="Как мы работаем" class="workflow ml-panel" id="workflow" data-ml="IND — 007">
+<section aria-label="Как мы работаем" class="workflow ml-panel" id="workflow">
 <div class="container">
 <div class="workflow-grid">
 <div class="workflow-text" data-reveal="">
@@ -622,7 +587,7 @@
 <div aria-hidden="true" class="workflow-media" data-reveal=""><div class="workflow-frame"><img alt="" loading="lazy" src="./assets/project/2/1.jpg"/></div><div class="workflow-frame workflow-frame--thin"><img alt="" loading="lazy" src="./assets/project/1/1.jpg"/></div></div></div>
 </div>
 </section>
-
+</main>
 <!-- FOOTER -->
 <footer aria-label="Контакты" class="footer" id="contact">
 <div class="container">
@@ -676,10 +641,6 @@
 </div>
 <div aria-hidden="true" class="footer-word">INDIVIDNI</div>
 </footer>
-  </div>
-</div>
-<!-- /MAGNET SHELL -->
-</main>
 <!-- page transition stinger -->
 <div aria-hidden="true" class="page-stinger" data-stinger=""></div>
 <!-- Scripts -->
@@ -692,8 +653,8 @@
 <script defer="" src="./assets/js/liquid.js"></script>
 <script defer="" src="./assets/js/capabilities_tabs.js"></script>
 <script defer="" src="./assets/js/capabilities_detail.js"></script>
+<script defer src="./assets/js/ml_panels.js?v=1"></script>
 <script defer="" src="./assets/js/home_v6.js"></script>
-<script defer="" src="./assets/js/magnet_layer.js"></script>
 <script defer="" src="./assets/js/main.js"></script>
 </body>
 </html>
