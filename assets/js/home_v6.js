@@ -38,12 +38,7 @@
   });
 
   // ---------------------------
-  // 2) Projects: add timecode micro detail + stinger on project links
-  // ---------------------------
-  const tcSeed = ['00:00:05','00:00:12','00:00:18','00:00:24','00:00:31'];
-  qsa('#projects .work-meta').forEach((meta, i)=>{
-    if (!meta.getAttribute('data-tc')) meta.setAttribute('data-tc', tcSeed[i % tcSeed.length]);
-  });
+  // 2) Projects: (timecode removed)
 
   // ---------------------------
   // 3) Services preview (if markup exists)
