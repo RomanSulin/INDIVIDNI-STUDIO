@@ -1,0 +1,342 @@
+/* =========================================================================================
+   MAGNET LAYER (v2) — inspired by magnetlover.com screenshots (grid board + rails + stickers)
+   Scope:
+   - Applies ONLY to content inside .ml-shell / .ml-board (HERO TV is outside and untouched)
+   - Avoids touching existing TV / Liquid code and layout
+========================================================================================= */
+
+body.home.ml-mode .ml-shell{
+  position: relative;
+  padding: clamp(26px, 5vw, 64px) 0;
+  background-color: #07070b;
+  background-image:
+    linear-gradient(rgba(255,255,255,.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.055) 1px, transparent 1px);
+  background-size: 44px 44px;
+  isolation: isolate;
+}
+
+body.home.ml-mode .ml-shell::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(900px 520px at 50% -10%, rgba(255,255,255,.12), transparent 60%),
+    radial-gradient(700px 520px at 15% 55%, rgba(255,255,255,.07), transparent 65%),
+    radial-gradient(900px 620px at 85% 55%, rgba(255,255,255,.06), transparent 70%),
+    radial-gradient(1200px 900px at 50% 110%, rgba(0,0,0,.85), transparent 60%);
+  mix-blend-mode: normal;
+  opacity: .9;
+}
+
+body.home.ml-mode .ml-board{
+  --ml-cream: #f2e7d2;
+  --ml-muted: rgba(242,231,210,.68);
+  --ml-line: rgba(255,255,255,.10);
+  --ml-line2: rgba(255,255,255,.06);
+  --ml-bg: #0b0b10;
+  --ml-radius: 18px;
+
+  width: min(1180px, 92vw);
+  margin: 0 auto;
+  position: relative;
+  border: 1px solid var(--ml-line);
+  background: var(--ml-bg);
+  box-shadow: 0 40px 140px rgba(0,0,0,.65);
+  overflow: hidden;
+}
+
+body.home.ml-mode .ml-board::before{
+  /* faint inner grid */
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+  background-size: 25% 25%;
+  opacity: .45;
+}
+
+body.home.ml-mode .ml-board::after{
+  /* subtle noise via SVG */
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:.10;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+/* ----- sections inside board ----------------------------------------------------------- */
+body.home.ml-mode .ml-board section{
+  position: relative;
+  padding: clamp(28px, 4vw, 54px) clamp(16px, 3vw, 44px);
+}
+
+body.home.ml-mode .ml-board section + section{
+  border-top: 1px solid var(--ml-line);
+}
+
+body.home.ml-mode .ml-board section::before{
+  /* thin vertical rhythm lines (like technical blueprint) */
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:.35;
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      transparent,
+      transparent calc(100%/12 - 1px),
+      rgba(255,255,255,.045) calc(100%/12 - 1px),
+      rgba(255,255,255,.045) calc(100%/12)
+    );
+}
+
+body.home.ml-mode .ml-board section[data-ml]::after{
+  content: attr(data-ml);
+  position:absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 12px;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: rgba(242,231,210,.50);
+  opacity: .95;
+}
+
+body.home.ml-mode .ml-board .container{
+  max-width: none !important;
+  width: 100% !important;
+  padding: 0 !important;
+}
+
+/* ----- Typography --------------------------------------------------------------------- */
+body.home.ml-mode .ml-board h1,
+body.home.ml-mode .ml-board h2,
+body.home.ml-mode .ml-board .works-title,
+body.home.ml-mode .ml-board .section-title{
+  font-family: var(--font-keep, "Syne", sans-serif) !important;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  color: var(--ml-cream);
+}
+
+body.home.ml-mode .ml-board .works-title,
+body.home.ml-mode .ml-board .section-title{
+  font-size: clamp(46px, 6vw, 88px) !important;
+  line-height: .90 !important;
+  margin: 12px 0 10px !important;
+}
+
+body.home.ml-mode .ml-board .section-kicker,
+body.home.ml-mode .ml-board .works-head .section-kicker{
+  color: rgba(242,231,210,.60) !important;
+  text-transform: uppercase;
+  letter-spacing: .22em !important;
+  font-size: 12px !important;
+}
+
+body.home.ml-mode .ml-board .section-sub,
+body.home.ml-mode .ml-board .workflow-sub,
+body.home.ml-mode .ml-board .footer-sub{
+  color: rgba(242,231,210,.68) !important;
+}
+
+/* ----- Divider (SCROLL + rail) --------------------------------------------------------- */
+body.home.ml-mode .ml-divider{
+  position: relative;
+  padding: 14px 0;
+  border-top: 1px solid rgba(255,255,255,.10);
+  border-bottom: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.02);
+}
+
+body.home.ml-mode .ml-divider__track{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap: 14px;
+  font-family: var(--font-keep, "Syne", sans-serif);
+  font-size: 12px;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: rgba(242,231,210,.58);
+}
+
+body.home.ml-mode .ml-divider__track .dot{ opacity:.6; }
+
+body.home.ml-mode .ml-divider__rail{
+  position:absolute;
+  left: 50%;
+  top: -14px;
+  transform: translateX(-50%);
+  width: 86px;
+  height: 10px;
+  border-radius: 20px;
+  background: linear-gradient(90deg, #ff3b7a 0 25%, #ffd400 25% 50%, #00d08f 50% 75%, #00b3ff 75% 100%);
+  box-shadow: 0 8px 20px rgba(0,0,0,.55);
+}
+
+/* ----- Stickers ----------------------------------------------------------------------- */
+body.home.ml-mode #projects{ overflow: visible; }
+body.home.ml-mode #projects .ml-stickers{
+  position:absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+body.home.ml-mode .ml-sticker{
+  --x: 50%;
+  --y: 50%;
+  --r: 0deg;
+  position:absolute;
+  left: var(--x);
+  top: var(--y);
+  width: clamp(70px, 10vw, 120px);
+  aspect-ratio: 1 / 1;
+  border-radius: 18px;
+  display:grid;
+  place-items:center;
+  font-family: var(--font-keep, "Syne", sans-serif);
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: rgba(10,10,14,.92);
+  box-shadow:
+    0 18px 30px rgba(0,0,0,.55),
+    0 2px 0 rgba(255,255,255,.18) inset;
+  transform: translate(-50%,-50%) rotate(var(--r)) translateZ(0);
+  pointer-events: auto;
+  user-select:none;
+  cursor: default;
+  transition: transform .18s ease, filter .18s ease;
+}
+body.home.ml-mode .ml-sticker::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius: 18px;
+  background: radial-gradient(70px 70px at 30% 20%, rgba(255,255,255,.65), transparent 60%);
+  opacity:.35;
+  mix-blend-mode: overlay;
+  pointer-events:none;
+}
+body.home.ml-mode .ml-sticker:hover{
+  transform: translate(-50%,-56%) rotate(var(--r)) scale(1.02);
+  filter: brightness(1.05);
+}
+
+body.home.ml-mode .ml-sticker--pink{ background: linear-gradient(180deg, #ff3b7a, #c0134a); }
+body.home.ml-mode .ml-sticker--lime{ background: linear-gradient(180deg, #b5ff4a, #25c36f); }
+body.home.ml-mode .ml-sticker--sky{  background: linear-gradient(180deg, #52d9ff, #2c63ff); }
+body.home.ml-mode .ml-sticker--cream{background: linear-gradient(180deg, #f2e7d2, #d5c4a2); }
+
+/* ----- Projects block tweaks ----------------------------------------------------------- */
+body.home.ml-mode #projects .works-head{ gap: 18px; }
+body.home.ml-mode #projects .works-tabs{ display:none !important; }
+
+/* bigger cards by widening the board and reducing internal constraints */
+body.home.ml-mode #projects .works-grid{ margin-top: clamp(18px, 2vw, 28px) !important; }
+body.home.ml-mode #projects .work-card{
+  border-radius: 20px !important;
+  background: rgba(255,255,255,.03) !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+}
+body.home.ml-mode #projects .work-meta{
+  color: rgba(242,231,210,.86) !important;
+}
+body.home.ml-mode #projects .work-meta::after{ content: "" !important; }
+
+/* ----- Services block (make it feel like a "panel", less messy) ----------------------- */
+body.home.ml-mode #services .cap-anim{
+  opacity:.55;
+  filter: saturate(.9);
+}
+@media (max-width: 980px){
+  body.home.ml-mode #services .cap-anim{ display:none; }
+}
+
+/* ----- Broken full-width images fix (team / workflow / etc.) --------------------------- */
+body.home.ml-mode .roles-media,
+body.home.ml-mode .workflow-media{
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: clamp(12px, 1.8vw, 18px) !important;
+  margin-top: 16px;
+}
+body.home.ml-mode .roles-media img,
+body.home.ml-mode .workflow-media img{
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display:block !important;
+  border-radius: 18px !important;
+}
+body.home.ml-mode .workflow-frame{
+  overflow:hidden;
+  border-radius: 18px !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+  background: rgba(255,255,255,.03);
+}
+
+/* ----- Footer / contact: make it "Magnet-like" ---------------------------------------- */
+body.home.ml-mode footer.footer{
+  position: relative;
+  padding: clamp(30px, 4vw, 54px) clamp(16px, 3vw, 44px);
+  border-top: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.02);
+}
+body.home.ml-mode footer.footer .container{ max-width:none !important; padding:0 !important; }
+body.home.ml-mode footer.footer .footer-shell{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(18px, 3vw, 44px);
+  align-items:start;
+}
+@media (max-width: 980px){
+  body.home.ml-mode footer.footer .footer-shell{ grid-template-columns: 1fr; }
+}
+
+body.home.ml-mode footer.footer .footer-form{
+  background: rgba(255,255,255,.02);
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 22px;
+  padding: 18px;
+}
+
+body.home.ml-mode footer.footer .field-label{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 11px;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: rgba(242,231,210,.55);
+}
+
+body.home.ml-mode footer.footer .field-input{
+  background: rgba(255,255,255,.02) !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+  color: rgba(242,231,210,.90) !important;
+  border-radius: 14px !important;
+}
+body.home.ml-mode footer.footer .field-input::placeholder{ color: rgba(242,231,210,.38); }
+
+/* ----- Reveal animation (board-only) --------------------------------------------------- */
+body.home.ml-mode .ml-board [data-reveal]{
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity .55s ease, transform .55s ease;
+  will-change: opacity, transform;
+}
+body.home.ml-mode .ml-board [data-reveal].is-in{
+  opacity: 1;
+  transform: none;
+}
