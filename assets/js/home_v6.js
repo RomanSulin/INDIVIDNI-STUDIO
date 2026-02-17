@@ -38,7 +38,8 @@
   });
 
   // ---------------------------
-  // 2) Projects: (timecode removed)
+  // 2) Projects: (timecodes removed)
+  // ---------------------------
 
   // ---------------------------
   // 3) Services preview (if markup exists)
