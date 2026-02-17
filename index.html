@@ -12,7 +12,7 @@
 <link href="./assets/css/home_tv.css" rel="stylesheet">
 <link href="./assets/css/hero_tv_fix.css?v=1" rel="stylesheet">
 <link href="./assets/css/home_v6.css?v=1" rel="stylesheet"/>
-  <link href="./assets/css/magnet_theme.css?v=1" rel="stylesheet"/>
+<link href="./assets/css/magnet_layer.css?v=1" rel="stylesheet"/>
 </link></link></link></head>
 <body class="home">
 <!-- HEADER -->
@@ -82,18 +82,22 @@
 </div>
 </div>
 </section>
+
+<!-- MAGNET SHELL (everything after HERO; HERO TV untouched) -->
+<div class="ml-shell" id="mlShell">
+  <div class="ml-board" id="mlBoard">
+
 <!-- WORKS -->
-<section aria-label="Проекты" class="works" id="projects">
+<section aria-label="Проекты" class="works ml-panel" id="projects" data-ml="IND — 001">
 <div class="container">
 <div class="works-head" data-reveal="">
 <h2 class="works-title">ПРОЕКТЫ</h2>
-<nav aria-label="Категории проектов" class="works-tabs">
-<a class="works-tab is-active" data-stinger="" href="./projects/brand/">Имиджевый ролик</a>
-<a class="works-tab" data-stinger="" href="./projects/animation/">Анимационный ролик</a>
-<a class="works-tab" data-stinger="" href="./projects/education/">Обучающие видеоролики</a>
-<a class="works-tab" data-stinger="" href="./projects/ads/">Рекламный ролик</a>
-<a class="works-tab" data-stinger="" href="./projects/presentation/">Презентационный ролик</a>
-</nav>
+</div>
+<div class="ml-stickers" aria-hidden="true">
+  <div class="ml-sticker ml-sticker--pink" style="--x: 12%; --y: 18%; --r: -14deg;">ON&nbsp;SET</div>
+  <div class="ml-sticker ml-sticker--lime" style="--x: 6%; --y: 62%; --r: 10deg;">TAKE&nbsp;01</div>
+  <div class="ml-sticker ml-sticker--sky" style="--x: 88%; --y: 22%; --r: 12deg;">SOUND</div>
+  <div class="ml-sticker ml-sticker--cream" style="--x: 92%; --y: 62%; --r: -8deg;">EDIT</div>
 </div>
 <div class="works-grid">
 <a class="work-card" data-reveal="" data-stinger="" href="./project_gac/">
@@ -132,31 +136,13 @@
 </div>
 </div>
 </section>
-<div aria-hidden="true" class="tape">
-<div class="tape__track">
-<span>PRE-PRODUCTION</span><span class="tape__dot">•</span>
-<span>SHOOT</span><span class="tape__dot">•</span>
-<span>EDIT</span><span class="tape__dot">•</span>
-<span>COLOR</span><span class="tape__dot">•</span>
-<span>SOUND</span><span class="tape__dot">•</span>
-<span>DELIVERY</span><span class="tape__dot">•</span>
-<span>INDIVIDNI STUDIO</span><span class="tape__dot">•</span>
+<div class="ml-divider" aria-hidden="true">
+  <div class="ml-divider__rail"></div>
+  <div class="ml-divider__track">SCROLL <span class="dot">•</span> SCROLL <span class="dot">•</span> SCROLL</div>
 </div>
-</div>
-<!-- MARQUEE: divider -->
-<section aria-label="Бегущая строка" class="marquee-band">
-<div class="marquee-band__inner">
-<div class="marquee" data-reveal="">
-<div class="marquee__track">
-<span>INDIVIDNI STUDIO</span><span>•</span><span>DIRECTING</span><span>•</span><span>PRODUCTION</span><span>•</span><span>POST</span><span>•</span><span>SOUND</span><span>•</span>
-<span>INDIVIDNI STUDIO</span><span>•</span><span>DIRECTING</span><span>•</span><span>PRODUCTION</span><span>•</span><span>POST</span><span>•</span><span>SOUND</span><span>•</span>
-<span>INDIVIDNI STUDIO</span><span>•</span><span>DIRECTING</span><span>•</span><span>PRODUCTION</span><span>•</span><span>POST</span><span>•</span><span>SOUND</span><span>•</span>
-</div>
-</div>
-</div>
-</section>
+
 <!-- CAPABILITIES -->
-<section aria-label="Услуги" class="capabilities" id="services">
+<section aria-label="Услуги" class="capabilities ml-panel" id="services" data-ml="IND — 002">
 <div class="container">
 <div class="section-head" data-reveal="">
 <div class="section-kicker">↳ Услуги</div>
@@ -393,7 +379,7 @@
 </div>
 </section>
 <!-- PRICING -->
-<section aria-label="Стоимость" class="pricing" id="pricing">
+<section aria-label="Стоимость" class="pricing ml-panel" id="pricing" data-ml="IND — 004">
 <div class="container">
 <div class="section-head" data-reveal="">
 <div class="section-kicker">↳ Стоимость</div>
@@ -603,7 +589,7 @@
 </div>
 </section>
 <!-- WORKFLOW -->
-<section aria-label="Как мы работаем" class="workflow" id="workflow">
+<section aria-label="Как мы работаем" class="workflow ml-panel" id="workflow" data-ml="IND — 007">
 <div class="container">
 <div class="workflow-grid">
 <div class="workflow-text" data-reveal="">
@@ -636,7 +622,7 @@
 <div aria-hidden="true" class="workflow-media" data-reveal=""><div class="workflow-frame"><img alt="" loading="lazy" src="./assets/project/2/1.jpg"/></div><div class="workflow-frame workflow-frame--thin"><img alt="" loading="lazy" src="./assets/project/1/1.jpg"/></div></div></div>
 </div>
 </section>
-</main>
+
 <!-- FOOTER -->
 <footer aria-label="Контакты" class="footer" id="contact">
 <div class="container">
@@ -690,6 +676,10 @@
 </div>
 <div aria-hidden="true" class="footer-word">INDIVIDNI</div>
 </footer>
+  </div>
+</div>
+<!-- /MAGNET SHELL -->
+</main>
 <!-- page transition stinger -->
 <div aria-hidden="true" class="page-stinger" data-stinger=""></div>
 <!-- Scripts -->
@@ -703,6 +693,7 @@
 <script defer="" src="./assets/js/capabilities_tabs.js"></script>
 <script defer="" src="./assets/js/capabilities_detail.js"></script>
 <script defer="" src="./assets/js/home_v6.js"></script>
+<script defer="" src="./assets/js/magnet_layer.js"></script>
 <script defer="" src="./assets/js/main.js"></script>
 </body>
 </html>
