@@ -38,10 +38,7 @@
   });
 
   // ---------------------------
-  // 2) Projects: (timecodes removed)
-  // ---------------------------
 
-  // ---------------------------
   // 3) Services preview (if markup exists)
   // ---------------------------
   const svcButtons = qsa('[data-svc]');
