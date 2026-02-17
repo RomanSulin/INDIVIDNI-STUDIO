@@ -14,6 +14,12 @@
   --endW: min(28vw, 420px);       /* узкая панель next */
 }
 
+html, body{
+  background: #fff !important;
+  color: #0b0b0f !important;
+}
+
+
 body.project-page{
   margin: 0;
   background: #fff;
