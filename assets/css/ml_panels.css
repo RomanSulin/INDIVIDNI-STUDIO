@@ -14,7 +14,7 @@
   --ml-text: rgba(255,255,255,.92);
   --ml-mute: rgba(255,255,255,.68);
 
-  --ml-radius: 30px;
+  --ml-radius: 22px;
   --ml-pad: clamp(22px, 3.2vw, 56px);
   --ml-pad-top: clamp(44px, 4.2vw, 74px);
   --ml-gap: clamp(22px, 4vw, 56px);
@@ -60,7 +60,41 @@ body.home.ml-panels .stills-strip{ display:none !important; }
 
 /* panel spacing */
 body.home.ml-panels main{ padding-bottom: var(--ml-gap); }
-body.home.ml-panels .ml-panel{ padding: var(--ml-gap) 0; background: transparent !important; }
+/* panel wrapper (one per section) */
+body.home.ml-panels .ml-panel{
+  position: relative;
+  padding: var(--ml-gap) 0;
+  background: transparent !important;
+}
+
+/* thin connector line between panels (Magnetlover-style) */
+body.home.ml-panels .ml-panel + .ml-panel::before{
+  content:"";
+  position:absolute;
+  top: calc(var(--ml-gap) * -0.55);
+  left:50%;
+  transform: translateX(-50%);
+  width: min(86%, var(--ml-panel-max));
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.16), rgba(255,255,255,0));
+  opacity: .9;
+  pointer-events:none;
+}
+body.home.ml-panels .ml-panel + .ml-panel::after{
+  content:"";
+  position:absolute;
+  top: calc(var(--ml-gap) * -0.55 - 3px);
+  left:50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 3px;
+  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(0,0,0,.45);
+  box-shadow: 0 8px 22px rgba(0,0,0,.6);
+  pointer-events:none;
+}
+
 
 /* turn each section container into a standalone panel */
 body.home.ml-panels .ml-panel > .container{
@@ -76,6 +110,24 @@ body.home.ml-panels .ml-panel > .container{
   box-shadow: 0 30px 80px rgba(0,0,0,.45);
   transform: translateZ(0);
 }
+
+
+body.home.ml-panels .ml-panel > .container::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius: inherit;
+  pointer-events:none;
+  background:
+    linear-gradient(to right, rgba(255,255,255,.06) 1px, rgba(255,255,255,0) 1px) 0 0 / 140px 100%,
+    linear-gradient(to bottom, rgba(255,255,255,.06) 1px, rgba(255,255,255,0) 1px) 0 0 / 100% 140px;
+  opacity:.18;
+}
+body.home.ml-panels .ml-panel > .container > *{
+  position: relative;
+  z-index: 1;
+}
+
 
 
 /* optional light "paper" panel */
@@ -133,20 +185,8 @@ body.home.ml-panels .ml-panel > .container::before{
 
 /* panel code marker */
 body.home.ml-panels main{ counter-reset: mlpanel; }
-body.home.ml-panels .ml-panel > .container::after{
-  counter-increment: mlpanel;
-  content: "IND — " counter(mlpanel, decimal-leading-zero);
-  position: absolute;
-  top: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 10px;
-  letter-spacing: .32em;
-  text-transform: uppercase;
-  opacity: .60;
-  color: rgba(255,255,255,.75);
-  pointer-events: none;
-}
+/* removed section index label under the color rail (IND — 01 etc.) */
+body.home.ml-panels .ml-panel > .container::after{ content:none; }
 
 /* animated rail bar (injected by JS) */
 body.home.ml-panels .ml-rail{
@@ -159,8 +199,39 @@ body.home.ml-panels .ml-rail{
   border-radius: 999px;
   background: linear-gradient(90deg, var(--ml-c1), var(--ml-c4), var(--ml-c3), var(--ml-c2));
   filter: drop-shadow(0 10px 16px rgba(0,0,0,.4));
-  transform-origin: 50% 50%;
+  transform-origin: 50% 50%; overflow:hidden; }
+body.home.ml-panels .ml-rail::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: repeating-linear-gradient(90deg,
+    rgba(255,255,255,0) 0px,
+    rgba(255,255,255,0) 10px,
+    rgba(255,255,255,.26) 12px,
+    rgba(255,255,255,0) 22px);
+  opacity:.55;
+  mix-blend-mode: overlay;
+  background-size: 44px 100%;
+  animation: mlRailStripes 2.2s linear infinite;
+  pointer-events:none;
 }
+body.home.ml-panels .ml-rail::after{
+  content:"";
+  position:absolute;
+  inset:-10px;
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,.28) 45%,
+    rgba(255,255,255,0) 70%);
+  opacity:.35;
+  transform: translateX(-60%);
+  animation: mlRailShine 3.6s ease-in-out infinite;
+  filter: blur(4px);
+  pointer-events:none;
+}
+@keyframes mlRailStripes{ from{ background-position: 0 0; } to{ background-position: 220px 0; } }
+@keyframes mlRailShine{ 0%{ transform: translateX(-65%);} 55%{ transform: translateX(110%);} 100%{ transform: translateX(110%);} }
+
 
 /* headings: give air */
 body.home.ml-panels .ml-panel .section-kicker{
@@ -440,3 +511,12 @@ body.home.ml-panels.ml-anim .ml-panel.is-in > .container{
   body.home.ml-panels .ml-panel > .container{ padding: 18px; padding-top: 52px; }
   body.home.ml-panels .ml-panel .section-title{ font-size: clamp(34px, 11vw, 46px); }
 }
+
+/* pricing cards: a bit taller / more "panel" feel */
+body.home.ml-panels .price-grid{ align-items: stretch; }
+body.home.ml-panels .price-card{
+  min-height: clamp(290px, 22vw, 360px);
+  display:flex;
+  flex-direction:column;
+}
+body.home.ml-panels .price-card__actions{ margin-top:auto; }
