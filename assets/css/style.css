@@ -1352,7 +1352,7 @@ body{
   --font-keep: "Syne", sans-serif;
 }
 
-html, body{
+html, body:not(.project-page){
   background: var(--bg) !important;
   color: var(--text) !important;
 }
@@ -2069,3 +2069,90 @@ body{
 
 /* --- V5 patch: ensure work-card behaves as block --- */
 .works-grid .work-card{ display:block !important; }
+
+
+/* ============================
+   Roles / Workflow media frames (fix "full-width photos" bug)
+   ============================ */
+.roles-layout{
+  display:grid;
+  grid-template-columns: 1.05fr .95fr;
+  gap: clamp(18px, 3vw, 42px);
+  align-items:start;
+  margin-top: clamp(18px, 2vw, 28px);
+}
+.roles-media{
+  position: relative;
+  min-height: clamp(360px, 42vw, 560px);
+  border-radius: var(--radius);
+  overflow: visible;
+}
+.roles-frame{
+  position:absolute;
+  overflow:hidden;
+  border-radius: calc(var(--radius) + 6px);
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.03);
+}
+.roles-frame--big{
+  inset: 0 10% 10% 0;
+}
+.roles-frame--small{
+  width: 44%;
+  aspect-ratio: 4 / 3;
+  right: 0;
+  bottom: 0;
+}
+.roles-frame img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.roles-caption{
+  position:absolute;
+  left: 14px;
+  bottom: 14px;
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(0,0,0,0.45);
+  font-size: 12px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+}
+
+/* Workflow right media */
+.workflow-media{
+  display:grid;
+  gap: clamp(14px, 1.6vw, 20px);
+  align-content:start;
+}
+.workflow-frame{
+  overflow:hidden;
+  border-radius: calc(var(--radius) + 8px);
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.03);
+  aspect-ratio: 16 / 9;
+}
+.workflow-frame--thin{
+  aspect-ratio: 4 / 5;
+}
+.workflow-frame img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+/* Mobile layout */
+@media (max-width: 900px){
+  .roles-layout{ grid-template-columns: 1fr; }
+  .roles-media{ min-height: 340px; }
+  .roles-frame--big{ inset: 0 0 18% 0; }
+  .roles-frame--small{ width: 56%; }
+  .workflow-media{ grid-template-columns: 1fr; }
+  .workflow-frame--thin{ aspect-ratio: 16 / 9; }
+}
+
