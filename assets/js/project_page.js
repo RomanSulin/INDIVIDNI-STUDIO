@@ -1,15 +1,12 @@
 (() => {
+  // Ensure white theme CSS applies even if HTML lost the class
+  document.body.classList.add("project-page");
   const track = document.getElementById("projTrack");
   const endSlide = document.querySelector(".proj-slide--end");
   const v = document.querySelector("video[data-autoplay]");
   const isMobile = window.matchMedia("(max-width: 900px)").matches;
 
-  function updateDarkMode(){
-    if (!endSlide) return;
-    const r = endSlide.getBoundingClientRect();
-    const visible = r.left < window.innerWidth && r.right > 0;
-    document.body.classList.toggle("on-dark", visible);
-  }
+  function updateDarkMode(){ /* disabled: keep project pages white */ }
 
   function initVideo(){
     if (!v) return;
@@ -18,7 +15,9 @@
     v.autoplay = true;
     v.loop = true;
 
-    const tryPlay = () => v.play().catch(() => {});
+    const tryPlay = () => v.play().catch(() => {
+  // Ensure white theme CSS applies even if HTML lost the class
+  document.body.classList.add("project-page");});
     v.addEventListener("canplay", tryPlay, { once: true });
     tryPlay();
   }
