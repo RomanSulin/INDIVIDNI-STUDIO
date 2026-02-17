@@ -6,7 +6,7 @@
   const body = document.body;
   if (!body || !body.classList.contains('ml-panels')) return;
   body.classList.add('ml-anim');
-
+ 
   const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const panels = Array.from(document.querySelectorAll('body.ml-panels .ml-panel'));
   if (!panels.length) return;
