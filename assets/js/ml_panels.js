@@ -12,6 +12,12 @@
   if (!panels.length) return;
 
   const palette = ['c1', 'c2', 'c3', 'c4'];
+  const placements = [
+    { a: { x: 10, y: 82, rot: -12 }, b: { x: 88, y: 18, rot: 10 } },
+    { a: { x: 12, y: 18, rot: -14 }, b: { x: 86, y: 82, rot: 9 } },
+    { a: { x: 8,  y: 76, rot: -10 }, b: { x: 90, y: 14, rot: 12 } },
+    { a: { x: 14, y: 22, rot: -11 }, b: { x: 84, y: 78, rot: 8 } },
+  ];
 
   // Inject rails + stickers into each panel container
   panels.forEach((sec, i) => {
@@ -21,6 +27,7 @@
     if (!box.querySelector('.ml-rail')) {
       const rail = document.createElement('div');
       rail.className = 'ml-rail';
+      rail.innerHTML = `<div class="ml-rail__bar"></div>`;
       rail.setAttribute('aria-hidden', 'true');
       box.prepend(rail);
     }
@@ -33,6 +40,16 @@
       el.className = `ml-sticker ml-sticker--${variant}`;
       el.textContent = txt;
       el.dataset.c = colorKey;
+
+      const p = placements[i % placements.length];
+      const pos = (variant === 'b' ? p.b : p.a);
+      el.style.setProperty('--x', String(pos.x));
+      el.style.setProperty('--y', String(pos.y));
+      el.style.setProperty('--rot', `${pos.rot}deg`);
+
+      const lightBg = (colorKey === 'c3' || colorKey === 'c4');
+      el.style.setProperty('--ml-fg', lightBg ? '#101114' : '#ffffff');
+
       box.appendChild(el);
       return el;
     };
