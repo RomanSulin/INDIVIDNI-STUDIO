@@ -14,15 +14,15 @@
   --endW: min(28vw, 420px);       /* узкая панель next */
 }
 
+
 html, body{
   background: #fff !important;
-  color: #0b0b0f !important;
+  color: #0b0b0f;
 }
-
 
 body.project-page{
   margin: 0;
-  background: #fff;
+  background: #fff !important;
   color: #0b0b0f;
   overflow: hidden;
 }
@@ -80,7 +80,7 @@ body.project-page a{ color: inherit; }
   padding: 0 18px;
   border-radius: 999px;
 
-  background: #fff;
+  background: #fff !important;
   color: #0b0b0f;
   border: 1px solid rgba(0,0,0,0.18);
 
@@ -253,7 +253,7 @@ body.on-dark .proj-brief{ border: 0; }
   letter-spacing: .10em;
   text-transform: uppercase;
 
-  background: #fff;
+  background: #fff !important;
   color: #0b0b0f;   /* ВАЖНО: чёрный текст */
   border: 0;
 }
