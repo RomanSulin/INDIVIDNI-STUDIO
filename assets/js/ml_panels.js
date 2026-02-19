@@ -77,11 +77,10 @@
   // Per-section sticker logic (kept intentional, not random)
   const stickerPlanById = {
     projects: {
-      // Keep near the PROJECTS headline (closer to the reference)
-      pack: { t: '96px', l: '-12px' },
+      pack: { t: '54%', l: '-14px' },
       items: [
         { label:'ON SET', type:'text', tone:'pink', rotate:-5, t:'0px', l:'0px' },
-        { label:'SOUND', type:'text', tone:'blue', rotate:6, t:'84px', l:'16px' },
+        { label:'SOUND', type:'text', tone:'blue', rotate:6, t:'78px', l:'16px' },
       ]
     },
     services: {
@@ -267,4 +266,22 @@
 
   connectors.forEach(c=> io2.observe(c));
 
+})();
+
+// Projects (ref) — subtle reveal for cables
+(() => {
+  const el = document.querySelector('.projects-ref');
+  if (!el) return;
+
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (e.target !== el) continue;
+        el.classList.toggle('is-inview', e.isIntersecting);
+      }
+    },
+    { threshold: 0.25 }
+  );
+
+  io.observe(el);
 })();
