@@ -77,10 +77,11 @@
   // Per-section sticker logic (kept intentional, not random)
   const stickerPlanById = {
     projects: {
-      pack: { t: '54%', l: '-14px' },
+      // Keep near the PROJECTS headline (closer to the reference)
+      pack: { t: '96px', l: '-12px' },
       items: [
         { label:'ON SET', type:'text', tone:'pink', rotate:-5, t:'0px', l:'0px' },
-        { label:'SOUND', type:'text', tone:'blue', rotate:6, t:'78px', l:'16px' },
+        { label:'SOUND', type:'text', tone:'blue', rotate:6, t:'84px', l:'16px' },
       ]
     },
     services: {
