@@ -83,89 +83,94 @@
 </div>
 </section>
 <!-- WORKS -->
-<section aria-label="Проекты" class="works ml-panel" id="projects" data-panel="works" data-sticker-a="ON SET" data-sticker-b="SOUND">
-<div class="container">
-  <!-- Magnet Lover-inspired grid + "cable" lines. Decorative only. -->
-  <div class="works-frame" aria-hidden="true">
-    <div class="works-frame__bars works-frame__bars--top">
-      <span class="c c--red"></span>
-      <span class="c c--white"></span>
-      <span class="c c--blue"></span>
-      <span class="c c--accent"></span>
+<section id="projects" class="projects-ref" aria-label="Проекты">
+  <div class="container">
+    <div class="projects-ref__board">
+      <div class="projects-ref__lines" aria-hidden="true"></div>
+
+      <div class="projects-ref__bars projects-ref__bars--top" aria-hidden="true">
+        <span class="bar bar--red"></span>
+        <span class="bar bar--white"></span>
+        <span class="bar bar--blue"></span>
+        <span class="bar bar--accent"></span>
+      </div>
+
+      <div class="projects-ref__stickers" aria-hidden="true">
+        <div class="projects-ref__magnet projects-ref__magnet--pink" style="--x: 14%; --y: 18%; --r: -14deg;">ON&nbsp;SET</div>
+        <div class="projects-ref__magnet projects-ref__magnet--cyan" style="--x: 10%; --y: 78%; --r: 11deg;">SOUND</div>
+        <div class="projects-ref__magnet projects-ref__magnet--lime" style="--x: 88%; --y: 68%; --r: -9deg;">CGI</div>
+        <div class="projects-ref__magnet projects-ref__magnet--icon" style="--x: 90%; --y: 20%; --r: 8deg;" aria-label="Декор">
+          <svg viewBox="0 0 64 64" width="34" height="34" aria-hidden="true" focusable="false">
+            <path d="M32 14c9.94 0 18 8.06 18 18s-8.06 18-18 18-18-8.06-18-18 8.06-18 18-18Z" fill="none" stroke="currentColor" stroke-width="4"/>
+            <path d="M32 20v12l9 5" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <header class="projects-ref__head">
+        <div class="projects-ref__kicker">↳ ПРОЕКТЫ</div>
+        <h2 class="projects-ref__title">ПРОЕКТЫ</h2>
+        <p class="projects-ref__sub">Клипы, реклама и CG — в формате 16:9.</p>
+      </header>
+
+      <div class="projects-ref__rail" aria-hidden="true">
+        <span>SCROLL</span><span>SCROLL</span><span>SCROLL</span><span>SCROLL</span>
+      </div>
+
+      <div class="projects-ref__bars projects-ref__bars--mid" aria-hidden="true">
+        <span class="bar bar--red"></span>
+        <span class="bar bar--white"></span>
+        <span class="bar bar--blue"></span>
+        <span class="bar bar--accent"></span>
+      </div>
+
+      <div class="projects-ref__grid" aria-label="Проекты">
+        <a class="projects-ref__card" href="#">
+          <div class="projects-ref__thumb">
+            <img src="./assets/project/1/1.jpg" alt="Проект 01" loading="lazy" />
+          </div>
+          <div class="projects-ref__meta">PROJECT 01</div>
+        </a>
+
+        <a class="projects-ref__card" href="#">
+          <div class="projects-ref__thumb">
+            <img src="./assets/project/2/2.jpg" alt="Проект 02" loading="lazy" />
+          </div>
+          <div class="projects-ref__meta">PROJECT 02</div>
+        </a>
+
+        <a class="projects-ref__card" href="#">
+          <div class="projects-ref__thumb">
+            <img src="./assets/project/3/3.jpg" alt="Проект 03" loading="lazy" />
+          </div>
+          <div class="projects-ref__meta">PROJECT 03</div>
+        </a>
+
+        <a class="projects-ref__card" href="#">
+          <div class="projects-ref__thumb">
+            <img src="./assets/project/4/4.jpg" alt="Проект 04" loading="lazy" />
+          </div>
+          <div class="projects-ref__meta">PROJECT 04</div>
+        </a>
+
+        <a class="projects-ref__card" href="#">
+          <div class="projects-ref__thumb">
+            <img src="./assets/project/5/5.jpg" alt="Проект 05" loading="lazy" />
+          </div>
+          <div class="projects-ref__meta">PROJECT 05</div>
+        </a>
+      </div>
+
+      <a class="projects-ref__all" href="#">Смотреть все проекты <span aria-hidden="true">↗</span></a>
+
+      <svg class="projects-ref__cables" viewBox="0 0 1200 420" preserveAspectRatio="none" aria-hidden="true">
+        <path class="cable cable--red" d="M-40 120 H520 Q560 120 560 160 V460" />
+        <path class="cable cable--white" d="M-40 154 H490 Q530 154 530 194 V460" />
+        <path class="cable cable--accent" d="M1240 120 H680 Q640 120 640 160 V460" />
+        <path class="cable cable--blue" d="M1240 154 H710 Q670 154 670 194 V460" />
+      </svg>
     </div>
-
-    <svg class="works-frame__cables" viewBox="0 0 1200 720" preserveAspectRatio="none">
-      <!-- Top-left bundle -->
-      <g class="bundle bundle--tl">
-        <path class="cable cable--o" d="M600 0 V170 H0" transform="translate(-18 0)" />
-        <path class="cable cable--c cable--red" d="M600 0 V170 H0" transform="translate(-18 0)" />
-
-        <path class="cable cable--o" d="M600 0 V170 H0" transform="translate(-6 0)" />
-        <path class="cable cable--c cable--white" d="M600 0 V170 H0" transform="translate(-6 0)" />
-
-        <path class="cable cable--o" d="M600 0 V170 H0" transform="translate(6 0)" />
-        <path class="cable cable--c cable--blue" d="M600 0 V170 H0" transform="translate(6 0)" />
-
-        <path class="cable cable--o" d="M600 0 V170 H0" transform="translate(18 0)" />
-        <path class="cable cable--c cable--accent" d="M600 0 V170 H0" transform="translate(18 0)" />
-      </g>
-
-      <!-- Top-right bundle -->
-      <g class="bundle bundle--tr">
-        <path class="cable cable--o" d="M600 0 V210 H1200" transform="translate(-18 0)" />
-        <path class="cable cable--c cable--red" d="M600 0 V210 H1200" transform="translate(-18 0)" />
-
-        <path class="cable cable--o" d="M600 0 V210 H1200" transform="translate(-6 0)" />
-        <path class="cable cable--c cable--white" d="M600 0 V210 H1200" transform="translate(-6 0)" />
-
-        <path class="cable cable--o" d="M600 0 V210 H1200" transform="translate(6 0)" />
-        <path class="cable cable--c cable--blue" d="M600 0 V210 H1200" transform="translate(6 0)" />
-
-        <path class="cable cable--o" d="M600 0 V210 H1200" transform="translate(18 0)" />
-        <path class="cable cable--c cable--accent" d="M600 0 V210 H1200" transform="translate(18 0)" />
-      </g>
-    </svg>
   </div>
-
-<div class="works-head" data-reveal="">
-<h2 class="works-title">ПРОЕКТЫ</h2>
-</div>
-<div class="works-grid">
-<a class="work-card" data-reveal="" data-stinger="" href="./project_gac/">
-<div class="work-media">
-<img alt="GAC GH4" src="./assets/project/1/1.jpg"/>
-</div>
-<div class="work-meta">GAC GH4</div>
-</a>
-<a class="work-card" data-reveal="" data-stinger="" href="./project_tenderness/">
-<div class="work-media">
-<img alt="Tenderness" src="./assets/project/2/1.jpg"/>
-</div>
-<div class="work-meta">«Нежность»</div>
-</a>
-<a class="work-card" data-reveal="" data-stinger="" href="./project_03/">
-<div class="work-media">
-<img alt="Project 03" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='900'%3E%3Crect width='100%25' height='100%25' rx='40' fill='%2312141f'/%3E%3C/svg%3E"/>
-</div>
-<div class="work-meta">PROJECT 03</div>
-</a>
-<a class="work-card" data-reveal="" data-stinger="" href="./project_04/">
-<div class="work-media">
-<img alt="Project 04" src="./assets/project/1/1.jpg"/>
-</div>
-<div class="work-meta">PROJECT 04</div>
-</a>
-<a class="work-card" data-reveal="" data-stinger="" href="./project_05/">
-<div class="work-media">
-<img alt="Project 05" src="./assets/project/2/1.jpg"/>
-</div>
-<div class="work-meta">PROJECT 05</div>
-</a>
-</div>
-<div class="works-bottom" data-reveal="">
-<a class="btn btn--ghost" data-stinger="" href="./projects/">Смотреть все проекты <span aria-hidden="true">↗</span></a>
-</div>
-</div>
 </section>
 
 <section class="partners-strip" aria-label="Партнёры">
