@@ -1,0 +1,121 @@
+/* ML overrides to map existing INDIVIDNI markup to the Magnetlover-style panels.
+   Keep HERO TV untouched (selectors start at body.home.ml-panels).
+*/
+
+body.home.ml-panels .ml-panel > .container{
+  isolation: isolate;
+}
+
+/* vertical “rail” inside each panel (like in the Figma) */
+body.home.ml-panels .ml-panel > .container::after{
+  content:"";
+  position:absolute;
+  top:-1px;
+  bottom:-1px;
+  left:50%;
+  width: 22px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg,
+    rgba(226,61,46,.35) 0 28%,
+    rgba(226,61,46,.95) 28% 72%,
+    rgba(226,61,46,.35) 72% 100%
+  );
+  opacity:.55;
+  pointer-events:none;
+  z-index:0;
+  filter: drop-shadow(0 18px 30px rgba(0,0,0,.35));
+}
+
+/* ensure inner overlay grid stays behind */
+body.home.ml-panels .ml-panel > .container::before{ z-index:0; }
+
+/* Projects: tabs + cards mapping */
+body.home.ml-panels .works-tabs{
+  display:flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin-top: 10px;
+  align-items:center;
+}
+body.home.ml-panels .works-tab{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  font-size: 11px;
+  opacity: .78;
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.02);
+}
+body.home.ml-panels .works-tab.is-active{
+  opacity: 1;
+  border-color: rgba(255,255,255,.22);
+  background: rgba(255,255,255,.04);
+}
+
+/* map .work-media to thumbnail style (if some cards still use it) */
+body.home.ml-panels .work-media,
+body.home.ml-panels .work-thumb{
+  aspect-ratio: 16/9;
+  border-radius: 22px;
+  overflow:hidden;
+}
+body.home.ml-panels .work-media img,
+body.home.ml-panels .work-thumb img{
+  width:100%;
+  height:100%;
+  object-fit: cover;
+  display:block;
+}
+body.home.ml-panels .work-title{
+  font-family: var(--font-keep, "Syne", sans-serif);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+/* Accordions (Services + FAQ) */
+body.home.ml-panels .accordion{
+  border: 0 !important;
+  background: transparent !important;
+}
+body.home.ml-panels .acc-item{
+  border: 1px solid rgba(255,255,255,.10) !important;
+  background: rgba(255,255,255,.03) !important;
+  border-radius: 18px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+body.home.ml-panels .acc-btn{
+  padding: 18px 18px;
+}
+body.home.ml-panels .acc-title{
+  font-family: var(--font-keep, "Syne", sans-serif);
+  letter-spacing: .02em;
+}
+body.home.ml-panels .acc-panel-inner{
+  color: rgba(255,255,255,.72);
+}
+
+/* Footer form mapping */
+body.home.ml-panels .footer-form-title{
+  font-family: var(--font-keep, "Syne", sans-serif);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  opacity: .92;
+}
+body.home.ml-panels .field-label{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  font-size: 11px;
+  opacity: .72;
+}
+body.home.ml-panels .field-input{
+  border-radius: 14px !important;
+  border: 1px solid rgba(255,255,255,.12) !important;
+  background: rgba(0,0,0,.18) !important;
+  color: rgba(255,255,255,.92) !important;
+}
+body.home.ml-panels .field-input::placeholder{ color: rgba(255,255,255,.45); }
+
