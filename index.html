@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="ru">
 <head>
 <meta charset="utf-8"/>
@@ -8,11 +7,11 @@
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;family=Syne:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="./assets/css/style.css" rel="stylesheet">
-<link href="./assets/css/home_tv.css" rel="stylesheet">
-<link href="./assets/css/hero_tv_fix.css?v=1" rel="stylesheet">
-<link href="./assets/css/home_v6.css?v=1" rel="stylesheet"/>
-</link></link></link></head>
+<link href="./assets/css/style.css" rel="stylesheet"/>
+<link href="./assets/css/home_tv.css" rel="stylesheet"/>
+<link href="./assets/css/hero_tv_fix.css?v=1" rel="stylesheet"/>
+<link href="./assets/css/home_v6.css?v=1" rel="stylesheet"/><link href="./assets/css/ml_panels.css?v=1" rel="stylesheet"/><link href="./assets/css/ml_overrides.css?v=1" rel="stylesheet"/>
+</head>
 <body class="home">
 <!-- HEADER -->
 <header class="header" id="top">
@@ -82,64 +81,54 @@
 </div>
 </section>
 <!-- WORKS -->
-<section aria-label="Проекты" class="ml-projects" id="projects" data-reveal>
-  <div class="ml-projects__rails" aria-hidden="true">
-    <div class="ml-rail ml-rail--v"></div>
-  </div>
-
-  <div class="container">
-    <div class="ml-panel">
-      <div class="ml-panel__lines" aria-hidden="true">
-        <span class="ml-line ml-line--top"></span>
-        <span class="ml-line ml-line--head"></span>
-        <span class="ml-line ml-line--mid"></span>
-        <span class="ml-line ml-line--bottom"></span>
-        <span class="ml-line ml-line--v"></span>
-      </div>
-
-      <div class="ml-panel__stripe" aria-hidden="true"></div>
-
-      <header class="ml-head">
-        <div class="ml-kicker">↳ проекты</div>
-        <h2 class="ml-title">ПРОЕКТЫ</h2>
-        <p class="ml-sub">Кейсы, клипы и реклама — от идеи до финальных файлов.</p>
-      </header>
-
-      <div class="ml-grid" aria-label="Проекты">
-        <a class="ml-card" data-stinger href="./project_gac/">
-          <div class="ml-media"><img alt="GAC GH4" src="./assets/project/1/1.jpg"/></div>
-          <div class="ml-meta">GAC GH4</div>
-        </a>
-        <a class="ml-card" data-stinger href="./project_tenderness/">
-          <div class="ml-media"><img alt="Tenderness" src="./assets/project/2/1.jpg"/></div>
-          <div class="ml-meta">«Нежность»</div>
-        </a>
-        <a class="ml-card" data-stinger href="./project_03/">
-          <div class="ml-media"><img alt="Project 03" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='675'%3E%3Crect width='100%25' height='100%25' rx='26' fill='%2312141f'/%3E%3C/svg%3E"/></div>
-          <div class="ml-meta">PROJECT 03</div>
-        </a>
-        <a class="ml-card" data-stinger href="./project_04/">
-          <div class="ml-media"><img alt="Project 04" src="./assets/project/1/1.jpg"/></div>
-          <div class="ml-meta">PROJECT 04</div>
-        </a>
-        <a class="ml-card" data-stinger href="./project_05/">
-          <div class="ml-media"><img alt="Project 05" src="./assets/project/2/1.jpg"/></div>
-          <div class="ml-meta">PROJECT 05</div>
-        </a>
-      </div>
-
-      <div class="ml-actions">
-        <a class="ml-btn" data-stinger href="./projects/">Смотреть все проекты <span aria-hidden="true">↗</span></a>
-      </div>
-
-      <div class="ml-stickers" aria-hidden="true">
-        <div class="ml-sticker ml-sticker--pink">ON SET</div>
-        <div class="ml-sticker ml-sticker--blue">SOUND</div>
-        <div class="ml-sticker ml-sticker--yellow">CGI</div>
-        <div class="ml-sticker ml-sticker--white">VFX</div>
-      </div>
-    </div>
-  </div>
+<section aria-label="Проекты" class="works ml-panel" id="projects">
+<div class="container">
+<div class="works-head section-head" data-reveal="">
+<div class="section-kicker">↳ Наши работы</div><h2 class="works-title section-title">ПРОЕКТЫ</h2>
+<nav aria-label="Категории проектов" class="works-tabs">
+<a class="works-tab is-active" data-stinger="" href="./projects/brand/">Имиджевый ролик</a>
+<a class="works-tab" data-stinger="" href="./projects/animation/">Анимационный ролик</a>
+<a class="works-tab" data-stinger="" href="./projects/education/">Обучающие видеоролики</a>
+<a class="works-tab" data-stinger="" href="./projects/ads/">Рекламный ролик</a>
+<a class="works-tab" data-stinger="" href="./projects/presentation/">Презентационный ролик</a>
+</nav>
+</div>
+<div class="works-grid">
+<a class="work-card" data-reveal="" data-stinger="" href="./project_gac/">
+<div class="work-media work-thumb">
+<img alt="GAC GH4" src="./assets/project/1/1.jpg"/>
+</div>
+<div class="work-meta"><div class="work-title">GAC GH4</div></div>
+</a>
+<a class="work-card" data-reveal="" data-stinger="" href="./project_tenderness/">
+<div class="work-media work-thumb">
+<img alt="Tenderness" src="./assets/project/2/1.jpg"/>
+</div>
+<div class="work-meta"><div class="work-title">«Нежность»</div></div>
+</a>
+<a class="work-card" data-reveal="" data-stinger="" href="./project_03/">
+<div class="work-media work-thumb">
+<img alt="Project 03" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='900'%3E%3Crect width='100%25' height='100%25' rx='40' fill='%2312141f'/%3E%3C/svg%3E"/>
+</div>
+<div class="work-meta"><div class="work-title">PROJECT 03</div></div>
+</a>
+<a class="work-card" data-reveal="" data-stinger="" href="./project_04/">
+<div class="work-media work-thumb">
+<img alt="Project 04" src="./assets/project/1/1.jpg"/>
+</div>
+<div class="work-meta"><div class="work-title">PROJECT 04</div></div>
+</a>
+<a class="work-card" data-reveal="" data-stinger="" href="./project_05/">
+<div class="work-media work-thumb">
+<img alt="Project 05" src="./assets/project/2/1.jpg"/>
+</div>
+<div class="work-meta"><div class="work-title">PROJECT 05</div></div>
+</a>
+</div>
+<div class="works-bottom" data-reveal="">
+<a class="btn btn--ghost" data-stinger="" href="./projects/">Смотреть все проекты <span aria-hidden="true">↗</span></a>
+</div>
+</div>
 </section>
 <div aria-hidden="true" class="tape">
 <div class="tape__track">
@@ -165,7 +154,7 @@
 </div>
 </section>
 <!-- CAPABILITIES -->
-<section aria-label="Услуги" class="capabilities" id="services">
+<section aria-label="Услуги" class="capabilities ml-panel" id="services">
 <div class="container">
 <div class="section-head" data-reveal="">
 <div class="section-kicker">↳ Услуги</div>
@@ -285,7 +274,7 @@
 </div>
 </div>
 <!-- NUMBERS -->
-<section aria-label="Мы в цифрах" class="numbers" id="numbers">
+<section aria-label="Мы в цифрах" class="numbers ml-panel" id="numbers">
 <div class="container">
 <div class="section-head" data-reveal="">
 <div class="section-kicker">↳ Мы в цифрах</div>
@@ -323,7 +312,7 @@
 </div>
 </section>
 <!-- PROCESS (interactive) -->
-<section aria-label="Этапы создания" class="process" data-process="" id="process">
+<section aria-label="Этапы создания" class="process ml-panel" data-process="" id="process">
 <div class="container">
 <div class="section-head" data-reveal="">
 <div class="section-kicker">↳ Процесс</div>
@@ -402,7 +391,7 @@
 </div>
 </section>
 <!-- PRICING -->
-<section aria-label="Стоимость" class="pricing" id="pricing">
+<section aria-label="Стоимость" class="pricing ml-panel" id="pricing">
 <div class="container">
 <div class="section-head" data-reveal="">
 <div class="section-kicker">↳ Стоимость</div>
@@ -464,7 +453,7 @@
 </div>
 </div>
 <!-- TEAM -->
-<section aria-label="Команда" class="team" id="team">
+<section aria-label="Команда" class="team ml-panel" id="team">
 <div class="container">
 <div class="section-head" data-reveal="">
 <div class="section-kicker">↳ Команда</div>
@@ -520,7 +509,7 @@
 </div>
 </section>
 <!-- VALUE -->
-<section aria-label="За что нас ценят" class="value" id="value">
+<section aria-label="За что нас ценят" class="value ml-panel" id="value">
 <div class="container">
 <div class="section-head" data-reveal="">
 <div class="section-kicker">↳ Ценность</div>
@@ -555,7 +544,7 @@
 </div>
 </section>
 <!-- FAQ -->
-<section aria-label="Частые вопросы" class="faq" id="faq">
+<section aria-label="Частые вопросы" class="faq ml-panel" id="faq">
 <div class="container">
 <div class="section-head" data-reveal="">
 <div class="section-kicker">↳ FAQ</div>
@@ -612,7 +601,7 @@
 </div>
 </section>
 <!-- WORKFLOW -->
-<section aria-label="Как мы работаем" class="workflow" id="workflow">
+<section aria-label="Как мы работаем" class="workflow ml-panel" id="workflow">
 <div class="container">
 <div class="workflow-grid">
 <div class="workflow-text" data-reveal="">
@@ -647,7 +636,7 @@
 </section>
 </main>
 <!-- FOOTER -->
-<footer aria-label="Контакты" class="footer" id="contact">
+<footer aria-label="Контакты" class="footer ml-panel" id="contact">
 <div class="container">
 <div class="footer-shell">
 <div class="footer-left">
@@ -712,6 +701,6 @@
 <script defer="" src="./assets/js/capabilities_tabs.js"></script>
 <script defer="" src="./assets/js/capabilities_detail.js"></script>
 <script defer="" src="./assets/js/home_v6.js"></script>
-<script defer="" src="./assets/js/main.js"></script>
+<script defer="True" src="./assets/js/ml_panels.js"></script><script defer="" src="./assets/js/main.js"></script>
 </body>
 </html>
