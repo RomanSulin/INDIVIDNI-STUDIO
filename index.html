@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <!-- Landing styles (ref-based) -->
-  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=2" />
+  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=8" />
 </head>
 <body>
 
@@ -90,88 +90,220 @@
     </div>
 
     <div class="split-right" data-project-chooser>
-      <a class="proj-item" href="#" data-color="#0066FF">
-        <div class="proj-thumb"><img src="./assets/img/ph_16x9.png" alt="Project 01" /></div>
-        <div class="proj-info">
-          <div class="proj-title">Project 01</div>
-          <div class="proj-sub">Commercial • 2025</div>
-        </div>
-      </a>
+      <div class="split-right-wrap" aria-label="Сетка проектов">
+        <div class="split-right-grid">
 
-      <a class="proj-item" href="#" data-color="#FFD400">
-        <div class="proj-thumb"><img src="./assets/img/ph_16x9.png" alt="Project 02" /></div>
-        <div class="proj-info">
-          <div class="proj-title">Project 02</div>
-          <div class="proj-sub">Music video • 2025</div>
-        </div>
-      </a>
+          <!-- Using old project links & photos as placeholders -->
+          <a class="proj-item" href="./project_gac/" data-color="#005BFF">
+            <div class="proj-thumb"><img src="./assets/project/1/2.jpg" alt="GAC case" onerror="this.onerror=null;this.src='./assets/img/ph_16x9.png';" /></div>
+            <div class="proj-info">
+              <div class="proj-title">GAC case</div>
+              <div class="proj-sub">case • 2025</div>
+            </div>
+          </a>
 
-      <a class="proj-item proj-item--wide" href="#" data-color="#FF2B2B">
-        <div class="proj-thumb"><img src="./assets/img/ph_16x9.png" alt="Project 03" /></div>
-        <div class="proj-info">
-          <div class="proj-title">Project 03</div>
-          <div class="proj-sub">Brand content • 2024</div>
-        </div>
-      </a>
+          <a class="proj-item" href="./project_tenderness/" data-color="#FF00C8">
+            <div class="proj-thumb"><img src="./assets/project/2/1.jpg" alt="Tenderness music" onerror="this.onerror=null;this.src='./assets/img/ph_16x9.png';" /></div>
+            <div class="proj-info">
+              <div class="proj-title">TENDERNESS</div>
+              <div class="proj-sub">music • 2025</div>
+            </div>
+          </a>
 
-      <a class="proj-item" href="#" data-color="#20E070">
-        <div class="proj-thumb"><img src="./assets/img/ph_16x9.png" alt="Project 04" /></div>
-        <div class="proj-info">
-          <div class="proj-title">Project 04</div>
-          <div class="proj-sub">Social • 2024</div>
-        </div>
-      </a>
+          <a class="proj-item" href="./project_gac/" data-color="#FF003D">
+            <div class="proj-thumb"><img src="./assets/project/1/3.jpg" alt="GAC frame" onerror="this.onerror=null;this.src='./assets/img/ph_16x9.png';" /></div>
+            <div class="proj-info">
+              <div class="proj-title">GAC GH4</div>
+              <div class="proj-sub">studio • 2025</div>
+            </div>
+          </a>
 
-      <a class="proj-item" href="#" data-color="#FF2BD6">
-        <div class="proj-thumb"><img src="./assets/img/ph_16x9.png" alt="Project 05" /></div>
-        <div class="proj-info">
-          <div class="proj-title">Project 05</div>
-          <div class="proj-sub">Documentary • 2023</div>
-        </div>
-      </a>
-</div>
-  </div>
-</section>
+          <a class="proj-item" href="./project_tenderness/" data-color="#00FF6A">
+            <div class="proj-thumb"><img src="./assets/project/2/2.jpg" alt="Tenderness frame" onerror="this.onerror=null;this.src='./assets/img/ph_16x9.png';" /></div>
+            <div class="proj-info">
+              <div class="proj-title">Tenderness</div>
+              <div class="proj-sub">clip • 2025</div>
+            </div>
+          </a>
 
-<!-- SERVICES (ref "colors") -->
-<section class="section section--tight" id="services">
-  <div class="cards-2">
-    <div class="card">
-      <div class="tag">
-        <span class="tag-label">Production</span>
+        </div>
+
+        <a class="split-more" href="#" aria-label="Смотреть ещё проекты">Смотреть ещё →</a>
       </div>
-      <p>Pre‑production, съемка, команда, оборудование, постановка света.</p>
-      <img class="preview" src="./assets/img/ph_16x9.png" alt="Production preview" />
-    </div>
-
-    <div class="card">
-      <div class="tag">
-        <span class="tag-label">Post</span>
-      </div>
-      <p>Монтаж, цвет, графика, звук, адаптации под форматы и площадки.</p>
-      <img class="preview" src="./assets/img/ph_16x9.png" alt="Post preview" />
     </div>
   </div>
 </section>
 
-<!-- HEADLINE MARQUEE -->
-<section class="headline-section" aria-label="Marquee">
-  <div class="headline-track">
-    <span class="headline-chip">DIRECT</span>
-    <span class="headline-chip" style="color:var(--accent)">SHOOT</span>
-    <span class="headline-chip">EDIT</span>
-    <span class="headline-chip" style="color:var(--accent)">COLOR</span>
-    <span class="headline-chip">SOUND</span>
-
-    <span class="headline-chip">DIRECT</span>
-    <span class="headline-chip" style="color:var(--accent)">SHOOT</span>
-    <span class="headline-chip">EDIT</span>
-    <span class="headline-chip" style="color:var(--accent)">COLOR</span>
-    <span class="headline-chip">SOUND</span>
+<!-- WHO (graphic title) -->
+<section class="who" id="who" aria-label="Кто мы">
+  <div class="who-inner">
+    <h2 class="who-title" aria-label="Кто мы">
+      <span>КТО</span>
+      <span>МЫ</span>
+    </h2>
+    <p class="who-desc">INDIVIDNI — видеопродакшн полного цикла. Мы делаем рекламу, клипы и бренд‑контент с сильным визуалом и аккуратным постом. Быстро, чётко, по‑киношному.</p>
   </div>
 </section>
 
-<p class="headline-h2">instant impact with <span style="color:var(--accent)">bold</span> visuals that <span style="color:var(--accent)">catch</span> the eye</p>
+<!-- SERVICES -->
+<section class="services-wide" id="services" aria-label="Услуги">
+  <div class="services-head">
+    <h2 class="services-title">УСЛУГИ</h2>
+  </div>
+
+  <div class="services-grid" role="list">
+    <a class="svc-card svc-card--blue" role="listitem" href="#">
+      <div class="svc-media">
+        <img src="./assets/img/ph_16x9.png" alt="Съёмка" />
+        <div class="svc-overlay">
+          <div class="svc-name">Съёмка</div>
+          <div class="svc-text">Съёмочная группа, свет, камера, постановка и контроль качества.</div>
+        </div>
+      </div>
+    </a>
+
+    <a class="svc-card svc-card--yellow" role="listitem" href="#">
+      <div class="svc-media">
+        <img src="./assets/img/ph_16x9.png" alt="Монтаж" />
+        <div class="svc-overlay">
+          <div class="svc-name">Монтаж</div>
+          <div class="svc-text">Монтаж под ритм и смысл, версии под форматы, субтитры.</div>
+        </div>
+      </div>
+    </a>
+
+    <a class="svc-card svc-card--red" role="listitem" href="#">
+      <div class="svc-media">
+        <img src="./assets/img/ph_16x9.png" alt="Цвет" />
+        <div class="svc-overlay">
+          <div class="svc-name">Цвет</div>
+          <div class="svc-text">Color grading и техническая подготовка под площадки.</div>
+        </div>
+      </div>
+    </a>
+
+    <a class="svc-card svc-card--green" role="listitem" href="#">
+      <div class="svc-media">
+        <img src="./assets/img/ph_16x9.png" alt="Звук" />
+        <div class="svc-overlay">
+          <div class="svc-name">Звук</div>
+          <div class="svc-text">Сведение, саунд‑дизайн, чистка, громкость по стандартам.</div>
+        </div>
+      </div>
+    </a>
+
+    <a class="svc-card svc-card--pink" role="listitem" href="#">
+      <div class="svc-media">
+        <img src="./assets/img/ph_16x9.png" alt="Графика" />
+        <div class="svc-overlay">
+          <div class="svc-name">Графика</div>
+          <div class="svc-text">Титры, 2D/3D элементы, упаковка ролика в единый стиль.</div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="services-more-wrap">
+    <a class="services-more" href="#">Смотреть все услуги →</a>
+  </div>
+</section>
+
+<!-- PARTNERS MARQUEE -->
+<section class="partners-section" aria-label="Партнёры">
+  <div class="partners-track" aria-hidden="true">
+    <span class="partner">
+      <span class="partner-logo">C</span>
+      <span class="partner-name">Canon</span>
+    </span>
+    <span class="partner">
+      <span class="partner-logo">S</span>
+      <span class="partner-name">Sony</span>
+    </span>
+    <span class="partner">
+      <span class="partner-logo">P</span>
+      <span class="partner-name">Panasonic</span>
+    </span>
+    <span class="partner">
+      <span class="partner-logo">A</span>
+      <span class="partner-name">ARRI</span>
+    </span>
+    <span class="partner">
+      <span class="partner-logo">D</span>
+      <span class="partner-name">DJI</span>
+    </span>
+    <span class="partner">
+      <span class="partner-logo">B</span>
+      <span class="partner-name">Blackmagic</span>
+    </span>
+    <span class="partner">
+      <span class="partner-logo">F</span>
+      <span class="partner-name">Frame.io</span>
+    </span>
+    <span class="partner">
+      <span class="partner-logo">V</span>
+      <span class="partner-name">Vimeo</span>
+    </span>
+    <span class="partner">
+      <span class="partner-logo">E</span>
+      <span class="partner-name">Epidemic Sound</span>
+    </span>
+    <span class="partner">
+      <span class="partner-logo">R</span>
+      <span class="partner-name">Red Giant</span>
+    </span>
+    <span class="partner">
+      <span class="partner-logo">C</span>
+      <span class="partner-name">Canon</span>
+    </span>
+    <span class="partner">
+      <span class="partner-logo">S</span>
+      <span class="partner-name">Sony</span>
+    </span>
+    <span class="partner">
+      <span class="partner-logo">P</span>
+      <span class="partner-name">Panasonic</span>
+    </span>
+    <span class="partner">
+      <span class="partner-logo">A</span>
+      <span class="partner-name">ARRI</span>
+    </span>
+    <span class="partner">
+      <span class="partner-logo">D</span>
+      <span class="partner-name">DJI</span>
+    </span>
+    <span class="partner">
+      <span class="partner-logo">B</span>
+      <span class="partner-name">Blackmagic</span>
+    </span>
+    <span class="partner">
+      <span class="partner-logo">F</span>
+      <span class="partner-name">Frame.io</span>
+    </span>
+    <span class="partner">
+      <span class="partner-logo">V</span>
+      <span class="partner-name">Vimeo</span>
+    </span>
+    <span class="partner">
+      <span class="partner-logo">E</span>
+      <span class="partner-name">Epidemic Sound</span>
+    </span>
+    <span class="partner">
+      <span class="partner-logo">R</span>
+      <span class="partner-name">Red Giant</span>
+    </span>
+  </div>
+</section>
+
+
+
+
+<!-- CTA MINI -->
+<section class="cta-mini" aria-label="Обсудим проект">
+  <div class="cta-mini-inner">
+    <h2 class="cta-mini-title">Обсудим проект?</h2>
+    <a class="btn btn--dark" href="#contact">Написать →</a>
+  </div>
+</section>
 
 <!-- FEATURE (ref "great") -->
 <section class="great-section" id="process" aria-label="Процесс">
