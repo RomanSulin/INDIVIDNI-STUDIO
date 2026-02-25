@@ -66,59 +66,18 @@
     });
   }
 
-  // ── Steps interactive
-  const stepsPanel = $('[data-steps]');
-  if (stepsPanel) {
-    const cards = $$('.step-card', stepsPanel);
+  // ── Process splits: keep one open at a time
+  const process = $('[data-process]');
+  if (process) {
+    const details = $$('details', process);
 
-    const closeAll = () => {
-      stepsPanel.classList.remove('has-open');
-      cards.forEach((c) => c.classList.remove('is-open'));
-    };
-
-    const openCard = (card) => {
-      stepsPanel.classList.add('has-open');
-      cards.forEach((c) => c.classList.toggle('is-open', c === card));
-    };
-
-    cards.forEach((card) => {
-      const closeBtn = $('.step-x', card);
-
-      const toggle = () => {
-        if (card.classList.contains('is-open')) closeAll();
-        else openCard(card);
-      };
-
-      card.addEventListener('click', (e) => {
-        if (closeBtn && (e.target === closeBtn || closeBtn.contains(e.target))) {
-          e.stopPropagation();
-          closeAll();
-          return;
-        }
-        toggle();
-      });
-
-      card.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          toggle();
-        }
-        if (e.key === 'Escape') closeAll();
-      });
-
-      if (closeBtn) {
-        closeBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          closeAll();
+    details.forEach((d) => {
+      d.addEventListener('toggle', () => {
+        if (!d.open) return;
+        details.forEach((other) => {
+          if (other !== d) other.open = false;
         });
-      }
-    });
-
-    // click outside closes
-    document.addEventListener('click', (e) => {
-      if (!stepsPanel.classList.contains('has-open')) return;
-      if (!stepsPanel.contains(e.target)) closeAll();
+      });
     });
   }
 
