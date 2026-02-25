@@ -1,0 +1,100 @@
+/* HERO TV FIX
+   - Text left (desktop), safe viewport padding
+   - Add typed + buttons styling
+   - TV: vertically centered, slightly left of previous, bigger
+   - IMPORTANT: we do NOT rotate/tilt the TV container (tv_hero.js must control 3D)
+*/
+
+:root{
+  --heroPad: clamp(22px, 3.2vw, 72px);
+}
+
+/* Don't let liquid canvas steal pointer events from TV */
+#liquid-bg,
+#liquid-bg canvas{
+  pointer-events: none !important;
+}
+
+/* Keep hero layers sane */
+.liquid-hero.hero-tv{ position: relative; }
+.liquid-hero.hero-tv .hero-tv__title{ position: relative; z-index: 6; pointer-events: auto; }
+.liquid-hero.hero-tv .hero-tv__stage{ z-index: 3; }
+
+/* Typed line */
+.hero-tv__typed{
+  margin-top: 14px;
+  min-height: 20px;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  color: rgba(255,255,255,0.78);
+}
+.typed-caret{
+  display: inline-block;
+  width: 1px;
+  height: 1.15em;
+  margin-left: 6px;
+  background: rgba(255,255,255,0.55);
+  transform: translateY(2px);
+  animation: caretBlink 0.9s steps(1,end) infinite;
+}
+@keyframes caretBlink{ 50%{ opacity: 0; } }
+
+/* Buttons */
+.hero-tv__actions{
+  margin-top: 18px;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.hero-tv__actions .btn{
+  height: 46px;
+  padding: 0 18px;
+  font-size: 15px;
+  border-radius: 999px;
+}
+
+/* Desktop layout overrides (loaded AFTER home_tv.css) */
+@media (min-width: 861px){
+  /* allow hero to use full viewport width, but keep safe padding */
+  .liquid-hero.hero-tv .hero-tv__inner.container{
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding-left: var(--heroPad) !important;
+    padding-right: var(--heroPad) !important;
+  }
+
+  .liquid-hero.hero-tv .hero-tv__inner{
+    position: relative !important;
+    height: 100% !important;
+  }
+
+  /* text block left, vertically centered */
+  .liquid-hero.hero-tv .hero-tv__title{
+    position: absolute !important;
+    left: var(--heroPad) !important;
+    top: 50% !important;
+    transform: translateY(-56%) !important;
+    max-width: min(780px, 52vw) !important;
+    text-align: left !important;
+  }
+  .liquid-hero.hero-tv .liquid-title{ text-align: left !important; }
+
+  /* TV: centered vertically, moved a bit LEFT compared to "far right", and slightly bigger
+     NOTE: transform here is only for centering translation, NOT rotation. */
+  .liquid-hero.hero-tv .hero-tv__stage{
+    position: absolute !important;
+    top: 50% !important;
+    left: 70% !important;
+    transform: translate(-50%, -50%) !important;
+    width: clamp(840px, 60vw, 1400px) !important;
+    height: clamp(520px, 80vh, 900px) !important;
+  }
+}
+
+/* Mobile: keep layout, just spacing */
+@media (max-width: 860px){
+  .hero-tv__typed{ font-size: 13px; margin-top: 12px; }
+  .hero-tv__actions{ margin-top: 14px; gap: 10px; }
+  .hero-tv__actions .btn{ height: 42px; padding: 0 16px; font-size: 14px; }
+}

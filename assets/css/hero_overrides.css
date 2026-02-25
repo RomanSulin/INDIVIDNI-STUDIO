@@ -1,0 +1,97 @@
+/* HERO OVERRIDES v5 — desktop layout tweaks (text left with safe padding, TV bigger + a bit left) */
+
+:root{
+  --heroPad: clamp(28px, 3.2vw, 76px);
+}
+
+/* keep hero full-bleed */
+.hero-tv.liquid-hero,
+section.hero-tv{
+  position: relative;
+  overflow: hidden;
+}
+
+/* Content block — left, vertically centered, above TV */
+.hero-tv .hero-tv__content{
+  position: absolute !important;
+  left: var(--heroPad) !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  z-index: 30 !important;
+  max-width: min(720px, 46vw) !important;
+  pointer-events: auto;
+}
+
+/* Make the big title feel anchored to the left edge */
+.hero-tv .hero-tv__brand,
+.hero-tv .hero-tv__title{
+  text-align: left !important;
+}
+
+/* Slight readability on top of liquid metal */
+.hero-tv .hero-tv__content *{
+  text-shadow: 0 10px 28px rgba(0,0,0,.22);
+}
+
+/* Buttons — lower, bigger */
+.hero-tv .hero-tv__actions{
+  margin-top: 22px !important;
+  display: flex !important;
+  gap: 12px !important;
+  flex-wrap: wrap;
+}
+
+.hero-tv .hero-tv__actions .btn,
+.hero-tv .hero-tv__actions a.btn{
+  padding: 12px 18px !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+  border-radius: 999px !important;
+  min-height: 42px !important;
+}
+
+/* Typed line — give it breathing room */
+.hero-tv .hero-tv__typed{
+  margin-top: 10px !important;
+  margin-bottom: 6px !important;
+}
+
+/* TV stage — bigger, slightly left, vertically centered */
+@media (min-width: 861px){
+  .hero-tv .hero-tv__stage{
+    position: absolute !important;
+    top: 50% !important;
+    right: clamp(54px, 5.8vw, 150px) !important; /* ↑ больше right = левее */
+    transform: translateY(-50%) !important;
+    width: clamp(860px, 66vw, 1520px) !important;
+    height: clamp(560px, 80vh, 980px) !important;
+    z-index: 15 !important;
+    pointer-events: auto;
+  }
+
+  /* Let the text overlap the TV a bit (as you asked) */
+  .hero-tv .hero-tv__content{
+    max-width: min(820px, 56vw) !important;
+  }
+}
+
+/* Mobile — do not change layout, only buttons + typed exist */
+@media (max-width: 860px){
+  .hero-tv .hero-tv__content{
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    transform: none !important;
+    padding-left: var(--heroPad) !important;
+    padding-right: var(--heroPad) !important;
+    max-width: 100% !important;
+  }
+  .hero-tv .hero-tv__stage{
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+}
