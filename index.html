@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="./assets/css/hero_overrides.css?v=1"/>
 
   <!-- NEW HOME (после TV стилей) -->
-  <link rel="stylesheet" href="./assets/css/magnet_home.css?v=1"/>
+  <link rel="stylesheet" href="./assets/css/magnet_home.css?v=2"/>
 </head>
 <body class="home mg">
 <header class="header" id="top">
@@ -89,42 +89,48 @@
 
   <!-- PROJECTS -->
   <section class="mg-section" id="projects" aria-label="Проекты" data-reveal>
-    <div class="mg-container">
-      <div class="mg-panel">
-        <div class="mg-sticker mg-sticker--cam" aria-hidden="true"></div>
-        <h2 class="mg-huge">ПРОЕКТЫ</h2>
-        <div class="mg-subtitle">НАШИ РАБОТЫ</div>
-
-        <div class="mg-film">
-          <div class="mg-film__strip" aria-label="Лента проектов">
-            <a class="mg-film__frame" href="./project_gac/" data-stinger>
-              <img src="./assets/project/1/1.jpg" alt="Проект" loading="lazy"/>
-            </a>
-            <a class="mg-film__frame" href="./project_tenderness/" data-stinger>
-              <img src="./assets/project/2/1.jpg" alt="Проект" loading="lazy"/>
-            </a>
-            <a class="mg-film__frame" href="./projects/" data-stinger>
-              <img src="./assets/project/1/1.jpg" alt="Проект" loading="lazy"/>
-            </a>
-            <a class="mg-film__frame" href="./projects/" data-stinger>
-              <img src="./assets/project/2/1.jpg" alt="Проект" loading="lazy"/>
-            </a>
-            <a class="mg-film__frame" href="./projects/" data-stinger>
-              <img src="./assets/project/1/1.jpg" alt="Проект" loading="lazy"/>
-            </a>
+    <div class="mg-container mg-container--wide">
+      <div class="mg-panel mg-panel--lines mg-panel--projects">
+        <div class="mg-projectsHead">
+          <div>
+            <h2 class="mg-huge">ПРОЕКТЫ</h2>
+            <div class="mg-subtitle">НАШИ РАБОТЫ</div>
           </div>
+          <a class="mg-link" href="./projects/" data-stinger>СМОТРЕТЬ ВСЕ →</a>
         </div>
 
-        <div class="mg-minirow">
+        <div class="mg-projectsGrid" aria-label="Проекты">
+          <a class="mg-project" href="./project_gac/" data-stinger>
+            <div class="mg-project__media"><img src="./assets/project/1/1.jpg" alt="GAC" loading="lazy"/></div>
+            <div class="mg-project__meta"><span>GAC</span><span>case</span></div>
+          </a>
+          <a class="mg-project" href="./project_tenderness/" data-stinger>
+            <div class="mg-project__media"><img src="./assets/project/2/1.jpg" alt="Tenderness" loading="lazy"/></div>
+            <div class="mg-project__meta"><span>TENDERNESS</span><span>music</span></div>
+          </a>
+          <a class="mg-project" href="./projects/" data-stinger>
+            <div class="mg-project__media"><img src="./assets/project/1/1.jpg" alt="Проект" loading="lazy"/></div>
+            <div class="mg-project__meta"><span>PROJECT 03</span><span>ad</span></div>
+          </a>
+          <a class="mg-project" href="./projects/" data-stinger>
+            <div class="mg-project__media"><img src="./assets/project/2/1.jpg" alt="Проект" loading="lazy"/></div>
+            <div class="mg-project__meta"><span>PROJECT 04</span><span>case</span></div>
+          </a>
+          <a class="mg-project" href="./projects/" data-stinger>
+            <div class="mg-project__media"><img src="./assets/project/1/1.jpg" alt="Проект" loading="lazy"/></div>
+            <div class="mg-project__meta"><span>PROJECT 05</span><span>ad</span></div>
+          </a>
+          <a class="mg-project" href="./projects/" data-stinger>
+            <div class="mg-project__media"><img src="./assets/project/2/1.jpg" alt="Проект" loading="lazy"/></div>
+            <div class="mg-project__meta"><span>PROJECT 06</span><span>clip</span></div>
+          </a>
+        </div>
+
+        <div class="mg-minirow mg-minirow--paper">
           <div class="mg-mini">01</div>
           <div class="mg-mini">РЕКЛАМА • КЛИПЫ • КЕЙСЫ</div>
           <div class="mg-mini">2026</div>
         </div>
-
-        <a class="mg-corner" href="./projects/" data-stinger aria-label="Смотреть все проекты">
-          <span class="mg-corner__icon">🎬</span>
-          <span class="mg-corner__text">СМОТРЕТЬ ВСЕ</span>
-        </a>
       </div>
     </div>
   </section>
