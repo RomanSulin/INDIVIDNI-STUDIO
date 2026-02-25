@@ -1,368 +1,224 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>INDIVIDNI — studio</title>
+  <meta name="description" content="INDIVIDNI — видеопродакшн полного цикла: реклама, клипы, контент. Шоурил, кейсы и бриф." />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-  <!-- New landing styles (ref-like) -->
-  <link rel="stylesheet" href="./assets/css/landing_wannathis.css?v=1"/>
+  <!-- Landing styles (ref-based) -->
+  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=1" />
 </head>
+<body>
 
-<body class="home-ref" data-theme="black">
+<!-- TOP BANNER -->
+<div class="pro-banner" id="proBanner">
+  <span>Открыт набор на проекты • 2026 • Europe</span>
+  <a class="pill" href="#download">Заполнить бриф</a>
+  <button class="close-btn" type="button" data-close-banner>×</button>
+</div>
 
-  <!-- Promo bar (like ref) -->
-  <div class="w-topbar" role="banner">
-    <div class="w-topbar__inner">
-      <div>Видеопродакшн полного цикла — от идеи до финальных файлов.</div>
-      <a class="w-topbar__cta" href="#contact">Обсудить проект</a>
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <a class="nav-brand" href="#top">INDIVIDNI</a>
+    <span class="nav-by">studio</span>
+  </div>
+  <div class="nav-right">
+    <span class="nav-tag">Video production</span>
+    <a class="btn-dl" href="#projects">Проекты</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-media">
+    <!-- TV (code stays; layout around it is new) -->
+    <div class="hero-tv-stage" data-tv-hero aria-label="3D TV hero">
+      <canvas id="tvHeroCanvas"></canvas>
+      <video class="tvfly__hiddenVideo" id="tvHeroVideo" loop muted playsinline preload="auto" webkit-playsinline>
+        <source src="./assets/ui/showreel_2.mp4" type="video/mp4"/>
+      </video>
     </div>
   </div>
 
-  <!-- Header -->
-  <header class="w-header" id="top">
-    <div class="w-header__inner">
-      <nav class="w-nav" aria-label="Primary">
-        <a href="#about">О нас</a>
-        <a href="#contact">Контакты</a>
-      </nav>
+  <h1>Full‑cycle video production.<br/>Bold visuals that keep attention.</h1>
+  <p class="hero-sub">Реклама, клипы, бренд‑контент. От идеи до финального мастер‑файла. Ниже — работы и быстрый бриф.</p>
+</section>
 
-      <a class="w-mark" href="#top" aria-label="INDIVIDNI">IND</a>
-
-      <div class="w-actions">
-        <a class="w-btn" href="#projects">Портфолио</a>
-        <button class="w-btn w-btn--cta" id="btnShowreel" type="button">Шоурил</button>
-        <button class="w-burger" type="button" data-burger aria-label="Menu">☰</button>
+<!-- SERVICES (ref "colors") -->
+<section class="section section--tight">
+  <div class="cards-2">
+    <div class="card">
+      <div class="tag">
+        <span class="tag-label">Production</span>
       </div>
+      <p>Pre‑production, съемка, команда, оборудование, постановка света.</p>
+      <img class="preview" src="./assets/img/ph_16x9.png" alt="Production preview" />
     </div>
 
-    <div class="w-drawer" data-drawer>
-      <div class="w-drawer__inner">
-        <a href="#about">О нас</a>
-        <a href="#projects">Проекты</a>
-        <a href="#services">Услуги</a>
-        <a href="#process">Процесс</a>
-        <a href="#pricing">Стоимость</a>
-        <a href="#contact">Контакты</a>
+    <div class="card">
+      <div class="tag">
+        <span class="tag-label">Post</span>
       </div>
+      <p>Монтаж, цвет, графика, звук, адаптации под форматы и площадки.</p>
+      <img class="preview" src="./assets/img/ph_16x9.png" alt="Post preview" />
     </div>
-  </header>
+  </div>
+</section>
 
-  <main>
+<!-- HEADLINE MARQUEE -->
+<section class="headline-section" aria-label="Marquee">
+  <div class="headline-track">
+    <span class="headline-chip">DIRECT</span>
+    <span class="headline-chip" style="color:var(--accent)">SHOOT</span>
+    <span class="headline-chip">EDIT</span>
+    <span class="headline-chip" style="color:var(--accent)">COLOR</span>
+    <span class="headline-chip">SOUND</span>
 
-    <!-- HERO (TV kept). Background + layout are new. -->
-    <section class="w-hero" id="about" aria-label="INDIVIDNI hero">
-      <div class="w-hero__grid">
-        <div>
-          <div class="w-hero__kicker">
-            <span class="w-star" aria-hidden="true">✶</span>
-            <span>studio • production • post</span>
-          </div>
+    <span class="headline-chip">DIRECT</span>
+    <span class="headline-chip" style="color:var(--accent)">SHOOT</span>
+    <span class="headline-chip">EDIT</span>
+    <span class="headline-chip" style="color:var(--accent)">COLOR</span>
+    <span class="headline-chip">SOUND</span>
+  </div>
+</section>
 
-          <h1 class="w-h1">Bold videos,<br/>bold impact.</h1>
-          <p class="w-lead">Снимаем рекламу, клипы и кейсы. Дисциплина продакшна + вкус. Работаем быстро, чисто и доводим до финального продукта.</p>
+<p class="headline-h2">instant impact with <span style="color:var(--accent)">bold</span> visuals that <span style="color:var(--accent)">catch</span> the eye</p>
 
-          <div class="w-hero__cta">
-            <a class="w-btn w-btn--cta" href="#contact">Рассчитать проект</a>
-            <a class="w-btn" href="#projects">Смотреть кейсы</a>
-          </div>
+<!-- PROJECTS (ref "usecases") -->
+<section class="usecases" id="projects" aria-label="Проекты">
+  <h3>Selected works</h3>
 
-          <div class="w-toggle" aria-label="Theme">
-            <div class="w-toggle__label">Theme</div>
-            <button class="w-pill is-active" type="button" data-theme-pill="black">Black</button>
-            <button class="w-pill" type="button" data-theme-pill="color">Color</button>
-          </div>
+  <div class="usecases-grid">
+    <article class="usecase-item">
+      <img src="./assets/img/ph_16x9.png" alt="Project 01" />
+      <p>Кейс / клип / реклама — заменишь на свой контент</p>
+    </article>
+    <article class="usecase-item">
+      <img src="./assets/img/ph_16x9.png" alt="Project 02" />
+      <p>Кейс / клип / реклама — заменишь на свой контент</p>
+    </article>
+    <article class="usecase-item">
+      <img src="./assets/img/ph_16x9.png" alt="Project 03" />
+      <p>Кейс / клип / реклама — заменишь на свой контент</p>
+    </article>
+    <article class="usecase-item">
+      <img src="./assets/img/ph_16x9.png" alt="Project 04" />
+      <p>Кейс / клип / реклама — заменишь на свой контент</p>
+    </article>
+  </div>
+</section>
 
-          <div class="w-hero__meta">Москва • Съёмка / Монтаж / Цвет / Звук / Графика</div>
-        </div>
-
-        <!-- TV stage (IDs must stay for tv_hero.js) -->
-        <div class="w-tv" aria-label="TV showreel">
-          <div class="w-tv__pad" aria-hidden="true"></div>
-          <div class="w-tv__stage" data-tv-hero>
-            <canvas id="tvHeroCanvas"></canvas>
-            <video class="tvfly__hiddenVideo" id="tvHeroVideo" loop muted playsinline preload="auto" webkit-playsinline>
-              <source src="./assets/ui/showreel_2.mp4" type="video/mp4"/>
-            </video>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 1 (ref-like headline + thumbs) -->
-    <section class="w-section" id="projects" aria-label="Projects">
-      <header class="w-head">
-        <div>
-          <div class="w-kicker">Projects</div>
-          <h2 class="w-title">Playful set.<br/>Clean delivery.</h2>
-        </div>
-        <p class="w-sub">Тут будет твоя подборка кейсов. Пока — заглушки. Заменишь картинки и названия, а сетка/ритм останется как в рефе.</p>
-      </header>
-
-      <div class="w-grid" aria-label="Project grid">
-        <article class="w-card w-feature">
-          <img class="w-media" src="./assets/img/ph_01.png" alt="Project placeholder" loading="lazy"/>
-          <div class="w-card__inner">
-            <h3 class="w-card__title">GAC — case</h3>
-            <p class="w-card__text">Эфир / презентация / продюссинг.</p>
-          </div>
-        </article>
-        <article class="w-card w-feature">
-          <img class="w-media" src="./assets/img/ph_02.png" alt="Project placeholder" loading="lazy"/>
-          <div class="w-card__inner">
-            <h3 class="w-card__title">Tenderness — music</h3>
-            <p class="w-card__text">Клип / съёмка / пост‑прод.</p>
-          </div>
-        </article>
-        <article class="w-card w-feature">
-          <img class="w-media" src="./assets/img/ph_03.png" alt="Project placeholder" loading="lazy"/>
-          <div class="w-card__inner">
-            <h3 class="w-card__title">Project 03 — ad</h3>
-            <p class="w-card__text">Реклама / короткий формат.</p>
-          </div>
-        </article>
-
-        <article class="w-card w-feature--wide">
-          <img class="w-media" src="./assets/img/ph_04.png" alt="Project placeholder" loading="lazy"/>
-          <div class="w-card__inner">
-            <h3 class="w-card__title">Hero case — big story</h3>
-            <p class="w-card__text">Широкий кейс в 16:9: тизер, ключевые кадры, версия под площадки.</p>
-          </div>
-        </article>
-        <article class="w-card w-feature">
-          <img class="w-media" src="./assets/img/ph_05.png" alt="Project placeholder" loading="lazy"/>
-          <div class="w-card__inner">
-            <h3 class="w-card__title">Project 05</h3>
-            <p class="w-card__text">Подборка кадров / монтаж.</p>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <!-- STATEMENT (ref-like typographic line) -->
-    <section class="w-section" aria-label="Statement">
-      <div class="w-statement">
-        <div class="w-statement__line">
-          instant flair with <span class="w-inline-pill">production</span>,
-          3D visuals that <span class="w-inline-pill">catch</span> the eye and keep <span class="w-inline-pill">engaged</span>.
-        </div>
-      </div>
-
-      <div class="w-list" aria-label="Use cases">
-        <span class="w-chip">Ads & marketing</span>
-        <span class="w-chip">Promo projects</span>
-        <span class="w-chip">Website launches</span>
-        <span class="w-chip">Social media</span>
-        <span class="w-chip">Music videos</span>
-      </div>
-    </section>
-
-    <!-- SERVICES (ref-like cards) -->
-    <section class="w-section w-section--beige" id="services" aria-label="Services">
-      <header class="w-head">
-        <div>
-          <div class="w-kicker">Services</div>
-          <h2 class="w-title">How about adding juiciness to your release?</h2>
-        </div>
-        <p class="w-sub w-muted">Тут — твои 3 ключевые услуги. Структура повторяет реф: коротко, по делу, с сильной подачей.</p>
-      </header>
-
-      <div class="w-grid">
-        <article class="w-card w-feature">
-          <img class="w-media" src="./assets/img/ph_06.png" alt="Service" loading="lazy"/>
-          <div class="w-card__inner">
-            <h3 class="w-card__title">Production</h3>
-            <p class="w-card__text">Съёмка, команда, свет, камера, контроль качества на площадке.</p>
-          </div>
-        </article>
-        <article class="w-card w-feature">
-          <img class="w-media" src="./assets/img/ph_02.png" alt="Service" loading="lazy"/>
-          <div class="w-card__inner">
-            <h3 class="w-card__title">Post‑production</h3>
-            <p class="w-card__text">Монтаж, цвет, звук, графика. Адаптации под площадки.</p>
-          </div>
-        </article>
-        <article class="w-card w-feature">
-          <img class="w-media" src="./assets/img/ph_03.png" alt="Service" loading="lazy"/>
-          <div class="w-card__inner">
-            <h3 class="w-card__title">Packaging</h3>
-            <p class="w-card__text">Лендинги/кейсы/презентации — чтобы работа выглядела как продукт.</p>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <!-- PROCESS -->
-    <section class="w-section" id="process" aria-label="Process">
-      <header class="w-head">
-        <div>
-          <div class="w-kicker">Process</div>
-          <h2 class="w-title">Fast + clean pipeline</h2>
-        </div>
-        <p class="w-sub">Как на рефе: один понятный блок, без дублирования. Текст потом заменишь.</p>
-      </header>
-
-      <div class="w-grid">
-        <article class="w-card w-feature">
-          <div class="w-card__inner">
-            <h3 class="w-card__title">01 — Pre‑production</h3>
-            <p class="w-card__text">Бриф, режиссёрская разработка, смета, календарь, кастинг, локации.</p>
-          </div>
-        </article>
-        <article class="w-card w-feature">
-          <div class="w-card__inner">
-            <h3 class="w-card__title">02 — Production</h3>
-            <p class="w-card__text">Съёмка: камера/свет/арт, режиссура, продюсирование, контроль качества.</p>
-          </div>
-        </article>
-        <article class="w-card w-feature">
-          <div class="w-card__inner">
-            <h3 class="w-card__title">03 — Post</h3>
-            <p class="w-card__text">Монтаж, цвет, звук, графика. Выдача версий под площадки + мастер‑файлы.</p>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <!-- PRICING -->
-    <section class="w-section" id="pricing" aria-label="Pricing">
-      <header class="w-head">
-        <div>
-          <div class="w-kicker">Стоимость</div>
-          <h2 class="w-title">Понятные ориентиры</h2>
-        </div>
-        <p class="w-sub">Цены — примерные вилки. Уточним после брифа.</p>
-      </header>
-
-      <div class="w-grid">
-        <article class="w-card w-price">
-          <div class="w-card__inner">
-            <h3 class="w-card__title">Старт</h3>
-            <div class="w-price__money">от 50 000</div>
-            <ul>
-              <li>короткий ролик / контент</li>
-              <li>1 смена или half‑day</li>
-              <li>монтаж + базовый цвет</li>
-            </ul>
-          </div>
-        </article>
-        <article class="w-card w-price">
-          <div class="w-card__inner">
-            <h3 class="w-card__title">Стандарт</h3>
-            <div class="w-price__money">от 150 000</div>
-            <ul>
-              <li>концепт + препродакшн</li>
-              <li>команда / свет / локации</li>
-              <li>пост: цвет + звук</li>
-            </ul>
-          </div>
-        </article>
-        <article class="w-card w-price">
-          <div class="w-card__inner">
-            <h3 class="w-card__title">Кампания</h3>
-            <div class="w-price__money">от 300 000</div>
-            <ul>
-              <li>режиссёрская разработка</li>
-              <li>съёмка 1–3 дня</li>
-              <li>графика, адаптации</li>
-            </ul>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <!-- CONTACT -->
-    <section class="w-section" id="contact" aria-label="Contact">
-      <header class="w-head">
-        <div>
-          <div class="w-kicker">Contact</div>
-          <h2 class="w-title">Оставь заявку</h2>
-        </div>
-        <p class="w-sub">Опиши задачу — мы предложим формат, сроки и вилку бюджета.</p>
-      </header>
-
-      <div class="w-grid">
-        <article class="w-card w-feature--wide">
-          <div class="w-card__inner">
-            <form class="w-form" action="#" method="post" onsubmit="return false;">
-              <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                <label>
-                  <div style="font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.55); margin-bottom:8px;">Имя</div>
-                  <input style="width:100%; height:44px; border-radius:12px; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.04); color:inherit; padding:0 12px;"/>
-                </label>
-                <label>
-                  <div style="font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.55); margin-bottom:8px;">Контакт</div>
-                  <input style="width:100%; height:44px; border-radius:12px; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.04); color:inherit; padding:0 12px;"/>
-                </label>
-              </div>
-              <label style="display:block; margin-top: 12px;">
-                <div style="font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.55); margin-bottom:8px;">Задача</div>
-                <textarea rows="4" style="width:100%; border-radius:12px; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.04); color:inherit; padding:12px;"></textarea>
-              </label>
-              <div style="display:flex; gap: 10px; flex-wrap:wrap; margin-top: 14px;">
-                <button class="w-btn w-btn--cta" type="submit">Отправить</button>
-                <a class="w-btn" href="./brief/">Перейти к брифу</a>
-              </div>
-              <div style="margin-top: 10px; color:rgba(255,255,255,.55); font-size: 13px;">Email: <a href="mailto:hello@individnistudio.ru">hello@individnistudio.ru</a></div>
-            </form>
-          </div>
-        </article>
-
-        <article class="w-card w-feature">
-          <div class="w-card__inner">
-            <h3 class="w-card__title">География</h3>
-            <p class="w-card__text">Москва / выездные съёмки</p>
-            <div style="height:14px"></div>
-            <h3 class="w-card__title">Ссылки</h3>
-            <p class="w-card__text"><a href="#top">Наверх ↑</a></p>
-          </div>
-        </article>
-      </div>
-
-    </section>
-
-  </main>
-
-  <footer class="w-footer">
-    <div class="w-footer__inner">
-      <div>
-        <div class="w-mark" aria-hidden="true">IND</div>
-        <div class="w-footer__small">© INDIVIDNI — studio</div>
-      </div>
-      <div class="w-footer__small">hello@individnistudio.ru</div>
+<!-- FEATURE (ref "great") -->
+<section class="great-section" aria-label="Для кого">
+  <img class="great-img" src="./assets/img/ph_16x9.png" alt="BTS / frame" />
+  <div class="great-info">
+    <div class="use-tags">
+      <span class="use-tag">Commercials</span>
+      <span class="use-tag">Music videos</span>
+      <span class="use-tag">Brand content</span>
+      <span class="use-tag">Social</span>
     </div>
-  </footer>
 
-  <!-- Showreel modal -->
-  <div class="w-modal" data-showreel-modal style="position:fixed; inset:0; display:none; place-items:center; background:rgba(0,0,0,.72); z-index:9999;">
-    <div style="width:min(980px, calc(100% - 24px)); border-radius:24px; overflow:hidden; border:1px solid rgba(255,255,255,.14); background:#000; position:relative;">
-      <button data-close class="w-btn" style="position:absolute; top:12px; right:12px; z-index:3;">Закрыть</button>
-      <video data-showreel-video controls playsinline style="width:100%; height:auto; display:block; background:#000;"></video>
+    <h2>Fast, controlled, cinematic</h2>
+    <p>Понятный процесс, прозрачные этапы и аккуратный визуал. Подготовка, съёмка, пост — всё в одной команде.</p>
+  </div>
+</section>
+
+<!-- VIDEO -->
+<section class="video-section" aria-label="Showreel">
+  <div class="video-wrap">
+    <video autoplay muted loop playsinline>
+      <source src="./assets/ui/showreel_2.mp4" type="video/mp4" />
+    </video>
+  </div>
+</section>
+
+<!-- GALLERY (ref "collection") -->
+<section class="collection" aria-label="Stills">
+  <div class="collection-header">
+    <div>
+      <p style="font-family:var(--font-head);font-size:14px;font-weight:700;opacity:.5;margin-bottom:4px;">Frames / stills</p>
+      <h2>Gallery</h2>
+    </div>
+
+    <div class="color-tabs">
+      <button class="color-tab active" type="button" onclick="switchTab(this,'color')">Color</button>
+      <button class="color-tab" type="button" onclick="switchTab(this,'black')">Black</button>
     </div>
   </div>
 
-  <!-- libs for TV (keep versions) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://unpkg.com/three@0.128.0/examples/js/loaders/FBXLoader.js"></script>
+  <div class="grid" id="letterGrid"></div>
+</section>
 
-  <script defer src="./assets/js/tv_hero.js"></script>
-  <script defer src="./assets/js/landing_wannathis.js"></script>
+<!-- BRIEF / PRICING (ref "download") -->
+<section class="download" id="download" aria-label="Brief">
+  <div class="dl-card">
+    <h3>Brief in 2 minutes</h3>
+    <ul>
+      <li>Цель и формат</li>
+      <li>Референсы и стиль</li>
+      <li>Сроки и бюджет</li>
+      <li>Город и локации</li>
+      <li>Контакты</li>
+    </ul>
+    <a class="btn-buy" href="./brief.html">Открыть бриф</a>
+    <p class="sub">Если страницы brief.html нет — просто создай позже. Сейчас это кнопка‑заглушка.</p>
+  </div>
 
-  <script>
-    // toggle modal visibility without touching main JS
-    (function(){
-      const m = document.querySelector('[data-showreel-modal]');
-      if(!m) return;
-      const obs = new MutationObserver(() => {
-        m.style.display = m.classList.contains('is-open') ? 'grid' : 'none';
-      });
-      obs.observe(m, { attributes:true, attributeFilter:['class'] });
-    })();
-  </script>
+  <div class="dl-card" style="background:var(--dark);color:#fff;">
+    <h3 style="color:#fff;">Contact</h3>
+    <p style="font-size:14px;opacity:.7;margin-bottom:20px;line-height:1.6;">Напиши задачу — быстро вернусь с вопросами и предложением по продакшену.</p>
+    <a class="btn-buy" href="mailto:hello@individnistudio.ru" style="background:#fff;color:var(--dark);">hello@individnistudio.ru</a>
+  </div>
+</section>
 
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="brand-logo">INDIVIDNI</div>
+      <p>© <span id="year"></span> All Rights Reserved</p>
+    </div>
+
+    <div class="footer-col">
+      <h4>Menu</h4>
+      <a href="#projects">Projects</a>
+      <a href="#download">Brief</a>
+      <a href="#top">Top</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>Info</h4>
+      <a href="mailto:hello@individnistudio.ru">Email</a>
+      <a href="https://www.instagram.com/" target="_blank" rel="noreferrer">Instagram</a>
+      <a href="https://www.behance.net/" target="_blank" rel="noreferrer">Behance</a>
+    </div>
+  </div>
+
+  <div class="footer-bottom">INDIVIDNI Studio</div>
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <span class="lb-close" data-lb-close>×</span>
+  <img id="lbImg" src="" alt="" />
+</div>
+
+<!-- TV dependencies (do not remove if you keep TV) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/fflate@0.7.4/umd/index.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/loaders/FBXLoader.js"></script>
+
+<!-- TV code (keep unchanged) -->
+<script src="./assets/js/tv_hero.js"></script>
+
+<!-- Landing JS -->
+<script src="./assets/js/landing_ref.js"></script>
 </body>
 </html>
