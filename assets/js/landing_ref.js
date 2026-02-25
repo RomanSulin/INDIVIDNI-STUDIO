@@ -1,38 +1,98 @@
 (() => {
-  // mobile nav
-  const nav = document.querySelector('nav');
-  const navToggle = document.querySelector('[data-nav-toggle]');
-  const navDrawer = document.querySelector('[data-nav-drawer]');
-  if (nav && navToggle && navDrawer) {
-    const close = () => nav.classList.remove('is-open');
-    navToggle.addEventListener('click', (e) => {
-      e.preventDefault();
-      nav.classList.toggle('is-open');
+  const $ = (sel, root = document) => root.querySelector(sel);
+  const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+
+  // ── Banner close
+  const closeBtn = $('[data-close-banner]');
+  const banner = document.getElementById('proBanner');
+  if (closeBtn && banner) {
+    closeBtn.addEventListener('click', () => (banner.style.display = 'none'));
+  }
+
+  // ── Mobile nav
+  const navToggle = $('[data-nav-toggle]');
+  const navDrawer = $('[data-nav-drawer]');
+  if (navToggle && navDrawer) {
+    const close = () => {
+      navDrawer.classList.remove('open');
+      navToggle.classList.remove('open');
+      document.documentElement.classList.remove('nav-open');
+    };
+
+    navToggle.addEventListener('click', () => {
+      const isOpen = !navDrawer.classList.contains('open');
+      navDrawer.classList.toggle('open', isOpen);
+      navToggle.classList.toggle('open', isOpen);
+      document.documentElement.classList.toggle('nav-open', isOpen);
     });
-    navDrawer.querySelectorAll('a').forEach((a) => a.addEventListener('click', close));
-    document.addEventListener('click', (e) => {
-      if (!nav.classList.contains('is-open')) return;
-      if (nav.contains(e.target)) return;
-      close();
-    });
+
+    $$('a', navDrawer).forEach((a) => a.addEventListener('click', close));
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') close();
     });
   }
 
-  // banner close
-  const closeBtn = document.querySelector('[data-close-banner]');
-  const banner = document.getElementById('proBanner');
-  if (closeBtn && banner) closeBtn.addEventListener('click', () => (banner.style.display = 'none'));
-
-  // year
+  // ── Year
   const y = document.getElementById('year');
   if (y) y.textContent = new Date().getFullYear();
 
-  // lightbox
+  // ── Projects split: change right-half background to pure color on hover/focus
+  const splitRight = $('[data-project-chooser]');
+  if (splitRight) {
+    const items = $$('[data-color]', splitRight);
+
+    const parseHex = (hex) => {
+      if (!hex) return null;
+      const h = hex.trim().replace('#', '');
+      if (h.length !== 6) return null;
+      const r = parseInt(h.slice(0, 2), 16);
+      const g = parseInt(h.slice(2, 4), 16);
+      const b = parseInt(h.slice(4, 6), 16);
+      if ([r, g, b].some((v) => Number.isNaN(v))) return null;
+      return { r, g, b };
+    };
+
+    // WCAG-ish luminance to decide text color
+    const idealText = (hex) => {
+      const rgb = parseHex(hex);
+      if (!rgb) return '#fff';
+      const srgb = [rgb.r, rgb.g, rgb.b].map((v) => {
+        const x = v / 255;
+        return x <= 0.04045 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4);
+      });
+      const L = 0.2126 * srgb[0] + 0.7152 * srgb[1] + 0.0722 * srgb[2];
+      return L > 0.55 ? '#000' : '#fff';
+    };
+
+    const setBg = (hex) => {
+      splitRight.style.setProperty('--split-bg', hex);
+      splitRight.style.setProperty('--split-fg', idealText(hex));
+    };
+
+    const resetBg = () => {
+      splitRight.style.removeProperty('--split-bg');
+      splitRight.style.removeProperty('--split-fg');
+    };
+
+    items.forEach((el) => {
+      const c = el.getAttribute('data-color');
+      if (!c) return;
+      el.addEventListener('pointerenter', () => setBg(c));
+      el.addEventListener('focus', () => setBg(c));
+    });
+
+    splitRight.addEventListener('pointerleave', resetBg);
+    splitRight.addEventListener('focusout', (e) => {
+      // reset when focus leaves the whole right panel
+      const next = e.relatedTarget;
+      if (!next || !splitRight.contains(next)) resetBg();
+    });
+  }
+
+  // ── Lightbox
   const lb = document.getElementById('lightbox');
   const lbImg = document.getElementById('lbImg');
-  const lbClose = document.querySelector('[data-lb-close]');
+  const lbClose = $('[data-lb-close]');
 
   const openLightbox = (src) => {
     if (!lb || !lbImg) return;
@@ -45,40 +105,23 @@
     lb.classList.remove('open');
   };
 
-  if (lbClose) lbClose.addEventListener('click', (e) => { e.stopPropagation(); closeLightbox(); });
-  if (lb) lb.addEventListener('click', (e) => { if (e.target === lb) closeLightbox(); });
+  if (lbClose) lbClose.addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeLightbox();
+  });
+
+  if (lb) lb.addEventListener('click', (e) => {
+    if (e.target === lb) closeLightbox();
+  });
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeLightbox();
   });
 
-  // projects split hover background (solid colors)
-  const chooser = document.querySelector('[data-project-chooser]');
-  if (chooser) {
-    const items = chooser.querySelectorAll('[data-color]');
-    const defaultBg = '#000';
-
-    const setBg = (v) => chooser.style.setProperty('--split-bg', v);
-    const reset = () => setBg(defaultBg);
-
-    // init
-    setBg(defaultBg);
-
-    items.forEach((item) => {
-      const c = item.getAttribute('data-color');
-      const apply = () => c && setBg(c);
-      item.addEventListener('mouseenter', apply);
-      item.addEventListener('focus', apply);
-      item.addEventListener('touchstart', apply, { passive: true });
-    });
-    chooser.addEventListener('mouseleave', reset);
-    chooser.addEventListener('blur', reset);
-  }
-
-  // collection items
+  // ── Collection grid
   const items = Array.from({ length: 40 }, (_, i) => ({ n: i + 1, alt: `Frame ${i + 1}` }));
   const grid = document.getElementById('letterGrid');
-  const previewIcon = './assets/png/sound.png'; // simple local icon
+  const previewIcon = './assets/png/sound.png';
 
   let currentTab = 'color';
 
@@ -99,14 +142,13 @@
     });
   }
 
-  // tab switching
+  // tab switching used by inline onclick
   window.switchTab = (btn, tab) => {
-    document.querySelectorAll('.color-tab').forEach((b) => b.classList.remove('active'));
+    $$('.color-tab').forEach((b) => b.classList.remove('active'));
     btn.classList.add('active');
     currentTab = tab;
     buildGrid(tab);
   };
 
-  // init
   buildGrid(currentTab);
 })();
