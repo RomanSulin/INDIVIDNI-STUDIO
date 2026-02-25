@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <!-- Landing styles (ref-based) -->
-  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=1" />
+  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=2" />
 </head>
 <body>
 
@@ -27,15 +27,39 @@
   <div class="nav-left">
     <a class="nav-brand" href="#top">INDIVIDNI</a>
     <span class="nav-by">studio</span>
+    <div class="nav-links" aria-label="Меню">
+      <a href="#projects">Projects</a>
+      <a href="#services">Services</a>
+      <a href="#process">Process</a>
+      <a href="#download">Brief</a>
+      <a href="#contact">Contact</a>
+    </div>
   </div>
   <div class="nav-right">
     <span class="nav-tag">Video production</span>
     <a class="btn-dl" href="#projects">Проекты</a>
+    <button class="nav-toggle" type="button" aria-label="Открыть меню" data-nav-toggle>
+      <span></span><span></span>
+    </button>
+  </div>
+
+  <!-- Mobile menu -->
+  <div class="nav-drawer" data-nav-drawer>
+    <a href="#projects">Projects</a>
+    <a href="#services">Services</a>
+    <a href="#process">Process</a>
+    <a href="#download">Brief</a>
+    <a href="#contact">Contact</a>
   </div>
 </nav>
 
 <!-- HERO -->
 <section class="hero" id="top">
+  <div class="hero-brand" aria-label="Brand heading">
+    <div class="hero-brand__small">studio</div>
+    <div class="hero-brand__big">INDIVIDNI</div>
+  </div>
+
   <div class="hero-media">
     <!-- TV (code stays; layout around it is new) -->
     <div class="hero-tv-stage" data-tv-hero aria-label="3D TV hero">
@@ -50,8 +74,67 @@
   <p class="hero-sub">Реклама, клипы, бренд‑контент. От идеи до финального мастер‑файла. Ниже — работы и быстрый бриф.</p>
 </section>
 
+<!-- PROJECTS — full-width split (no slider) -->
+<section class="split-projects" id="projects" aria-label="Проекты">
+  <div class="split-projects__inner">
+    <div class="split-left">
+      <div class="split-kicker">Projects</div>
+      <h2 class="split-title">Selected works</h2>
+      <p class="split-text">Короткая витрина проектов. Наведи на кейс справа — и фон станет ярким цветом. Фото позже заменим на реальные.</p>
+      <div class="split-meta">
+        <span>Commercial</span>
+        <span>Music</span>
+        <span>Brand</span>
+        <span>Social</span>
+      </div>
+    </div>
+
+    <div class="split-right" data-project-chooser>
+      <a class="proj-item" href="#" data-color="#0066FF">
+        <div class="proj-thumb"><img src="./assets/img/ph_16x9.png" alt="Project 01" /></div>
+        <div class="proj-info">
+          <div class="proj-title">Project 01</div>
+          <div class="proj-sub">Commercial • 2025</div>
+        </div>
+      </a>
+
+      <a class="proj-item" href="#" data-color="#FFD400">
+        <div class="proj-thumb"><img src="./assets/img/ph_16x9.png" alt="Project 02" /></div>
+        <div class="proj-info">
+          <div class="proj-title">Project 02</div>
+          <div class="proj-sub">Music video • 2025</div>
+        </div>
+      </a>
+
+      <a class="proj-item proj-item--wide" href="#" data-color="#FF2B2B">
+        <div class="proj-thumb"><img src="./assets/img/ph_16x9.png" alt="Project 03" /></div>
+        <div class="proj-info">
+          <div class="proj-title">Project 03</div>
+          <div class="proj-sub">Brand content • 2024</div>
+        </div>
+      </a>
+
+      <a class="proj-item" href="#" data-color="#20E070">
+        <div class="proj-thumb"><img src="./assets/img/ph_16x9.png" alt="Project 04" /></div>
+        <div class="proj-info">
+          <div class="proj-title">Project 04</div>
+          <div class="proj-sub">Social • 2024</div>
+        </div>
+      </a>
+
+      <a class="proj-item" href="#" data-color="#FF2BD6">
+        <div class="proj-thumb"><img src="./assets/img/ph_16x9.png" alt="Project 05" /></div>
+        <div class="proj-info">
+          <div class="proj-title">Project 05</div>
+          <div class="proj-sub">Documentary • 2023</div>
+        </div>
+      </a>
+</div>
+  </div>
+</section>
+
 <!-- SERVICES (ref "colors") -->
-<section class="section section--tight">
+<section class="section section--tight" id="services">
   <div class="cards-2">
     <div class="card">
       <div class="tag">
@@ -90,32 +173,8 @@
 
 <p class="headline-h2">instant impact with <span style="color:var(--accent)">bold</span> visuals that <span style="color:var(--accent)">catch</span> the eye</p>
 
-<!-- PROJECTS (ref "usecases") -->
-<section class="usecases" id="projects" aria-label="Проекты">
-  <h3>Selected works</h3>
-
-  <div class="usecases-grid">
-    <article class="usecase-item">
-      <img src="./assets/img/ph_16x9.png" alt="Project 01" />
-      <p>Кейс / клип / реклама — заменишь на свой контент</p>
-    </article>
-    <article class="usecase-item">
-      <img src="./assets/img/ph_16x9.png" alt="Project 02" />
-      <p>Кейс / клип / реклама — заменишь на свой контент</p>
-    </article>
-    <article class="usecase-item">
-      <img src="./assets/img/ph_16x9.png" alt="Project 03" />
-      <p>Кейс / клип / реклама — заменишь на свой контент</p>
-    </article>
-    <article class="usecase-item">
-      <img src="./assets/img/ph_16x9.png" alt="Project 04" />
-      <p>Кейс / клип / реклама — заменишь на свой контент</p>
-    </article>
-  </div>
-</section>
-
 <!-- FEATURE (ref "great") -->
-<section class="great-section" aria-label="Для кого">
+<section class="great-section" id="process" aria-label="Процесс">
   <img class="great-img" src="./assets/img/ph_16x9.png" alt="BTS / frame" />
   <div class="great-info">
     <div class="use-tags">
@@ -138,6 +197,9 @@
     </video>
   </div>
 </section>
+
+<!-- CONTACT anchor helper -->
+<div id="contact" aria-hidden="true" style="height:1px;"></div>
 
 <!-- GALLERY (ref "collection") -->
 <section class="collection" aria-label="Stills">
