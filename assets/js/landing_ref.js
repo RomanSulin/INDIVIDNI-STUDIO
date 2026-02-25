@@ -1,145 +1,97 @@
+/* landing_ref.js — v13 patch: services videos + FAQ exclusive + style overrides */
 (() => {
-  const $ = (sel, root = document) => root.querySelector(sel);
-  const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+  const OVERRIDE_CSS = "\n/* ==== V13 overrides ==== */\n\n/* Projects split: right side white, no color hover backgrounds */\n.projects-split .split-right,\n.projects-split .projects-right{\n  background:#fff !important;\n}\n.projects-split .split-left,\n.projects-split .projects-left{\n  background:#000 !important;\n}\n.projects-split .project-card,\n.projects-split .projects-grid a,\n.projects-split .projects-grid .project-item{\n  border:0 !important;\n  outline:0 !important;\n  box-shadow:none !important;\n  border-radius:16px !important;\n  overflow:hidden !important;\n  transform: translateZ(0);\n}\n.projects-split .project-card:hover,\n.projects-split .projects-grid a:hover,\n.projects-split .projects-grid .project-item:hover{\n  transform: translateY(-6px) !important;\n  box-shadow: 0 18px 50px rgba(0,0,0,.18) !important;\n}\n.projects-split .project-title,\n.projects-split .project-meta,\n.projects-split .project-name{\n  background: transparent !important;\n  color:#fff !important;\n  text-shadow: 0 2px 18px rgba(0,0,0,.55) !important;\n}\n.projects-split [data-color],\n.projects-split .project-card[data-color]{\n  background: transparent !important;\n}\n.projects-split .projects-more,\n.projects-split .projects-more a,\n.projects-split .projects-more-btn{\n  color:#fff !important;\n  border:0 !important;\n  background: transparent !important;\n}\n\n/* WHO section: more padding + signature-like scribble */\n.section-who,\n.who-section{\n  padding-top: clamp(110px, 12vh, 180px) !important;\n  padding-bottom: clamp(110px, 12vh, 180px) !important;\n}\n.who-scribble,\n.who-marker,\n.who-sign{\n  font-family: \"Rock Salt\", \"Cedarville Cursive\", \"Permanent Marker\", cursive !important;\n  color:#29ff6a !important;\n  background: transparent !important;\n  padding:0 !important;\n  display:inline-block;\n  transform: rotate(-3deg);\n  letter-spacing: .02em;\n}\n\n/* Services: more top padding, videos behave as media */\n.section-services,\n.services-section{\n  padding-top: clamp(120px, 14vh, 190px) !important;\n}\n.service-card .media,\n.service-card .service-media{\n  aspect-ratio: 3 / 4;\n  border-radius: 22px !important;\n  overflow:hidden;\n  background:#0b0b0f;\n}\n.service-card video{\n  width:100%;\n  height:100%;\n  object-fit: cover;\n  display:block;\n}\n.service-card .label,\n.service-card .service-title{\n  background: transparent !important;\n  color:#fff !important;\n  text-shadow: 0 2px 18px rgba(0,0,0,.55) !important;\n}\n\n/* CTA: more padding */\n.section-cta,\n.cta-section{\n  padding-top: clamp(90px, 10vh, 140px) !important;\n  padding-bottom: clamp(90px, 10vh, 140px) !important;\n  background:#000 !important;\n}\n\n/* Process cards: 3x2, 3:4, airy, only slight lift on hover */\n.section-process,\n.process-section{\n  padding-top: clamp(80px, 9vh, 120px) !important;\n  padding-bottom: clamp(90px, 10vh, 140px) !important;\n}\n.process-grid{\n  display:grid !important;\n  grid-template-columns: repeat(3, minmax(0,1fr)) !important;\n  gap: clamp(14px, 1.6vw, 22px) !important;\n}\n@media (max-width: 980px){\n  .process-grid{ grid-template-columns: repeat(2, minmax(0,1fr)) !important; }\n}\n@media (max-width: 640px){\n  .process-grid{ grid-template-columns: 1fr !important; }\n}\n.process-card{\n  aspect-ratio: 3 / 4 !important;\n  border-radius: 26px !important;\n  background: rgba(255,255,255,.06) !important;\n  border: 1px solid rgba(255,255,255,.10) !important;\n  box-shadow: 0 24px 70px rgba(0,0,0,.28) !important;\n  backdrop-filter: blur(10px);\n  overflow:hidden;\n  transition: transform .25s ease, box-shadow .25s ease;\n}\n.process-card:hover{\n  transform: translateY(-6px);\n  box-shadow: 0 32px 90px rgba(0,0,0,.36) !important;\n}\n.process-card .desc,\n.process-card .process-desc{\n  text-align:center !important;\n  opacity:.92;\n}\n\n/* FAQ: will be controlled by JS (only one open) */\n.faq details{ border-radius: 16px; overflow:hidden; }\n";
 
-  // ── Banner close
-  const closeBtn = $('[data-close-banner]');
-  const banner = document.getElementById('proBanner');
-  if (closeBtn && banner) {
-    closeBtn.addEventListener('click', () => (banner.style.display = 'none'));
+  function injectOverrides(){
+    if (document.getElementById('v13-overrides')) return;
+    // load handwritten font
+    const gf = document.createElement('link');
+    gf.rel = 'stylesheet';
+    gf.href = 'https://fonts.googleapis.com/css2?family=Rock+Salt&display=swap';
+    document.head.appendChild(gf);
+
+    const style = document.createElement('style');
+    style.id = 'v13-overrides';
+    style.textContent = OVERRIDE_CSS;
+    document.head.appendChild(style);
   }
 
-  // ── Mobile nav
-  const nav = $('nav');
-  const navToggle = $('[data-nav-toggle]');
-  const navDrawer = $('[data-nav-drawer]');
-  if (nav && navToggle && navDrawer) {
-    const close = () => {
-      nav.classList.remove('is-open');
-      document.documentElement.classList.remove('nav-open');
-    };
-
-    navToggle.addEventListener('click', () => {
-      const isOpen = !nav.classList.contains('is-open');
-      nav.classList.toggle('is-open', isOpen);
-      document.documentElement.classList.toggle('nav-open', isOpen);
-    });
-
-    $$('a', navDrawer).forEach((a) => a.addEventListener('click', close));
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') close();
-    });
-  }
-
-  // ── Year
-  const y = document.getElementById('year');
-  if (y) y.textContent = new Date().getFullYear();
-
-  // ── Projects split: change right-half background to pure color on hover/focus
-  const splitRight = $('[data-project-chooser]');
-  if (splitRight) {
-    const items = $$('[data-color]', splitRight);
-    const DEFAULT = '#005BFF'; // стартовый синий
-
-    const setBg = (hex) => {
-      if (!hex) return;
-      splitRight.style.setProperty('--split-bg', hex);
-      splitRight.style.setProperty('--split-fg', '#fff'); // всегда белый текст
-    };
-
-    const resetBg = () => setBg(DEFAULT);
-
-    // init
-    resetBg();
-
-    items.forEach((el) => {
-      const c = el.getAttribute('data-color');
-      if (!c) return;
-      el.addEventListener('pointerenter', () => setBg(c));
-      el.addEventListener('focus', () => setBg(c));
-    });
-
-    splitRight.addEventListener('pointerleave', resetBg);
-    splitRight.addEventListener('focusout', (e) => {
-      const next = e.relatedTarget;
-      if (!next || !splitRight.contains(next)) resetBg();
-    });
-  }
-
-  // ── FAQ: keep one open at a time
-  const faq = $('[data-faq]');
-  if (faq) {
-    const details = $$('details', faq);
-    details.forEach((d) => {
+  function setupFaqExclusive(){
+    const details = Array.from(document.querySelectorAll('.faq details, .faq-accordion details'));
+    if (!details.length) return;
+    details.forEach(d => {
       d.addEventListener('toggle', () => {
         if (!d.open) return;
-        details.forEach((other) => {
-          if (other !== d) other.open = false;
+        details.forEach(o => {
+          if (o !== d) o.open = false;
         });
       });
     });
   }
 
-  // ── Lightbox
-  const lb = document.getElementById('lightbox');
-  const lbImg = document.getElementById('lbImg');
-  const lbClose = $('[data-lb-close]');
+  function mapServiceToVideo(title){
+    const t = (title || '').toLowerCase();
+    // Russian + English fallbacks
+    if (t.includes('съём') || t.includes('съем') || t.includes('shoot')) return './assets/services/video/shooting.mov';
+    if (t.includes('монтаж') || t.includes('edit')) return './assets/services/video/editing.mov';
+    if (t.includes('цвет') || t.includes('color')) return './assets/services/video/sound.mov'; // swapped
+    if (t.includes('фото') || t.includes('photo')) return './assets/services/video/photo.mov';
+    if (t.includes('ai') || t.includes('график') || t.includes('graphic')) return './assets/services/video/AI.mov';
+    return null;
+  }
 
-  const openLightbox = (src) => {
-    if (!lb || !lbImg) return;
-    lbImg.src = src;
-    lb.classList.add('open');
-  };
+  function ensureServiceVideos(){
+    const cards = Array.from(document.querySelectorAll('.service-card, .services-card'));
+    if (!cards.length) return;
 
-  const closeLightbox = () => {
-    if (!lb) return;
-    lb.classList.remove('open');
-  };
+    cards.forEach(card => {
+      const titleEl = card.querySelector('.service-title, .label, h3, h4');
+      const title = titleEl ? titleEl.textContent.trim() : '';
+      const src = mapServiceToVideo(title);
+      if (!src) return;
 
-  if (lbClose) lbClose.addEventListener('click', (e) => {
-    e.stopPropagation();
-    closeLightbox();
-  });
+      // Find media container
+      const media = card.querySelector('.service-media, .media, .thumb, .cover') || card;
+      // If there's already a video, just ensure playback
+      let vid = card.querySelector('video');
+      if (!vid){
+        // remove image if present
+        const img = media.querySelector('img');
+        if (img) img.remove();
 
-  if (lb) lb.addEventListener('click', (e) => {
-    if (e.target === lb) closeLightbox();
-  });
+        vid = document.createElement('video');
+        vid.src = src;
+        vid.muted = true;
+        vid.loop = true;
+        vid.autoplay = true;
+        vid.playsInline = true;
+        vid.preload = 'metadata';
+        vid.setAttribute('playsinline','');
+        vid.setAttribute('webkit-playsinline','');
+        // ensure it fills container
+        vid.style.width = '100%';
+        vid.style.height = '100%';
+        vid.style.objectFit = 'cover';
+        media.prepend(vid);
+      }
 
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeLightbox();
-  });
-
-  // ── Collection grid
-  const items = Array.from({ length: 40 }, (_, i) => ({ n: i + 1, alt: `Frame ${i + 1}` }));
-  const grid = document.getElementById('letterGrid');
-  const previewIcon = './assets/png/sound.png';
-
-  let currentTab = 'color';
-
-  function buildGrid(tab) {
-    if (!grid) return;
-    grid.innerHTML = '';
-    items.forEach((item) => {
-      const src = './assets/img/ph_square.png';
-      const div = document.createElement('div');
-      div.className = 'grid-item';
-      if (tab === 'black') div.style.filter = 'grayscale(1) contrast(1.1)';
-      div.innerHTML = `
-        <img src="${src}" alt="${item.alt}" loading="lazy" />
-        <img class="ic-preview" src="${previewIcon}" alt="" />
-      `;
-      div.addEventListener('click', () => openLightbox(src));
-      grid.appendChild(div);
+      const tryPlay = () => {
+        const p = vid.play();
+        if (p && typeof p.catch === 'function') p.catch(()=>{});
+      };
+      vid.addEventListener('loadeddata', tryPlay, {once:true});
+      // play when user interacts (autoplay policies)
+      card.addEventListener('pointerenter', tryPlay);
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) tryPlay();
+      });
+      tryPlay();
     });
   }
 
-  // tab switching used by inline onclick
-  window.switchTab = (btn, tab) => {
-    $$('.color-tab').forEach((b) => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentTab = tab;
-    buildGrid(tab);
-  };
-
-  buildGrid(currentTab);
+  document.addEventListener('DOMContentLoaded', () => {
+    injectOverrides();
+    setupFaqExclusive();
+    ensureServiceVideos();
+  });
 })();
