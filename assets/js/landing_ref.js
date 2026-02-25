@@ -10,19 +10,18 @@
   }
 
   // ── Mobile nav
+  const nav = $('nav');
   const navToggle = $('[data-nav-toggle]');
   const navDrawer = $('[data-nav-drawer]');
-  if (navToggle && navDrawer) {
+  if (nav && navToggle && navDrawer) {
     const close = () => {
-      navDrawer.classList.remove('open');
-      navToggle.classList.remove('open');
+      nav.classList.remove('is-open');
       document.documentElement.classList.remove('nav-open');
     };
 
     navToggle.addEventListener('click', () => {
-      const isOpen = !navDrawer.classList.contains('open');
-      navDrawer.classList.toggle('open', isOpen);
-      navToggle.classList.toggle('open', isOpen);
+      const isOpen = !nav.classList.contains('is-open');
+      nav.classList.toggle('is-open', isOpen);
       document.documentElement.classList.toggle('nav-open', isOpen);
     });
 
@@ -40,39 +39,18 @@
   const splitRight = $('[data-project-chooser]');
   if (splitRight) {
     const items = $$('[data-color]', splitRight);
-
-    const parseHex = (hex) => {
-      if (!hex) return null;
-      const h = hex.trim().replace('#', '');
-      if (h.length !== 6) return null;
-      const r = parseInt(h.slice(0, 2), 16);
-      const g = parseInt(h.slice(2, 4), 16);
-      const b = parseInt(h.slice(4, 6), 16);
-      if ([r, g, b].some((v) => Number.isNaN(v))) return null;
-      return { r, g, b };
-    };
-
-    // WCAG-ish luminance to decide text color
-    const idealText = (hex) => {
-      const rgb = parseHex(hex);
-      if (!rgb) return '#fff';
-      const srgb = [rgb.r, rgb.g, rgb.b].map((v) => {
-        const x = v / 255;
-        return x <= 0.04045 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4);
-      });
-      const L = 0.2126 * srgb[0] + 0.7152 * srgb[1] + 0.0722 * srgb[2];
-      return L > 0.55 ? '#000' : '#fff';
-    };
+    const DEFAULT = '#005BFF'; // стартовый синий
 
     const setBg = (hex) => {
+      if (!hex) return;
       splitRight.style.setProperty('--split-bg', hex);
-      splitRight.style.setProperty('--split-fg', idealText(hex));
+      splitRight.style.setProperty('--split-fg', '#fff'); // всегда белый текст
     };
 
-    const resetBg = () => {
-      splitRight.style.removeProperty('--split-bg');
-      splitRight.style.removeProperty('--split-fg');
-    };
+    const resetBg = () => setBg(DEFAULT);
+
+    // init
+    resetBg();
 
     items.forEach((el) => {
       const c = el.getAttribute('data-color');
@@ -83,9 +61,64 @@
 
     splitRight.addEventListener('pointerleave', resetBg);
     splitRight.addEventListener('focusout', (e) => {
-      // reset when focus leaves the whole right panel
       const next = e.relatedTarget;
       if (!next || !splitRight.contains(next)) resetBg();
+    });
+  }
+
+  // ── Steps interactive
+  const stepsPanel = $('[data-steps]');
+  if (stepsPanel) {
+    const cards = $$('.step-card', stepsPanel);
+
+    const closeAll = () => {
+      stepsPanel.classList.remove('has-open');
+      cards.forEach((c) => c.classList.remove('is-open'));
+    };
+
+    const openCard = (card) => {
+      stepsPanel.classList.add('has-open');
+      cards.forEach((c) => c.classList.toggle('is-open', c === card));
+    };
+
+    cards.forEach((card) => {
+      const closeBtn = $('.step-x', card);
+
+      const toggle = () => {
+        if (card.classList.contains('is-open')) closeAll();
+        else openCard(card);
+      };
+
+      card.addEventListener('click', (e) => {
+        if (closeBtn && (e.target === closeBtn || closeBtn.contains(e.target))) {
+          e.stopPropagation();
+          closeAll();
+          return;
+        }
+        toggle();
+      });
+
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggle();
+        }
+        if (e.key === 'Escape') closeAll();
+      });
+
+      if (closeBtn) {
+        closeBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          closeAll();
+        });
+      }
+    });
+
+    // click outside closes
+    document.addEventListener('click', (e) => {
+      if (!stepsPanel.classList.contains('has-open')) return;
+      if (!stepsPanel.contains(e.target)) closeAll();
     });
   }
 
