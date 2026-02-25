@@ -8,10 +8,10 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <!-- Landing styles (ref-based) -->
-  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=9" />
+  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=10" />
 </head>
 <body>
 
@@ -137,6 +137,7 @@
 <!-- WHO (graphic title) -->
 <section class="who" id="who" aria-label="Кто мы">
   <div class="who-inner">
+    <div class="who-marker">кто мы</div>
     <h2 class="who-title" aria-label="Кто мы">
       <span>КТО</span>
       <span>МЫ</span>
@@ -324,79 +325,67 @@
   </div>
 </section>
 
-<!-- PROCESS — interactive steps -->
-<section class="steps" id="process" aria-label="Этапы создания видеоролика">
-  <div class="steps-inner">
-    <h2 class="steps-h">Этапы создания видеоролика</h2>
-    <p class="steps-sub">Небольшая интерактивная история: кликай на карточки — они раскрываются.</p>
+<!-- PROCESS — full-width splits -->
+<section class="process-splits" id="process" aria-label="Этапы создания видеоролика">
+  <div class="process-splits__head">
+    <h2 class="process-splits__title">Этапы создания видеоролика</h2>
+    <p class="process-splits__sub">Прозрачный процесс: от брифа и договора до финальных файлов. Нажми на этап — раскроем детали.</p>
+  </div>
 
-    <div class="steps-panel" data-steps>
-      <article class="step-card" tabindex="0" data-step="1">
-        <div class="step-head">
-          <div class="step-no">01</div>
-          <div class="step-title">Оценка проекта</div>
-          <button class="step-x" type="button" aria-label="Закрыть">×</button>
-        </div>
-        <div class="step-body">
-          Заполняем бриф, созваниваемся и уточняем задачу. Дальше предлагаем 1–3 концепции и план реализации.
-        </div>
-      </article>
+  <div class="process-splits__list" data-process>
+    <details class="pstep" open>
+      <summary class="pstep__sum">
+        <span class="pstep__no">01</span>
+        <span class="pstep__name">Оценка проекта</span>
+        <span class="pstep__hint">Подробнее</span>
+      </summary>
+      <div class="pstep__body">Заполняем бриф, созваниваемся и уточняем задачу. После — предлагаем концепции и формируем план реализации.</div>
+    </details>
 
-      <article class="step-card" tabindex="0" data-step="2">
-        <div class="step-head">
-          <div class="step-no">02</div>
-          <div class="step-title">Подписание договора</div>
-          <button class="step-x" type="button" aria-label="Закрыть">×</button>
-        </div>
-        <div class="step-body">
-          Фиксируем концепцию, сроки и смету, формируем ТЗ. Стартуем работу после согласования и подписания.
-        </div>
-      </article>
+    <details class="pstep">
+      <summary class="pstep__sum">
+        <span class="pstep__no">02</span>
+        <span class="pstep__name">Подписание договора</span>
+        <span class="pstep__hint">Подробнее</span>
+      </summary>
+      <div class="pstep__body">Фиксируем концепцию, сроки и смету, собираем техническое задание. Стартуем работу только после согласования.</div>
+    </details>
 
-      <article class="step-card" tabindex="0" data-step="3">
-        <div class="step-head">
-          <div class="step-no">03</div>
-          <div class="step-title">Препродакшн</div>
-          <button class="step-x" type="button" aria-label="Закрыть">×</button>
-        </div>
-        <div class="step-body">
-          Сценарий и раскадровка, локации и кастинг, команда и реквизит. Готовим съёмочный план и тайминг.
-        </div>
-      </article>
+    <details class="pstep">
+      <summary class="pstep__sum">
+        <span class="pstep__no">03</span>
+        <span class="pstep__name">Препродакшн</span>
+        <span class="pstep__hint">Подробнее</span>
+      </summary>
+      <div class="pstep__body">Сценарий, раскадровка, локации и кастинг. Подбираем команду и реквизит, собираем съёмочный план.</div>
+    </details>
 
-      <article class="step-card" tabindex="0" data-step="4">
-        <div class="step-head">
-          <div class="step-no">04</div>
-          <div class="step-title">Съёмки</div>
-          <button class="step-x" type="button" aria-label="Закрыть">×</button>
-        </div>
-        <div class="step-body">
-          Снимаем по утверждённому плану: режиссура, свет, камера, звук. Контролируем материал прямо на площадке.
-        </div>
-      </article>
+    <details class="pstep">
+      <summary class="pstep__sum">
+        <span class="pstep__no">04</span>
+        <span class="pstep__name">Съёмки</span>
+        <span class="pstep__hint">Подробнее</span>
+      </summary>
+      <div class="pstep__body">Снимаем по согласованному плану: режиссура, свет, камера, звук. Контролируем материал на площадке.</div>
+    </details>
 
-      <article class="step-card" tabindex="0" data-step="5">
-        <div class="step-head">
-          <div class="step-no">05</div>
-          <div class="step-title">Постпродакшн</div>
-          <button class="step-x" type="button" aria-label="Закрыть">×</button>
-        </div>
-        <div class="step-body">
-          Монтаж → цвет → графика → звук. Собираем финальные версии под нужные форматы и площадки.
-        </div>
-      </article>
+    <details class="pstep">
+      <summary class="pstep__sum">
+        <span class="pstep__no">05</span>
+        <span class="pstep__name">Постпродакшн</span>
+        <span class="pstep__hint">Подробнее</span>
+      </summary>
+      <div class="pstep__body">Монтаж, цвет, графика и звук. Делаем версии под форматы и площадки, собираем финальный мастер.</div>
+    </details>
 
-      <article class="step-card" tabindex="0" data-step="6">
-        <div class="step-head">
-          <div class="step-no">06</div>
-          <div class="step-title">Правки и сдача</div>
-          <button class="step-x" type="button" aria-label="Закрыть">×</button>
-        </div>
-        <div class="step-body">
-          Вносим правки по согласованным раундам, отдаём master‑файлы и закрываем документы.
-        </div>
-      </article>
-    </div>
+    <details class="pstep">
+      <summary class="pstep__sum">
+        <span class="pstep__no">06</span>
+        <span class="pstep__name">Правки и сдача</span>
+        <span class="pstep__hint">Подробнее</span>
+      </summary>
+      <div class="pstep__body">Вносим правки по согласованным раундам и отдаём финальные файлы. После приёмки закрываем документы.</div>
+    </details>
   </div>
 </section>
 
