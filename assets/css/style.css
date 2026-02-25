@@ -1,13 +1,5 @@
 :root{
-  /* Base */
-  --bg: #050507; /* базовый тёмный */
-
-  /* Cinematic wash: blue + blood-orange */
-  --cin-blue: rgba(45, 98, 255, 0.26);
-  --cin-blue2: rgba(12, 28, 70, 0.55);
-  --cin-orange: rgba(255, 106, 42, 0.22);
-  --cin-blood: rgba(168, 18, 34, 0.16);
-  --cin-fog: rgba(255, 255, 255, 0.06);
+  --bg: #050507; /* было #070812 */
   --panel: rgba(255,255,255,0.05);
   --border: rgba(255,255,255,0.08);
   --text: rgba(255,255,255,0.92);
@@ -20,76 +12,8 @@ html,body{ height:100%; }
 body{
   margin:0;
   font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  background-color: var(--bg);
-  /* Cinematic background (blue/blood-orange) */
-  background-image:
-    radial-gradient(1200px 900px at 10% 12%, var(--cin-blue), transparent 58%),
-    radial-gradient(980px 760px at 86% 28%, var(--cin-orange), transparent 62%),
-    radial-gradient(900px 720px at 62% 96%, var(--cin-blood), transparent 60%),
-    radial-gradient(1100px 900px at 40% 0%, var(--cin-blue2), transparent 70%),
-    linear-gradient(180deg, #040506 0%, #06070a 40%, #050507 100%);
-  background-attachment: fixed;
-  background-size: 140% 140%, 140% 140%, 140% 140%, 160% 160%, 100% 100%;
-  background-position: 0% 0%, 100% 0%, 50% 100%, 50% 0%, 50% 50%;
-  animation: cinemaWash 26s ease-in-out infinite alternate;
+  background: var(--bg); 
   color: var(--text);
-  position: relative;
-}
-
-/* keep content above FX overlays */
-body > *{ position: relative; z-index: 1; }
-
-/* Fog layer */
-body::before{
-  content:"";
-  position: fixed;
-  inset: -20vh -20vw;
-  z-index: 0;
-  pointer-events: none;
-  background-image:
-    radial-gradient(900px 520px at 30% 40%, rgba(255,255,255,0.07), transparent 60%),
-    radial-gradient(820px 520px at 75% 35%, rgba(255,255,255,0.055), transparent 62%),
-    radial-gradient(1000px 700px at 55% 70%, rgba(45,98,255,0.06), transparent 66%),
-    radial-gradient(900px 650px at 60% 85%, rgba(255,106,42,0.05), transparent 70%);
-  filter: blur(44px);
-  opacity: 0.65;
-  transform: translate3d(0,0,0);
-  animation: cinemaFog 18s ease-in-out infinite;
-}
-
-/* Grain + vignette */
-body::after{
-  content:"";
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.12;
-  background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E"),
-    radial-gradient(closest-side at 50% 50%, transparent 55%, rgba(0,0,0,0.58) 120%);
-  background-size: 220px 220px, 100% 100%;
-  mix-blend-mode: overlay;
-}
-
-@keyframes cinemaWash{
-  0%{
-    background-position: 0% 0%, 100% 0%, 50% 100%, 50% 0%, 50% 50%;
-  }
-  100%{
-    background-position: 8% 6%, 92% 10%, 52% 92%, 45% 8%, 50% 50%;
-  }
-}
-
-@keyframes cinemaFog{
-  0%{ transform: translate3d(-2vw, -1vh, 0) scale(1.02); }
-  50%{ transform: translate3d(2vw, 1vh, 0) scale(1.04); }
-  100%{ transform: translate3d(-1vw, 2vh, 0) scale(1.03); }
-}
-
-@media (prefers-reduced-motion: reduce){
-  body{ animation: none; }
-  body::before{ animation: none; }
 }
 
 a{ color: inherit; text-decoration:none; }
@@ -2232,61 +2156,3 @@ body{
   .workflow-frame--thin{ aspect-ratio: 16 / 9; }
 }
 
-/* ===== CINEMATIC SITE BACKGROUND (blue + blood-orange + fog) ===== */
-:root{
-  --cin-blue: #041024;
-  --cin-orange: #ff6a00;
-  --cin-blood: #b30b16;
-  --cin-black: #050507;
-}
-
-html{ background: var(--cin-black); }
-
-body{
-  /* базовый “киношный” градиент */
-  background:
-    radial-gradient(1200px 800px at 18% 12%, rgba(4,16,36,.95) 0%, rgba(5,5,7,0) 58%),
-    radial-gradient(950px 750px at 86% 28%, rgba(255,106,0,.28) 0%, rgba(5,5,7,0) 62%),
-    radial-gradient(1000px 760px at 68% 86%, rgba(179,11,22,.22) 0%, rgba(5,5,7,0) 64%),
-    linear-gradient(180deg, var(--cin-black) 0%, var(--cin-black) 100%);
-  background-attachment: fixed;
-  position: relative;
-  overflow-x: hidden;
-}
-
-/* туман (дымка) */
-body::before{
-  content:"";
-  position: fixed;
-  inset:-20vh;
-  z-index: 0;
-  pointer-events:none;
-  background:
-    radial-gradient(900px 600px at 30% 45%, rgba(255,106,0,.18) 0%, rgba(255,106,0,0) 65%),
-    radial-gradient(1000px 700px at 62% 55%, rgba(4,16,36,.35) 0%, rgba(4,16,36,0) 72%),
-    radial-gradient(900px 650px at 76% 78%, rgba(179,11,22,.14) 0%, rgba(179,11,22,0) 70%);
-  filter: blur(44px);
-  opacity: .75;
-  mix-blend-mode: screen;
-}
-
-/* лёгкий grain */
-body::after{
-  content:"";
-  position: fixed;
-  inset:0;
-  z-index: 0;
-  pointer-events:none;
-  background-image:
-    repeating-linear-gradient(0deg, rgba(255,255,255,.05) 0 1px, rgba(0,0,0,0) 1px 3px),
-    repeating-linear-gradient(90deg, rgba(0,0,0,.04) 0 1px, rgba(0,0,0,0) 1px 4px);
-  opacity: .12;
-  mix-blend-mode: overlay;
-}
-
-/* контент всегда над туманом/grain */
-body > *{ position: relative; z-index: 1; }
-
-@media (prefers-reduced-motion: reduce){
-  body{ background-attachment: scroll; }
-}
