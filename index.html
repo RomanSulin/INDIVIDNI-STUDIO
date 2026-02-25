@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>INDIVIDNI — studio</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="./assets/css/style.css" rel="stylesheet"/>
+<link href="./assets/css/home_tv.css" rel="stylesheet"/>
+<link href="./assets/css/hero_tv_fix.css?v=1" rel="stylesheet"/>
+<link href="./assets/css/individni_ml.css?v=2" rel="stylesheet"/>
+</head>
+<body class="home">
+
+<header class="header" id="top">
+  <div class="header-shell">
+    <div class="header-row header-row--top">
+      <a class="brand" href="#top">
+        <span class="brand-name">
+          <span class="brand-name__main">INDIVIDNI</span>
+          <span class="brand-name__sub">studio</span>
+        </span>
+      </a>
+      <nav aria-label="Primary" class="nav nav--top">
+        <a class="nav-link" href="#projects">Проекты</a>
+        <a class="nav-link" href="#services">Услуги</a>
+        <a class="nav-link" href="#process">Этапы</a>
+        <a class="nav-link" href="#pricing">Стоимость</a>
+        <a class="nav-link" href="#contact">Контакты</a>
+      </nav>
+      <div class="header-actions">
+        <a class="btn btn--primary" href="#contact">Связаться</a>
+        <button aria-label="Menu" class="burger" data-burger type="button">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="drawer" data-drawer>
+    <a class="drawer-link" href="#projects">Проекты</a>
+    <a class="drawer-link" href="#services">Услуги</a>
+    <a class="drawer-link" href="#numbers">Мы в цифрах</a>
+    <a class="drawer-link" href="#process">Этапы</a>
+    <a class="drawer-link" href="#pricing">Стоимость</a>
+    <a class="drawer-link" href="#team">Команда</a>
+    <a class="drawer-link" href="#faq">FAQ</a>
+    <a class="drawer-link" href="#contact">Контакты</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- ══ HERO TV — НЕ ТРОГАТЬ ══ -->
+  <section aria-label="INDIVIDNI hero with TV" class="liquid-hero hero-tv" id="about">
+    <div aria-hidden="true" id="liquid-bg"></div>
+    <div class="hero-tv__inner container">
+      <div class="hero-tv__title">
+        <div class="liquid-title">
+          <div class="liquid-sub">studio</div>
+          <div class="liquid-main">INDIVIDNI</div>
+          <div class="hero-tv__desc">видеопродакшн полного цикла</div>
+        </div>
+        <div aria-label="Направления" class="hero-tv__typed">
+          <span id="heroTyped"></span><span aria-hidden="true" class="typed-caret"></span>
+        </div>
+        <div aria-label="Действия" class="hero-tv__actions">
+          <button class="btn btn--primary" id="btnShowreel" type="button">Шоурил</button>
+          <a class="btn btn--ghost" href="#contact" id="btnCalc">Рассчитать проект</a>
+        </div>
+      </div>
+      <div class="hero-tv__stage" data-tv-hero>
+        <div aria-hidden="true" class="hero-tv__glow"></div>
+        <canvas id="tvHeroCanvas"></canvas>
+        <video class="tvfly__hiddenVideo" id="tvHeroVideo" loop muted playsinline preload="auto" webkit-playsinline>
+          <source src="./assets/ui/showreel_2.mp4" type="video/mp4"/>
+        </video>
+      </div>
+    </div>
+  </section>
+  <!-- JS вставит scroll-band и кабели автоматически -->
+
+  <!-- ══ PROJECTS ══ -->
+  <section aria-label="Проекты" id="projects">
+    <div class="container">
+      <div class="works-head section-head" data-reveal>
+        <div class="section-kicker">↳ Наши работы</div>
+        <h2 class="works-title section-title">ПРОЕКТЫ</h2>
+      </div>
+      <div class="works-grid">
+        <a class="work-card" data-reveal data-stinger href="./project_gac/">
+          <div class="work-media work-thumb"><img alt="GAC GH4" src="./assets/project/1/1.jpg"/></div>
+          <div class="work-meta"><div class="work-title">GAC GH4</div></div>
+        </a>
+        <a class="work-card" data-reveal data-stinger href="./project_tenderness/">
+          <div class="work-media work-thumb"><img alt="Нежность" src="./assets/project/2/1.jpg"/></div>
+          <div class="work-meta"><div class="work-title">«Нежность»</div></div>
+        </a>
+        <a class="work-card" data-reveal data-stinger href="./project_03/">
+          <div class="work-media work-thumb"><img alt="Project 03" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='900'%3E%3Crect width='100%25' height='100%25' fill='%2312141f'/%3E%3C/svg%3E"/></div>
+          <div class="work-meta"><div class="work-title">PROJECT 03</div></div>
+        </a>
+        <a class="work-card" data-reveal data-stinger href="./project_04/">
+          <div class="work-media work-thumb"><img alt="Project 04" src="./assets/project/1/1.jpg"/></div>
+          <div class="work-meta"><div class="work-title">PROJECT 04</div></div>
+        </a>
+        <a class="work-card" data-reveal data-stinger href="./project_05/">
+          <div class="work-media work-thumb"><img alt="Project 05" src="./assets/project/2/1.jpg"/></div>
+          <div class="work-meta"><div class="work-title">PROJECT 05</div></div>
+        </a>
+      </div>
+      <div class="works-bottom" data-reveal>
+        <a class="btn btn--ghost" data-stinger href="./projects/">Смотреть все проекты <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SERVICES ══ -->
+  <section aria-label="Услуги" class="capabilities" id="services">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <div class="section-kicker">↳ Услуги</div>
+        <h2 class="section-title">Чем<br>занимаемся</h2>
+        <div class="section-sub">От идеи и препродакшна до съёмки, поста и финальных файлов под любые площадки.</div>
+      </div>
+      <div class="cap-accordion">
+        <div class="accordion" data-accordion>
+          <div class="acc-item" data-acc-item data-open>
+            <button aria-expanded="true" class="acc-btn" type="button">
+              <span class="acc-left"><span class="acc-title">Имиджевые и рекламные ролики</span></span>
+              <span aria-hidden="true" class="acc-plus"></span>
+            </button>
+            <div class="acc-panel" data-acc-panel style="height:auto">
+              <div class="acc-panel-inner">Концепт, режиссура, продюсирование, съёмка, монтаж и финальная выдача под digital/TV.</div>
+            </div>
+          </div>
+          <div class="acc-item" data-acc-item>
+            <button aria-expanded="false" class="acc-btn" type="button">
+              <span class="acc-left"><span class="acc-title">Музыкальные клипы</span></span>
+              <span aria-hidden="true" class="acc-plus"></span>
+            </button>
+            <div class="acc-panel" data-acc-panel>
+              <div class="acc-panel-inner">Тритмент, сторителлинг, постановка, свет и монтаж — клипы, которые смотрят до конца.</div>
+            </div>
+          </div>
+          <div class="acc-item" data-acc-item>
+            <button aria-expanded="false" class="acc-btn" type="button">
+              <span class="acc-left"><span class="acc-title">Постпродакшн</span></span>
+              <span aria-hidden="true" class="acc-plus"></span>
+            </button>
+            <div class="acc-panel" data-acc-panel>
+              <div class="acc-panel-inner">Монтаж, цвет, звук, графика — доводим до «дорого» без компромиссов.</div>
+            </div>
+          </div>
+          <div class="acc-item" data-acc-item>
+            <button aria-expanded="false" class="acc-btn" type="button">
+              <span class="acc-left"><span class="acc-title">CGI / VFX</span></span>
+              <span aria-hidden="true" class="acc-plus"></span>
+            </button>
+            <div class="acc-panel" data-acc-panel>
+              <div class="acc-panel-inner">3D, композитинг, клинапы, motion — аккуратно, чисто, в нужной дозе.</div>
+            </div>
+          </div>
+          <div class="acc-item" data-acc-item>
+            <button aria-expanded="false" class="acc-btn" type="button">
+              <span class="acc-left"><span class="acc-title">Интерактив / сайты</span></span>
+              <span aria-hidden="true" class="acc-plus"></span>
+            </button>
+            <div class="acc-panel" data-acc-panel>
+              <div class="acc-panel-inner">Лендинги и интерактив — сильная «упаковка» для видео и бренда.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cap-actions" data-reveal>
+        <a class="btn btn--primary" href="#contact">Заполнить бриф</a>
+        <a class="btn btn--ghost" href="#contact">Обсудить задачу</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ NUMBERS ══ -->
+  <section aria-label="Мы в цифрах" class="numbers" id="numbers">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <div class="section-kicker">↳ Мы в цифрах</div>
+        <h2 class="section-title">Дисциплина продакшна — это тоже&nbsp;креатив.</h2>
+      </div>
+      <div class="numbers-layout">
+        <div class="numbers-media" data-reveal>
+          <div class="frame-rail">
+            <img alt="" loading="lazy" src="./assets/project/1/1.jpg"/>
+            <img alt="" loading="lazy" src="./assets/project/2/1.jpg"/>
+            <img alt="" loading="lazy" src="./assets/project/1/1.jpg"/>
+            <img alt="" loading="lazy" src="./assets/project/2/1.jpg"/>
+          </div>
+          <div class="numbers-note">Кадры — из реальных проектов. Без стокового «пластика».</div>
+        </div>
+        <div class="numbers-grid">
+          <div class="num-card num-card--fill" data-reveal><div class="num">7+</div><div class="label">лет в продакшене</div></div>
+          <div class="num-card" data-reveal><div class="num">120+</div><div class="label">съёмочных смен</div></div>
+          <div class="num-card" data-reveal><div class="num">48ч</div><div class="label">минимальный turnaround для срочных задач</div></div>
+          <div class="num-card" data-reveal><div class="num">4K</div><div class="label">стандарт выдачи и мастер-файлы</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ PROCESS ══ -->
+  <section aria-label="Этапы создания" class="process" data-process id="process">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <div class="section-kicker">↳ Процесс</div>
+        <h2 class="section-title">Этапы создания видеоролика</h2>
+      </div>
+      <div class="process-grid">
+        <ol aria-label="Этапы" class="steps" data-reveal>
+          <li class="step is-active" data-img="./assets/project/1/1.jpg" data-step>
+            <button class="step-btn" type="button">
+              <span class="step-num">01</span>
+              <span class="step-content"><span class="step-title">Бриф + цель</span><span class="step-text">Понимаем задачу, аудиторию, дедлайны и KPI.</span></span>
+            </button>
+          </li>
+          <li class="step" data-img="./assets/project/2/1.jpg" data-step>
+            <button class="step-btn" type="button">
+              <span class="step-num">02</span>
+              <span class="step-content"><span class="step-title">Идея + препродакшн</span><span class="step-text">Концепт, референсы, сценарий/шотлист, локации, каст.</span></span>
+            </button>
+          </li>
+          <li class="step" data-img="./assets/project/1/1.jpg" data-step>
+            <button class="step-btn" type="button">
+              <span class="step-num">03</span>
+              <span class="step-content"><span class="step-title">Съёмка</span><span class="step-text">Свет, камера, режиссура — снимаем чисто и быстро.</span></span>
+            </button>
+          </li>
+          <li class="step" data-img="./assets/project/2/1.jpg" data-step>
+            <button class="step-btn" type="button">
+              <span class="step-num">04</span>
+              <span class="step-content"><span class="step-title">Пост</span><span class="step-text">Монтаж → цвет → звук → графика. Делаем «дорого».</span></span>
+            </button>
+          </li>
+          <li class="step" data-img="./assets/project/1/1.jpg" data-step>
+            <button class="step-btn" type="button">
+              <span class="step-num">05</span>
+              <span class="step-content"><span class="step-title">Выдача</span><span class="step-text">Форматы под платформы + мастер-файлы + архив.</span></span>
+            </button>
+          </li>
+        </ol>
+        <div class="process-preview" data-reveal>
+          <div class="preview-frame">
+            <img alt="Превью этапа" data-process-preview loading="lazy" src="./assets/project/1/1.jpg"/>
+          </div>
+          <div class="preview-meta">
+            <span class="preview-chip">live preview</span>
+            <span class="preview-tip">Наведи на этап — кадр сменится</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ PRICING ══ -->
+  <section aria-label="Стоимость" class="pricing" id="pricing">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <div class="section-kicker">↳ Стоимость</div>
+        <h2 class="section-title">Сколько стоит видеоролик</h2>
+        <div class="section-sub">Честно: цена зависит от задачи. Ниже — ориентиры, чтобы было от чего отталкиваться.</div>
+      </div>
+      <div class="pricing-grid">
+        <article class="price-card price-card--fill" data-reveal>
+          <div class="price-top"><div class="price-name">Лайт</div><div class="price-sum">от 60 000 ₽</div></div>
+          <ul class="price-list">
+            <li>1 съёмочный день (небольшая команда)</li>
+            <li>Монтаж + базовый цвет</li>
+            <li>Звук/музыка (лицензия или сток)</li>
+            <li>Выдача под соцсети</li>
+          </ul>
+          <a class="btn btn--primary" href="#contact">Запросить смету</a>
+        </article>
+        <article class="price-card" data-reveal>
+          <div class="price-top"><div class="price-name">Стандарт</div><div class="price-sum">от 150 000 ₽</div></div>
+          <ul class="price-list">
+            <li>Препродакшн + шотлист</li>
+            <li>Свет/камера расширенно</li>
+            <li>Монтаж + цвет + звук</li>
+            <li>Графика / титры / пакет форматов</li>
+          </ul>
+          <a class="btn btn--ghost" href="#contact">Обсудить задачу</a>
+        </article>
+        <article class="price-card" data-reveal>
+          <div class="price-top"><div class="price-name">Премиум</div><div class="price-sum">от 350 000 ₽</div></div>
+          <ul class="price-list">
+            <li>Концепт/сценарий/кастинг</li>
+            <li>Несколько локаций / смен</li>
+            <li>Пост: цвет, звук, VFX/CGI</li>
+            <li>TV/Digital пакет</li>
+          </ul>
+          <a class="btn btn--ghost" href="#contact">Сделать расчёт</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ TEAM ══ -->
+  <section aria-label="Команда" class="team" id="team">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <div class="section-kicker">↳ Команда</div>
+        <h2 class="section-title">Кто чем занимается</h2>
+        <div class="section-sub">Не «один человек на всё». Роли разделены — поэтому быстро, предсказуемо и качественно.</div>
+      </div>
+      <div class="roles-layout">
+        <div aria-hidden="true" class="roles-media" data-reveal>
+          <div class="roles-frame roles-frame--big"><img alt="" loading="lazy" src="./assets/project/1/1.jpg"/></div>
+          <div class="roles-frame roles-frame--small"><img alt="" loading="lazy" src="./assets/project/2/1.jpg"/></div>
+          <div class="roles-caption">on set / post</div>
+        </div>
+        <div class="roles-grid">
+          <article class="role-card role-card--fill" data-reveal>
+            <div class="role-top"><div class="role-name">Продюсер</div><div class="role-tag">сроки / бюджет</div></div>
+            <ul class="role-list"><li>смета и договорённости</li><li>локации, реквизит, подрядчики</li><li>контроль дедлайнов и логистики</li></ul>
+          </article>
+          <article class="role-card" data-reveal>
+            <div class="role-top"><div class="role-name">Режиссёр</div><div class="role-tag">идея / сторителлинг</div></div>
+            <ul class="role-list"><li>концепт и тритмент</li><li>работа с героями/кадром</li><li>контроль художественного качества</li></ul>
+          </article>
+          <article class="role-card" data-reveal>
+            <div class="role-top"><div class="role-name">Оператор</div><div class="role-tag">свет / камера</div></div>
+            <ul class="role-list"><li>световые схемы и постановка</li><li>оптика, движение камеры</li><li>технический контроль картинки</li></ul>
+          </article>
+          <article class="role-card" data-reveal>
+            <div class="role-top"><div class="role-name">Постпродакшн</div><div class="role-tag">монтаж / цвет</div></div>
+            <ul class="role-list"><li>монтаж под ритм и смысл</li><li>цвет и доводка</li><li>звук + графика / VFX</li></ul>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ VALUE ══ -->
+  <section aria-label="За что нас ценят" class="value" id="value">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <div class="section-kicker">↳ Ценность</div>
+        <h2 class="section-title">За что нас ценят</h2>
+      </div>
+      <div class="value-grid">
+        <div class="value-card value-card--fill" data-reveal><div class="value-title">Сроки — не «примерно»</div><div class="value-text">Фиксируем этапы и сдаём по плану. Без сюрпризов в конце.</div></div>
+        <div class="value-card" data-reveal><div class="value-title">Картинка «дорого»</div><div class="value-text">Свет, оптика, композиция и цвет — без «пластика».</div></div>
+        <div class="value-card" data-reveal><div class="value-title">Понимание задачи</div><div class="value-text">Мы не просто «снимаем». Мы решаем задачу бренда.</div></div>
+        <div class="value-card" data-reveal><div class="value-title">Коммуникация</div><div class="value-text">Короткие апдейты, понятные решения, без тумана.</div></div>
+        <div class="value-card" data-reveal><div class="value-title">Гибкость под площадки</div><div class="value-text">Вертикали/квадраты/TV — пакетом, без боли.</div></div>
+        <div class="value-card" data-reveal><div class="value-title">Упаковка результата</div><div class="value-text">Мастер-файлы, версии, архив — всё аккуратно.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FAQ ══ -->
+  <section aria-label="Частые вопросы" class="faq" id="faq">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <div class="section-kicker">↳ FAQ</div>
+        <h2 class="section-title">Частые вопросы</h2>
+      </div>
+      <div class="accordion accordion--clean" data-accordion data-reveal>
+        <div class="acc-item" data-acc-item data-open>
+          <button aria-expanded="true" class="acc-btn" type="button"><span class="acc-left"><span class="acc-title">Сколько правок входит?</span></span><span aria-hidden="true" class="acc-plus"></span></button>
+          <div class="acc-panel" data-acc-panel style="height:auto"><div class="acc-panel-inner">Обычно закладываем 2 круга правок. Если нужна многоитерационная работа — фиксируем условия в смете.</div></div>
+        </div>
+        <div class="acc-item" data-acc-item>
+          <button aria-expanded="false" class="acc-btn" type="button"><span class="acc-left"><span class="acc-title">Можно без съёмки — только монтаж?</span></span><span aria-hidden="true" class="acc-plus"></span></button>
+          <div class="acc-panel" data-acc-panel><div class="acc-panel-inner">Да. Соберём ролик из вашего материала или из стока: монтаж, цвет, звук, графика.</div></div>
+        </div>
+        <div class="acc-item" data-acc-item>
+          <button aria-expanded="false" class="acc-btn" type="button"><span class="acc-left"><span class="acc-title">Сколько времени занимает производство?</span></span><span aria-hidden="true" class="acc-plus"></span></button>
+          <div class="acc-panel" data-acc-panel><div class="acc-panel-inner">Средний проект — 1–3 недели. Срочные задачи тоже делаем, если есть окно в графике.</div></div>
+        </div>
+        <div class="acc-item" data-acc-item>
+          <button aria-expanded="false" class="acc-btn" type="button"><span class="acc-left"><span class="acc-title">Какие форматы вы отдаёте?</span></span><span aria-hidden="true" class="acc-plus"></span></button>
+          <div class="acc-panel" data-acc-panel><div class="acc-panel-inner">Мастер-файл + версии под YouTube/Instagram/TikTok/сайт. По запросу — TV и медиа-пакет.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ WORKFLOW ══ -->
+  <section aria-label="Как мы работаем" class="workflow" id="workflow">
+    <div class="container">
+      <div class="workflow-grid">
+        <div class="workflow-text" data-reveal>
+          <div class="section-kicker">↳ Как мы работаем</div>
+          <h2 class="section-title">Прозрачно.<br>По этапам.<br>Без хаоса.</h2>
+          <div class="workflow-sub">Самое большое удовольствие — когда клиент спокойно ждёт результат, потому что всё под контролем у нас.</div>
+          <div class="workflow-steps">
+            <div class="wf"><div class="wf-n">01</div><div class="wf-t">Собираем вводные</div></div>
+            <div class="wf"><div class="wf-n">02</div><div class="wf-t">Фиксируем план и смету</div></div>
+            <div class="wf"><div class="wf-n">03</div><div class="wf-t">Снимаем и делаем пост</div></div>
+            <div class="wf"><div class="wf-n">04</div><div class="wf-t">Отдаём пакет финалов</div></div>
+          </div>
+        </div>
+        <div class="workflow-card" data-reveal>
+          <div class="workflow-card__title">Нужно посчитать проект?</div>
+          <div class="workflow-card__text">Напиши, что за задача и сроки. Ответим с предложением и ориентиром по бюджету.</div>
+          <a class="btn btn--primary" href="#contact">Связаться</a>
+          <a class="btn btn--ghost" href="#contact">Заполнить бриф</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ══ FOOTER / CONTACT ══ -->
+<footer aria-label="Контакты" class="footer" id="contact">
+  <div class="container">
+    <div class="footer-shell">
+      <div class="footer-left">
+        <div class="footer-brand">INDIVIDNI<span class="footer-sub">studio — videoproduction</span></div>
+        <div class="footer-cols">
+          <div class="footer-col">
+            <div class="footer-col__t">Навигация</div>
+            <a class="footer-link" href="#projects">Проекты</a>
+            <a class="footer-link" href="#services">Услуги</a>
+            <a class="footer-link" href="#process">Этапы</a>
+            <a class="footer-link" href="#pricing">Стоимость</a>
+            <a class="footer-link" href="#team">Команда</a>
+          </div>
+          <div class="footer-col">
+            <div class="footer-col__t">Контакты</div>
+            <a class="footer-link" href="mailto:hello@individnistudio.ru">hello@individnistudio.ru</a>
+            <a class="footer-link" href="https://t.me/" rel="noreferrer" target="_blank">Telegram</a>
+            <a class="footer-link" href="https://instagram.com/" rel="noreferrer" target="_blank">Instagram</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-right">
+        <div class="footer-form-title">Оставь заявку</div>
+        <form class="footer-form" data-contact-form>
+          <label class="field"><span class="field-label">Имя</span><input autocomplete="name" class="field-input" name="name" placeholder="Как к вам обращаться" type="text"/></label>
+          <label class="field"><span class="field-label">Контакт</span><input autocomplete="email" class="field-input" name="contact" placeholder="Telegram / Email / Телефон" required type="text"/></label>
+          <label class="field"><span class="field-label">Задача</span><textarea class="field-input field-input--ta" name="message" placeholder="Что нужно снять? Сроки? Примерный бюджет?" rows="4"></textarea></label>
+          <button class="btn btn--primary" type="submit">Отправить заявку</button>
+        </form>
+        <div class="footer-meta">
+          <span>© <span id="year"></span> INDIVIDNI</span>
+          <span class="footer-dot">•</span>
+          <a class="footer-link footer-link--tiny" href="#top">Наверх ↑</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div aria-hidden="true" class="page-stinger" data-stinger></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script src="https://unpkg.com/fflate@0.7.4/umd/index.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/loaders/FBXLoader.js"></script>
+<script defer src="./assets/js/tv_hero.js"></script>
+<script defer src="./assets/js/liquid.js"></script>
+<script defer src="./assets/js/individni_ml.js"></script>
+</body>
+</html>
