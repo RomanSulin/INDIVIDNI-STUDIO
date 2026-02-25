@@ -1,21 +1,24 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>INDIVIDNI — studio</title>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
-<link href="./assets/css/style.css" rel="stylesheet"/>
-<link href="./assets/css/home_tv.css" rel="stylesheet"/>
-<link href="./assets/css/hero_tv_fix.css?v=1" rel="stylesheet"/>
-<link href="./assets/css/individni_ml.css?v=2" rel="stylesheet"/>
-<link href="./assets/css/magnet_rebuild.css?v=1" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>INDIVIDNI — studio</title>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+
+  <!-- base + TV (не менять) -->
+  <link rel="stylesheet" href="./assets/css/style.css"/>
+  <link rel="stylesheet" href="./assets/css/home_tv.css"/>
+  <link rel="stylesheet" href="./assets/css/hero_tv_fix.css?v=1"/>
+  <link rel="stylesheet" href="./assets/css/hero_overrides.css?v=1"/>
+
+  <!-- rebuilt home (после TV стилей) -->
+  <link rel="stylesheet" href="./assets/css/home_rebuild.css?v=1"/>
 </head>
 <body class="home">
-
 <header class="header" id="top">
   <div class="header-shell">
     <div class="header-row header-row--top">
@@ -51,11 +54,10 @@
     <a class="drawer-link" href="#contact">Контакты</a>
   </div>
 </header>
+  <main>
 
-<main>
-
-  <!-- ══ HERO TV — НЕ ТРОГАТЬ ══ -->
-  <section aria-label="INDIVIDNI hero with TV" class="liquid-hero hero-tv" id="about">
+    <!-- HERO (TV) — НЕ ТРОГАТЬ -->
+<section aria-label="INDIVIDNI hero with TV" class="liquid-hero hero-tv" id="about">
     <div aria-hidden="true" id="liquid-bg"></div>
     <div class="hero-tv__inner container">
       <div class="hero-tv__title">
@@ -81,410 +83,287 @@
       </div>
     </div>
   </section>
-  <!-- JS вставит scroll-band и кабели автоматически -->
 
-  
-  <!-- ═════════════════════════════════════════════════════════════
-       MAGNET-STYLE MAIN (пересобрано по Figma)
-       HERO TV выше — не трогать
-  ═════════════════════════════════════════════════════════════ -->
-
-  <!-- ══ PROJECTS ══ -->
-  <section class="ml-panel" id="projects" aria-label="Проекты">
-    <div class="ml-panel__inner container">
-      <div class="ml-head" data-reveal>
-        <h2 class="ml-title">ПРОЕКТЫ</h2>
-        <div class="ml-sub">НАШИ РАБОТЫ</div>
-      </div>
-
-      <div class="ml-filmstrip" data-reveal>
-        <div class="ml-filmstrip__track">
-          <a class="ml-film" href="./project_gac/" data-stinger>
-            <img src="./assets/project/1/1.jpg" alt="GAC GH4" loading="lazy">
-          </a>
-          <a class="ml-film" href="./project_tenderness/" data-stinger>
-            <img src="./assets/project/2/1.jpg" alt="«Нежность»" loading="lazy">
-          </a>
-          <a class="ml-film" href="./project_03/" data-stinger>
-            <img src="./assets/project/1/1.jpg" alt="Project 03" loading="lazy">
-          </a>
-          <a class="ml-film" href="./project_04/" data-stinger>
-            <img src="./assets/project/2/1.jpg" alt="Project 04" loading="lazy">
-          </a>
-          <a class="ml-film" href="./project_05/" data-stinger>
-            <img src="./assets/project/1/1.jpg" alt="Project 05" loading="lazy">
-          </a>
-        </div>
-      </div>
-
-      <div class="ml-project-nav" data-reveal>
-        <span class="ml-mini">01</span>
-        <span class="ml-dots">• • • •</span>
-        <span class="ml-mini">листай</span>
-      </div>
-
-      <img class="ml-sticker ml-sticker--tl" src="./assets/ui/stickers/img-018.png" alt="" aria-hidden="true" loading="lazy">
-      <img class="ml-sticker ml-sticker--tr" src="./assets/ui/stickers/img-008.png" alt="" aria-hidden="true" loading="lazy">
-    </div>
-  </section>
-
-  <!-- ══ SERVICES ══ -->
-  <section class="ml-panel" id="services" aria-label="Чем занимаемся">
-    <div class="ml-panel__inner container">
-      <div class="ml-head ml-head--center" data-reveal>
-        <div class="ml-kicker">↳</div>
-        <h2 class="ml-title">ЧЕМ ЗАНИМАЕМСЯ</h2>
-        <div class="ml-pill" aria-label="Навигация по услугам">
-          <button class="ml-pill__btn is-active" type="button" data-ml-tab="video">ВИДЕО</button>
-          <button class="ml-pill__btn" type="button" data-ml-tab="web">WEB</button>
-        </div>
-        <p class="ml-desc">От идеи и препродакшна до съёмки, поста и финальных файлов под любые площадки.</p>
-      </div>
-
-      <div class="ml-services" data-reveal>
-        <div class="ml-card ml-card--hero" data-ml-panel="video">
-          <div class="ml-card__badge">videoproduction</div>
-          <div class="ml-card__title">Fullcycle</div>
-          <div class="ml-card__text">
-            <p>Съёмочная команда под задачу, свет и постановка, монтаж/цвет/звук — делаем «дорого» без компромиссов.</p>
-            <p>Упаковываем под соцсети, рекламу и бренд‑коммуникации.</p>
+    <!-- PROJECTS -->
+    <section class="mg-section" id="projects" aria-label="Проекты" data-reveal>
+      <div class="container">
+        <div class="mg-panel">
+          <div class="mg-stickers" aria-hidden="true">
+            <div class="mg-sticker mg-sticker--red">ON SET</div>
+            <div class="mg-sticker mg-sticker--blue">SOUND</div>
+            <div class="mg-sticker mg-sticker--yellow">POST</div>
           </div>
-          <div class="ml-card__actions">
-            <a class="ml-btn ml-btn--primary" href="#contact">Рассчитать проект</a>
-          </div>
-        </div>
 
-        <div class="ml-card" data-ml-panel="web" hidden>
-          <div class="ml-card__badge">interactive</div>
-          <div class="ml-card__title">Web / landing</div>
-          <div class="ml-card__text">
-            <p>Лендинги и интерактивные страницы под проекты — стиль, анимации, аккуратная подача.</p>
-            <p>Чтобы твой ролик выглядел как продукт, а не как “видео в ссылке”.</p>
-          </div>
-          <div class="ml-card__actions">
-            <a class="ml-btn ml-btn--primary" href="#contact">Заполнить бриф</a>
-          </div>
-        </div>
-      </div>
+          <header class="mg-head">
+            <div>
+              <div class="mg-kicker">↳ проекты</div>
+              <h2 class="mg-title">НАШИ РАБОТЫ</h2>
+            </div>
+            <p class="mg-sub">Кейсы, клипы и реклама — от идеи до финальных файлов. Листай плёнку.</p>
+          </header>
 
-      <img class="ml-sticker ml-sticker--ml" src="./assets/ui/stickers/img-016.png" alt="" aria-hidden="true" loading="lazy">
-      <img class="ml-sticker ml-sticker--mr" src="./assets/ui/stickers/img-022.png" alt="" aria-hidden="true" loading="lazy">
-    </div>
-  </section>
-
-  <!-- ══ NUMBERS / DISCIPLINE ══ -->
-  <section class="ml-band" id="numbers" aria-label="Мы в цифрах">
-    <div class="container ml-band__inner">
-      <div class="ml-band__top" data-reveal>
-        <div class="ml-band__kicker">мы в цифрах</div>
-        <h2 class="ml-band__title">ДИСЦИПЛИНА ПРОДАКШН<br>— ЭТО ТОЖЕ КРЕАТИВ</h2>
-      </div>
-
-      <div class="ml-band__actions" data-reveal>
-        <a class="ml-btn ml-btn--ghost" href="#projects">портфолио</a>
-        <a class="ml-btn ml-btn--ghost" href="#contact">связаться</a>
-      </div>
-
-      <div class="ml-split" data-reveal>
-        <div class="ml-split__left">
-          <div class="ml-minihead">PRODUCTION</div>
-          <div class="ml-stack">
-            <img src="./assets/project/1/1.jpg" alt="" loading="lazy">
-            <img src="./assets/project/2/1.jpg" alt="" loading="lazy">
-            <img src="./assets/project/1/1.jpg" alt="" loading="lazy">
-            <img src="./assets/project/2/1.jpg" alt="" loading="lazy">
-          </div>
-          <a class="ml-btn ml-btn--ghost ml-btn--tiny" href="#projects">смотреть все</a>
-        </div>
-        <div class="ml-split__right">
-          <div class="ml-minihead">let it production</div>
-          <p class="ml-p">Мы фиксируем сроки, бюджет и план. И дальше просто делаем. Ты видишь прогресс на каждом этапе.</p>
-
-          <div class="ml-acc" data-ml-acc>
-            <button class="ml-acc__btn" type="button" aria-expanded="false">
-              <span>+ preproduction</span>
-            </button>
-            <div class="ml-acc__panel" hidden>
-              <div class="ml-acc__inner">Бриф → концепт → тритмент → план → смета.</div>
+          <div class="filmstrip">
+            <div class="filmstrip__top">
+              <div class="filmstrip__hint">01 • • • • — листай</div>
+              <a class="btn btn--ghost" data-stinger href="./projects/">Смотреть все <span aria-hidden="true">↗</span></a>
             </div>
 
-            <button class="ml-acc__btn" type="button" aria-expanded="false">
-              <span>+ production</span>
-            </button>
-            <div class="ml-acc__panel" hidden>
-              <div class="ml-acc__inner">Съёмка, свет, постановка, контроль качества материала.</div>
-            </div>
+            <div class="filmstrip__track" aria-label="Лента проектов">
+              <a class="film-card" data-stinger href="./project_gac/">
+                <span class="film-card__img"><img src="./assets/project/1/1.jpg" alt="GAC GH4" loading="lazy"></span>
+                <span class="film-card__meta">
+                  <span class="film-card__name">GAC GH4</span>
+                  <span class="film-card__tag">commercial</span>
+                </span>
+              </a>
 
-            <button class="ml-acc__btn" type="button" aria-expanded="false">
-              <span>+ postproduction</span>
-            </button>
-            <div class="ml-acc__panel" hidden>
-              <div class="ml-acc__inner">Монтаж, цвет, звук, графика, финалы.</div>
+              <a class="film-card" data-stinger href="./project_tenderness/">
+                <span class="film-card__img"><img src="./assets/project/2/1.jpg" alt="Нежность" loading="lazy"></span>
+                <span class="film-card__meta">
+                  <span class="film-card__name">«Нежность»</span>
+                  <span class="film-card__tag">music video</span>
+                </span>
+              </a>
+
+              <a class="film-card" data-stinger href="./project_03/">
+                <span class="film-card__img"><img src="./assets/project/1/1.jpg" alt="Project 03" loading="lazy"></span>
+                <span class="film-card__meta">
+                  <span class="film-card__name">PROJECT 03</span>
+                  <span class="film-card__tag">case</span>
+                </span>
+              </a>
             </div>
           </div>
-        </div>
 
-        <img class="ml-sticker ml-sticker--pink" src="./assets/ui/stickers/img-017.png" alt="" aria-hidden="true" loading="lazy">
-        <img class="ml-sticker ml-sticker--blue" src="./assets/ui/stickers/img-014.png" alt="" aria-hidden="true" loading="lazy">
+        </div>
       </div>
-    </div>
+    </section>
 
-    <div class="ml-marquee" aria-hidden="true">
-      <div class="ml-marquee__track">
-        <span>INDIVIDNI // STUDIO // INDIVIDNI</span>
-        <span>INDIVIDNI // STUDIO // INDIVIDNI</span>
-        <span>INDIVIDNI // STUDIO // INDIVIDNI</span>
-      </div>
-    </div>
-  </section>
+    <!-- SERVICES -->
+    <section class="mg-section" id="services" aria-label="Услуги" data-reveal>
+      <div class="container">
+        <div class="mg-panel">
+          <header class="mg-head">
+            <div>
+              <div class="mg-kicker">↳ услуги</div>
+              <h2 class="mg-title">ЧЕМ ЗАНИМАЕМСЯ</h2>
+            </div>
+            <p class="mg-sub">Фулл‑сайкл продакшн + аккуратная упаковка в web, если нужно.</p>
+          </header>
 
-  <!-- ══ PROCESS ══ -->
-  <section class="ml-panel" id="process" aria-label="Этапы создания видеоролика">
-    <div class="ml-panel__inner container">
-      <div class="ml-process" data-reveal>
-        <div class="ml-process__head">
-          <h2 class="ml-process__title">Этапы создания<br>видеоролика</h2>
-          <div class="ml-process__meta">
-            <div class="ml-tag">pre-production</div>
-            <div class="ml-process__note">Двигаемся по этапам — понятно, что происходит сейчас и что будет дальше.</div>
-          </div>
-        </div>
-
-        <div class="ml-process__tabs" role="tablist" aria-label="Этапы">
-          <button class="ml-tab is-active" type="button" role="tab" aria-selected="true" data-ml-step="tshirt">T‑Shirt</button>
-          <button class="ml-tab" type="button" role="tab" aria-selected="false" data-ml-step="magnets">Magnets</button>
-        </div>
-
-        <div class="ml-process__grid">
-          <div class="ml-process__left">
-            <div class="ml-stepview is-active" data-ml-stepview="tshirt">
-              <div class="ml-stepview__media">
-                <img src="./assets/ui/stickers/img-020.png" alt="" loading="lazy">
+          <div class="service-grid">
+            <article class="service-card">
+              <div class="service-card__top">
+                <h3 class="service-card__title">VIDEO / PRODUCTION</h3>
+                <div class="mg-sticker mg-sticker--red">FULLCYCLE</div>
               </div>
-              <div class="ml-stepview__line">• brief • concept • plan •</div>
-            </div>
-
-            <div class="ml-stepview" data-ml-stepview="magnets" hidden>
-              <div class="ml-stepview__media">
-                <img src="./assets/ui/stickers/img-021.png" alt="" loading="lazy">
+              <p class="service-card__desc">Концепт, режиссура, продюсирование, съёмка, монтаж, цвет, звук. Работаем быстро и чисто — без «самоделки».</p>
+              <ul class="service-card__list">
+                <li>рекламные и имиджевые ролики</li>
+                <li>клипы и контент для брендов</li>
+                <li>пост: монтаж / цвет / звук / графика</li>
+              </ul>
+              <div>
+                <a class="btn btn--primary" href="#contact">Рассчитать проект</a>
               </div>
-              <div class="ml-stepview__line">• shoot • edit • deliver •</div>
+            </article>
+
+            <article class="service-card">
+              <div class="service-card__top">
+                <h3 class="service-card__title">WEB / INTERACTIVE</h3>
+                <div class="mg-sticker mg-sticker--blue">LANDING</div>
+              </div>
+              <p class="service-card__desc">Интерактивные страницы под проекты: стиль, микро‑анимации, правильная подача. Чтобы видео выглядело как продукт.</p>
+              <ul class="service-card__list">
+                <li>лендинги под релиз/кампанию</li>
+                <li>портфолио и презентации</li>
+                <li>анимации и аккуратный UI</li>
+              </ul>
+              <div>
+                <a class="btn btn--ghost" href="#brief">Заполнить бриф</a>
+              </div>
+            </article>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- PROCESS -->
+    <section class="mg-section" id="process" aria-label="Этапы" data-process data-reveal>
+      <div class="container">
+        <div class="mg-panel">
+          <header class="mg-head">
+            <div>
+              <div class="mg-kicker">↳ процесс</div>
+              <h2 class="mg-title">КАК МЫ ДЕЛАЕМ</h2>
+            </div>
+            <p class="mg-sub">Без магии. Понятный пайплайн: сроки, контроль, выдача.</p>
+          </header>
+
+          <div class="process-grid">
+            <div class="process-preview" aria-label="Превью этапа">
+              <img data-process-preview src="./assets/project/1/1.jpg" alt="" loading="lazy">
+            </div>
+
+            <ol class="steps" aria-label="Этапы">
+              <li class="step is-active" data-step data-img="./assets/project/1/1.jpg">
+                <button class="step-btn" type="button">
+                  <span class="step-num">01</span>
+                  <span>
+                    <span class="step-title">Бриф → цель</span>
+                    <span class="step-text">Созваниваемся, фиксируем формат, площадки, KPI и дедлайны.</span>
+                  </span>
+                </button>
+              </li>
+
+              <li class="step" data-step data-img="./assets/project/2/1.jpg">
+                <button class="step-btn" type="button">
+                  <span class="step-num">02</span>
+                  <span>
+                    <span class="step-title">План → съёмка</span>
+                    <span class="step-text">Локации, команда, свет, тайминг. На площадке — дисциплина и качество.</span>
+                  </span>
+                </button>
+              </li>
+
+              <li class="step" data-step data-img="./assets/project/1/1.jpg">
+                <button class="step-btn" type="button">
+                  <span class="step-num">03</span>
+                  <span>
+                    <span class="step-title">Пост → выдача</span>
+                    <span class="step-text">Монтаж, цвет, звук, графика. Финалы под любые площадки.</span>
+                  </span>
+                </button>
+              </li>
+            </ol>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- PRICING -->
+    <section class="mg-section" id="pricing" aria-label="Стоимость" data-reveal>
+      <div class="container">
+        <div class="mg-panel">
+          <header class="mg-head">
+            <div>
+              <div class="mg-kicker">↳ стоимость</div>
+              <h2 class="mg-title">СКОЛЬКО СТОИТ</h2>
+            </div>
+            <p class="mg-sub">Честно: цена зависит от задачи. Ниже — ориентиры, чтобы было от чего отталкиваться.</p>
+          </header>
+
+          <div class="price-grid">
+            <article class="price-card">
+              <h3 class="price-title">Съёмка</h3>
+              <div class="price-val">от 35 000 ₽</div>
+              <ul class="price-list">
+                <li>оператор + базовый свет</li>
+                <li>1 смена</li>
+                <li>выдача исходников</li>
+              </ul>
+              <a class="btn btn--ghost" href="#contact">Обсудить</a>
+            </article>
+
+            <article class="price-card">
+              <h3 class="price-title">Ролик</h3>
+              <div class="price-val">от 90 000 ₽</div>
+              <ul class="price-list">
+                <li>препродакшн</li>
+                <li>съёмка + монтаж</li>
+                <li>цвет + звук</li>
+              </ul>
+              <a class="btn btn--primary" href="#contact">Обсудить</a>
+            </article>
+
+            <article class="price-card">
+              <h3 class="price-title">Кампания</h3>
+              <div class="price-val">от 250 000 ₽</div>
+              <ul class="price-list">
+                <li>пакет роликов</li>
+                <li>адаптации под площадки</li>
+                <li>контент‑план</li>
+              </ul>
+              <a class="btn btn--ghost" href="#contact">Обсудить</a>
+            </article>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="mg-section" id="contact" aria-label="Контакты" data-reveal>
+      <div class="container">
+        <div class="mg-panel">
+          <header class="mg-head">
+            <div>
+              <div class="mg-kicker">↳ контакты</div>
+              <h2 class="mg-title">ОСТАВЬ ЗАЯВКУ</h2>
+            </div>
+            <p class="mg-sub">Напиши контакты и кратко задачу — вернёмся с вопросами и ориентиром по бюджету.</p>
+          </header>
+
+          <div class="contact-grid">
+            <div class="contact-card">
+              <div class="mg-kicker">hello@individnistudio.ru</div>
+              <p class="mg-sub" style="margin-top:10px">Telegram / Instagram — ссылки внизу страницы.</p>
+              <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap">
+                <a class="btn btn--ghost" href="#projects">Портфолио</a>
+                <a class="btn btn--primary" href="#brief">Перейти к брифу</a>
+              </div>
+            </div>
+
+            <div class="contact-card" id="brief">
+              <form data-contact-form>
+                <div class="field">
+                  <div class="label">Имя</div>
+                  <input class="input" name="name" autocomplete="name" required>
+                </div>
+                <div class="field">
+                  <div class="label">Контакт</div>
+                  <input class="input" name="contact" placeholder="Telegram / phone / email" required>
+                </div>
+                <div class="field">
+                  <div class="label">Задача</div>
+                  <textarea class="textarea" name="message" placeholder="Коротко: что нужно, сроки, референсы"></textarea>
+                </div>
+                <button class="btn btn--primary" type="submit">Отправить заявку</button>
+              </form>
             </div>
           </div>
 
-          <div class="ml-process__right">
-            <div class="ml-processcard is-active" data-ml-stepcard="tshirt">
-              <div class="ml-processcard__title">Понимаем задачу</div>
-              <div class="ml-processcard__dots" aria-hidden="true">................................</div>
-              <div class="ml-processcard__text">Созваниваемся, уточняем вводные, референсы и KPI. Фиксируем формат, площадки и сроки.</div>
-            </div>
-
-            <div class="ml-processcard" data-ml-stepcard="magnets" hidden>
-              <div class="ml-processcard__title">Собираем производственный план</div>
-              <div class="ml-processcard__dots" aria-hidden="true">................................</div>
-              <div class="ml-processcard__text">Локации, команда, техника, тайминг, смета. Ты понимаешь, что получишь и когда.</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="ml-process__footer">
-          <div class="ml-process__hint">*Можно собрать процесс под любую задачу: от клипа до рекламы.</div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ══ PRICING ══ -->
-  <section class="ml-panel" id="pricing" aria-label="Сколько стоит видеоролик">
-    <div class="ml-panel__inner container">
-      <div class="ml-head ml-head--center" data-reveal>
-        <div class="ml-kicker">↳</div>
-        <h2 class="ml-title">Сколько стоит видеоролик</h2>
-        <p class="ml-desc">Честно: цена зависит от задачи. Ниже — ориентиры, чтобы было от чего отталкиваться.</p>
+  </main>
+
+  <footer class="footer-clean">
+    <div class="container" style="display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap">
+      <div>© <span id="year"></span> INDIVIDNI</div>
+      <div style="display:flex; gap:14px; flex-wrap:wrap">
+        <a href="mailto:hello@individnistudio.ru">hello@individnistudio.ru</a>
+        <a href="#top">Наверх ↑</a>
       </div>
-
-      <div class="ml-pricing" data-reveal>
-        <article class="ml-price">
-          <div class="ml-price__t">Съёмка</div>
-          <div class="ml-price__p">от 35 000 ₽</div>
-          <ul class="ml-price__list">
-            <li>оператор + базовый свет</li>
-            <li>1 смена</li>
-            <li>выдача исходников</li>
-          </ul>
-          <div class="ml-price__btm">
-            <a class="ml-btn ml-btn--ghost ml-btn--tiny" href="#contact">обсудить</a>
-          </div>
-        </article>
-
-        <article class="ml-price">
-          <div class="ml-price__t">Ролик</div>
-          <div class="ml-price__p">от 90 000 ₽</div>
-          <ul class="ml-price__list">
-            <li>препродакшн</li>
-            <li>съёмка + монтаж</li>
-            <li>цвет + звук</li>
-          </ul>
-          <div class="ml-price__btm">
-            <a class="ml-btn ml-btn--ghost ml-btn--tiny" href="#contact">обсудить</a>
-          </div>
-        </article>
-
-        <article class="ml-price">
-          <div class="ml-price__t">Кампания</div>
-          <div class="ml-price__p">от 250 000 ₽</div>
-          <ul class="ml-price__list">
-            <li>пакет роликов</li>
-            <li>адаптации под площадки</li>
-            <li>контент-план</li>
-          </ul>
-          <div class="ml-price__btm">
-            <a class="ml-btn ml-btn--ghost ml-btn--tiny" href="#contact">обсудить</a>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- ══ TEAM ══ -->
-  <section class="ml-panel" id="team" aria-label="Наша команда">
-    <div class="ml-panel__inner container">
-      <div class="ml-head" data-reveal>
-        <h2 class="ml-title ml-title--boxed">НАША КОМАНДА</h2>
-        <div class="ml-sub">↳</div>
-      </div>
-
-      <div class="ml-team" data-reveal>
-        <div class="ml-team__cards" aria-label="Команда (визитки)">
-          <div class="ml-person">
-            <div class="ml-person__photo"></div>
-            <div class="ml-person__name">JAMES</div>
-          </div>
-          <div class="ml-person">
-            <div class="ml-person__photo"></div>
-            <div class="ml-person__name">AARON</div>
-          </div>
-          <div class="ml-person">
-            <div class="ml-person__photo"></div>
-            <div class="ml-person__name">JAMES</div>
-          </div>
-          <div class="ml-person">
-            <div class="ml-person__photo"></div>
-            <div class="ml-person__name">AARON</div>
-          </div>
-        </div>
-
-        <div class="ml-team__grid">
-          <div class="ml-teambox">
-            <div class="ml-minihead">СИЛА</div>
-            <div class="ml-teambox__title">В деталях и дисциплине</div>
-          </div>
-          <div class="ml-teambox">
-            <div class="ml-minihead">команда</div>
-            <p class="ml-p">Собираем команду под задачу: режиссура, операторка, свет, арт, продюсирование.</p>
-          </div>
-          <div class="ml-teambox">
-            <div class="ml-minihead">студия</div>
-            <p class="ml-p">Собственный пайплайн, контроль качества и адекватная коммуникация.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ══ CONTACT ══ -->
-  <footer class="ml-panel" id="contact" aria-label="Оставь заявку">
-    <div class="ml-panel__inner container">
-      <div class="ml-head ml-head--center" data-reveal>
-        <h2 class="ml-title">Оставь заявку<br>и переходи к брифу</h2>
-        <p class="ml-desc">Напиши контакты и кратко задачу — мы вернёмся с вопросами и ориентиром по бюджету.</p>
-      </div>
-
-      <form class="ml-form" data-reveal data-contact-form>
-        <label class="ml-field">
-          <span class="ml-field__label">Имя</span>
-          <input class="ml-field__input" name="name" type="text" placeholder="Как к вам обращаться" autocomplete="name">
-        </label>
-        <label class="ml-field">
-          <span class="ml-field__label">Контакт</span>
-          <input class="ml-field__input" name="contact" type="text" placeholder="Telegram / Email / Телефон" required>
-        </label>
-        <label class="ml-field ml-field--full">
-          <span class="ml-field__label">Задача</span>
-          <textarea class="ml-field__input ml-field__input--ta" name="message" rows="4" placeholder="Что нужно снять? Сроки? Примерный бюджет?"></textarea>
-        </label>
-        <button class="ml-btn ml-btn--primary ml-btn--wide" type="submit">ОТПРАВИТЬ ЗАЯВКУ</button>
-      </form>
-
-      <div class="ml-footer" data-reveal>
-        <div class="ml-footer__left">© <span id="year"></span> INDIVIDNI</div>
-        <div class="ml-footer__right">
-          <a class="ml-link" href="mailto:hello@individnistudio.ru">hello@individnistudio.ru</a>
-          <span class="ml-dot">•</span>
-          <a class="ml-link" href="#top">Наверх ↑</a>
-        </div>
-      </div>
-
-      <img class="ml-sticker ml-sticker--green" src="./assets/ui/stickers/img-012.png" alt="" aria-hidden="true" loading="lazy">
-      <img class="ml-sticker ml-sticker--mail" src="./assets/ui/stickers/img-028.png" alt="" aria-hidden="true" loading="lazy">
     </div>
   </footer>
 
+  <div class="page-stinger" aria-hidden="true" data-stinger></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/fflate@0.7.4/umd/index.js"></script>
+  <script src="https://unpkg.com/three@0.128.0/examples/js/loaders/FBXLoader.js"></script>
 
-</main>
+  <!-- TV / liquid (не менять) -->
+  <script defer src="./assets/js/tv_hero.js"></script>
+  <script defer src="./assets/js/tv_showreel.js"></script>
+  <script defer src="./assets/js/liquid.js"></script>
 
-
-
-<!-- ══ FOOTER / CONTACT ══ -->
-<footer aria-label="Контакты" class="footer" id="contact">
-  <div class="container">
-    <div class="footer-shell">
-      <div class="footer-left">
-        <div class="footer-brand">INDIVIDNI<span class="footer-sub">studio — videoproduction</span></div>
-        <div class="footer-cols">
-          <div class="footer-col">
-            <div class="footer-col__t">Навигация</div>
-            <a class="footer-link" href="#projects">Проекты</a>
-            <a class="footer-link" href="#services">Услуги</a>
-            <a class="footer-link" href="#process">Этапы</a>
-            <a class="footer-link" href="#pricing">Стоимость</a>
-            <a class="footer-link" href="#team">Команда</a>
-          </div>
-          <div class="footer-col">
-            <div class="footer-col__t">Контакты</div>
-            <a class="footer-link" href="mailto:hello@individnistudio.ru">hello@individnistudio.ru</a>
-            <a class="footer-link" href="https://t.me/" rel="noreferrer" target="_blank">Telegram</a>
-            <a class="footer-link" href="https://instagram.com/" rel="noreferrer" target="_blank">Instagram</a>
-          </div>
-        </div>
-      </div>
-      <div class="footer-right">
-        <div class="footer-form-title">Оставь заявку</div>
-        <form class="footer-form" data-contact-form>
-          <label class="field"><span class="field-label">Имя</span><input autocomplete="name" class="field-input" name="name" placeholder="Как к вам обращаться" type="text"/></label>
-          <label class="field"><span class="field-label">Контакт</span><input autocomplete="email" class="field-input" name="contact" placeholder="Telegram / Email / Телефон" required type="text"/></label>
-          <label class="field"><span class="field-label">Задача</span><textarea class="field-input field-input--ta" name="message" placeholder="Что нужно снять? Сроки? Примерный бюджет?" rows="4"></textarea></label>
-          <button class="btn btn--primary" type="submit">Отправить заявку</button>
-        </form>
-        <div class="footer-meta">
-          <span>© <span id="year"></span> INDIVIDNI</span>
-          <span class="footer-dot">•</span>
-          <a class="footer-link footer-link--tiny" href="#top">Наверх ↑</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</footer>
-
-<div aria-hidden="true" class="page-stinger" data-stinger></div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
-<script src="https://unpkg.com/fflate@0.7.4/umd/index.js"></script>
-<script src="https://unpkg.com/three@0.128.0/examples/js/loaders/FBXLoader.js"></script>
-<script defer src="./assets/js/tv_hero.js"></script>
-<script defer src="./assets/js/liquid.js"></script>
-<script defer src="./assets/js/individni_ml.js"></script>
-<script defer src="./assets/js/magnet_rebuild.js?v=1"></script>
+  <!-- site glue -->
+  <script defer src="./assets/js/main.js"></script>
 </body>
 </html>
