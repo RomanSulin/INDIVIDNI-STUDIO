@@ -66,11 +66,10 @@
     });
   }
 
-  // ── Process splits: keep one open at a time
-  const process = $('[data-process]');
-  if (process) {
-    const details = $$('details', process);
-
+  // ── FAQ: keep one open at a time
+  const faq = $('[data-faq]');
+  if (faq) {
+    const details = $$('details', faq);
     details.forEach((d) => {
       d.addEventListener('toggle', () => {
         if (!d.open) return;
