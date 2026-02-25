@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <!-- Landing styles (ref-based) -->
-  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=11" />
+  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=12" />
 </head>
 <body>
 
@@ -155,7 +155,9 @@
   <div class="services-grid" role="list">
     <a class="svc-card svc-card--blue" role="listitem" href="#">
       <div class="svc-media">
-        <img src="./assets/img/ph_16x9.png" alt="Съёмка" />
+        <video class="svc-video" autoplay muted loop playsinline preload="metadata">
+          <source src="./assets/services/video/shooting.mov" type="video/quicktime" />
+        </video>
         <div class="svc-overlay">
           <div class="svc-name">Съёмка</div>
           <div class="svc-text">Съёмочная группа, свет, камера, постановка и контроль качества.</div>
@@ -165,7 +167,9 @@
 
     <a class="svc-card svc-card--yellow" role="listitem" href="#">
       <div class="svc-media">
-        <img src="./assets/img/ph_16x9.png" alt="Монтаж" />
+        <video class="svc-video" autoplay muted loop playsinline preload="metadata">
+          <source src="./assets/services/video/editing.mov" type="video/quicktime" />
+        </video>
         <div class="svc-overlay">
           <div class="svc-name">Монтаж</div>
           <div class="svc-text">Монтаж под ритм и смысл, версии под форматы, субтитры.</div>
@@ -175,7 +179,9 @@
 
     <a class="svc-card svc-card--red" role="listitem" href="#">
       <div class="svc-media">
-        <img src="./assets/img/ph_16x9.png" alt="Цвет" />
+        <video class="svc-video" autoplay muted loop playsinline preload="metadata">
+          <source src="./assets/services/video/sound.mov" type="video/quicktime" />
+        </video>
         <div class="svc-overlay">
           <div class="svc-name">Цвет</div>
           <div class="svc-text">Color grading и техническая подготовка под площадки.</div>
@@ -185,20 +191,24 @@
 
     <a class="svc-card svc-card--green" role="listitem" href="#">
       <div class="svc-media">
-        <img src="./assets/img/ph_16x9.png" alt="Звук" />
+        <video class="svc-video" autoplay muted loop playsinline preload="metadata">
+          <source src="./assets/services/video/photo.mov" type="video/quicktime" />
+        </video>
         <div class="svc-overlay">
-          <div class="svc-name">Звук</div>
-          <div class="svc-text">Сведение, саунд‑дизайн, чистка, громкость по стандартам.</div>
+          <div class="svc-name">Фото</div>
+          <div class="svc-text">Фото‑съёмка, студийные кадры и контент для кампаний.</div>
         </div>
       </div>
     </a>
 
     <a class="svc-card svc-card--pink" role="listitem" href="#">
       <div class="svc-media">
-        <img src="./assets/img/ph_16x9.png" alt="Графика" />
+        <video class="svc-video" autoplay muted loop playsinline preload="metadata">
+          <source src="./assets/services/video/AI.mov" type="video/quicktime" />
+        </video>
         <div class="svc-overlay">
-          <div class="svc-name">Графика</div>
-          <div class="svc-text">Титры, 2D/3D элементы, упаковка ролика в единый стиль.</div>
+          <div class="svc-name">AI графика</div>
+          <div class="svc-text">AI‑графика, титры и визуальные приёмы для усиления подачи.</div>
         </div>
       </div>
     </a>
