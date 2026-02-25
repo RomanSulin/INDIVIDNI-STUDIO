@@ -2232,3 +2232,61 @@ body{
   .workflow-frame--thin{ aspect-ratio: 16 / 9; }
 }
 
+/* ===== CINEMATIC SITE BACKGROUND (blue + blood-orange + fog) ===== */
+:root{
+  --cin-blue: #041024;
+  --cin-orange: #ff6a00;
+  --cin-blood: #b30b16;
+  --cin-black: #050507;
+}
+
+html{ background: var(--cin-black); }
+
+body{
+  /* базовый “киношный” градиент */
+  background:
+    radial-gradient(1200px 800px at 18% 12%, rgba(4,16,36,.95) 0%, rgba(5,5,7,0) 58%),
+    radial-gradient(950px 750px at 86% 28%, rgba(255,106,0,.28) 0%, rgba(5,5,7,0) 62%),
+    radial-gradient(1000px 760px at 68% 86%, rgba(179,11,22,.22) 0%, rgba(5,5,7,0) 64%),
+    linear-gradient(180deg, var(--cin-black) 0%, var(--cin-black) 100%);
+  background-attachment: fixed;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* туман (дымка) */
+body::before{
+  content:"";
+  position: fixed;
+  inset:-20vh;
+  z-index: 0;
+  pointer-events:none;
+  background:
+    radial-gradient(900px 600px at 30% 45%, rgba(255,106,0,.18) 0%, rgba(255,106,0,0) 65%),
+    radial-gradient(1000px 700px at 62% 55%, rgba(4,16,36,.35) 0%, rgba(4,16,36,0) 72%),
+    radial-gradient(900px 650px at 76% 78%, rgba(179,11,22,.14) 0%, rgba(179,11,22,0) 70%);
+  filter: blur(44px);
+  opacity: .75;
+  mix-blend-mode: screen;
+}
+
+/* лёгкий grain */
+body::after{
+  content:"";
+  position: fixed;
+  inset:0;
+  z-index: 0;
+  pointer-events:none;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.05) 0 1px, rgba(0,0,0,0) 1px 3px),
+    repeating-linear-gradient(90deg, rgba(0,0,0,.04) 0 1px, rgba(0,0,0,0) 1px 4px);
+  opacity: .12;
+  mix-blend-mode: overlay;
+}
+
+/* контент всегда над туманом/grain */
+body > *{ position: relative; z-index: 1; }
+
+@media (prefers-reduced-motion: reduce){
+  body{ background-attachment: scroll; }
+}
