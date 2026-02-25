@@ -1475,3 +1475,57 @@ footer{
     pointer-events:auto;
   }
 }
+
+/* ===== HERO SVG WORDMARK (INDIVIDNI) ===== */
+.hero-brand{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap: 10px;
+  text-align:center;
+}
+
+.hero-wordmark{
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  gap: clamp(10px, 1.4vw, 18px);
+  line-height: 0;
+  user-select:none;
+  -webkit-user-select:none;
+}
+
+.hero-wordmark .wm{
+  height: clamp(56px, 7vw, 120px);
+  width: auto;
+  display:block;
+  transform-origin: 50% 70%;
+  filter: drop-shadow(0 14px 34px rgba(0,0,0,.28));
+  animation: wm-breathe 3.6s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* разные задержки — чтобы “дышало” живо */
+.hero-wordmark .wm:nth-child(1){ animation-delay: 0s; }
+.hero-wordmark .wm:nth-child(2){ animation-delay: .12s; }
+.hero-wordmark .wm:nth-child(3){ animation-delay: .24s; }
+.hero-wordmark .wm:nth-child(4){ animation-delay: .36s; }
+.hero-wordmark .wm:nth-child(5){ animation-delay: .48s; }
+.hero-wordmark .wm:nth-child(6){ animation-delay: .6s; }
+.hero-wordmark .wm:nth-child(7){ animation-delay: .72s; }
+.hero-wordmark .wm:nth-child(8){ animation-delay: .84s; }
+.hero-wordmark .wm:nth-child(9){ animation-delay: .96s; }
+
+@keyframes wm-breathe{
+  0%, 100% { transform: translate3d(0,0,0) scale(1); }
+  50%      { transform: translate3d(0,-2px,0) scale(1.018); }
+}
+
+@media (max-width: 640px){
+  .hero-wordmark{ gap: 10px; }
+  .hero-wordmark .wm{ height: 56px; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .hero-wordmark .wm{ animation: none; }
+}
