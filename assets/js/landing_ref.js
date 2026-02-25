@@ -1,4 +1,25 @@
 (() => {
+  // mobile nav
+  const nav = document.querySelector('nav');
+  const navToggle = document.querySelector('[data-nav-toggle]');
+  const navDrawer = document.querySelector('[data-nav-drawer]');
+  if (nav && navToggle && navDrawer) {
+    const close = () => nav.classList.remove('is-open');
+    navToggle.addEventListener('click', (e) => {
+      e.preventDefault();
+      nav.classList.toggle('is-open');
+    });
+    navDrawer.querySelectorAll('a').forEach((a) => a.addEventListener('click', close));
+    document.addEventListener('click', (e) => {
+      if (!nav.classList.contains('is-open')) return;
+      if (nav.contains(e.target)) return;
+      close();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') close();
+    });
+  }
+
   // banner close
   const closeBtn = document.querySelector('[data-close-banner]');
   const banner = document.getElementById('proBanner');
@@ -30,6 +51,29 @@
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeLightbox();
   });
+
+  // projects split hover background (solid colors)
+  const chooser = document.querySelector('[data-project-chooser]');
+  if (chooser) {
+    const items = chooser.querySelectorAll('[data-color]');
+    const defaultBg = '#000';
+
+    const setBg = (v) => chooser.style.setProperty('--split-bg', v);
+    const reset = () => setBg(defaultBg);
+
+    // init
+    setBg(defaultBg);
+
+    items.forEach((item) => {
+      const c = item.getAttribute('data-color');
+      const apply = () => c && setBg(c);
+      item.addEventListener('mouseenter', apply);
+      item.addEventListener('focus', apply);
+      item.addEventListener('touchstart', apply, { passive: true });
+    });
+    chooser.addEventListener('mouseleave', reset);
+    chooser.addEventListener('blur', reset);
+  }
 
   // collection items
   const items = Array.from({ length: 40 }, (_, i) => ({ n: i + 1, alt: `Frame ${i + 1}` }));
