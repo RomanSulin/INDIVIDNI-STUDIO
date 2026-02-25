@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <!-- Landing styles (ref-based) -->
-  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=10" />
+  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=11" />
 </head>
 <body>
 
@@ -325,67 +325,105 @@
   </div>
 </section>
 
-<!-- PROCESS — full-width splits -->
-<section class="process-splits" id="process" aria-label="Этапы создания видеоролика">
-  <div class="process-splits__head">
-    <h2 class="process-splits__title">Этапы создания видеоролика</h2>
-    <p class="process-splits__sub">Прозрачный процесс: от брифа и договора до финальных файлов. Нажми на этап — раскроем детали.</p>
+<!-- PROCESS — airy cards -->
+<section class="process-cards" id="process" aria-label="Этапы создания видеоролика">
+  <div class="process-cards__inner">
+    <div class="process-cards__head">
+      <h2 class="process-cards__title">Этапы создания видеоролика</h2>
+    </div>
+
+    <div class="process-cards__grid" role="list">
+      <article class="pcard" role="listitem">
+        <div class="pcard__no">01</div>
+        <h3 class="pcard__title">Оценка проекта</h3>
+        <p class="pcard__desc">Бриф + короткий созвон. Понимаем цель, формат и сроки, предлагаем подход и варианты реализации.</p>
+      </article>
+
+      <article class="pcard" role="listitem">
+        <div class="pcard__no">02</div>
+        <h3 class="pcard__title">Договор и смета</h3>
+        <p class="pcard__desc">Фиксируем концепцию, бюджет и дедлайны. Собираем ТЗ и план работ — без сюрпризов по ходу.</p>
+      </article>
+
+      <article class="pcard" role="listitem">
+        <div class="pcard__no">03</div>
+        <h3 class="pcard__title">Препродакшн</h3>
+        <p class="pcard__desc">Сценарий, раскадровка, локации и кастинг. Подбираем команду и готовим съёмочный план.</p>
+      </article>
+
+      <article class="pcard" role="listitem">
+        <div class="pcard__no">04</div>
+        <h3 class="pcard__title">Съёмки</h3>
+        <p class="pcard__desc">Снимаем по утверждённому плану: режиссура, свет, камера и звук. Контроль материала на площадке.</p>
+      </article>
+
+      <article class="pcard" role="listitem">
+        <div class="pcard__no">05</div>
+        <h3 class="pcard__title">Постпродакшн</h3>
+        <p class="pcard__desc">Монтаж, цвет, графика и саунд‑дизайн. Собираем финальный мастер и версии под платформы.</p>
+      </article>
+
+      <article class="pcard" role="listitem">
+        <div class="pcard__no">06</div>
+        <h3 class="pcard__title">Правки и сдача</h3>
+        <p class="pcard__desc">Вносим правки по согласованным раундам и отдаём исходники/мастера. Закрываем документы.</p>
+      </article>
+    </div>
   </div>
+</section>
 
-  <div class="process-splits__list" data-process>
-    <details class="pstep" open>
-      <summary class="pstep__sum">
-        <span class="pstep__no">01</span>
-        <span class="pstep__name">Оценка проекта</span>
-        <span class="pstep__hint">Подробнее</span>
-      </summary>
-      <div class="pstep__body">Заполняем бриф, созваниваемся и уточняем задачу. После — предлагаем концепции и формируем план реализации.</div>
-    </details>
+<!-- TEAM (placeholder) -->
+<section class="team" aria-label="Команда">
+  <div class="team__inner">
+    <h2 class="team__title">Команда</h2>
+    <div class="team__grid" role="list">
+      <article class="tcard" role="listitem">
+        <div class="tcard__photo"><img src="./assets/img/ph_square.png" alt="Сотрудник 1" loading="lazy" /></div>
+        <div class="tcard__name">Имя Фамилия</div>
+        <div class="tcard__role">Продюсер</div>
+      </article>
+      <article class="tcard" role="listitem">
+        <div class="tcard__photo"><img src="./assets/img/ph_square.png" alt="Сотрудник 2" loading="lazy" /></div>
+        <div class="tcard__name">Имя Фамилия</div>
+        <div class="tcard__role">Режиссёр</div>
+      </article>
+      <article class="tcard" role="listitem">
+        <div class="tcard__photo"><img src="./assets/img/ph_square.png" alt="Сотрудник 3" loading="lazy" /></div>
+        <div class="tcard__name">Имя Фамилия</div>
+        <div class="tcard__role">Оператор</div>
+      </article>
+      <article class="tcard" role="listitem">
+        <div class="tcard__photo"><img src="./assets/img/ph_square.png" alt="Сотрудник 4" loading="lazy" /></div>
+        <div class="tcard__name">Имя Фамилия</div>
+        <div class="tcard__role">Монтаж</div>
+      </article>
+    </div>
+  </div>
+</section>
 
-    <details class="pstep">
-      <summary class="pstep__sum">
-        <span class="pstep__no">02</span>
-        <span class="pstep__name">Подписание договора</span>
-        <span class="pstep__hint">Подробнее</span>
-      </summary>
-      <div class="pstep__body">Фиксируем концепцию, сроки и смету, собираем техническое задание. Стартуем работу только после согласования.</div>
-    </details>
+<!-- FAQ -->
+<section class="faq" aria-label="Частые вопросы">
+  <div class="faq__inner">
+    <h2 class="faq__title">Частые вопросы</h2>
 
-    <details class="pstep">
-      <summary class="pstep__sum">
-        <span class="pstep__no">03</span>
-        <span class="pstep__name">Препродакшн</span>
-        <span class="pstep__hint">Подробнее</span>
-      </summary>
-      <div class="pstep__body">Сценарий, раскадровка, локации и кастинг. Подбираем команду и реквизит, собираем съёмочный план.</div>
-    </details>
-
-    <details class="pstep">
-      <summary class="pstep__sum">
-        <span class="pstep__no">04</span>
-        <span class="pstep__name">Съёмки</span>
-        <span class="pstep__hint">Подробнее</span>
-      </summary>
-      <div class="pstep__body">Снимаем по согласованному плану: режиссура, свет, камера, звук. Контролируем материал на площадке.</div>
-    </details>
-
-    <details class="pstep">
-      <summary class="pstep__sum">
-        <span class="pstep__no">05</span>
-        <span class="pstep__name">Постпродакшн</span>
-        <span class="pstep__hint">Подробнее</span>
-      </summary>
-      <div class="pstep__body">Монтаж, цвет, графика и звук. Делаем версии под форматы и площадки, собираем финальный мастер.</div>
-    </details>
-
-    <details class="pstep">
-      <summary class="pstep__sum">
-        <span class="pstep__no">06</span>
-        <span class="pstep__name">Правки и сдача</span>
-        <span class="pstep__hint">Подробнее</span>
-      </summary>
-      <div class="pstep__body">Вносим правки по согласованным раундам и отдаём финальные файлы. После приёмки закрываем документы.</div>
-    </details>
+    <div class="faq__list" data-faq>
+      <details class="faq-item">
+        <summary class="faq-q">Сколько времени занимает проект?</summary>
+        <div class="faq-a">В среднем от 7 до 21 дня — зависит от объёма, графики и количества локаций. Сроки фиксируем в договоре.</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">Вы работаете по договору?</summary>
+        <div class="faq-a">Да. Утверждаем смету, ТЗ и этапы оплаты. Стартуем после согласования всех деталей.</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">Сколько раундов правок включено?</summary>
+        <div class="faq-a">Обычно 2 раунда — этого хватает, чтобы довести ролик до финала без затягивания процесса.</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">Можно ли сделать версии под разные форматы?</summary>
+        <div class="faq-a">Да. Делаем адаптации под вертикальные/горизонтальные форматы, субтитры и разные длительности.</div>
+      </details>
+    </div>
   </div>
 </section>
 
