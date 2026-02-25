@@ -11,14 +11,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <!-- Landing styles (ref-based) -->
-  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=8" />
+  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=9" />
 </head>
 <body>
 
 <!-- TOP BANNER -->
 <div class="pro-banner" id="proBanner">
   <span>Открыт набор на проекты • 2026 • Europe</span>
-  <a class="pill" href="#download">Заполнить бриф</a>
+  <a class="pill" href="./brief.html">Заполнить бриф</a>
   <button class="close-btn" type="button" data-close-banner>×</button>
 </div>
 
@@ -28,16 +28,16 @@
     <a class="nav-brand" href="#top">INDIVIDNI</a>
     <span class="nav-by">studio</span>
     <div class="nav-links" aria-label="Меню">
-      <a href="#projects">Projects</a>
-      <a href="#services">Services</a>
-      <a href="#process">Process</a>
-      <a href="#download">Brief</a>
-      <a href="#contact">Contact</a>
+      <a href="#projects">Проекты</a>
+      <a href="#services">Услуги</a>
+      <a href="#process">Этапы</a>
+      <a href="./brief.html">Бриф</a>
+      <a href="#contact">Контакты</a>
     </div>
   </div>
   <div class="nav-right">
     <span class="nav-tag">Video production</span>
-    <a class="btn-dl" href="#projects">Проекты</a>
+    <a class="btn-dl" href="#projects">Смотреть работы</a>
     <button class="nav-toggle" type="button" aria-label="Открыть меню" data-nav-toggle>
       <span></span><span></span>
     </button>
@@ -45,11 +45,11 @@
 
   <!-- Mobile menu -->
   <div class="nav-drawer" data-nav-drawer>
-    <a href="#projects">Projects</a>
-    <a href="#services">Services</a>
-    <a href="#process">Process</a>
-    <a href="#download">Brief</a>
-    <a href="#contact">Contact</a>
+    <a href="#projects">Проекты</a>
+    <a href="#services">Услуги</a>
+    <a href="#process">Этапы</a>
+    <a href="./brief.html">Бриф</a>
+    <a href="#contact">Контакты</a>
   </div>
 </nav>
 
@@ -118,7 +118,7 @@
             </div>
           </a>
 
-          <a class="proj-item" href="./project_tenderness/" data-color="#00FF6A">
+          <a class="proj-item" href="./project_tenderness/" data-color="#00FF4F">
             <div class="proj-thumb"><img src="./assets/project/2/2.jpg" alt="Tenderness frame" onerror="this.onerror=null;this.src='./assets/img/ph_16x9.png';" /></div>
             <div class="proj-info">
               <div class="proj-title">Tenderness</div>
@@ -297,80 +297,109 @@
 
 
 
-<!-- CTA MINI -->
-<section class="cta-mini" aria-label="Обсудим проект">
-  <div class="cta-mini-inner">
-    <h2 class="cta-mini-title">Обсудим проект?</h2>
-    <a class="btn btn--dark" href="#contact">Написать →</a>
-  </div>
-</section>
 
-<!-- FEATURE (ref "great") -->
-<section class="great-section" id="process" aria-label="Процесс">
-  <img class="great-img" src="./assets/img/ph_16x9.png" alt="BTS / frame" />
-  <div class="great-info">
-    <div class="use-tags">
-      <span class="use-tag">Commercials</span>
-      <span class="use-tag">Music videos</span>
-      <span class="use-tag">Brand content</span>
-      <span class="use-tag">Social</span>
+<!-- CONTACT / CTA (lead form) -->
+<section class="cta-contact" id="contact" aria-label="Обсудить проект">
+  <div class="cta-contact-inner">
+    <div class="cta-copy">
+      <h2 class="cta-title">ОБСУДИТЬ ПРОЕКТ?</h2>
+      <p class="cta-desc">Оставьте заявку — наш продюсер свяжется с вами, уточнит детали и предложит следующий шаг.</p>
     </div>
 
-    <h2>Fast, controlled, cinematic</h2>
-    <p>Понятный процесс, прозрачные этапы и аккуратный визуал. Подготовка, съёмка, пост — всё в одной команде.</p>
-  </div>
-</section>
+    <form class="cta-form" action="#" method="post">
+      <label class="field">
+        <span class="field-label">Имя</span>
+        <input type="text" name="name" placeholder="Ваше имя" autocomplete="name" />
+      </label>
+      <label class="field">
+        <span class="field-label">Телефон</span>
+        <input type="tel" name="phone" placeholder="+7 (___) ___‑__‑__" autocomplete="tel" />
+      </label>
+    </form>
 
-<!-- VIDEO -->
-<section class="video-section" aria-label="Showreel">
-  <div class="video-wrap">
-    <video autoplay muted loop playsinline>
-      <source src="./assets/ui/showreel_2.mp4" type="video/mp4" />
-    </video>
-  </div>
-</section>
-
-<!-- CONTACT anchor helper -->
-<div id="contact" aria-hidden="true" style="height:1px;"></div>
-
-<!-- GALLERY (ref "collection") -->
-<section class="collection" aria-label="Stills">
-  <div class="collection-header">
-    <div>
-      <p style="font-family:var(--font-head);font-size:14px;font-weight:700;opacity:.5;margin-bottom:4px;">Frames / stills</p>
-      <h2>Gallery</h2>
-    </div>
-
-    <div class="color-tabs">
-      <button class="color-tab active" type="button" onclick="switchTab(this,'color')">Color</button>
-      <button class="color-tab" type="button" onclick="switchTab(this,'black')">Black</button>
+    <div class="cta-actions">
+      <button class="cta-btn" type="button">Отправить</button>
+      <p class="cta-note">Нажимая кнопку «Отправить», Вы соглашаетесь с Политикой конфиденциальности.</p>
     </div>
   </div>
-
-  <div class="grid" id="letterGrid"></div>
 </section>
 
-<!-- BRIEF / PRICING (ref "download") -->
-<section class="download" id="download" aria-label="Brief">
-  <div class="dl-card">
-    <h3>Brief in 2 minutes</h3>
-    <ul>
-      <li>Цель и формат</li>
-      <li>Референсы и стиль</li>
-      <li>Сроки и бюджет</li>
-      <li>Город и локации</li>
-      <li>Контакты</li>
-    </ul>
-    <a class="btn-buy" href="./brief.html">Открыть бриф</a>
-    <p class="sub">Если страницы brief.html нет — просто создай позже. Сейчас это кнопка‑заглушка.</p>
-  </div>
+<!-- PROCESS — interactive steps -->
+<section class="steps" id="process" aria-label="Этапы создания видеоролика">
+  <div class="steps-inner">
+    <h2 class="steps-h">Этапы создания видеоролика</h2>
+    <p class="steps-sub">Небольшая интерактивная история: кликай на карточки — они раскрываются.</p>
 
-  <div class="dl-card" style="background:var(--dark);color:#fff;">
-    <h3 style="color:#fff;">Contact</h3>
-    <p style="font-size:14px;opacity:.7;margin-bottom:20px;line-height:1.6;">Напиши задачу — быстро вернусь с вопросами и предложением по продакшену.</p>
-    <a class="btn-buy" href="mailto:hello@individnistudio.ru" style="background:#fff;color:var(--dark);">hello@individnistudio.ru</a>
+    <div class="steps-panel" data-steps>
+      <article class="step-card" tabindex="0" data-step="1">
+        <div class="step-head">
+          <div class="step-no">01</div>
+          <div class="step-title">Оценка проекта</div>
+          <button class="step-x" type="button" aria-label="Закрыть">×</button>
+        </div>
+        <div class="step-body">
+          Заполняем бриф, созваниваемся и уточняем задачу. Дальше предлагаем 1–3 концепции и план реализации.
+        </div>
+      </article>
+
+      <article class="step-card" tabindex="0" data-step="2">
+        <div class="step-head">
+          <div class="step-no">02</div>
+          <div class="step-title">Подписание договора</div>
+          <button class="step-x" type="button" aria-label="Закрыть">×</button>
+        </div>
+        <div class="step-body">
+          Фиксируем концепцию, сроки и смету, формируем ТЗ. Стартуем работу после согласования и подписания.
+        </div>
+      </article>
+
+      <article class="step-card" tabindex="0" data-step="3">
+        <div class="step-head">
+          <div class="step-no">03</div>
+          <div class="step-title">Препродакшн</div>
+          <button class="step-x" type="button" aria-label="Закрыть">×</button>
+        </div>
+        <div class="step-body">
+          Сценарий и раскадровка, локации и кастинг, команда и реквизит. Готовим съёмочный план и тайминг.
+        </div>
+      </article>
+
+      <article class="step-card" tabindex="0" data-step="4">
+        <div class="step-head">
+          <div class="step-no">04</div>
+          <div class="step-title">Съёмки</div>
+          <button class="step-x" type="button" aria-label="Закрыть">×</button>
+        </div>
+        <div class="step-body">
+          Снимаем по утверждённому плану: режиссура, свет, камера, звук. Контролируем материал прямо на площадке.
+        </div>
+      </article>
+
+      <article class="step-card" tabindex="0" data-step="5">
+        <div class="step-head">
+          <div class="step-no">05</div>
+          <div class="step-title">Постпродакшн</div>
+          <button class="step-x" type="button" aria-label="Закрыть">×</button>
+        </div>
+        <div class="step-body">
+          Монтаж → цвет → графика → звук. Собираем финальные версии под нужные форматы и площадки.
+        </div>
+      </article>
+
+      <article class="step-card" tabindex="0" data-step="6">
+        <div class="step-head">
+          <div class="step-no">06</div>
+          <div class="step-title">Правки и сдача</div>
+          <button class="step-x" type="button" aria-label="Закрыть">×</button>
+        </div>
+        <div class="step-body">
+          Вносим правки по согласованным раундам, отдаём master‑файлы и закрываем документы.
+        </div>
+      </article>
+    </div>
   </div>
 </section>
+
 
 <!-- FOOTER -->
 <footer>
