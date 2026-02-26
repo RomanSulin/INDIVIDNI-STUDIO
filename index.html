@@ -50,7 +50,7 @@
   </div>
   <div class="nav-right">
     <span class="nav-tag">Video production</span>
-    <a class="btn-dl" href="#projects">Проекты</a>
+    <a class="btn-dl" href="#projects">Смотреть работы</a>
     <button class="nav-toggle" type="button" aria-label="Открыть меню" data-nav-toggle>
       <span></span><span></span>
     </button>
@@ -550,7 +550,6 @@
 (() => {
   const stage = document.querySelector('[data-tv-hero]');
   if (!stage) return;
-  if (window.matchMedia && window.matchMedia('(max-width: 620px)').matches) return;
 
   const loadScript = (src) => new Promise((resolve, reject) => {
     const s = document.createElement('script');
@@ -819,45 +818,6 @@
   v.addEventListener('ended', () => {
     btnPlay.classList.remove('is-hidden');
     wrap.classList.remove('is-playing');
-  });
-})();
-</script>
-
-
-<script>
-/* INDIVIDNI_NAV_INIT: mobile menu toggle */
-(() => {
-  const nav = document.querySelector('nav');
-  const btn = document.querySelector('[data-nav-toggle]');
-  const drawer = document.querySelector('[data-nav-drawer]');
-  if (!nav || !btn || !drawer) return;
-
-  const close = () => {
-    nav.classList.remove('is-open');
-    btn.setAttribute('aria-expanded', 'false');
-  };
-  const open = () => {
-    nav.classList.add('is-open');
-    btn.setAttribute('aria-expanded', 'true');
-  };
-  const toggle = () => nav.classList.contains('is-open') ? close() : open();
-
-  btn.setAttribute('aria-expanded', 'false');
-  btn.addEventListener('click', (e) => { e.preventDefault(); toggle(); });
-
-  // close on link click
-  drawer.querySelectorAll('a').forEach((a) => a.addEventListener('click', close));
-
-  // close on outside click
-  document.addEventListener('click', (e) => {
-    if (!nav.classList.contains('is-open')) return;
-    const t = e.target;
-    if (t === btn || btn.contains(t) || drawer.contains(t)) return;
-    close();
-  });
-
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') close();
   });
 })();
 </script>
