@@ -10,6 +10,18 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Wet+Paint&display=swap" rel="stylesheet">
+
+  <!-- Preload critical above-the-fold assets (SVG wordmark + hero bg) -->
+  <link rel="preload" as="video" href="./assets/ui/Showreel_3.mp4" type="video/mp4" />
+  <link rel="preload" as="image" href="./assets/img/individni/I.svg" type="image/svg+xml" />
+  <link rel="preload" as="image" href="./assets/img/individni/N.svg" type="image/svg+xml" />
+  <link rel="preload" as="image" href="./assets/img/individni/D.svg" type="image/svg+xml" />
+  <link rel="preload" as="image" href="./assets/img/individni/I-1.svg" type="image/svg+xml" />
+  <link rel="preload" as="image" href="./assets/img/individni/V.svg" type="image/svg+xml" />
+  <link rel="preload" as="image" href="./assets/img/individni/I-2.svg" type="image/svg+xml" />
+  <link rel="preload" as="image" href="./assets/img/individni/D-1.svg" type="image/svg+xml" />
+  <link rel="preload" as="image" href="./assets/img/individni/N-1.svg" type="image/svg+xml" />
+  <link rel="preload" as="image" href="./assets/img/individni/I-3.svg" type="image/svg+xml" />
   
   <!-- Landing styles (ref-based) -->
   <link rel="stylesheet" href="./assets/css/landing_ref.css?v=16" />
@@ -68,15 +80,15 @@
 
   <!-- SVG wordmark: INDIVIDNI -->
   <div class="hero-wordmark" aria-label="INDIVIDNI">
-    <img class="wm" src="./assets/img/individni/I.svg"   alt="I" draggable="false">
-    <img class="wm" src="./assets/img/individni/N.svg"   alt="N" draggable="false">
-    <img class="wm" src="./assets/img/individni/D.svg"   alt="D" draggable="false">
-    <img class="wm" src="./assets/img/individni/I-1.svg" alt="I" draggable="false">
-    <img class="wm" src="./assets/img/individni/V.svg"   alt="V" draggable="false">
-    <img class="wm" src="./assets/img/individni/I-2.svg" alt="I" draggable="false">
-    <img class="wm" src="./assets/img/individni/D-1.svg" alt="D" draggable="false">
-    <img class="wm" src="./assets/img/individni/N-1.svg" alt="N" draggable="false">
-    <img class="wm" src="./assets/img/individni/I-3.svg" alt="I" draggable="false">
+    <img class="wm" src="./assets/img/individni/I.svg"   alt="I" draggable="false" fetchpriority="high" decoding="async">
+    <img class="wm" src="./assets/img/individni/N.svg"   alt="N" draggable="false" fetchpriority="high" decoding="async">
+    <img class="wm" src="./assets/img/individni/D.svg"   alt="D" draggable="false" fetchpriority="high" decoding="async">
+    <img class="wm" src="./assets/img/individni/I-1.svg" alt="I" draggable="false" fetchpriority="high" decoding="async">
+    <img class="wm" src="./assets/img/individni/V.svg"   alt="V" draggable="false" fetchpriority="high" decoding="async">
+    <img class="wm" src="./assets/img/individni/I-2.svg" alt="I" draggable="false" fetchpriority="high" decoding="async">
+    <img class="wm" src="./assets/img/individni/D-1.svg" alt="D" draggable="false" fetchpriority="high" decoding="async">
+    <img class="wm" src="./assets/img/individni/N-1.svg" alt="N" draggable="false" fetchpriority="high" decoding="async">
+    <img class="wm" src="./assets/img/individni/I-3.svg" alt="I" draggable="false" fetchpriority="high" decoding="async">
   </div>
 </div>
 
@@ -102,7 +114,7 @@
       </div>
 
       <!-- TV moved сюда из HERO (структура не менялась) -->
-      <div class="hero-tv-stage" data-tv-hero aria-label="3D TV hero">
+      <div class="hero-tv-stage" data-tv-hero aria-label="3D TV hero" role="button" tabindex="0" aria-haspopup="dialog" aria-controls="showreelModal" data-open-showreel>
             <canvas id="tvHeroCanvas"></canvas>
             <video class="tvfly__hiddenVideo lazy-video" id="tvHeroVideo" loop muted playsinline preload="none" webkit-playsinline data-play-on-view>
               <source data-src="./assets/ui/showreel_2.mp4" type="video/mp4"/>
@@ -502,13 +514,82 @@
   <img id="lbImg" src="" alt="" />
 </div>
 
-<!-- TV dependencies (do not remove if you keep TV) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://unpkg.com/fflate@0.7.4/umd/index.js"></script>
-<script src="https://unpkg.com/three@0.128.0/examples/js/loaders/FBXLoader.js"></script>
+<!-- SHOWREEL MODAL (opens on TV click) -->
+<div class="showreel-modal" id="showreelModal" aria-hidden="true">
+  <div class="showreel-backdrop" data-sr-close></div>
+  <div class="showreel-dialog" role="dialog" aria-modal="true" aria-label="Шоурил" tabindex="-1">
+    <button class="sr-close" type="button" aria-label="Закрыть" data-sr-close>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.3 5.7a1 1 0 0 0-1.4 0L12 10.6 7.1 5.7a1 1 0 1 0-1.4 1.4L10.6 12l-4.9 4.9a1 1 0 1 0 1.4 1.4L12 13.4l4.9 4.9a1 1 0 0 0 1.4-1.4L13.4 12l4.9-4.9a1 1 0 0 0 0-1.4Z"/></svg>
+    </button>
 
-<!-- TV code (keep unchanged) -->
-<script src="./assets/js/tv_hero.js"></script>
+    <div class="sr-wrap" data-sr-wrap>
+      <video class="sr-video" id="showreelVideo" playsinline preload="none" webkit-playsinline>
+        <source data-src="./assets/ui/showreel.mp4" type="video/mp4" />
+      </video>
+
+      <button class="sr-play" type="button" data-sr-play>
+        <span class="sr-play__label">Запустить</span>
+      </button>
+
+      <button class="sr-sound" type="button" aria-label="Звук" data-sr-sound>
+        <svg class="sr-ico" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M11 5 6.8 8.4H4a2 2 0 0 0-2 2v3.2a2 2 0 0 0 2 2h2.8L11 19V5Zm7.4 7a4.6 4.6 0 0 1-2.3 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M20.5 7.5a9 9 0 0 1 0 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      <div class="sr-hoverHint" aria-hidden="true">Нажмите, чтобы остановить</div>
+    </div>
+  </div>
+</div>
+
+<!-- TV: heavy dependencies are lazy-loaded when the Projects block is near viewport -->
+<script>
+(() => {
+  const stage = document.querySelector('[data-tv-hero]');
+  if (!stage) return;
+
+  const loadScript = (src) => new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = src;
+    s.async = true;
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error('Failed to load ' + src));
+    document.head.appendChild(s);
+  });
+
+  const ensureTV = async () => {
+    if (window.__INDIVIDNI_TV_LOADED) return;
+    window.__INDIVIDNI_TV_LOADED = true;
+    try {
+      // prime TV video sources right before TV init (so tv_hero.js sees a real src)
+      const tvV = document.getElementById('tvHeroVideo');
+      if (tvV) {
+        tvV.querySelectorAll('source').forEach((s) => {
+          if (!s.getAttribute('src') && s.dataset.src) s.setAttribute('src', s.dataset.src);
+        });
+        try { tvV.load(); } catch (_) {}
+      }
+
+      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js');
+      await loadScript('https://unpkg.com/fflate@0.7.4/umd/index.js');
+      await loadScript('https://unpkg.com/three@0.128.0/examples/js/loaders/FBXLoader.js');
+      await loadScript('./assets/js/tv_hero.js');
+    } catch (e) {
+      console.warn(e);
+    }
+  };
+
+  const io = new IntersectionObserver((entries) => {
+    if (entries.some((e) => e.isIntersecting)) {
+      io.disconnect();
+      ensureTV();
+    }
+  }, { threshold: 0.01, rootMargin: '700px 0px 700px 0px' });
+
+  io.observe(stage);
+})();
+</script>
 
 <!-- Landing JS -->
 <script src="./assets/js/landing_ref.js?v=15"></script>
@@ -533,8 +614,8 @@
       const vh = v.videoHeight || 0;
       if (!vw || !vh) return;
 
-      // downscale to keep localStorage small
-      const targetW = Math.min(720, vw);
+      // downscale hard to keep work + localStorage small
+      const targetW = Math.min(520, vw);
       const scale = targetW / vw;
       const targetH = Math.round(vh * scale);
 
@@ -544,15 +625,21 @@
       const ctx = c.getContext("2d", { willReadFrequently: true });
       ctx.drawImage(v, 0, 0, targetW, targetH);
 
-      const dataUrl = c.toDataURL("image/jpeg", 0.65);
+      const dataUrl = c.toDataURL("image/jpeg", 0.62);
       hero.style.backgroundImage = `url(${dataUrl})`;
 
-      try { localStorage.setItem(KEY, dataUrl); } catch (e) {}
+      // avoid huge localStorage entries
+      if (dataUrl.length < 420000) {
+        try { localStorage.setItem(KEY, dataUrl); } catch (e) {}
+      }
     } catch (e) {}
   };
 
   // As soon as we have something to draw (usually first frame)
-  v.addEventListener("loadeddata", capture, { once: true });
+  v.addEventListener("loadeddata", () => {
+    const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 60));
+    idle(capture);
+  }, { once: true });
 })();
 </script>
 
@@ -575,6 +662,7 @@
 
   const play = (v) => {
     if (reduce) return;
+    if (window.__INDIVIDNI_MODAL_OPEN) return;
     prime(v);
     const go = () => v.play && v.play().catch(() => {});
     if (v.readyState >= 2) go();
@@ -598,6 +686,136 @@
     v.autoplay = false;
     stop(v);
     io.observe(v);
+  });
+})();
+</script>
+
+<script>
+/* Showreel modal: click on TV opens pop-up with showreel.mp4 (sound toggle + zoom anim) */
+(() => {
+  const modal = document.getElementById('showreelModal');
+  const dialog = modal?.querySelector('.showreel-dialog');
+  const tvStage = document.querySelector('[data-open-showreel]');
+  const v = document.getElementById('showreelVideo');
+  const wrap = modal?.querySelector('[data-sr-wrap]');
+  const btnPlay = modal?.querySelector('[data-sr-play]');
+  const btnSound = modal?.querySelector('[data-sr-sound]');
+  const closers = modal?.querySelectorAll('[data-sr-close]') || [];
+  const tvVideo = document.getElementById('tvHeroVideo');
+
+  if (!modal || !dialog || !tvStage || !v || !btnPlay || !btnSound || !wrap) return;
+
+  const primeShowreel = () => {
+    if (v.dataset.primed) return;
+    v.dataset.primed = '1';
+    v.querySelectorAll('source').forEach((s) => {
+      if (!s.getAttribute('src') && s.dataset.src) s.setAttribute('src', s.dataset.src);
+    });
+    try { v.load(); } catch (_) {}
+  };
+
+  const open = () => {
+    window.__INDIVIDNI_MODAL_OPEN = true;
+    document.body.classList.add('modal-open');
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden', 'false');
+
+    // pause videos behind (and stop TV video to save CPU)
+    try { tvVideo?.pause(); } catch (_) {}
+    document.querySelectorAll('video[data-play-on-view]').forEach((vv) => {
+      try {
+        if (!vv.paused) vv.dataset.pausedByModal = '1';
+        vv.pause();
+      } catch (_) {}
+    });
+
+    setTimeout(() => { try { dialog.focus(); } catch (_) {} }, 50);
+  };
+
+  const close = () => {
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('modal-open');
+    window.__INDIVIDNI_MODAL_OPEN = false;
+
+    // stop modal video
+    try { v.pause(); } catch (_) {}
+    v.currentTime = 0;
+    btnPlay.classList.remove('is-hidden');
+    wrap.classList.remove('is-playing');
+
+    // resume videos that were playing
+    const resume = () => {
+      document.querySelectorAll('video[data-paused-by-modal="1"]').forEach((vv) => {
+        vv.removeAttribute('data-paused-by-modal');
+        try { vv.play && vv.play().catch(() => {}); } catch (_) {}
+      });
+    };
+    setTimeout(resume, 80);
+  };
+
+  const togglePlay = async () => {
+    primeShowreel();
+    if (v.paused) {
+      btnPlay.classList.add('is-hidden');
+      wrap.classList.add('is-playing');
+      try { await v.play(); } catch (_) {
+        btnPlay.classList.remove('is-hidden');
+        wrap.classList.remove('is-playing');
+      }
+    } else {
+      try { v.pause(); } catch (_) {}
+      btnPlay.classList.remove('is-hidden');
+      wrap.classList.remove('is-playing');
+    }
+  };
+
+  const toggleSound = () => {
+    v.muted = !v.muted;
+    btnSound.classList.toggle('is-on', !v.muted);
+  };
+
+  // open
+  tvStage.addEventListener('click', (e) => {
+    e.preventDefault();
+    open();
+  });
+  tvStage.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      open();
+    }
+  });
+
+  // close
+  closers.forEach((c) => c.addEventListener('click', close));
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('is-open')) close();
+  });
+
+  // play / stop
+  btnPlay.addEventListener('click', (e) => {
+    e.stopPropagation();
+    togglePlay();
+  });
+  wrap.addEventListener('click', (e) => {
+    if (e.target === btnSound || e.target.closest('[data-sr-close]')) return;
+    if (wrap.classList.contains('is-playing')) togglePlay();
+  });
+
+  // sound
+  v.muted = true;
+  btnSound.classList.remove('is-on');
+  btnSound.addEventListener('click', (e) => {
+    e.stopPropagation();
+    primeShowreel();
+    toggleSound();
+  });
+
+  // if video ends — show play again
+  v.addEventListener('ended', () => {
+    btnPlay.classList.remove('is-hidden');
+    wrap.classList.remove('is-playing');
   });
 })();
 </script>
