@@ -104,8 +104,8 @@
       <!-- TV moved сюда из HERO (структура не менялась) -->
       <div class="hero-tv-stage" data-tv-hero aria-label="3D TV hero">
             <canvas id="tvHeroCanvas"></canvas>
-            <video class="tvfly__hiddenVideo" id="tvHeroVideo" loop muted playsinline preload="auto" webkit-playsinline>
-              <source src="./assets/ui/showreel_2.mp4" type="video/mp4"/>
+            <video class="tvfly__hiddenVideo lazy-video" id="tvHeroVideo" loop muted playsinline preload="none" webkit-playsinline data-play-on-view>
+              <source data-src="./assets/ui/showreel_2.mp4" type="video/mp4"/>
             </video>
           </div>
 
@@ -182,8 +182,8 @@
   <div class="services-grid" role="list">
     <a class="svc-card svc-card--blue" role="listitem" href="#">
       <div class="svc-media">
-        <video class="svc-video" autoplay muted loop playsinline preload="metadata">
-          <source src="./assets/services/video/shooting.mp4" type="video/mp4" />
+        <video class="svc-video lazy-video" muted loop playsinline preload="none" data-play-on-view>
+          <source data-src="./assets/services/video/shooting.mp4" type="video/mp4" />
         </video>
         <div class="svc-overlay">
           <div class="svc-name">Съёмка</div>
@@ -194,8 +194,8 @@
 
     <a class="svc-card svc-card--red" role="listitem" href="#">
       <div class="svc-media">
-        <video class="svc-video" autoplay muted loop playsinline preload="metadata">
-          <source src="./assets/services/video/editing.mp4" type="video/mp4" />
+        <video class="svc-video lazy-video" muted loop playsinline preload="none" data-play-on-view>
+          <source data-src="./assets/services/video/editing.mp4" type="video/mp4" />
         </video>
         <div class="svc-overlay">
           <div class="svc-name">Монтаж</div>
@@ -206,8 +206,8 @@
 
     <a class="svc-card svc-card--green" role="listitem" href="#">
       <div class="svc-media">
-        <video class="svc-video" autoplay muted loop playsinline preload="metadata">
-          <source src="./assets/services/video/sound.mp4" type="video/mp4" />
+        <video class="svc-video lazy-video" muted loop playsinline preload="none" data-play-on-view>
+          <source data-src="./assets/services/video/sound.mp4" type="video/mp4" />
         </video>
         <div class="svc-overlay">
           <div class="svc-name">Цвет</div>
@@ -218,8 +218,8 @@
 
     <a class="svc-card svc-card--yellow" role="listitem" href="#">
       <div class="svc-media">
-        <video class="svc-video" autoplay muted loop playsinline preload="metadata">
-          <source src="./assets/services/video/photo.mp4" type="video/mp4" />
+        <video class="svc-video lazy-video" muted loop playsinline preload="none" data-play-on-view>
+          <source data-src="./assets/services/video/photo.mp4" type="video/mp4" />
         </video>
         <div class="svc-overlay">
           <div class="svc-name">Фото</div>
@@ -230,8 +230,8 @@
 
     <a class="svc-card svc-card--pink" role="listitem" href="#">
       <div class="svc-media">
-        <video class="svc-video" autoplay muted loop playsinline preload="metadata">
-          <source src="./assets/services/video/AI.mp4" type="video/mp4" />
+        <video class="svc-video lazy-video" muted loop playsinline preload="none" data-play-on-view>
+          <source data-src="./assets/services/video/AI.mp4" type="video/mp4" />
         </video>
         <div class="svc-overlay">
           <div class="svc-name">AI графика</div>
@@ -364,8 +364,8 @@
 
 <!-- PROCESS — airy cards -->
 <section class="process-cards" id="process" aria-label="Этапы создания видеоролика">
-  <video class="process-bg-video" autoplay muted loop playsinline preload="metadata" aria-hidden="true">
-    <source src="./assets/services/video/Background.mp4" type="video/mp4" />
+  <video class="process-bg-video lazy-video" muted loop playsinline preload="none" data-play-on-view aria-hidden="true">
+    <source data-src="./assets/services/video/Background.mp4" type="video/mp4" />
   </video>
   <div class="process-bg-overlay" aria-hidden="true"></div>
   <div class="process-cards__inner">
@@ -553,6 +553,52 @@
 
   // As soon as we have something to draw (usually first frame)
   v.addEventListener("loadeddata", capture, { once: true });
+})();
+</script>
+
+<script>
+/* Lazy-load + play videos only when section is in view (saves CPU on first load) */
+(() => {
+  const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const vids = Array.from(document.querySelectorAll("video[data-play-on-view]"));
+  if (!vids.length) return;
+
+  const prime = (v) => {
+    if (v.dataset.primed) return;
+    v.dataset.primed = "1";
+
+    v.querySelectorAll("source").forEach((s) => {
+      if (!s.getAttribute("src") && s.dataset.src) s.setAttribute("src", s.dataset.src);
+    });
+    try { v.load(); } catch (_) {}
+  };
+
+  const play = (v) => {
+    if (reduce) return;
+    prime(v);
+    const go = () => v.play && v.play().catch(() => {});
+    if (v.readyState >= 2) go();
+    else v.addEventListener("loadeddata", go, { once: true });
+  };
+
+  const stop = (v) => {
+    try { v.pause(); } catch (_) {}
+  };
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      const v = e.target;
+      if (e.isIntersecting) play(v);
+      else stop(v);
+    });
+  }, { threshold: 0.15, rootMargin: "220px 0px 220px 0px" });
+
+  vids.forEach((v) => {
+    // prevent eager start
+    v.autoplay = false;
+    stop(v);
+    io.observe(v);
+  });
 })();
 </script>
 
