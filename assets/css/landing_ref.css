@@ -1751,3 +1751,52 @@ footer{
 @media (prefers-reduced-motion: reduce){
   .who-marker{ animation: none; }
 }
+
+
+
+/* ===== V16 TOP PATCH: hero background video + TV moved into projects ===== */
+.hero{
+  background-color: var(--bg);
+  background-size: cover;
+  background-position: center;
+}
+
+/* keep content above bg */
+.hero > :not(.hero-bg-video):not(.hero-bg-overlay){
+  position: relative;
+  z-index: 2;
+}
+
+.hero-bg-video{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  z-index:0;
+}
+
+.hero-bg-overlay{
+  position:absolute;
+  inset:0;
+  /* soft paper tint above video so text remains readable */
+  background: rgba(245,242,236,0.68);
+  z-index:1;
+  pointer-events:none;
+}
+
+/* TV placement inside Projects left split */
+.split-left .hero-tv-stage{
+  width: min(720px, 100%);
+  aspect-ratio: 16 / 9;
+  margin-top: 26px;
+  transform: translateX(34px);
+}
+
+@media (max-width: 980px){
+  .split-left .hero-tv-stage{
+    transform: none;
+    margin-top: 20px;
+  }
+}
+
