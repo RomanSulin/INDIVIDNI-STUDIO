@@ -628,27 +628,6 @@ nav.is-open .nav-drawer{ display:grid; }
   transition: transform .14s ease;
 }
 
-/* Mascot on "Съёмка" card */
-.svc-card--shooting{
-  overflow: visible;
-}
-.svc-card--shooting .svc-mascot{
-  position: absolute;
-  left: 50%;
-  top: 0;
-  width: clamp(96px, 28%, 168px);
-  transform: translate(calc(-50% - 5%), -39%);
-  pointer-events: none;
-  z-index: 6;
-  filter: drop-shadow(0 12px 18px rgba(0,0,0,.18));
-}
-.svc-card--shooting .svc-mascot__img{
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-
 .svc-media{
   border-radius: inherit;
   aspect-ratio: 3 / 4;
