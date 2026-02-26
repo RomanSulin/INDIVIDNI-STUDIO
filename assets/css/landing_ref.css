@@ -235,6 +235,7 @@ nav.is-open .nav-drawer{ display:grid; }
   letter-spacing: -0.03em;
   font-size: clamp(58px, 10vw, 140px);
   line-height: .92;
+  color: #fff;
 }
 .hero-media{
   display:flex;
