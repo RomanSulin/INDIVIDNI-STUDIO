@@ -24,7 +24,7 @@
   <link rel="preload" as="image" href="./assets/img/individni/I-3.svg" type="image/svg+xml" />
   
   <!-- Landing styles (ref-based) -->
-  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=16" />
+  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=17" />
 </head>
 <body>
 
@@ -50,7 +50,7 @@
   </div>
   <div class="nav-right">
     <span class="nav-tag">Video production</span>
-    <a class="btn-dl" href="#projects">Смотреть работы</a>
+    <a class="btn-dl" href="#projects">Проекты</a>
     <button class="nav-toggle" type="button" aria-label="Открыть меню" data-nav-toggle>
       <span></span><span></span>
     </button>
@@ -551,6 +551,9 @@
   const stage = document.querySelector('[data-tv-hero]');
   if (!stage) return;
 
+  // Mobile: TV is hidden, don't load heavy 3D code
+  if (window.matchMedia && window.matchMedia('(max-width: 620px)').matches) return;
+
   const loadScript = (src) => new Promise((resolve, reject) => {
     const s = document.createElement('script');
     s.src = src;
@@ -819,6 +822,35 @@
     btnPlay.classList.remove('is-hidden');
     wrap.classList.remove('is-playing');
   });
+})();
+</script>
+
+
+<script>
+/* Mobile nav drawer toggle (safe even if landing_ref.js is missing) */
+(() => {
+  const nav = document.querySelector('nav');
+  const btn = document.querySelector('[data-nav-toggle]');
+  const drawer = document.querySelector('[data-nav-drawer]');
+  if (!nav || !btn || !drawer) return;
+  if (window.__INDIVIDNI_NAV_WIRED) return;
+  window.__INDIVIDNI_NAV_WIRED = true;
+
+  const close = () => {
+    nav.classList.remove('is-open');
+    btn.setAttribute('aria-expanded', 'false');
+  };
+  const toggle = () => {
+    const open = !nav.classList.contains('is-open');
+    nav.classList.toggle('is-open', open);
+    btn.setAttribute('aria-expanded', String(open));
+  };
+
+  btn.setAttribute('aria-expanded', 'false');
+  btn.addEventListener('click', (e) => { e.preventDefault(); toggle(); });
+  drawer.querySelectorAll('a').forEach((a) => a.addEventListener('click', close));
+  document.addEventListener('click', (e) => { if (!nav.contains(e.target)) close(); });
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
 })();
 </script>
 
