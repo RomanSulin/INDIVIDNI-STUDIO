@@ -2020,3 +2020,78 @@ body.modal-open{
   .sr-sound,
   .sr-hoverHint{ transition: none !important; }
 }
+
+
+/* SECTION TOP like SERVICES (desktop only) */
+@media (min-width: 981px){
+  .process-cards{ padding-top: 116px; }
+  .team{ padding-top: 116px; }
+  .faq{ padding-top: 116px; }
+}
+
+
+/* ===== MOBILE ONLY PATCHES (<=620px) ===== */
+@media (max-width: 620px){
+  /* 1) Hero SVG wordmark must fit */
+  .hero-wordmark{ max-width: 100vw; padding: 0 10px; transform: scale(.88); transform-origin: center bottom; }
+  .hero-wordmark .wm:not(:first-child){ margin-left: -4px; }
+
+  /* 2) Remove TV from mobile */
+  .split-left .hero-tv-stage{ display: none !important; }
+
+  /* 3) Projects cards centered */
+  .split-right-grid{ justify-items: center; }
+  .proj-item{ width: min(520px, 100%); }
+
+  /* 4) WHO: slightly less spacing */
+  #who{ padding-top: 72px; padding-bottom: 72px; }
+  .who{ padding: 72px 18px 66px; }
+
+  /* 5) SERVICES: slightly less spacing */
+  .services-wide{ padding-top: 92px; padding-bottom: 56px; }
+  .services-head{ margin-bottom: 32px; }
+
+  /* 6) PROCESS: slightly less spacing */
+  .process-cards{ padding: 74px 18px 66px; }
+
+  /* 7) SERVICES hover: no colored fill/text changes on mobile */
+  .svc-card:hover{ transform: none; }
+  .svc-card:hover::before{ opacity: 0 !important; }
+  .svc-card:hover .svc-media img,
+  .svc-card:hover .svc-media video{ opacity: 1 !important; transform: scale(1.02) !important; }
+  .svc-card:hover .svc-overlay{ background: linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,.55) 100%) !important; color: #fff !important; justify-content: flex-end !important; align-items: flex-start !important; padding: 16px 16px 18px !important; }
+  .svc-card:hover .svc-name{ font-size: 18px !important; letter-spacing: -0.02em !important; }
+  .svc-card:hover .svc-text{ visibility: hidden !important; opacity: 0 !important; transform: translateY(8px) !important; }
+
+  /* 7b) PROCESS cards: 2 per row on mobile */
+  .process-cards__grid{ grid-template-columns: repeat(2, 1fr) !important; gap: 14px; }
+  .pcard{ padding: 20px 16px; border-radius: 22px; }
+  .pcard__title{ font-size: 18px; }
+  .pcard__desc{ font-size: 13px; -webkit-line-clamp: 4; }
+
+  /* 8) TEAM: less spacing, no hover animation, 2 per row, gentle float */
+  .team{ padding: 74px 18px 66px; }
+  .team__grid{ grid-template-columns: repeat(2, 1fr) !important; gap: 14px; }
+  .team__grid .tcard{ width: auto; transform: none !important; }
+  .team__grid .tcard:hover,
+  .team__grid .tcard:focus-within{ transform: none !important; box-shadow: 0 28px 90px rgba(0,0,0,.28) !important; }
+
+  @keyframes tcard-float{
+    0%, 100%{ transform: translate3d(0,0,0); }
+    50%{ transform: translate3d(0,-8px,0); }
+  }
+  .team__grid .tcard{ animation: tcard-float 6.4s ease-in-out infinite; will-change: transform; }
+  .team__grid .tcard:nth-child(2){ animation-delay: -1.4s; }
+  .team__grid .tcard:nth-child(3){ animation-delay: -2.3s; }
+  .team__grid .tcard:nth-child(4){ animation-delay: -3.1s; }
+
+  /* 9) FAQ: less top spacing */
+  .faq{ padding: 74px 18px 66px; }
+}
+
+@media (max-width: 390px){
+  /* ultra small: shrink wordmark a bit more + process/team to single column */
+  .hero-wordmark{ transform: scale(.82); }
+  .process-cards__grid{ grid-template-columns: 1fr !important; }
+  .team__grid{ grid-template-columns: 1fr !important; }
+}
