@@ -1800,3 +1800,44 @@ footer{
   }
 }
 
+
+/* ===== V17 TOP PATCH: full-height hero, less "fog", lazy video tweaks ===== */
+.hero{
+  min-height: 100svh;
+  padding: clamp(72px, 9vh, 120px) 20px clamp(48px, 7vh, 88px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* make bg video crisp: reduce milky overlay */
+.hero-bg-overlay{
+  background: rgba(245,242,236,0.12);
+}
+
+/* keep text readable on video */
+.hero h1,
+.hero-sub,
+.hero-brand__small{
+  text-shadow: 0 10px 34px rgba(0,0,0,.16);
+}
+
+/* remove separator line between HERO and Projects */
+.split-projects{ border-top: 0 !important; }
+
+/* TV a bit bigger + more to the right */
+.split-left .hero-tv-stage{
+  width: min(860px, 100%);
+  margin-top: 34px;
+  transform: translateX(62px);
+}
+@media (max-width: 980px){
+  .split-left .hero-tv-stage{
+    width: 100%;
+    transform: none;
+    margin-top: 22px;
+  }
+}
+
+/* Team note: add a bit more air below cards */
+.team-note{ margin-top: 28px; }
