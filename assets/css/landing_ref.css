@@ -341,9 +341,9 @@ nav.is-open .nav-drawer{ display:grid; }
 .split-right{
   flex: 1;
   padding: clamp(16px, 2vw, 28px);
-  background: var(--split-bg, var(--p-blue));
+  background: #fff !important; /* right side always white */
   transition: background .12s ease;
-  color: var(--split-fg, #fff);
+  color: #000;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -433,23 +433,19 @@ nav.is-open .nav-drawer{ display:grid; }
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  padding: 12px 18px;
+  padding: 12px 6px;
   border: 0;
   text-decoration:none;
-  font-family: var(--font-head);
-  font-weight: 900;
-  font-size: 12px;
-  letter-spacing: .14em;
+  font-family: var(--font-body);
+  font-weight: 400;
+  letter-spacing: .18em;
   text-transform: uppercase;
+  font-size: 12px;
   background: transparent;
+  color: rgba(0,0,0,.72);
 }
-.split-more:hover{ opacity: .78; }
-
-/* split-more overrides v9 */
-.split-more{ color:#fff; text-shadow: 0 2px 12px rgba(0,0,0,.35); }
-.split-more{ text-decoration: none; }
-.split-more::after{ content:""; display:block; height:1px; background: rgba(255,255,255,.8); margin-top:6px; }
-.split-more:focus{ outline: 2px solid currentColor; outline-offset: 4px; }
+.split-more:hover{ opacity: .7; }
+.split-more:focus{ outline: 2px solid rgba(0,0,0,.45); outline-offset: 4px; }
 
 @media (max-width: 980px){
   .split-projects__inner{ height: auto; min-height: 0; flex-direction:column; }
@@ -473,6 +469,19 @@ nav.is-open .nav-drawer{ display:grid; }
   gap: 14px;
   text-align:center;
 }
+.who-marker-img{
+  width: min(320px, 78vw);
+  height: auto;
+  display: block;
+  transform: translateX(34px) rotate(-6deg);
+  margin-bottom: 2px;
+  user-select: none;
+  -webkit-user-select: none;
+  filter: drop-shadow(0 10px 24px rgba(0,0,0,.12));
+}
+.who-desc p{ margin: 0; }
+.who-desc p + p{ margin-top: 16px; }
+.who-desc strong{ font-weight: 900; color: rgba(0,0,0,.86); }
 .who-marker{
   font-family: "Caveat", cursive;
   font-weight: 700;
@@ -1262,6 +1271,7 @@ footer{
   letter-spacing: -0.02em;
   font-size: 22px;
   line-height: 1.1;
+  color: rgba(0,0,0,.92);
 }
 .pcard__desc{
   max-width: 32ch;
@@ -1305,14 +1315,14 @@ footer{
   letter-spacing: -0.04em;
   font-size: clamp(56px, 6.8vw, 120px);
   line-height: .95;
-  text-transform: uppercase;
+  text-transform: uppercase;  text-align: left;
 }
 .team__grid{
   margin-top: 44px;
   position: relative;
   display:flex;
-  justify-content:flex-start;
-  padding-left: 6px;
+  justify-content:center;
+  padding-left: 0;
   align-items:flex-end;
   gap: 0;
   height: clamp(420px, 34vw, 520px);
@@ -1336,10 +1346,10 @@ footer{
 }
 
 /* fan layout (deck in a hand) */
-.team__grid .tcard:nth-child(1){ --x: 96px; --r: -12deg; z-index: 1; }
-.team__grid .tcard:nth-child(2){ --x: 32px; --r: -4deg; z-index: 2; }
-.team__grid .tcard:nth-child(3){ --x: -32px; --r: 4deg; z-index: 3; }
-.team__grid .tcard:nth-child(4){ --x: -96px; --r: 12deg; z-index: 4; }
+.team__grid .tcard:nth-child(1){ --x: 80px; --r: -12deg; z-index: 1; }
+.team__grid .tcard:nth-child(2){ --x: 25px; --r: -4deg; z-index: 2; }
+.team__grid .tcard:nth-child(3){ --x: -25px; --r: 4deg; z-index: 3; }
+.team__grid .tcard:nth-child(4){ --x: -80px; --r: 12deg; z-index: 4; }
 
 /* keep hover bringing the card forward */
 .team__grid .tcard:hover,
@@ -1586,31 +1596,24 @@ footer{
   transform-origin: 50% 72%;
   filter: drop-shadow(0 14px 34px rgba(0,0,0,.28));
   will-change: transform;
-  animation: wm-breathe-var var(--dur, 3.8s) ease-in-out var(--delay, 0s) infinite;
+  animation: wm-float-y var(--dur, 3.8s) ease-in-out var(--delay, 0s) infinite;
 }
 
-@keyframes wm-breathe-var{
-  0%, 100%{
-    transform: translate3d(0,0,0) scale(1) rotate(0deg);
-  }
-  50%{
-    transform:
-      translate3d(var(--dx, 0px), var(--dy, -6px), 0)
-      scale(var(--sx, 1.06), var(--sy, 1.04))
-      rotate(var(--rot, 0deg));
-  }
+@keyframes wm-float-y{
+  0%, 50%, 100%{ transform: translate3d(0,0,0); }
+  25%{ transform: translate3d(0, calc(var(--amp, 10px) * -1), 0); }
+  75%{ transform: translate3d(0, var(--amp, 10px), 0); }
 }
-
 /* разная амплитуда/скорость — каждая буква “дышит” по‑своему */
-.hero-wordmark .wm:nth-child(1){ --dur: 3.25s; --delay: -0.10s; --dy: -10px; --sx: 1.08; --sy: 1.04; --rot: -1.3deg; --dx: -1px; }
-.hero-wordmark .wm:nth-child(2){ --dur: 3.70s; --delay: -0.22s; --dy: -7px;  --sx: 1.06; --sy: 1.03; --rot:  0.9deg; --dx:  1px; }
-.hero-wordmark .wm:nth-child(3){ --dur: 3.05s; --delay: -0.04s; --dy: -12px; --sx: 1.09; --sy: 1.05; --rot: -0.7deg; --dx:  0px; }
-.hero-wordmark .wm:nth-child(4){ --dur: 3.95s; --delay: -0.30s; --dy: -6px;  --sx: 1.05; --sy: 1.03; --rot:  1.1deg; --dx: -1px; }
-.hero-wordmark .wm:nth-child(5){ --dur: 3.35s; --delay: -0.18s; --dy: -11px; --sx: 1.10; --sy: 1.05; --rot: -1.0deg; --dx:  1px; }
-.hero-wordmark .wm:nth-child(6){ --dur: 4.10s; --delay: -0.36s; --dy: -7px;  --sx: 1.06; --sy: 1.04; --rot:  0.6deg; --dx:  0px; }
-.hero-wordmark .wm:nth-child(7){ --dur: 3.20s; --delay: -0.12s; --dy: -13px; --sx: 1.11; --sy: 1.06; --rot: -0.9deg; --dx: -1px; }
-.hero-wordmark .wm:nth-child(8){ --dur: 3.80s; --delay: -0.26s; --dy: -8px;  --sx: 1.07; --sy: 1.04; --rot:  1.0deg; --dx:  1px; }
-.hero-wordmark .wm:nth-child(9){ --dur: 3.15s; --delay: -0.06s; --dy: -12px; --sx: 1.09; --sy: 1.05; --rot: -0.6deg; --dx:  0px; }
+.hero-wordmark .wm:nth-child(1){ --dur: 3.25s; --delay: -0.10s; --amp: 12px; }
+.hero-wordmark .wm:nth-child(2){ --dur: 3.70s; --delay: -0.22s; --amp: 8px; }
+.hero-wordmark .wm:nth-child(3){ --dur: 3.05s; --delay: -0.04s; --amp: 14px; }
+.hero-wordmark .wm:nth-child(4){ --dur: 3.95s; --delay: -0.30s; --amp: 7px; }
+.hero-wordmark .wm:nth-child(5){ --dur: 3.35s; --delay: -0.18s; --amp: 13px; }
+.hero-wordmark .wm:nth-child(6){ --dur: 4.10s; --delay: -0.36s; --amp: 9px; }
+.hero-wordmark .wm:nth-child(7){ --dur: 3.20s; --delay: -0.12s; --amp: 15px; }
+.hero-wordmark .wm:nth-child(8){ --dur: 3.80s; --delay: -0.26s; --amp: 10px; }
+.hero-wordmark .wm:nth-child(9){ --dur: 3.15s; --delay: -0.06s; --amp: 14px; }
 
 @media (max-width: 640px){
   .hero-wordmark{ gap: 2px; max-width: 98vw; }
