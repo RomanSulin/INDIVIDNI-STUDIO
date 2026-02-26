@@ -24,7 +24,7 @@
   <link rel="preload" as="image" href="./assets/img/individni/I-3.svg" type="image/svg+xml" />
   
   <!-- Landing styles (ref-based) -->
-  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=17" />
+  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=16" />
 </head>
 <body>
 
@@ -50,7 +50,7 @@
   </div>
   <div class="nav-right">
     <span class="nav-tag">Video production</span>
-    <a class="btn-dl" href="#projects">Проекты</a>
+    <a class="btn-dl" href="#projects">Смотреть работы</a>
     <button class="nav-toggle" type="button" aria-label="Открыть меню" data-nav-toggle>
       <span></span><span></span>
     </button>
@@ -192,7 +192,7 @@
   </div>
 
   <div class="services-grid" role="list">
-    <a class="svc-card svc-card--blue" role="listitem" href="#">
+    <a class="svc-card svc-card--blue svc-card--shooting" role="listitem" href="#">
       <div class="svc-media">
         <video class="svc-video lazy-video" muted loop playsinline preload="none" data-play-on-view>
           <source data-src="./assets/services/video/shooting.mp4" type="video/mp4" />
@@ -201,6 +201,11 @@
           <div class="svc-name">Съёмка</div>
           <div class="svc-text">Съёмочная группа, свет, камера, постановка и контроль качества.</div>
         </div>
+      </div>
+
+      <div class="svc-mascot" aria-hidden="true">
+        <img class="svc-mascot__img lazy-mascot" alt="" decoding="async" width="320" height="320"
+             data-src="./assets/ui/little_man/little_man.webp" />
       </div>
     </a>
 
@@ -376,6 +381,10 @@
 
 <!-- PROCESS — airy cards -->
 <section class="process-cards" id="process" aria-label="Этапы создания видеоролика">
+  <video class="process-bg-video lazy-video" muted loop playsinline preload="none" data-play-on-view aria-hidden="true">
+    <source data-src="./assets/services/video/Background.mp4" type="video/mp4" />
+  </video>
+  <div class="process-bg-overlay" aria-hidden="true"></div>
   <div class="process-cards__inner">
     <div class="process-cards__head">
       <h2 class="process-cards__title">Этапы создания<br>видеоролика</h2>
@@ -541,29 +550,11 @@
   </div>
 </div>
 
-<!-- PROCESS CARD MODAL (mobile: open full text on tap) -->
-<div class="pcard-modal" id="pcardModal" aria-hidden="true">
-  <div class="pcard-backdrop" data-pcard-close></div>
-  <div class="pcard-dialog" role="dialog" aria-modal="true" aria-label="Этап" tabindex="-1">
-    <button class="pcard-close" type="button" aria-label="Закрыть" data-pcard-close>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.3 5.7a1 1 0 0 0-1.4 0L12 10.6 7.1 5.7a1 1 0 1 0-1.4 1.4L10.6 12l-4.9 4.9a1 1 0 1 0 1.4 1.4L12 13.4l4.9 4.9a1 1 0 0 0 1.4-1.4L13.4 12l4.9-4.9a1 1 0 0 0 0-1.4Z"/></svg>
-    </button>
-    <div class="pcard-dialog__body">
-      <div class="pcard-m-no" id="pcardModalNo"></div>
-      <div class="pcard-m-title" id="pcardModalTitle"></div>
-      <div class="pcard-m-text" id="pcardModalText"></div>
-    </div>
-  </div>
-</div>
-
 <!-- TV: heavy dependencies are lazy-loaded when the Projects block is near viewport -->
 <script>
 (() => {
   const stage = document.querySelector('[data-tv-hero]');
   if (!stage) return;
-
-  // Mobile: TV is hidden, don't load heavy 3D code
-  if (window.matchMedia && window.matchMedia('(max-width: 620px)').matches) return;
 
   const loadScript = (src) => new Promise((resolve, reject) => {
     const s = document.createElement('script');
@@ -833,112 +824,6 @@
     btnPlay.classList.remove('is-hidden');
     wrap.classList.remove('is-playing');
   });
-})();
-</script>
-
-
-<script>
-/* Mobile: tap process card => modal with full text */
-(() => {
-  const mq = window.matchMedia && window.matchMedia('(max-width: 620px)');
-  const isMobile = () => (mq ? mq.matches : window.innerWidth <= 620);
-
-  const modal = document.getElementById('pcardModal');
-  const dialog = modal?.querySelector('.pcard-dialog');
-  const closers = modal?.querySelectorAll('[data-pcard-close]') || [];
-  const noEl = document.getElementById('pcardModalNo');
-  const titleEl = document.getElementById('pcardModalTitle');
-  const textEl = document.getElementById('pcardModalText');
-  const cards = Array.from(document.querySelectorAll('.process-cards .pcard'));
-
-  if (!modal || !dialog || !noEl || !titleEl || !textEl || !cards.length) return;
-
-  const open = (card) => {
-    if (!isMobile()) return;
-
-    const no = card.querySelector('.pcard__no')?.textContent?.trim() || '';
-    const title = card.querySelector('.pcard__title')?.textContent?.trim() || '';
-    const text = card.querySelector('.pcard__desc')?.textContent?.trim() || '';
-
-    noEl.textContent = no;
-    titleEl.textContent = title;
-    textEl.textContent = text;
-
-    window.__INDIVIDNI_MODAL_OPEN = true;
-    document.body.classList.add('modal-open');
-    modal.classList.add('is-open');
-    modal.setAttribute('aria-hidden', 'false');
-
-    // pause videos behind (saves battery on mobile)
-    document.querySelectorAll('video[data-play-on-view]').forEach((vv) => {
-      try {
-        if (!vv.paused) vv.dataset.pausedByModal = '1';
-        vv.pause();
-      } catch (_) {}
-    });
-
-    setTimeout(() => { try { dialog.focus(); } catch (_) {} }, 50);
-  };
-
-  const close = () => {
-    modal.classList.remove('is-open');
-    modal.setAttribute('aria-hidden', 'true');
-    document.body.classList.remove('modal-open');
-    window.__INDIVIDNI_MODAL_OPEN = false;
-
-    // resume videos that were playing
-    setTimeout(() => {
-      document.querySelectorAll('video[data-paused-by-modal="1"]').forEach((vv) => {
-        vv.removeAttribute('data-paused-by-modal');
-        try { vv.play && vv.play().catch(() => {}); } catch (_) {}
-      });
-    }, 80);
-  };
-
-  cards.forEach((card) => {
-    card.style.cursor = 'pointer';
-    card.addEventListener('click', (e) => {
-      if (!isMobile()) return;
-      e.preventDefault();
-      open(card);
-    });
-  });
-
-  closers.forEach((c) => c.addEventListener('click', close));
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.classList.contains('is-open')) close();
-  });
-})();
-</script>
-
-
-<script>
-/* Mobile nav drawer toggle (safe even if landing_ref.js is missing) */
-(() => {
-  const nav = document.querySelector('nav');
-  const btn = document.querySelector('[data-nav-toggle]');
-  const drawer = document.querySelector('[data-nav-drawer]');
-  if (!nav || !btn || !drawer) return;
-  if (window.__INDIVIDNI_NAV_WIRED) return;
-  window.__INDIVIDNI_NAV_WIRED = true;
-
-  const close = () => {
-    nav.classList.remove('is-open');
-    document.body.classList.remove('nav-open');
-    btn.setAttribute('aria-expanded', 'false');
-  };
-  const toggle = () => {
-    const open = !nav.classList.contains('is-open');
-    nav.classList.toggle('is-open', open);
-    document.body.classList.toggle('nav-open', open);
-    btn.setAttribute('aria-expanded', String(open));
-  };
-
-  btn.setAttribute('aria-expanded', 'false');
-  btn.addEventListener('click', (e) => { e.preventDefault(); toggle(); });
-  drawer.querySelectorAll('a').forEach((a) => a.addEventListener('click', close));
-  document.addEventListener('click', (e) => { if (!nav.contains(e.target)) close(); });
-  window.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
 })();
 </script>
 
