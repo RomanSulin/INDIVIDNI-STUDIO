@@ -56,7 +56,14 @@
 
 <!-- HERO -->
 <section class="hero" id="top">
-  <div class="hero-brand" aria-label="Brand heading">
+    <!-- HERO background video (loop, muted) -->
+  <video class="hero-bg-video" id="heroBgVideo" autoplay muted loop playsinline preload="auto" webkit-playsinline aria-hidden="true">
+    <source src="./assets/ui/Showreel_3.mp4" type="video/mp4"/>
+    <source src="./assets/ui/showreel_3.mp4" type="video/mp4"/>
+  </video>
+  <div class="hero-bg-overlay" aria-hidden="true"></div>
+
+<div class="hero-brand" aria-label="Brand heading">
   <div class="hero-brand__small">studio</div>
 
   <!-- SVG wordmark: INDIVIDNI -->
@@ -73,15 +80,8 @@
   </div>
 </div>
 
-  <div class="hero-media">
-    <!-- TV (code stays; layout around it is new) -->
-    <div class="hero-tv-stage" data-tv-hero aria-label="3D TV hero">
-      <canvas id="tvHeroCanvas"></canvas>
-      <video class="tvfly__hiddenVideo" id="tvHeroVideo" loop muted playsinline preload="auto" webkit-playsinline>
-        <source src="./assets/ui/showreel_2.mp4" type="video/mp4"/>
-      </video>
-    </div>
-  </div>
+  
+
 
   <h1>Full‑cycle video production.<br/>Bold visuals that keep attention.</h1>
   <p class="hero-sub">Реклама, клипы, бренд‑контент. От идеи до финального мастер‑файла. Ниже — работы и быстрый бриф.</p>
@@ -100,6 +100,15 @@
         <span>Brand</span>
         <span>Social</span>
       </div>
+
+      <!-- TV moved сюда из HERO (структура не менялась) -->
+      <div class="hero-tv-stage" data-tv-hero aria-label="3D TV hero">
+            <canvas id="tvHeroCanvas"></canvas>
+            <video class="tvfly__hiddenVideo" id="tvHeroVideo" loop muted playsinline preload="auto" webkit-playsinline>
+              <source src="./assets/ui/showreel_2.mp4" type="video/mp4"/>
+            </video>
+          </div>
+
     </div>
 
     <div class="split-right" data-project-chooser>
@@ -503,5 +512,49 @@
 
 <!-- Landing JS -->
 <script src="./assets/js/landing_ref.js?v=15"></script>
+
+<script>
+/* HERO bg: cache first frame as CSS background to avoid blank */
+(() => {
+  const hero = document.querySelector(".hero");
+  const v = document.getElementById("heroBgVideo");
+  if (!hero || !v) return;
+
+  const KEY = "individni_hero_bg_poster_v1";
+  const cached = (() => {
+    try { return localStorage.getItem(KEY); } catch (e) { return null; }
+  })();
+
+  if (cached) hero.style.backgroundImage = `url(${cached})`;
+
+  const capture = () => {
+    try {
+      const vw = v.videoWidth || 0;
+      const vh = v.videoHeight || 0;
+      if (!vw || !vh) return;
+
+      // downscale to keep localStorage small
+      const targetW = Math.min(720, vw);
+      const scale = targetW / vw;
+      const targetH = Math.round(vh * scale);
+
+      const c = document.createElement("canvas");
+      c.width = targetW;
+      c.height = targetH;
+      const ctx = c.getContext("2d", { willReadFrequently: true });
+      ctx.drawImage(v, 0, 0, targetW, targetH);
+
+      const dataUrl = c.toDataURL("image/jpeg", 0.65);
+      hero.style.backgroundImage = `url(${dataUrl})`;
+
+      try { localStorage.setItem(KEY, dataUrl); } catch (e) {}
+    } catch (e) {}
+  };
+
+  // As soon as we have something to draw (usually first frame)
+  v.addEventListener("loadeddata", capture, { once: true });
+})();
+</script>
+
 </body>
 </html>
