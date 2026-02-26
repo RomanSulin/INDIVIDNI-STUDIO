@@ -37,6 +37,9 @@ body{
   overflow-x: hidden;
 }
 
+/* lock scroll when mobile nav is open */
+body.nav-open{ overflow: hidden; }
+
 /* helper: full-bleed section */
 .full-bleed{
   width: 100vw;
@@ -1134,6 +1137,57 @@ footer{
 
   .split-projects__inner{ flex-direction:column; min-height: unset; }
   .split-left{ border-right: none; border-bottom: 1px solid rgba(0,0,0,.10); }
+
+  /* mobile menu: black, rounded, swipe-down from top */
+  .nav-drawer{
+    display:grid;
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    top: 72px;
+    z-index: 140;
+    background: rgba(0,0,0,.96);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 20px;
+    padding: 12px;
+    gap: 10px;
+    backdrop-filter: blur(10px);
+    transform: translateY(-18px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform .32s cubic-bezier(.2,.9,.2,1), opacity .26s ease;
+  }
+  nav.is-open .nav-drawer{
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  .nav-drawer a{
+    border-radius: 16px;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.12);
+    color: rgba(255,255,255,.92);
+  }
+
+  /* hero SVG: ensure no horizontal overflow */
+  .hero-wordmark{
+    width: 100%;
+    max-width: 100%;
+    padding: 0 14px;
+    overflow: hidden;
+  }
+  .hero-wordmark .wm:not(:first-child){ margin-left: -4px; }
+
+  /* projects on mobile: center cards */
+  .split-right-wrap{
+    width: 100%;
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+    align-items: center;
+  }
+  .split-right-grid{ justify-items: center; }
+  .proj-item{ width: min(560px, 100%); }
 }
 
 
@@ -1243,38 +1297,12 @@ footer{
   /* padding like WHO block (more breathing) */
   padding: clamp(140px, 14vw, 240px) clamp(18px, 4vw, 56px) clamp(140px, 14vw, 240px);
 
-  /* background video layer */
   position: relative;
-  overflow: hidden;
-}
-
-.process-bg-video{
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 0;
-  opacity: .55;
-}
-
-.process-bg-overlay{
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background: linear-gradient(180deg, rgba(0,0,0,.72) 0%, rgba(0,0,0,.35) 50%, rgba(0,0,0,.72) 100%);
 }
 
 .process-cards__inner{
   max-width: none;
   margin: 0;
-  position: relative;
-  z-index: 1;
-}
-
-@media (prefers-reduced-motion: reduce){
-  .process-bg-video{ display:none; }
 }
 
 .process-cards__title{
@@ -1309,6 +1337,7 @@ footer{
   gap: 12px;
   text-align:center;
   transition: transform .18s ease, box-shadow .18s ease;
+  min-width: 0;
 }
 .pcard:hover{
   transform: translateY(-6px);
@@ -1349,8 +1378,15 @@ footer{
 @media (max-width: 620px){
   .process-cards{ padding: 84px 18px 78px; }
   .process-cards__title{ text-align: left; font-size: clamp(44px, 12vw, 64px); }
-  .process-cards__grid{ grid-template-columns: 1fr; gap: 16px; }
-  .pcard{ border-radius: 22px; padding: 22px 18px; }
+  /* mobile wants 2-in-row but without overflow */
+  .process-cards__grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .pcard{ border-radius: 20px; padding: 18px 14px; }
+  .pcard__title{ font-size: 16px; }
+  .pcard__desc{ font-size: 12px; -webkit-line-clamp: 3; }
+}
+
+@media (max-width: 360px){
+  .process-cards__grid{ grid-template-columns: 1fr; }
 }
 
 /* ── TEAM (placeholder) ── */
@@ -2013,6 +2049,83 @@ body.modal-open{
   transform: translateY(0);
 }
 
+/* ===== PROCESS CARD MODAL (mobile) ===== */
+.pcard-modal{
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease;
+}
+.pcard-modal.is-open{
+  opacity: 1;
+  pointer-events: auto;
+}
+.pcard-backdrop{
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(10px);
+}
+.pcard-dialog{
+  position: relative;
+  width: min(560px, calc(100vw - 24px));
+  max-height: calc(100vh - 24px);
+  border-radius: 24px;
+  background: rgba(255,255,255,.98);
+  color: #000;
+  box-shadow: 0 28px 110px rgba(0,0,0,.45);
+  overflow: hidden;
+  transform: translateY(12px) scale(.98);
+  transition: transform .26s cubic-bezier(.2,.8,.2,1);
+}
+.pcard-modal.is-open .pcard-dialog{ transform: translateY(0) scale(1); }
+.pcard-close{
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,.10);
+  background: rgba(0,0,0,.04);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  z-index: 2;
+}
+.pcard-close svg{ width: 20px; height: 20px; fill: rgba(0,0,0,.85); }
+.pcard-dialog__body{
+  padding: 22px 18px 18px;
+  padding-top: 54px;
+  overflow: auto;
+  max-height: calc(100vh - 24px);
+}
+.pcard-m-no{
+  font-family: var(--font-head);
+  font-weight: 900;
+  letter-spacing: .16em;
+  font-size: 12px;
+  color: rgba(0,0,0,.55);
+}
+.pcard-m-title{
+  margin-top: 10px;
+  font-family: var(--font-head);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  font-size: 22px;
+  line-height: 1.1;
+}
+.pcard-m-text{
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(0,0,0,.72);
+}
+
 @media (prefers-reduced-motion: reduce){
   .showreel-modal,
   .showreel-dialog,
@@ -2032,16 +2145,27 @@ body.modal-open{
 
 /* ===== MOBILE ONLY PATCHES (<=620px) ===== */
 @media (max-width: 620px){
+  /* remove 100vw full-bleed micro-overflow on mobile */
+  .split-projects,
+  .process-cards,
+  .team,
+  .faq{
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
   /* 1) Hero SVG wordmark must fit */
-  .hero-wordmark{ max-width: 100vw; padding: 0 10px; transform: scale(.88); transform-origin: center bottom; }
-  .hero-wordmark .wm:not(:first-child){ margin-left: -4px; }
+  .hero-wordmark{ width: 100%; max-width: 100vw; padding: 0 14px; overflow: hidden; transform: scale(.86); transform-origin: center bottom; }
+  .hero-wordmark .wm:not(:first-child){ margin-left: -3px; }
 
   /* 2) Remove TV from mobile */
   .split-left .hero-tv-stage{ display: none !important; }
 
   /* 3) Projects cards centered */
+  .split-right-wrap{ width: 100% !important; max-width: 560px; margin-left: auto; margin-right: auto; }
   .split-right-grid{ justify-items: center; }
-  .proj-item{ width: min(520px, 100%); }
+  .proj-item{ width: min(560px, 100%); }
 
   /* 4) WHO: slightly less spacing */
   #who{ padding-top: 72px; padding-bottom: 72px; }
@@ -2064,26 +2188,49 @@ body.modal-open{
   .svc-card:hover .svc-text{ visibility: hidden !important; opacity: 0 !important; transform: translateY(8px) !important; }
 
   /* 7b) PROCESS cards: 2 per row on mobile */
-  .process-cards__grid{ grid-template-columns: repeat(2, 1fr) !important; gap: 14px; }
+  .process-cards__grid{ grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 12px; }
   .pcard{ padding: 20px 16px; border-radius: 22px; }
   .pcard__title{ font-size: 18px; }
   .pcard__desc{ font-size: 13px; -webkit-line-clamp: 4; }
 
-  /* 8) TEAM: less spacing, no hover animation, 2 per row, gentle float */
+  /* 8) TEAM: mobile — no card background, photo with name/role overlay */
   .team{ padding: 74px 18px 66px; }
   .team__grid{ grid-template-columns: repeat(2, 1fr) !important; gap: 14px; }
-  .team__grid .tcard{ width: auto; transform: none !important; }
-  .team__grid .tcard:hover,
-  .team__grid .tcard:focus-within{ transform: none !important; box-shadow: 0 28px 90px rgba(0,0,0,.28) !important; }
-
-  @keyframes tcard-float{
-    0%, 100%{ transform: translate3d(0,0,0); }
-    50%{ transform: translate3d(0,-8px,0); }
+  .team__grid .tcard{
+    width: auto;
+    background: transparent !important;
+    border: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+    position: relative;
+    overflow: hidden;
+    border-radius: 18px;
   }
-  .team__grid .tcard{ animation: tcard-float 6.4s ease-in-out infinite; will-change: transform; }
-  .team__grid .tcard:nth-child(2){ animation-delay: -1.4s; }
-  .team__grid .tcard:nth-child(3){ animation-delay: -2.3s; }
-  .team__grid .tcard:nth-child(4){ animation-delay: -3.1s; }
+  .team__grid .tcard__photo{
+    border-radius: 18px;
+    aspect-ratio: 1 / 1;
+  }
+  .team__grid .tcard__name,
+  .team__grid .tcard__role{
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    color: #fff;
+    z-index: 2;
+    text-shadow: 0 10px 28px rgba(0,0,0,.55), 0 1px 2px rgba(0,0,0,.9);
+  }
+  .team__grid .tcard__name{ bottom: 34px; margin: 0 !important; font-size: 14px; }
+  .team__grid .tcard__role{ bottom: 14px; margin: 0 !important; font-size: 12px; opacity: .9; }
+  .team__grid .tcard::after{
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 56%;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.72) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
 
   /* 9) FAQ: less top spacing */
   .faq{ padding: 74px 18px 66px; }
