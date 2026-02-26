@@ -13,15 +13,6 @@
 
   <!-- Preload critical above-the-fold assets (SVG wordmark + hero bg) -->
   <link rel="preload" as="video" href="./assets/ui/Showreel_3.mp4" type="video/mp4" />
-  <link rel="preload" as="image" href="./assets/img/individni/I.svg" type="image/svg+xml" />
-  <link rel="preload" as="image" href="./assets/img/individni/N.svg" type="image/svg+xml" />
-  <link rel="preload" as="image" href="./assets/img/individni/D.svg" type="image/svg+xml" />
-  <link rel="preload" as="image" href="./assets/img/individni/I-1.svg" type="image/svg+xml" />
-  <link rel="preload" as="image" href="./assets/img/individni/V.svg" type="image/svg+xml" />
-  <link rel="preload" as="image" href="./assets/img/individni/I-2.svg" type="image/svg+xml" />
-  <link rel="preload" as="image" href="./assets/img/individni/D-1.svg" type="image/svg+xml" />
-  <link rel="preload" as="image" href="./assets/img/individni/N-1.svg" type="image/svg+xml" />
-  <link rel="preload" as="image" href="./assets/img/individni/I-3.svg" type="image/svg+xml" />
   
   <!-- Landing styles (ref-based) -->
   <link rel="stylesheet" href="./assets/css/landing_ref.css?v=16" />
@@ -78,18 +69,7 @@
 <div class="hero-brand" aria-label="Brand heading">
   <div class="hero-brand__small">studio</div>
 
-  <!-- SVG wordmark: INDIVIDNI -->
-  <div class="hero-wordmark" aria-label="INDIVIDNI">
-    <img class="wm" src="./assets/img/individni/I.svg"   alt="I" draggable="false" fetchpriority="high" decoding="async">
-    <img class="wm" src="./assets/img/individni/N.svg"   alt="N" draggable="false" fetchpriority="high" decoding="async">
-    <img class="wm" src="./assets/img/individni/D.svg"   alt="D" draggable="false" fetchpriority="high" decoding="async">
-    <img class="wm" src="./assets/img/individni/I-1.svg" alt="I" draggable="false" fetchpriority="high" decoding="async">
-    <img class="wm" src="./assets/img/individni/V.svg"   alt="V" draggable="false" fetchpriority="high" decoding="async">
-    <img class="wm" src="./assets/img/individni/I-2.svg" alt="I" draggable="false" fetchpriority="high" decoding="async">
-    <img class="wm" src="./assets/img/individni/D-1.svg" alt="D" draggable="false" fetchpriority="high" decoding="async">
-    <img class="wm" src="./assets/img/individni/N-1.svg" alt="N" draggable="false" fetchpriority="high" decoding="async">
-    <img class="wm" src="./assets/img/individni/I-3.svg" alt="I" draggable="false" fetchpriority="high" decoding="async">
-  </div>
+    <div class="hero-brand__big">INDIVIDNI</div>
 </div>
 
   
@@ -192,7 +172,7 @@
   </div>
 
   <div class="services-grid" role="list">
-    <a class="svc-card svc-card--blue svc-card--shooting" role="listitem" href="#">
+    <a class="svc-card svc-card--blue" role="listitem" href="#">
       <div class="svc-media">
         <video class="svc-video lazy-video" muted loop playsinline preload="none" data-play-on-view>
           <source data-src="./assets/services/video/shooting.mp4" type="video/mp4" />
@@ -201,11 +181,6 @@
           <div class="svc-name">Съёмка</div>
           <div class="svc-text">Съёмочная группа, свет, камера, постановка и контроль качества.</div>
         </div>
-      </div>
-
-      <div class="svc-mascot" aria-hidden="true">
-        <img class="svc-mascot__img lazy-mascot" alt="" decoding="async" width="320" height="320"
-             data-src="./assets/ui/little_man/little_man.webp" />
       </div>
     </a>
 
