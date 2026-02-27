@@ -15,7 +15,7 @@
   <link rel="preload" as="video" href="./assets/ui/Showreel_3.mp4" type="video/mp4" />
   
   <!-- Landing styles (ref-based) -->
-  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=22" />
+  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=23" />
 </head>
 <body>
 
@@ -448,52 +448,84 @@
   </div>
 </section>
 
+<!-- TARIFFS -->
+<section class="tariffs" id="tariffs" aria-label="Тарифы">
+  <div class="tariffs__inner">
+    <h2 class="tariffs__title">ТАРИФЫ</h2>
+    <p class="tariffs__lead">
+      Все проекты — индивидуальны. Наша команда создает уникальные видео для каждого заказчика. Точная цена рассчитывается на основании брифа и технического задания. Стоимость зависит от формата видео, его длительности, съемочной локации, необходимости в разработке сценария, выезде в другой город, кастинге моделей и т. д.
+    </p>
 
-<!-- PRICING (after FAQ) -->
-<section class="pricing" id="pricing" aria-label="Примерные бюджеты">
-  <div class="pricing__inner">
-    <h2 class="pricing__title">Примерные бюджеты</h2>
-    <p class="pricing__lead">Выберите пакет — дальше в брифе уточним задачу и посчитаем точно.</p>
-
-    <div class="pricing__grid" role="list">
-      <article class="price-card" role="listitem">
-        <div class="price-top">
-          <h3 class="price-name">Lite</h3>
-          <div class="price-range">15–50 тыс. ₽</div>
+    <div class="tariffs__grid" role="list">
+      <article class="tariff-card tariff-card--lite" role="listitem">
+        <div class="tariff-card__head">
+          <h3 class="tariff-card__name">Lite</h3>
+          <div class="tariff-card__price">15–50&nbsp;тыс. ₽</div>
         </div>
-        <p class="price-desc">Небольшая съёмка, Reels или быстрый монтаж.</p>
-        <a class="price-btn" href="./brief.html">Заполнить бриф</a>
+        <p class="tariff-card__desc">
+          Небольшая съёмка или монтаж: Reels, короткие ролики, быстрое обновление контента.
+        </p>
+        <ul class="tariff-card__bullets">
+          <li>Короткий формат / один съёмочный день</li>
+          <li>Монтаж, цвет, звук, субтитры</li>
+          <li>Сроки — быстро</li>
+        </ul>
+        <a class="tariff-card__btn" href="./brief.html?type=lite">Заполнить бриф</a>
       </article>
 
-      <article class="price-card" role="listitem">
-        <div class="price-top">
-          <h3 class="price-name">Standart</h3>
-          <div class="price-range">50–500 тыс. ₽</div>
+      <article class="tariff-card tariff-card--std" role="listitem">
+        <div class="tariff-card__head">
+          <h3 class="tariff-card__name">Standart</h3>
+          <div class="tariff-card__price">50–500&nbsp;тыс. ₽</div>
         </div>
-        <p class="price-desc">Съёмка + монтаж: подкасты, интервью, репортажи, небольшие трансляции.</p>
-        <a class="price-btn" href="./brief.html">Заполнить бриф</a>
+        <p class="tariff-card__desc">
+          Съёмка + монтаж: подкасты, интервью, репортажи, небольшие трансляции.
+        </p>
+        <ul class="tariff-card__bullets">
+          <li>Съёмочная группа + свет</li>
+          <li>Монтаж, графика, упаковка</li>
+          <li>1–2 формата под площадки</li>
+        </ul>
+        <a class="tariff-card__btn" href="./brief.html?type=standart">Заполнить бриф</a>
       </article>
 
-      <article class="price-card price-card--brand" role="listitem">
-        <div class="price-top">
-          <h3 class="price-name">INDIVIDNI</h3>
-          <div class="price-range">500 тыс. ₽+</div>
+      <article class="tariff-card tariff-card--brand" role="listitem">
+        <div class="tariff-card__head">
+          <h3 class="tariff-card__name">INDIVIDNI</h3>
+          <div class="tariff-card__price">500&nbsp;тыс. ₽+</div>
         </div>
-        <p class="price-desc">Реклама, документальные фильмы, большие трансляции, шоу.</p>
-        <a class="price-btn" href="./brief.html">Заполнить бриф</a>
+        <p class="tariff-card__desc">
+          Большие проекты: реклама, документальные фильмы, шоу, крупные трансляции.
+        </p>
+        <ul class="tariff-card__bullets">
+          <li>Креатив / сценарий / режиссура</li>
+          <li>Кастинг, локации, продакшн</li>
+          <li>Пост‑продакшн “под ключ”</li>
+        </ul>
+        <a class="tariff-card__btn" href="./brief.html?type=individni">Заполнить бриф</a>
       </article>
 
-      <article class="price-card price-card--tender" role="listitem">
-        <div class="price-top">
-          <h3 class="price-name">Тендер</h3>
-          <div class="price-range">Запрос КП</div>
+      <article class="tariff-card tariff-card--tender" role="listitem">
+        <div class="tariff-card__head">
+          <h3 class="tariff-card__name">Тендер</h3>
+          <div class="tariff-card__price">Запрос КП</div>
         </div>
-        <p class="price-desc">Позвать нас на тендер и получить коммерческое предложение.</p>
-        <a class="price-btn price-btn--ghost" href="./brief.html?type=tender">Позвать на тендер</a>
+        <p class="tariff-card__desc">
+          Пришлите требования и сроки — подготовим КП, смету и план производства.
+        </p>
+        <ul class="tariff-card__bullets">
+          <li>Документы / NDA (при необходимости)</li>
+          <li>Смета и календарный план</li>
+          <li>Команда под задачу</li>
+        </ul>
+        <a class="tariff-card__btn tariff-card__btn--ghost" href="./brief.html?type=tender">Позвать на тендер</a>
       </article>
     </div>
   </div>
 </section>
+
+
+
 
 <!-- FOOTER -->
 <footer>
