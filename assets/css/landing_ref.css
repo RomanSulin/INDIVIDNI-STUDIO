@@ -2433,3 +2433,12 @@ body.modal-open{
     white-space: nowrap;      /* чтобы не переносилось */
   }
 }
+
+@media (max-width: 600px){
+  .hero-brand__big{
+    font-size: clamp(40px, 12.8vw, 66px) !important; /* чуть меньше */
+    letter-spacing: 0.01em !important;              /* ключевой фикс */
+    max-width: calc(100vw - 24px) !important;       /* отступы */
+    white-space: nowrap;
+  }
+}
