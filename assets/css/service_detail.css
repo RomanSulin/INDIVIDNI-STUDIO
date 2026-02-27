@@ -32,6 +32,12 @@
   text-shadow: 0 10px 40px rgba(0,0,0,.75), 0 2px 12px rgba(0,0,0,.85);
 }
 
+@media (min-width: 900px){
+  .service-hero__content{
+    bottom: calc(clamp(16px, 3vw, 44px) + 50px);
+  }
+}
+
 .service-hero__back{
   display:inline-block;
   color: rgba(255,255,255,.86);
