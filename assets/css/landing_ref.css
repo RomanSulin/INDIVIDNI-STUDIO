@@ -2220,3 +2220,74 @@ body.modal-open{
   line-height: 1.65;
   color: rgba(0,0,0,.74);
 }
+
+
+/* ===== PATCH v19 (layout spacing + centering) ===== */
+
+:root{
+  --section-pad-top: 116px;
+  --section-pad-bottom: 70px;
+  --section-pad-x: clamp(18px, 4vw, 56px);
+}
+
+/* Match spacing with SERVICES */
+.process-cards,
+.team,
+.faq{
+  padding: var(--section-pad-top) var(--section-pad-x) var(--section-pad-bottom) !important;
+}
+
+/* Center "НАШИ ПРОЕКТЫ" in the left split */
+.split-title{
+  width: 100%;
+  text-align: center;
+}
+
+@media (max-width: 600px){
+  /* Kill 100vw drift on mobile for ALL full-bleed sections */
+  html, body{ overflow-x: hidden; }
+  .services-wide,
+  .split-projects,
+  .process-cards,
+  .team,
+  .faq{
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* Mobile paddings: smaller + одинаковые */
+  .services-wide,
+  .process-cards,
+  .team,
+  .faq{
+    padding: 72px 16px 64px !important;
+  }
+
+  /* HERO: hard-center INDIVIDNI even if something overrides alignment */
+  .hero-brand{
+    max-width: none !important;
+    width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+  .hero-brand__big{
+    display: inline-block !important;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center !important;
+    max-width: 100%;
+    white-space: nowrap;
+  }
+
+  /* Split: keep cards truly centered (not stretched full width) */
+  .split-left{ padding: 26px 16px !important; }
+  .split-right{ padding: 18px 16px !important; }
+  .split-right-wrap{
+    width: min(92%, 560px) !important;
+    margin: 0 auto !important;
+  }
+}
