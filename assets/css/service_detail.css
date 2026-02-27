@@ -1,0 +1,87 @@
+/* service_detail.css — full-screen video + bottom-left copy */
+
+.service-hero{
+  position: relative;
+  min-height: 100vh;
+  background: #000;
+  overflow: hidden;
+}
+
+.service-hero__video{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit: cover;
+  display:block;
+}
+
+.service-hero__shade{
+  position:absolute;
+  inset:0;
+  background: radial-gradient(60% 60% at 20% 75%, rgba(0,0,0,.65), rgba(0,0,0,.15) 60%, rgba(0,0,0,.40));
+  pointer-events:none;
+}
+
+.service-hero__content{
+  position:absolute;
+  left: clamp(14px, 3vw, 44px);
+  bottom: clamp(16px, 3vw, 44px);
+  max-width: min(740px, calc(100% - 28px));
+  color:#fff;
+  text-shadow: 0 10px 40px rgba(0,0,0,.75), 0 2px 12px rgba(0,0,0,.85);
+}
+
+.service-hero__back{
+  display:inline-block;
+  color: rgba(255,255,255,.86);
+  text-decoration:none;
+  border-bottom: 1px solid rgba(255,255,255,.35);
+  padding-bottom: 2px;
+  margin-bottom: 10px;
+}
+
+.service-hero__title{
+  margin: 0;
+  font-family: Syne, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-weight: 900;
+  letter-spacing: .01em;
+  font-size: clamp(30px, 4.5vw, 62px);
+  line-height: .95;
+}
+
+.service-hero__desc{
+  margin: 12px 0 0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  color: rgba(255,255,255,.82);
+  font-size: clamp(14px, 1.45vw, 18px);
+  line-height: 1.5;
+}
+
+.service-hero__actions{ margin-top: 16px; }
+
+.service-hero__btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  height: 46px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.20);
+  background: rgba(0,0,0,.25);
+  color:#fff;
+  text-decoration:none;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-weight: 600;
+  letter-spacing: .01em;
+  backdrop-filter: blur(8px);
+}
+
+@media (hover:hover){
+  .service-hero__btn:hover{ background: rgba(255,255,255,.12); }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .service-hero__video{ display:none; }
+  .service-hero{ background: #07070a; }
+}
