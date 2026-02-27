@@ -62,15 +62,39 @@
 }
 @media (max-width: 860px){
   .services-catalog__grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* Safety: some mobile browsers still trigger :hover */
+  .scard{ transform:none !important; box-shadow:none !important; }
+  .scard:hover{ transform:none !important; box-shadow:none !important; }
 }
 @media (max-width: 520px){
   .services-catalog{ padding-left: 16px; padding-right: 16px; }
-  .services-catalog__grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-  .scard{ aspect-ratio: 1 / 1; min-height: 0; border-radius: 18px; }
-  .scard__text{ padding: 12px 12px 11px; }
-  .scard__title{ font-size: 15px; }
-  .scard__desc{ font-size: 12px; margin-top: 6px; }
+
+  /* Mobile: 2 in a row, portrait cards (3x4), no overlaps */
+  .services-catalog__grid{
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .scard{
+    aspect-ratio: 3 / 4;
+    min-height: 0;
+    border-radius: 18px;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+  .scard:hover{ transform:none !important; box-shadow:none !important; }
+
+  .scard__text{ padding: 12px 12px 12px; }
+  .scard__title{
+    font-size: 14.5px;
+    line-height: 1.15;
+    letter-spacing: .005em;
+  }
+
+  /* Titles only on mobile */
+  .scard__desc{ display: none !important; }
 }
+
 
 .scard{
   position: relative;
@@ -191,6 +215,14 @@
   .advantages__grid{ grid-template-columns: repeat(2, minmax(0,1fr)); }
 }
 @media (max-width: 560px){
+  .advantages{ padding-left: 16px; padding-right: 16px; }
+  .advantages__grid{ grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+  .adv{ border-radius: 18px; padding: 12px 12px 14px; }
+  .adv__media{ border-radius: 14px; }
+  .adv__h{ font-size: 16px; }
+  .adv__p{ font-size: 13px; }
+}
+@media (max-width: 380px){
   .advantages__grid{ grid-template-columns: 1fr; }
 }
 
