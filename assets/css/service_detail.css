@@ -34,7 +34,7 @@
 
 @media (min-width: 900px){
   .service-hero__content{
-    bottom: calc(clamp(16px, 3vw, 44px) + 50px);
+    bottom: calc(clamp(16px, 3vw, 44px) + 50px) !important;
   }
 }
 
