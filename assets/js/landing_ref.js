@@ -95,3 +95,41 @@
     ensureServiceVideos();
   });
 })();
+
+/* === MOBILE FIX: INDIVIDNI true center + prevent 100vw drift === */
+@media (max-width: 640px) {
+  /* убираем “дрейф” full-bleed контейнеров на мобильных (100vw часто даёт сдвиг) */
+  .full-bleed,
+  [class*="full-bleed"],
+  .bleed,
+  [class*="bleed"] {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    left: auto !important;
+    right: auto !important;
+    transform: none !important;
+  }
+
+  /* жёсткая центровка wordmark INDIVIDNI */
+  .hero .individni,
+  .hero .individni-wordmark,
+  .hero .wordmark,
+  #individni,
+  .individni {
+    position: relative !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* если это SVG/IMG внутри — тоже центруем */
+  .hero .individni svg,
+  .hero .individni img,
+  .individni svg,
+  .individni img {
+    display: block !important;
+    margin: 0 auto !important;
+  }
+}
