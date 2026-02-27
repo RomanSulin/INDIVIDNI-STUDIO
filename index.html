@@ -41,7 +41,7 @@
   </div>
   <div class="nav-right">
     <span class="nav-tag">Video production</span>
-    <a class="btn-dl" href="#projects">Смотреть работы</a>
+    <a class="btn-dl" href="#projects">ПРОЕКТЫ</a>
     <button class="nav-toggle" type="button" aria-label="Открыть меню" data-nav-toggle>
       <span></span><span></span>
     </button>
@@ -356,10 +356,6 @@
 
 <!-- PROCESS — airy cards -->
 <section class="process-cards" id="process" aria-label="Этапы создания видеоролика">
-  <video class="process-bg-video lazy-video" muted loop playsinline preload="none" data-play-on-view aria-hidden="true">
-    <source data-src="./assets/services/video/Background.mp4" type="video/mp4" />
-  </video>
-  <div class="process-bg-overlay" aria-hidden="true"></div>
   <div class="process-cards__inner">
     <div class="process-cards__head">
       <h2 class="process-cards__title">Этапы создания<br>видеоролика</h2>
@@ -802,5 +798,28 @@
 })();
 </script>
 
+  <script>
+(() => {
+  const nav = document.querySelector('nav');
+  const btn = document.querySelector('[data-nav-toggle]');
+  const drawer = document.querySelector('[data-nav-drawer]');
+  if (!nav || !btn || !drawer) return;
+
+  const setAria = () => btn.setAttribute('aria-expanded', nav.classList.contains('is-open') ? 'true' : 'false');
+  const close = () => { nav.classList.remove('is-open'); setAria(); };
+
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    nav.classList.toggle('is-open');
+    setAria();
+  });
+
+  drawer.querySelectorAll('a').forEach((a) => a.addEventListener('click', close));
+  document.addEventListener('click', (e) => { if (!nav.contains(e.target)) close(); });
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+
+  setAria();
+})();
+</script>
 </body>
 </html>
