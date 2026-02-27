@@ -2363,3 +2363,51 @@ body.modal-open{
   .split-right-grid{ justify-items: center !important; }
   .proj-item{ width: min(100%, 520px) !important; }
 }
+
+/* === MOBILE: hard-center INDIVIDNI wordmark (fix for subtle viewport drift) === */
+@media (max-width: 640px){
+  /* full-bleed helpers can cause 1–6px drift on mobile browsers */
+  .full-bleed{
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* Ensure hero brand container is truly centered even if inner is SVG/flex */
+  .hero-brand{
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  /* If INDIVIDNI is plain text */
+  .hero-brand__big{
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  /* If INDIVIDNI is SVG letters group */
+  .hero-wordmark{
+    width: fit-content !important;
+    max-width: 98vw !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .hero-brand__big svg,
+  .hero-brand__big img,
+  .hero-wordmark svg,
+  .hero-wordmark img{
+    display:block !important;
+    margin: 0 auto !important;
+  }
+}
+/* Mobile: keep SVG wordmark truly centered (negative kerning shifts center) */
+@media (max-width: 640px){
+  .hero-wordmark .wm:not(:first-child){
+    margin-left: 0 !important; /* keep center true on mobile */
+  }
+}
