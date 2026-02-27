@@ -2411,3 +2411,25 @@ body.modal-open{
     margin-left: 0 !important; /* keep center true on mobile */
   }
 }
+
+@media (max-width: 640px){
+  /* контейнер слова */
+  .hero .individni,
+  #individni,
+  .individni{
+    max-width: calc(100vw - 24px); /* отступы по 12px */
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+  }
+
+  /* само слово (если это текст) */
+  .hero .individni,
+  #individni,
+  .individni{
+    font-size: clamp(42px, 12vw, 72px);
+    letter-spacing: 0.06em;   /* если сильно раздвинуто — уменьши до 0.03em */
+    line-height: 0.9;
+    white-space: nowrap;      /* чтобы не переносилось */
+  }
+}
