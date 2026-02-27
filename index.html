@@ -15,7 +15,7 @@
   <link rel="preload" as="video" href="./assets/ui/Showreel_3.mp4" type="video/mp4" />
   
   <!-- Landing styles (ref-based) -->
-  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=16" />
+  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=18" />
 </head>
 <body>
 
@@ -41,7 +41,7 @@
   </div>
   <div class="nav-right">
     <span class="nav-tag">Video production</span>
-    <a class="btn-dl" href="#projects">ПРОЕКТЫ</a>
+    <a class="btn-dl" href="#projects">Проекты</a>
     <button class="nav-toggle" type="button" aria-label="Открыть меню" data-nav-toggle>
       <span></span><span></span>
     </button>
@@ -76,24 +76,15 @@
 
 
   <h1>Full‑cycle video production.<br/>Bold visuals that keep attention.</h1>
-  <p class="hero-sub">Реклама, клипы, бренд‑контент. От идеи до финального мастер‑файла. Ниже — работы и быстрый бриф.</p>
 </section>
 
 <!-- PROJECTS — full-width split (no slider) -->
 <section class="split-projects" id="projects" aria-label="Проекты">
   <div class="split-projects__inner">
     <div class="split-left">
-      <div class="split-kicker">Projects</div>
-      <h2 class="split-title">Selected works</h2>
-      <p class="split-text">Короткая витрина проектов. Наведи на кейс справа — и фон станет ярким цветом. Фото позже заменим на реальные.</p>
-      <div class="split-meta">
-        <span>Commercial</span>
-        <span>Music</span>
-        <span>Brand</span>
-        <span>Social</span>
-      </div>
-
-      <!-- TV moved сюда из HERO (структура не менялась) -->
+      <h2 class="split-title">НАШИ ПРОЕКТЫ</h2>
+<p class="split-text">Короткая витрина проектов. Наведи на кейс справа — и фон станет ярким цветом. Фото позже заменим на реальные.</p>
+<!-- TV moved сюда из HERO (структура не менялась) -->
       <div class="hero-tv-stage" data-tv-hero aria-label="3D TV hero" role="button" tabindex="0" aria-haspopup="dialog" aria-controls="showreelModal" data-open-showreel>
             <canvas id="tvHeroCanvas"></canvas>
             <video class="tvfly__hiddenVideo lazy-video" id="tvHeroVideo" loop muted playsinline preload="none" webkit-playsinline data-play-on-view>
@@ -356,7 +347,7 @@
 
 <!-- PROCESS — airy cards -->
 <section class="process-cards" id="process" aria-label="Этапы создания видеоролика">
-  <div class="process-cards__inner">
+<div class="process-cards__inner">
     <div class="process-cards__head">
       <h2 class="process-cards__title">Этапы создания<br>видеоролика</h2>
     </div>
@@ -522,6 +513,64 @@
 </div>
 
 <!-- TV: heavy dependencies are lazy-loaded when the Projects block is near viewport -->
+
+<!-- PROCESS POPUP (mobile) -->
+<div class="pmodal" id="processModal" aria-hidden="true">
+  <div class="pmodal__backdrop" data-pmodal-close></div>
+  <div class="pmodal__dialog" role="dialog" aria-modal="true" aria-label="Этап" tabindex="-1">
+    <button class="pmodal__close" type="button" aria-label="Закрыть" data-pmodal-close>×</button>
+    <div class="pmodal__no" id="pmodalNo"></div>
+    <div class="pmodal__title" id="pmodalTitle"></div>
+    <div class="pmodal__text" id="pmodalText"></div>
+  </div>
+</div>
+
+<script>
+/* Process popup (mobile): tap a card to read full text */
+(() => {
+  const mql = window.matchMedia('(max-width: 620px)');
+  const modal = document.getElementById('processModal');
+  if (!modal) return;
+
+  const dlg = modal.querySelector('.pmodal__dialog');
+  const noEl = document.getElementById('pmodalNo');
+  const titleEl = document.getElementById('pmodalTitle');
+  const textEl = document.getElementById('pmodalText');
+  const closeEls = modal.querySelectorAll('[data-pmodal-close]');
+  const showreel = document.getElementById('showreelModal');
+
+  const open = (card) => {
+    if (!mql.matches) return;
+    noEl.textContent = card.querySelector('.pcard__no')?.textContent?.trim() || '';
+    titleEl.textContent = card.querySelector('.pcard__title')?.textContent?.trim() || '';
+    textEl.textContent = card.querySelector('.pcard__desc')?.textContent?.trim() || '';
+
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden','false');
+    document.body.classList.add('modal-open');
+    setTimeout(() => { try { dlg.focus(); } catch(_){} }, 50);
+  };
+
+  const close = () => {
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden','true');
+    // keep scroll locked if showreel modal is open
+    if (!showreel || !showreel.classList.contains('is-open')) {
+      document.body.classList.remove('modal-open');
+    }
+  };
+
+  document.querySelectorAll('.process-cards .pcard').forEach((card) => {
+    card.addEventListener('click', () => open(card));
+  });
+
+  closeEls.forEach((el) => el.addEventListener('click', close));
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('is-open')) close();
+  });
+})();
+</script>
+
 <script>
 (() => {
   const stage = document.querySelector('[data-tv-hero]');
@@ -698,8 +747,7 @@
     modal.classList.add('is-open');
     modal.setAttribute('aria-hidden', 'false');
 
-    // pause videos behind (and stop TV video to save CPU)
-    try { tvVideo?.pause(); } catch (_) {}
+    // pause videos behind (including TV video), but remember what was playing
     document.querySelectorAll('video[data-play-on-view]').forEach((vv) => {
       try {
         if (!vv.paused) vv.dataset.pausedByModal = '1';
@@ -798,28 +846,35 @@
 })();
 </script>
 
-  <script>
+
+<script>
+/* Mobile menu toggle */
 (() => {
   const nav = document.querySelector('nav');
   const btn = document.querySelector('[data-nav-toggle]');
   const drawer = document.querySelector('[data-nav-drawer]');
   if (!nav || !btn || !drawer) return;
 
-  const setAria = () => btn.setAttribute('aria-expanded', nav.classList.contains('is-open') ? 'true' : 'false');
-  const close = () => { nav.classList.remove('is-open'); setAria(); };
+  const sync = () => btn.setAttribute('aria-expanded', nav.classList.contains('is-open') ? 'true' : 'false');
+
+  const close = () => {
+    nav.classList.remove('is-open');
+    sync();
+  };
 
   btn.addEventListener('click', (e) => {
     e.preventDefault();
     nav.classList.toggle('is-open');
-    setAria();
+    sync();
   });
 
   drawer.querySelectorAll('a').forEach((a) => a.addEventListener('click', close));
   document.addEventListener('click', (e) => { if (!nav.contains(e.target)) close(); });
   window.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
 
-  setAria();
+  sync();
 })();
 </script>
+
 </body>
 </html>
