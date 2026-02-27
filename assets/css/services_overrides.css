@@ -1,0 +1,25 @@
+/* Overrides for services pages (safe, additive) */
+
+/* 1) Nav logo always to main is handled in HTML (href="../"). */
+
+/* 3) Service detail: center title + text, keep bottom placement */
+.service-detail .service-hero{ min-height: 100svh; height:auto; }
+.service-detail .service-hero__content{
+  left:50% !important;
+  right:auto !important;
+  transform: translateX(-50%) !important;
+  width: min(980px, 92vw);
+  text-align: center;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
+}
+.service-detail .service-hero__actions{ justify-content:center; }
+
+/* 4) If content is taller than viewport, allow scroll instead of clipping */
+.service-detail .service-hero{ position: relative; overflow: hidden; }
+.service-detail .service-hero__content{ max-width: min(980px, 92vw); }
+
+/* Catalog: center hero text block */
+.services-page .services-hero__inner{ text-align:center; margin-left:auto; margin-right:auto; }
+
