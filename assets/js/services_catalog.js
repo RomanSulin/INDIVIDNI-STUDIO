@@ -32,10 +32,53 @@
   };
 
   // Catalog cards
+
+  const warmFirstFrame = (v) => {
+    if (!v || v.dataset.warmed) return;
+    v.dataset.warmed = '1';
+    // ensure sources are present and fetch only metadata
+    v.preload = 'metadata';
+    prime(v);
+
+    // remove placeholder poster after we have a decoded frame
+    const tryRemovePoster = () => { try { v.removeAttribute('poster'); } catch (_) {} };
+
+    // Seek a tiny bit to force decode in Safari/iOS
+    const onMeta = () => {
+      try {
+        const t = Math.min(0.05, (isFinite(v.duration) && v.duration > 0) ? v.duration * 0.01 : 0.05);
+        v.currentTime = t;
+      } catch (_) {}
+    };
+
+    const onSeeked = () => {
+      try { v.pause(); } catch (_) {}
+      tryRemovePoster();
+    };
+
+    v.addEventListener('loadedmetadata', onMeta, { once: true });
+    v.addEventListener('seeked', onSeeked, { once: true });
+
+    try { v.load(); } catch (_) {}
+  };
+
+  // Warm posters ASAP (but keep it light): only when cards enter viewport
+  const io = ('IntersectionObserver' in window) ? new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      const v = e.target.querySelector && e.target.querySelector('video');
+      if (v) warmFirstFrame(v);
+      io.unobserve(e.target);
+    });
+  }, { rootMargin: '300px 0px' }) : null;
+
   const cards = Array.from(document.querySelectorAll('.scard'));
   cards.forEach((card) => {
     const v = card.querySelector('video');
     if (!v) return;
+
+    // Make sure the card is never blank on refresh: load the first frame
+    if (io) { io.observe(card); } else { warmFirstFrame(v); }
 
     const play = () => {
       if (prefersReduced) return;
@@ -46,7 +89,6 @@
 
     const stop = () => {
       try { v.pause(); } catch (_) {}
-      try { v.currentTime = 0; } catch (_) {}
     };
 
     // Default state: stopped
@@ -54,9 +96,9 @@
 
     if (canHover) {
       card.addEventListener('pointerenter', play);
-      card.addEventListener('pointerleave', stop);
+      card.addEventListener('pointerleave', () => { stop(); try { v.currentTime = 0; } catch (_) {} });
       card.addEventListener('focusin', play);
-      card.addEventListener('focusout', stop);
+      card.addEventListener('focusout', () => { stop(); try { v.currentTime = 0; } catch (_) {} });
     }
   });
 
