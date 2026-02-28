@@ -97,4 +97,20 @@ nav .nav-by{
   .services-page .scard__desc{
     display: none; /* keep it clean on mobile */
   }
+  .services-page .scard{
+    aspect-ratio: 3 / 4;
+    min-height: 0;
+  }
+  .services-page .scard__title{
+    font-size: 14px;
+    line-height: 1.15;
+    white-space: normal;
+    word-break: break-word;
+    hyphens: auto;
+  }
+}
+
+/* CATALOG: prevent visual overlap on touch (some devices emulate hover) */
+@media (pointer:coarse){
+  .services-page .scard:hover{ transform: none !important; }
 }
