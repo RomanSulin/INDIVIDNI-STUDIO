@@ -1,7 +1,7 @@
 /* services_catalog.css — catalog + after blocks */
 
 :root{
-  --svc-pad: clamp(18px, 3.2vw, 46px);
+  --svc-pad: clamp(18px, 3.2vw, 46px); 
   --svc-gap: clamp(12px, 1.7vw, 22px);
 }
 
