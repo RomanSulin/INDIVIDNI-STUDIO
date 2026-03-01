@@ -1,7 +1,7 @@
 /* services_catalog.css — catalog + after blocks */
 
 :root{
-  --svc-pad: clamp(18px, 3.2vw, 46px); 
+  --svc-pad: clamp(18px, 3.2vw, 46px);
   --svc-gap: clamp(12px, 1.7vw, 22px);
 }
 
@@ -52,8 +52,19 @@
 @media (max-width: 520px){
   .services-catalog{ padding-left: 16px; padding-right: 16px; }
   .services-catalog__grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .scard{ aspect-ratio: 3/4; min-height: 0; }
+  .scard__desc{ display: none; }
+  .scard__text{ padding: 10px 10px 12px; }
+  .scard__title{
+    font-size: 14px;
+    line-height: 1.15;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    hyphens: auto;
+  }
 }
- (max-width: 360px){
+@media (max-width: 360px){
   .services-catalog__grid{ grid-template-columns: 1fr; }
 }
 
