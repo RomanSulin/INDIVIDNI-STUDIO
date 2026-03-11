@@ -2543,10 +2543,10 @@ body.modal-open{
 }
 
 .tariff-card__head{
-  display:flex;
-  align-items:flex-end;
-  justify-content:space-between;
-  gap: 12px;
+  display: grid;
+  justify-items: start;
+  align-content: start;
+  gap: 10px;
   margin-bottom: 12px;
 }
 .tariff-card__name{
@@ -2559,9 +2559,17 @@ body.modal-open{
   line-height: 1;
 }
 .tariff-card__price{
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,.08);
+  background: rgba(0,0,0,.05);
   font-weight: 800;
   color: rgba(0,0,0,.82);
-  font-size: 16px;
+  font-size: 15px;
+  line-height: 1;
   opacity: .96;
   white-space: nowrap;
 }
@@ -2681,7 +2689,7 @@ body.modal-open{
 }
 .tariff-card__head{ margin-bottom: 14px; }
 .tariff-card__name{ font-size: 22px; }
-.tariff-card__price{ font-size: 17px; }
+.tariff-card__price{ font-size: 15px; }
 .tariff-card__desc{ margin-bottom: 16px; font-size: 14px; }
 .tariff-card__bullets{ gap: 11px; font-size: 13px; }
 .tariff-card__btn{ margin-top: 18px; }
@@ -2694,6 +2702,7 @@ body.modal-open{
   .tariffs__lead{ margin: 18px auto 28px; font-size: 14px; }
   .tariffs__grid{ width: min(620px, 100%); gap: 12px; }
   .tariff-card{ min-height: 0; aspect-ratio: auto; }
+  .tariff-card__price{ min-height: 32px; padding: 0 10px; font-size: 14px; }
 }
 @media (max-width: 420px){
   .tariffs__grid{ grid-template-columns: 1fr; }
@@ -2848,18 +2857,12 @@ body.modal-open{
   font-size: 18px;
 }
 .brief-wizard{
-  --brief-panel-height: clamp(680px, 74vh, 760px);
   background: linear-gradient(180deg, rgba(255,255,255,.04) 0%, rgba(255,255,255,.02) 100%);
-  min-height: var(--brief-panel-height);
-}
-.brief-wizard [hidden],
-.brief-lead [hidden]{
-  display: none !important;
+  min-height: 680px;
 }
 .brief-wizard__intro,
 .brief-success{
-  min-height: var(--brief-panel-height);
-  height: var(--brief-panel-height);
+  min-height: 680px;
   display: grid;
   align-content: center;
   justify-items: start;
@@ -2905,10 +2908,7 @@ body.modal-open{
 .brief-success__reset:hover,
 .brief-actions__btn:hover{ transform: translateY(-1px); }
 .brief-wizard__work{
-  min-height: var(--brief-panel-height);
-  height: var(--brief-panel-height);
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
   gap: 22px;
   padding: clamp(24px, 4vw, 38px);
 }
@@ -2943,11 +2943,7 @@ body.modal-open{
   transition: width .26s ease;
 }
 .brief-card{
-  min-height: 0;
-  height: 100%;
-  display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr);
-  align-content: start;
+  min-height: 470px;
   border-radius: 28px;
   border: 1px solid rgba(255,255,255,.12);
   background: rgba(255,255,255,.04);
@@ -2968,13 +2964,15 @@ body.modal-open{
 }
 .brief-card__body{
   margin-top: 26px;
-  min-height: 0;
   display: grid;
-  align-content: start;
   gap: 14px;
-  overflow: auto;
-  padding-right: 6px;
-  scrollbar-width: thin;
+}
+
+@media (min-width: 981px){
+  .brief-wizard{ min-height: var(--brief-stable-height, 760px); }
+  .brief-wizard__intro,
+  .brief-success{ min-height: var(--brief-stable-height, 760px); }
+  .brief-card{ min-height: var(--brief-card-height, 520px); }
 }
 .brief-card__body textarea{
   min-height: 160px;
@@ -3063,19 +3061,6 @@ body.modal-open{
 .brief-actions__btn--submit{
   margin-left: auto;
 }
-.brief-mobile-submit{
-  display: none;
-  gap: 12px;
-  margin-top: 8px;
-}
-.brief-mobile-submit__hint{
-  color: rgba(255,255,255,.58);
-  font-size: 13px;
-  line-height: 1.6;
-}
-.brief-actions__btn--mobile-submit{
-  width: 100%;
-}
 .brief-success{
   justify-items: center;
   text-align: center;
@@ -3098,35 +3083,22 @@ body.modal-open{
   .brief-lead{ position: static; }
   .brief-wizard,
   .brief-wizard__intro,
-  .brief-success,
-  .brief-wizard__work{ min-height: 0; height: auto; }
-  .brief-card{ min-height: 0; height: auto; }
+  .brief-success{ min-height: 0; }
+  .brief-card{ min-height: 0; }
 }
 @media (max-width: 700px){
   .brief-split{ padding: 88px 18px 88px; }
-  .brief-split__inner{ gap: 14px; }
   .brief-lead,
   .brief-wizard{ border-radius: 24px; }
-  .brief-lead{
-    order: 2;
-    padding: 22px;
-  }
-  .brief-wizard{ order: 1; }
+  .brief-lead{ padding: 22px; }
   .brief-wizard__intro,
   .brief-success,
   .brief-wizard__work,
   .brief-card{ padding: 20px; }
-  .brief-wizard,
-  .brief-wizard__intro,
-  .brief-success,
-  .brief-wizard__work,
-  .brief-card{ min-height: 0; height: auto; }
-  .brief-card__body{ max-height: none; overflow: visible; padding-right: 0; }
   .brief-inline--2{ grid-template-columns: 1fr; }
   .brief-actions{ flex-wrap: wrap; }
   .brief-actions__btn{ flex: 1 1 calc(50% - 6px); }
-  .brief-actions__btn--submit{ display: none; }
-  .brief-mobile-submit{ display: grid; }
+  .brief-actions__btn--submit{ flex-basis: 100%; }
 }
 @media (max-width: 480px){
   .brief-card__question{ font-size: 28px; }
