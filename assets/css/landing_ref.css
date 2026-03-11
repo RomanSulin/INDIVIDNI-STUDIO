@@ -2706,6 +2706,11 @@ body.modal-open{
   border-bottom: 1px solid rgba(255,255,255,.12);
   padding: 110px clamp(18px, 4vw, 56px) 110px;
 }
+
+.brief-split [hidden]{
+  display: none !important;
+}
+
 .brief-split__inner{
   width: min(1320px, 100%);
   margin: 0 auto;
