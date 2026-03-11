@@ -345,6 +345,16 @@
     if (errorEl) errorEl.textContent = message || '';
   }
 
+  function setStage(view) {
+    const isIntro = view === 'intro';
+    const isWork = view === 'work';
+    const isSuccess = view === 'success';
+
+    intro.hidden = !isIntro;
+    work.hidden = !isWork;
+    success.hidden = !isSuccess;
+  }
+
   function updatePackageBadge(value) {
     state.package = value || state.package;
     if (!state.package || !packageBadge || !packageValue) return;
@@ -378,9 +388,7 @@
 
   function goToStep(index) {
     state.step = Math.max(0, Math.min(index, steps.length - 1));
-    intro.hidden = true;
-    success.hidden = true;
-    work.hidden = false;
+    setStage('work');
     renderStep();
   }
 
@@ -447,9 +455,7 @@
   }
 
   function showSuccess() {
-    work.hidden = true;
-    intro.hidden = true;
-    success.hidden = false;
+    setStage('success');
     success.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
@@ -467,11 +473,11 @@
     state.q8 = { references: '' };
     state.q9 = { budget: '' };
     if (packageBadge) packageBadge.hidden = true;
-    intro.hidden = false;
-    work.hidden = true;
-    success.hidden = true;
+    setStage('intro');
     setError('');
   }
+
+  setStage('intro');
 
   startBtn.addEventListener('click', () => goToStep(0));
 
