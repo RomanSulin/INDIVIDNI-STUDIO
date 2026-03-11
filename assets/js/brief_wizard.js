@@ -345,16 +345,6 @@
     if (errorEl) errorEl.textContent = message || '';
   }
 
-  function setStage(view) {
-    const isIntro = view === 'intro';
-    const isWork = view === 'work';
-    const isSuccess = view === 'success';
-
-    intro.hidden = !isIntro;
-    work.hidden = !isWork;
-    success.hidden = !isSuccess;
-  }
-
   function updatePackageBadge(value) {
     state.package = value || state.package;
     if (!state.package || !packageBadge || !packageValue) return;
@@ -373,6 +363,7 @@
     questionEl.textContent = step.question;
     hintEl.textContent = step.hint || '';
     step.render();
+    bodyEl.scrollTop = 0;
 
     prevBtn.disabled = state.step === 0;
     nextBtn.hidden = state.step === steps.length - 1;
@@ -388,7 +379,9 @@
 
   function goToStep(index) {
     state.step = Math.max(0, Math.min(index, steps.length - 1));
-    setStage('work');
+    intro.hidden = true;
+    success.hidden = true;
+    work.hidden = false;
     renderStep();
   }
 
@@ -455,7 +448,9 @@
   }
 
   function showSuccess() {
-    setStage('success');
+    work.hidden = true;
+    intro.hidden = true;
+    success.hidden = false;
     success.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
@@ -473,11 +468,11 @@
     state.q8 = { references: '' };
     state.q9 = { budget: '' };
     if (packageBadge) packageBadge.hidden = true;
-    setStage('intro');
+    intro.hidden = false;
+    work.hidden = true;
+    success.hidden = true;
     setError('');
   }
-
-  setStage('intro');
 
   startBtn.addEventListener('click', () => goToStep(0));
 
