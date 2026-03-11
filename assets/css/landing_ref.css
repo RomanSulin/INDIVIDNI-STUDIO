@@ -2848,8 +2848,16 @@ body.modal-open{
   font-size: 18px;
 }
 .brief-wizard{
+  position: relative;
   background: linear-gradient(180deg, rgba(255,255,255,.04) 0%, rgba(255,255,255,.02) 100%);
   min-height: 680px;
+}
+[data-brief-intro][hidden],
+[data-brief-work][hidden],
+[data-brief-success][hidden],
+[data-brief-submit][hidden],
+#briefPackageBadge[hidden]{
+  display: none !important;
 }
 .brief-wizard__intro,
 .brief-success{
