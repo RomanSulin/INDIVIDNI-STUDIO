@@ -5,10 +5,13 @@
   const intro = form.querySelector('[data-brief-intro]');
   const work = form.querySelector('[data-brief-work]');
   const success = form.querySelector('[data-brief-success]');
+  const lead = form.querySelector('[data-brief-lead]');
   const startBtn = form.querySelector('[data-brief-start]');
   const prevBtn = form.querySelector('[data-brief-prev]');
   const nextBtn = form.querySelector('[data-brief-next]');
   const submitBtn = form.querySelector('[data-brief-submit]');
+  const mobileSubmitWrap = form.querySelector('[data-brief-mobile-submit]');
+  const mobileSubmitBtn = form.querySelector('[data-brief-submit-mobile]');
   const resetBtn = form.querySelector('[data-brief-reset]');
   const stepLabel = form.querySelector('[data-brief-step-label]');
   const stepPercent = form.querySelector('[data-brief-step-percent]');
@@ -20,6 +23,7 @@
   const packageValue = document.getElementById('briefPackageValue');
 
   const TELEGRAM_BRIEF_WEBHOOK = window.INDIVIDNI_BRIEF_WEBHOOK || '';
+  const mobileLayoutQuery = window.matchMedia('(max-width: 980px)');
 
   const state = {
     step: -1,
@@ -363,11 +367,14 @@
     questionEl.textContent = step.question;
     hintEl.textContent = step.hint || '';
     step.render();
-    bodyEl.scrollTop = 0;
+
+    const isLastStep = state.step === steps.length - 1;
+    const isMobileLayout = mobileLayoutQuery.matches;
 
     prevBtn.disabled = state.step === 0;
-    nextBtn.hidden = state.step === steps.length - 1;
-    submitBtn.hidden = state.step !== steps.length - 1;
+    nextBtn.hidden = isLastStep;
+    submitBtn.hidden = isMobileLayout || !isLastStep;
+    if (mobileSubmitWrap) mobileSubmitWrap.hidden = !(isMobileLayout && isLastStep);
 
     const focusTarget = bodyEl.querySelector('textarea, input:not([type="radio"]):not([type="checkbox"]), [type="date"]');
     if (focusTarget) {
@@ -397,8 +404,8 @@
     const name = getValue('client_name');
     const phone = getValue('client_phone');
     const clientType = getCheckedValue('client_type');
-    if (!name) return 'Укажите имя в левой части формы.';
-    if (!phone) return 'Укажите телефон в левой части формы.';
+    if (!name) return 'Укажите имя в блоке заявки.';
+    if (!phone) return 'Укажите телефон в блоке заявки.';
     if (!clientType) return 'Выберите: физ лицо или компания.';
     return '';
   }
@@ -451,6 +458,8 @@
     work.hidden = true;
     intro.hidden = true;
     success.hidden = false;
+    if (mobileSubmitWrap) mobileSubmitWrap.hidden = true;
+    if (lead && mobileLayoutQuery.matches) lead.hidden = true;
     success.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
@@ -471,6 +480,8 @@
     intro.hidden = false;
     work.hidden = true;
     success.hidden = true;
+    if (lead) lead.hidden = false;
+    if (mobileSubmitWrap) mobileSubmitWrap.hidden = true;
     setError('');
   }
 
@@ -516,6 +527,10 @@
     const payload = buildPayload();
     submitBtn.disabled = true;
     submitBtn.textContent = 'Отправляем...';
+    if (mobileSubmitBtn) {
+      mobileSubmitBtn.disabled = true;
+      mobileSubmitBtn.textContent = 'Отправляем...';
+    }
 
     try {
       await sendPayload(payload);
@@ -526,6 +541,10 @@
     } finally {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Отправить заявку';
+      if (mobileSubmitBtn) {
+        mobileSubmitBtn.disabled = false;
+        mobileSubmitBtn.textContent = 'Отправить заявку';
+      }
     }
   });
 
@@ -534,6 +553,20 @@
   document.querySelectorAll('[data-brief-package]').forEach((link) => {
     link.addEventListener('click', () => updatePackageBadge(link.dataset.briefPackage));
   });
+
+  if (mobileLayoutQuery.addEventListener) {
+    mobileLayoutQuery.addEventListener('change', () => {
+      if (state.step >= 0 && !work.hidden) renderStep();
+      if (state.step < 0 && mobileSubmitWrap) mobileSubmitWrap.hidden = true;
+      if (lead && !mobileLayoutQuery.matches) lead.hidden = false;
+    });
+  } else if (mobileLayoutQuery.addListener) {
+    mobileLayoutQuery.addListener(() => {
+      if (state.step >= 0 && !work.hidden) renderStep();
+      if (state.step < 0 && mobileSubmitWrap) mobileSubmitWrap.hidden = true;
+      if (lead && !mobileLayoutQuery.matches) lead.hidden = false;
+    });
+  }
 
   if (window.location.hash === '#brief-request') {
     const hashParams = new URLSearchParams(window.location.search);
