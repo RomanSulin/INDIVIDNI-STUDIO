@@ -5,13 +5,13 @@
   const intro = form.querySelector('[data-brief-intro]');
   const work = form.querySelector('[data-brief-work]');
   const success = form.querySelector('[data-brief-success]');
-  const lead = form.querySelector('[data-brief-lead]');
+  const briefLead = form.querySelector('.brief-lead');
+  const mobileSubmitWrap = form.querySelector('[data-brief-mobile-submit]');
+  const mobileSubmitBtn = mobileSubmitWrap?.querySelector('button[type="submit"]') || null;
   const startBtn = form.querySelector('[data-brief-start]');
   const prevBtn = form.querySelector('[data-brief-prev]');
   const nextBtn = form.querySelector('[data-brief-next]');
   const submitBtn = form.querySelector('[data-brief-submit]');
-  const mobileSubmitWrap = form.querySelector('[data-brief-mobile-submit]');
-  const mobileSubmitBtn = form.querySelector('[data-brief-submit-mobile]');
   const resetBtn = form.querySelector('[data-brief-reset]');
   const stepLabel = form.querySelector('[data-brief-step-label]');
   const stepPercent = form.querySelector('[data-brief-step-percent]');
@@ -21,9 +21,9 @@
   const bodyEl = form.querySelector('[data-brief-body]');
   const packageBadge = document.getElementById('briefPackageBadge');
   const packageValue = document.getElementById('briefPackageValue');
+  const mobileMq = window.matchMedia('(max-width: 700px)');
 
   const TELEGRAM_BRIEF_WEBHOOK = window.INDIVIDNI_BRIEF_WEBHOOK || '';
-  const mobileLayoutQuery = window.matchMedia('(max-width: 980px)');
 
   const state = {
     step: -1,
@@ -356,6 +356,18 @@
     packageBadge.hidden = false;
   }
 
+  function syncResponsiveState() {
+    const isMobile = mobileMq.matches;
+    const onLastQuestion = !work.hidden && state.step === steps.length - 1;
+
+    if (briefLead) briefLead.hidden = isMobile ? !onLastQuestion : false;
+    if (mobileSubmitWrap) mobileSubmitWrap.hidden = !(isMobile && onLastQuestion);
+
+    if (submitBtn) {
+      submitBtn.hidden = isMobile || state.step !== steps.length - 1;
+    }
+  }
+
   function renderStep() {
     if (state.step < 0 || state.step >= steps.length) return;
     const step = steps[state.step];
@@ -368,13 +380,10 @@
     hintEl.textContent = step.hint || '';
     step.render();
 
-    const isLastStep = state.step === steps.length - 1;
-    const isMobileLayout = mobileLayoutQuery.matches;
-
     prevBtn.disabled = state.step === 0;
-    nextBtn.hidden = isLastStep;
-    submitBtn.hidden = isMobileLayout || !isLastStep;
-    if (mobileSubmitWrap) mobileSubmitWrap.hidden = !(isMobileLayout && isLastStep);
+    nextBtn.hidden = state.step === steps.length - 1;
+    syncResponsiveState();
+    bodyEl.scrollTop = 0;
 
     const focusTarget = bodyEl.querySelector('textarea, input:not([type="radio"]):not([type="checkbox"]), [type="date"]');
     if (focusTarget) {
@@ -390,6 +399,7 @@
     success.hidden = true;
     work.hidden = false;
     renderStep();
+    syncResponsiveState();
   }
 
   function validateStep() {
@@ -404,8 +414,8 @@
     const name = getValue('client_name');
     const phone = getValue('client_phone');
     const clientType = getCheckedValue('client_type');
-    if (!name) return 'Укажите имя в блоке заявки.';
-    if (!phone) return 'Укажите телефон в блоке заявки.';
+    if (!name) return 'Укажите имя.';
+    if (!phone) return 'Укажите телефон.';
     if (!clientType) return 'Выберите: физ лицо или компания.';
     return '';
   }
@@ -458,8 +468,7 @@
     work.hidden = true;
     intro.hidden = true;
     success.hidden = false;
-    if (mobileSubmitWrap) mobileSubmitWrap.hidden = true;
-    if (lead && mobileLayoutQuery.matches) lead.hidden = true;
+    syncResponsiveState();
     success.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
@@ -480,9 +489,14 @@
     intro.hidden = false;
     work.hidden = true;
     success.hidden = true;
-    if (lead) lead.hidden = false;
-    if (mobileSubmitWrap) mobileSubmitWrap.hidden = true;
+    syncResponsiveState();
     setError('');
+  }
+
+  if (mobileMq.addEventListener) {
+    mobileMq.addEventListener('change', syncResponsiveState);
+  } else if (mobileMq.addListener) {
+    mobileMq.addListener(syncResponsiveState);
   }
 
   startBtn.addEventListener('click', () => goToStep(0));
@@ -554,19 +568,7 @@
     link.addEventListener('click', () => updatePackageBadge(link.dataset.briefPackage));
   });
 
-  if (mobileLayoutQuery.addEventListener) {
-    mobileLayoutQuery.addEventListener('change', () => {
-      if (state.step >= 0 && !work.hidden) renderStep();
-      if (state.step < 0 && mobileSubmitWrap) mobileSubmitWrap.hidden = true;
-      if (lead && !mobileLayoutQuery.matches) lead.hidden = false;
-    });
-  } else if (mobileLayoutQuery.addListener) {
-    mobileLayoutQuery.addListener(() => {
-      if (state.step >= 0 && !work.hidden) renderStep();
-      if (state.step < 0 && mobileSubmitWrap) mobileSubmitWrap.hidden = true;
-      if (lead && !mobileLayoutQuery.matches) lead.hidden = false;
-    });
-  }
+  syncResponsiveState();
 
   if (window.location.hash === '#brief-request') {
     const hashParams = new URLSearchParams(window.location.search);
