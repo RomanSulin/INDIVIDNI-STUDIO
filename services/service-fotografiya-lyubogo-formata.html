@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Фотография любого формата — INDIVIDNI studio</title>
-  <meta name="description" content="Предметная съёмка, портреты, репортаж и контент для брендов. Плавающая фото-стена и заявка на фотосъёмку." />
+  <meta name="description" content="Предметная съёмка, портреты, репортаж и контент для брендов. Страница с живой фото-стеной и заявкой на фотосъёмку." />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -12,7 +12,7 @@
 
   <link rel="stylesheet" href="../assets/css/landing_ref.css?v=21" />
   <link rel="stylesheet" href="../assets/css/services_fix.css?v=2" />
-  <link rel="stylesheet" href="../assets/css/service_photo_showcase.css?v=4" />
+  <link rel="stylesheet" href="../assets/css/service_photo_showcase.css?v=5" />
 </head>
 <body class="service-detail service-photo-page">
 
@@ -30,7 +30,7 @@
   </div>
   <div class="nav-right">
     <span class="nav-tag">Photo &amp; video</span>
-    <a class="btn-dl" href="./index.html#contact">Обсудить</a>
+    <button class="btn-dl" type="button" data-photo-brief-open>Обсудить</button>
     <button class="nav-toggle" type="button" aria-label="Открыть меню" data-nav-toggle>
       <span></span><span></span>
     </button>
@@ -67,101 +67,138 @@
     </ul>
 
     <div class="photo-showcase__actions">
-      <button class="photo-showcase__btn" type="button" data-photo-request-open>Обсудить проект</button>
+      <button class="photo-showcase__btn" type="button" data-photo-brief-open>Обсудить проект</button>
     </div>
   </section>
 </main>
 
-<div class="photo-request" data-photo-request hidden>
-  <div class="photo-request__overlay" data-photo-request-close></div>
+<div class="photo-brief" data-photo-brief hidden>
+  <div class="photo-brief__overlay" data-photo-brief-close></div>
+  <div class="photo-brief__dialog" role="dialog" aria-modal="true" aria-labelledby="photo-brief-title">
+    <button class="photo-brief__close" type="button" aria-label="Закрыть" data-photo-brief-close>✕</button>
 
-  <section class="photo-request__dialog" role="dialog" aria-modal="true" aria-labelledby="photo-request-title">
-    <button class="photo-request__close" type="button" aria-label="Закрыть окно" data-photo-request-close>✕</button>
-
-    <div class="photo-request__head" data-photo-request-stage="form">
-      <div class="photo-request__eyebrow">заявка на фотосъёмку</div>
-      <h2 class="photo-request__title" id="photo-request-title">Короткий бриф на фотосъёмку</h2>
-      <p class="photo-request__text">
-        Ответьте на несколько вопросов — так нам будет проще быстро понять задачу, формат съёмки и бюджет.
+    <div class="photo-brief__head">
+      <div class="photo-brief__eyebrow">brief</div>
+      <h2 class="photo-brief__title" id="photo-brief-title">Заявка на фотосъёмку</h2>
+      <p class="photo-brief__lead">
+        Коротко ответьте на несколько вопросов. Так мы быстрее поймём объём, формат и сможем назвать ориентир по стоимости.
       </p>
     </div>
 
-    <form class="photo-request__form" data-photo-request-form data-photo-request-stage="form">
-      <div class="photo-request__grid">
-        <label class="photo-request__field">
-          <span>1. Какой формат съёмки нужен? *</span>
-          <select name="shoot_type" required>
-            <option value="" selected disabled>Выберите вариант</option>
-            <option>Контент для бренда</option>
-            <option>Портрет / editorial</option>
-            <option>Предметная съёмка</option>
-            <option>Репортаж / backstage</option>
-            <option>Другое</option>
-          </select>
-        </label>
+    <form class="photo-brief__form" data-photo-brief-form novalidate>
+      <div class="photo-brief__grid">
+        <div class="photo-field photo-field--full">
+          <label class="photo-field__label">1. Какой формат съёмки нужен? *</label>
+          <div class="photo-select" data-custom-select>
+            <input type="hidden" name="shootFormat" required />
+            <button class="photo-select__trigger" type="button" data-select-trigger>
+              <span data-select-value>Выберите формат</span>
+              <span class="photo-select__arrow"></span>
+            </button>
+            <div class="photo-select__menu" data-select-menu hidden>
+              <button type="button" data-select-option value="Индивидуальная съёмка">Индивидуальная съёмка</button>
+              <button type="button" data-select-option value="Эвент / мероприятие">Эвент / мероприятие</button>
+              <button type="button" data-select-option value="Контент для бренда">Контент для бренда</button>
+              <button type="button" data-select-option value="Предметная съёмка">Предметная съёмка</button>
+              <button type="button" data-select-option value="Backstage / репортаж">Backstage / репортаж</button>
+            </div>
+          </div>
+        </div>
 
-        <label class="photo-request__field">
-          <span>2. Где будут использоваться фотографии? *</span>
-          <select name="usage" required>
-            <option value="" selected disabled>Выберите вариант</option>
-            <option>Соцсети / сайт</option>
-            <option>Маркетплейсы / каталог</option>
-            <option>Реклама / кампания</option>
-            <option>Печать / наружные носители</option>
-            <option>Другое</option>
-          </select>
-        </label>
+        <div class="photo-field">
+          <label class="photo-field__label">2. Когда нужна съёмка? *</label>
+          <div class="photo-date" data-date-picker>
+            <input type="hidden" name="shootDate" required />
+            <button class="photo-date__trigger" type="button" data-date-trigger>
+              <span data-date-value>Выберите дату</span>
+              <span class="photo-date__icon" aria-hidden="true"></span>
+            </button>
+            <div class="photo-date__popover" data-date-popover hidden>
+              <div class="photo-date__bar">
+                <button type="button" data-date-prev aria-label="Предыдущий месяц">‹</button>
+                <strong data-date-month></strong>
+                <button type="button" data-date-next aria-label="Следующий месяц">›</button>
+              </div>
+              <div class="photo-date__weekdays">
+                <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span>
+              </div>
+              <div class="photo-date__grid" data-date-grid></div>
+            </div>
+          </div>
+        </div>
 
-        <label class="photo-request__field">
-          <span>3. Есть ли дедлайн?</span>
-          <input type="text" name="deadline" placeholder="Например: до 20 апреля" />
-        </label>
+        <div class="photo-field">
+          <label class="photo-field__label">3. Где планируется съёмка?</label>
+          <div class="photo-select" data-custom-select>
+            <input type="hidden" name="locationType" />
+            <button class="photo-select__trigger" type="button" data-select-trigger>
+              <span data-select-value>Выберите вариант</span>
+              <span class="photo-select__arrow"></span>
+            </button>
+            <div class="photo-select__menu" data-select-menu hidden>
+              <button type="button" data-select-option value="Студия">Студия</button>
+              <button type="button" data-select-option value="Локация клиента">Локация клиента</button>
+              <button type="button" data-select-option value="Улица / город">Улица / город</button>
+              <button type="button" data-select-option value="Пока не решили">Пока не решили</button>
+            </div>
+          </div>
+        </div>
 
-        <fieldset class="photo-request__field photo-request__field--checkboxes">
-          <legend>4. Что понадобится дополнительно?</legend>
-          <label><input type="checkbox" name="extras" value="Подбор студии / локации" /> <span>Подбор студии / локации</span></label>
-          <label><input type="checkbox" name="extras" value="Модели / стилист / визаж" /> <span>Модели / стилист / визаж</span></label>
-          <label><input type="checkbox" name="extras" value="Свет / команда" /> <span>Свет / команда</span></label>
-          <label><input type="checkbox" name="extras" value="Ретушь / цветокоррекция" /> <span>Ретушь / цветокоррекция</span></label>
-        </fieldset>
+        <div class="photo-field">
+          <label class="photo-field__label">4. Какой ориентир по бюджету?</label>
+          <div class="photo-select" data-custom-select>
+            <input type="hidden" name="budget" />
+            <button class="photo-select__trigger" type="button" data-select-trigger>
+              <span data-select-value>Выберите диапазон</span>
+              <span class="photo-select__arrow"></span>
+            </button>
+            <div class="photo-select__menu" data-select-menu hidden>
+              <button type="button" data-select-option value="До 50 000 ₽">До 50 000 ₽</button>
+              <button type="button" data-select-option value="50 000–150 000 ₽">50 000–150 000 ₽</button>
+              <button type="button" data-select-option value="150 000–300 000 ₽">150 000–300 000 ₽</button>
+              <button type="button" data-select-option value="300 000 ₽ и выше">300 000 ₽ и выше</button>
+              <button type="button" data-select-option value="Нужна консультация">Нужна консультация</button>
+            </div>
+          </div>
+        </div>
 
-        <label class="photo-request__field photo-request__field--full">
-          <span>5. Есть ли референсы, пожелания по стилю или короткое описание задачи?</span>
-          <textarea name="references" rows="5" placeholder="Можно описать стиль, цвет, настроение, локацию или прикрепить потом ссылки в переписке."></textarea>
-        </label>
-      </div>
+        <div class="photo-field photo-field--full">
+          <label class="photo-field__label" for="photoTask">5. Что нужно снять и какой нужен результат? *</label>
+          <textarea id="photoTask" name="task" rows="4" placeholder="Например: портретная съёмка команды, 20–30 кадров для сайта и соцсетей, в тёмной кинематографичной стилистике." required></textarea>
+        </div>
 
-      <div class="photo-request__contact">
-        <div class="photo-request__contact-title">Контакты</div>
-        <div class="photo-request__contact-grid">
-          <label class="photo-request__field">
-            <span>Имя *</span>
-            <input type="text" name="name" required placeholder="Ваше имя" />
-          </label>
-          <label class="photo-request__field">
-            <span>Телефон *</span>
-            <input type="tel" name="phone" required placeholder="+7 (___) ___-__-__" />
-          </label>
+        <div class="photo-field photo-field--full">
+          <label class="photo-field__label" for="photoRefs">6. Ссылки на референсы или комментарии</label>
+          <textarea id="photoRefs" name="references" rows="3" placeholder="Можно вставить ссылки на понравившиеся съёмки, Pinterest, Behance, примеры цвета или света."></textarea>
+        </div>
+
+        <div class="photo-field">
+          <label class="photo-field__label" for="photoName">Имя *</label>
+          <input id="photoName" name="name" type="text" placeholder="Ваше имя" required />
+        </div>
+
+        <div class="photo-field">
+          <label class="photo-field__label" for="photoPhone">Телефон *</label>
+          <input id="photoPhone" name="phone" type="tel" placeholder="+7 (___) ___-__-__" required />
         </div>
       </div>
 
-      <div class="photo-request__actions">
-        <button class="photo-request__submit" type="submit">Отправить заявку</button>
+      <div class="photo-brief__foot">
+        <p class="photo-brief__policy">Нажимая кнопку «Отправить», Вы соглашаетесь с Политикой конфиденциальности.</p>
+        <button class="photo-brief__submit" type="submit">Отправить заявку</button>
       </div>
     </form>
 
-    <div class="photo-request__success" data-photo-request-stage="success" hidden>
-      <div class="photo-request__eyebrow">заявка отправлена</div>
-      <h3 class="photo-request__title photo-request__title--success">Спасибо за обращение</h3>
-      <p class="photo-request__text">
-        Скоро с вами свяжется наш продюсер, чтобы обсудить формат съёмки и следующие шаги.
-      </p>
-      <button class="photo-request__submit photo-request__submit--ghost" type="button" data-photo-request-close>Закрыть</button>
+    <div class="photo-brief__success" data-photo-brief-success hidden>
+      <div class="photo-brief__success-badge">Спасибо</div>
+      <h3>Заявка отправлена</h3>
+      <p>Скоро с вами свяжемся и уточним детали фотосъёмки.</p>
+      <button class="photo-showcase__btn photo-showcase__btn--dark" type="button" data-photo-brief-close>Закрыть</button>
     </div>
-  </section>
+  </div>
 </div>
 
 <script src="../assets/js/services_catalog.js?v=1"></script>
-<script src="../assets/js/service_photo_showcase.js?v=4"></script>
+<script src="../assets/js/service_photo_showcase.js?v=5"></script>
 </body>
 </html>
