@@ -1218,6 +1218,7 @@ footer{
   border-radius: 999px;
   border: 0;
   background: #fff;
+  color: #0b0b0b;
   color:#000;
   font-family: var(--font-head);
   font-weight: 900;
@@ -1482,7 +1483,7 @@ footer{
   text-transform: uppercase;
   text-align: left;
 }
-.faq__list{ margin-top: 44px; border-top: 1px solid rgba(255,255,255,.16); }
+.faq__list{ margin: 44px auto 0; border-top: 1px solid rgba(255,255,255,.16); max-width: min(920px, 100%); }
 .faq-item{ border-bottom: 1px solid rgba(255,255,255,.16); padding: 24px 0; }
 
 .faq-q{
@@ -2222,27 +2223,1048 @@ body.modal-open{
 }
 
 
-/* v19 — centered section headings requested by user */
-.services-title,
-.process-cards__title,
-.team__title,
-.faq__title,
-.pricing-title,
-.tariffs-title,
-.tariffs__title,
-.rates-title,
-.price-section__title{
-  text-align: center !important;
+/* ===== PATCH v19 (layout spacing + centering) ===== */
+
+:root{
+  --section-pad-top: 116px;
+  --section-pad-bottom: 70px;
+  --section-pad-x: clamp(18px, 4vw, 56px);
+}
+
+/* Match spacing with SERVICES */
+.process-cards,
+.team,
+.faq{
+  padding: var(--section-pad-top) var(--section-pad-x) var(--section-pad-bottom) !important;
+}
+
+/* Center "НАШИ ПРОЕКТЫ" in the left split */
+.split-title{
+  width: 100%;
+  text-align: center;
+}
+
+@media (max-width: 600px){
+  /* Kill 100vw drift on mobile for ALL full-bleed sections */
+  html, body{ overflow-x: hidden; }
+  .services-wide,
+  .split-projects,
+  .process-cards,
+  .team,
+  .faq{
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* Mobile paddings: smaller + одинаковые */
+  .services-wide,
+  .process-cards,
+  .team,
+  .faq{
+    padding: 72px 16px 64px !important;
+  }
+
+  /* HERO: hard-center INDIVIDNI even if something overrides alignment */
+  .hero-brand{
+    max-width: none !important;
+    width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+  .hero-brand__big{
+    display: inline-block !important;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center !important;
+    max-width: 100%;
+    white-space: nowrap;
+  }
+
+  /* Split: keep cards truly centered (not stretched full width) */
+  .split-left{ padding: 26px 16px !important; }
+  .split-right{ padding: 18px 16px !important; }
+  .split-right-wrap{
+    width: min(92%, 560px) !important;
+    margin: 0 auto !important;
+  }
+}
+
+/* ===== PATCH v20 (nav studio + projects text center + mobile hover off) ===== */
+
+/* NAV: 'studio' in the top menu must be black */
+.nav-by{ color: rgba(0,0,0,.92) !important; }
+
+/* Projects split description: center */
+.split-text{
+  text-align: center;
   margin-left: auto;
   margin-right: auto;
 }
 
-.services-head,
-.process-cards__inner,
-.team__inner,
-.faq__inner,
-.pricing,
-.tariffs,
-.price-section{
-  --section-title-align: center;
+/* Mobile / touch: service cards should NOT окрашиваться */
+@media (hover: none), (pointer: coarse){
+  .svc-card:hover{ transform: none !important; }
+  .svc-card:hover::before{ opacity: 0 !important; }
+
+  .svc-card:hover .svc-media img,
+  .svc-card:hover .svc-media video{
+    opacity: 1 !important;
+    transform: scale(1.02) !important;
+  }
+
+  .svc-card:hover .svc-overlay{
+    background: linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,.55) 100%) !important;
+    color: #fff !important;
+    justify-content: flex-end !important;
+    align-items: stretch !important;
+    text-align: left !important;
+    padding: 16px 16px 18px !important;
+  }
+
+  .svc-card:hover .svc-name{
+    font-size: 18px !important;
+    letter-spacing: -0.02em !important;
+  }
+
+  .svc-card:hover .svc-text{
+    visibility: hidden !important;
+    opacity: 0 !important;
+    transform: translateY(8px) !important;
+    font-size: 12.5px !important;
+  }
+
+  /* Extra safety for tap */
+  .svc-card:active{ transform: none !important; }
+  .svc-card:active::before{ opacity: 0 !important; }
+}
+
+/* Mobile: tighten centering issues (INDIVIDNI + projects cards) */
+@media (max-width: 600px){
+  /* Make INDIVIDNI fit and look centered (no uneven cropping) */
+  .hero-brand__big{
+    font-size: clamp(44px, 14.6vw, 74px) !important;
+  }
+
+  /* Projects cards: centered + max-width */
+  .split-right-grid{ justify-items: center !important; }
+  .proj-item{ width: min(100%, 520px) !important; }
+}
+
+/* ===== PATCH v21 (projects cards centering up to 980px) ===== */
+@media (max-width: 980px){
+  .split-right-wrap{
+    width: min(92%, 560px) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  .split-right-grid{ justify-items: center !important; }
+  .proj-item{ width: min(100%, 520px) !important; }
+}
+
+/* === MOBILE: hard-center INDIVIDNI wordmark (fix for subtle viewport drift) === */
+@media (max-width: 640px){
+  /* full-bleed helpers can cause 1–6px drift on mobile browsers */
+  .full-bleed{
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* Ensure hero brand container is truly centered even if inner is SVG/flex */
+  .hero-brand{
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  /* If INDIVIDNI is plain text */
+  .hero-brand__big{
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  /* If INDIVIDNI is SVG letters group */
+  .hero-wordmark{
+    width: fit-content !important;
+    max-width: 98vw !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .hero-brand__big svg,
+  .hero-brand__big img,
+  .hero-wordmark svg,
+  .hero-wordmark img{
+    display:block !important;
+    margin: 0 auto !important;
+  }
+}
+/* Mobile: keep SVG wordmark truly centered (negative kerning shifts center) */
+@media (max-width: 640px){
+  .hero-wordmark .wm:not(:first-child){
+    margin-left: 0 !important; /* keep center true on mobile */
+  }
+}
+
+@media (max-width: 640px){
+  /* контейнер слова */
+  .hero .individni,
+  #individni,
+  .individni{
+    max-width: calc(100vw - 24px); /* отступы по 12px */
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+  }
+
+  /* само слово (если это текст) */
+  .hero .individni,
+  #individni,
+  .individni{
+    font-size: clamp(42px, 12vw, 72px);
+    letter-spacing: 0.06em;   /* если сильно раздвинуто — уменьши до 0.03em */
+    line-height: 0.9;
+    white-space: nowrap;      /* чтобы не переносилось */
+  }
+}
+
+@media (max-width: 600px){
+  .hero-brand__big{
+    font-size: clamp(40px, 12.8vw, 66px) !important; /* чуть меньше */
+    letter-spacing: 0.01em !important;              /* ключевой фикс */
+    max-width: calc(100vw - 40px) !important;       /* отступы */
+    white-space: nowrap;
+  }
+}
+
+/* ===== TARIFFS (after FAQ) ===== */
+.tariffs{
+  background: #000;
+  color: #fff;
+  border-top: 1px solid rgba(255,255,255,.12);
+  border-bottom: 1px solid rgba(255,255,255,.12);
+  /* align like TEAM: left, with section padding */
+  padding: 110px clamp(18px, 4vw, 56px) 90px;
+}
+.tariffs__inner{
+  width: 100%;
+  margin: 0;
+}
+.tariffs__title,
+.tariffs__lead{
+  width: min(1120px, 100%);
+  margin-left: 0;
+}
+
+.tariffs__title{
+  font-family: var(--font-head);
+  color: #fff;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  font-size: clamp(56px, 6.8vw, 120px);
+  line-height: .95;
+  text-transform: uppercase;
+  margin: 0;
+}
+.tariffs__lead{
+  margin: 18px 0 34px;
+  max-width: 95ch;
+  color: rgba(255,255,255,.72);
+  line-height: 1.7;
+  font-size: 14px;
+}
+
+.tariffs__grid{
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 56px;
+  align-items: stretch;
+  justify-items: center;
+  width: min(1180px, 100%);
+  margin: 0 auto;
+}
+
+
+.tariff-card{
+  --accent: #e5e7eb;
+  position: relative;
+  overflow: hidden;
+  border-radius: 22px;
+  padding: 18px 18px 16px;
+
+  /* WHITE cards */
+  background: #fff;
+  color: #0b0b0b;
+  border: 1px solid rgba(0,0,0,.10);
+  box-shadow: 0 8px 20px rgba(0,0,0,.12);
+  display: flex;
+  flex-direction: column;
+
+  /* более вытянутые ~2.5:4 */
+  width: 100%;
+  max-width: 280px;
+  aspect-ratio: 3 / 4;
+  min-height: 400px;
+
+  /* no stacking/overlap tricks */
+  transform: none;
+  transition: box-shadow .25s ease, border-color .25s ease;
+}
+
+/* акцентная линия (без градиентов) */
+.tariff-card::before{
+  content:"";
+  position:absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 4px;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity .18s ease;
+  pointer-events:none;
+}
+.tariff-card > *{ position: relative; }
+
+.tariff-card:hover{
+  border-color: rgba(0,0,0,.16);
+  box-shadow: 0 12px 30px rgba(0,0,0,.18);
+}
+.tariff-card:hover::before,
+.tariff-card:focus-within::before{
+  opacity: 1;
+}
+
+.tariff-card__head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.tariff-card__name{
+  margin:0;
+  color: #0b0b0b;
+  font-family: var(--font-head);
+  font-weight: 900;
+  letter-spacing: .02em;
+  font-size: 20px;
+  line-height: 1;
+}
+.tariff-card__price{
+  font-weight: 800;
+  color: rgba(0,0,0,.82);
+  font-size: 16px;
+  opacity: .96;
+  white-space: nowrap;
+}
+
+.tariff-card__desc{
+  margin: 0 0 14px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: rgba(0,0,0,.78);
+  min-height: calc(1.55em * 3);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+
+.tariff-card__bullets{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: rgba(0,0,0,.62);
+  font-size: 13px;
+  line-height: 1.35;
+  /* occupy the middle and center vertically */
+  flex: 1;
+  padding-top: 4px;
+  justify-content: flex-start;
+}
+.tariff-card__bullets li{
+  position: relative;
+  padding-left: 14px;
+}
+.tariff-card__bullets li::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top: .55em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0,0,0,.06);
+}
+
+.tariff-card__btn{
+  margin-top: 14px;
+  display: inline-flex;
+  align-items:center;
+  justify-content:center;
+  height: 46px;
+  border-radius: 14px;
+  text-decoration: none;
+  font-weight: 800;
+
+  border: 1px solid rgba(0,0,0,.14);
+  background: #0b0b0b;
+  color: #fff;
+
+  transition: background .2s ease, transform .2s ease, border-color .2s ease, color .2s ease;
+}
+.tariff-card__btn:hover{
+  background: #1b1b1b;
+  transform: translateY(-1px);
+}
+.tariff-card__btn--ghost{
+  background: transparent;
+  color: #0b0b0b;
+  border-color: rgba(0,0,0,.18);
+}
+
+.tariff-card--lite{ --accent: #34d399; }    /* green */
+.tariff-card--std{ --accent: #a855f7; }     /* violet */
+.tariff-card--brand{ --accent: #fb923c; }  /* orange */
+.tariff-card--tender{ --accent: #3b82f6; }  /* blue */
+
+@media (max-width: 1100px){
+  .tariffs__grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; width: min(980px, 100%); justify-items: stretch; }
+  .tariff-card{ max-width: none; aspect-ratio: 3 / 4; min-height: 380px; }
+}
+@media (max-width: 640px){
+  .tariffs{ padding: 90px clamp(18px, 4vw, 56px) 70px; }
+  .tariffs__inner{ width: min(1120px, 100%); }
+  .tariffs__lead{ margin-bottom: 26px; }
+  .tariffs__grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; width: min(560px, 100%); margin: 0 auto; }
+  .tariff-card{
+    aspect-ratio: auto;
+    min-height: auto;
+  }
+}
+@media (max-width: 420px){
+  .tariffs__grid{ grid-template-columns: 1fr; }
+}
+
+
+/* ===== TARIFFS + BRIEF SPLIT refinements ===== */
+.tariffs__lead{
+  width: min(820px, 100%);
+  margin: 22px auto 40px;
+  text-align: center;
+  font-size: 15px;
+}
+.tariffs__grid{
+  grid-template-columns: repeat(4, minmax(220px, 1fr));
+  gap: clamp(14px, 1.8vw, 24px);
+  width: min(1320px, 100%);
+}
+.tariff-card{
+  max-width: none;
+  min-height: 430px;
+  aspect-ratio: 3 / 4;
+  border-radius: 24px;
+  padding: 20px 20px 18px;
+}
+.tariff-card__head{
+  margin-bottom: 14px;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: start;
+  gap: 10px;
+}
+.tariff-card__name{ font-size: 22px; }
+.tariff-card__price{
+  font-size: 16px;
+  line-height: 1.2;
+  white-space: normal;
+  max-width: 100%;
+  align-self: start;
+  display: inline-flex;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(0,0,0,.06);
+}
+.tariff-card__desc{ margin-bottom: 16px; font-size: 14px; }
+.tariff-card__bullets{ gap: 11px; font-size: 13px; }
+.tariff-card__btn{ margin-top: 18px; }
+
+@media (max-width: 1100px){
+  .tariffs__grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); width: min(920px, 100%); }
+  .tariff-card{ min-height: 400px; }
+}
+@media (max-width: 640px){
+  .tariffs__lead{ margin: 18px auto 28px; font-size: 14px; }
+  .tariffs__grid{ width: min(620px, 100%); gap: 12px; }
+  .tariff-card{ min-height: 0; aspect-ratio: auto; }
+  .tariff-card__price{ font-size: 15px; padding: 7px 10px; }
+}
+@media (max-width: 420px){
+  .tariffs__grid{ grid-template-columns: 1fr; }
+}
+
+.brief-split{
+  background: #000;
+  color: #fff;
+  border-top: 1px solid rgba(255,255,255,.12);
+  border-bottom: 1px solid rgba(255,255,255,.12);
+  padding: 110px clamp(18px, 4vw, 56px) 110px;
+}
+.brief-split__inner{
+  width: min(1320px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(300px, 420px) minmax(0, 1fr);
+  gap: clamp(18px, 2vw, 28px);
+  align-items: start;
+}
+.brief-lead,
+.brief-wizard{
+  border-radius: 30px;
+  border: 1px solid rgba(255,255,255,.12);
+  box-shadow: 0 26px 80px rgba(0,0,0,.22);
+  overflow: hidden;
+}
+.brief-lead{
+  position: sticky;
+  top: 110px;
+  background: linear-gradient(180deg, rgba(255,255,255,.09) 0%, rgba(255,255,255,.04) 100%);
+  padding: 28px;
+}
+.brief-lead__eyebrow,
+.brief-wizard__eyebrow{
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.72);
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  font-size: 11px;
+  font-weight: 700;
+}
+.brief-lead__title{
+  margin: 16px 0 12px;
+  font-family: var(--font-head);
+  font-size: clamp(42px, 4vw, 68px);
+  line-height: .92;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+}
+.brief-lead__text{
+  margin: 0 0 22px;
+  color: rgba(255,255,255,.72);
+  font-size: 14px;
+  line-height: 1.75;
+}
+.brief-lead__fields{
+  display: grid;
+  gap: 14px;
+}
+.brief-field{
+  display: grid;
+  gap: 7px;
+}
+.brief-field__label{
+  color: rgba(255,255,255,.6);
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  font-size: 11px;
+  font-weight: 700;
+}
+.brief-input,
+.brief-card textarea,
+.brief-card input[type="text"],
+.brief-card input[type="url"],
+.brief-card input[type="date"]{
+  width: 100%;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  color: #fff;
+  border-radius: 16px;
+  padding: 14px 16px;
+  font: inherit;
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+.brief-input::placeholder,
+.brief-card textarea::placeholder,
+.brief-card input::placeholder{
+  color: rgba(255,255,255,.34);
+}
+.brief-input:focus,
+.brief-card textarea:focus,
+.brief-card input:focus{
+  border-color: rgba(255,255,255,.34);
+  box-shadow: 0 0 0 3px rgba(255,255,255,.08);
+}
+.brief-kind{
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: grid;
+  gap: 10px;
+}
+.brief-kind__option{
+  position: relative;
+}
+.brief-kind__option input{
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.brief-kind__option span{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.05);
+  font-weight: 700;
+  color: rgba(255,255,255,.86);
+  transition: transform .18s ease, border-color .18s ease, background .18s ease;
+}
+.brief-kind__option input:checked + span{
+  border-color: rgba(255,255,255,.32);
+  background: rgba(255,255,255,.12);
+  transform: translateY(-1px);
+}
+.brief-package{
+  display: grid;
+  gap: 6px;
+  border-radius: 18px;
+  padding: 16px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: linear-gradient(135deg, rgba(84,91,255,.18) 0%, rgba(255,255,255,.04) 100%);
+}
+.brief-package__label{
+  color: rgba(255,255,255,.55);
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  font-size: 11px;
+  font-weight: 700;
+}
+.brief-package__value{
+  font-size: 18px;
+}
+.brief-mobile-submit{
+  display: none;
+  gap: 14px;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255,255,255,.1);
+}
+.brief-mobile-submit__text{
+  margin: 0;
+  color: rgba(255,255,255,.7);
+  font-size: 13px;
+  line-height: 1.7;
+}
+.brief-mobile-submit__btn{
+  cursor: pointer;
+  min-height: 54px;
+  padding: 0 22px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: #fff;
+  color: #000;
+  font-family: var(--font-head);
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  transition: transform .18s ease, opacity .18s ease, border-color .18s ease, background .18s ease;
+}
+.brief-mobile-submit__btn:hover{ transform: translateY(-1px); }
+.brief-mobile-submit__btn[disabled]{
+  opacity: .5;
+  cursor: default;
+  transform: none !important;
+}
+.brief-wizard{
+  background: linear-gradient(180deg, rgba(255,255,255,.04) 0%, rgba(255,255,255,.02) 100%);
+  min-height: 680px;
+}
+.brief-wizard__intro,
+.brief-success{
+  min-height: 680px;
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  padding: clamp(28px, 5vw, 54px);
+}
+.brief-wizard__title,
+.brief-success__title{
+  margin: 20px 0 12px;
+  font-family: var(--font-head);
+  letter-spacing: -0.04em;
+  font-size: clamp(34px, 4vw, 64px);
+  line-height: .95;
+}
+.brief-wizard__text,
+.brief-success__text{
+  max-width: 720px;
+  color: rgba(255,255,255,.72);
+  font-size: 16px;
+  line-height: 1.75;
+}
+.brief-wizard__start,
+.brief-success__reset,
+.brief-actions__btn{
+  cursor: pointer;
+  min-height: 54px;
+  padding: 0 22px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.14);
+  font-family: var(--font-head);
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  transition: transform .18s ease, opacity .18s ease, border-color .18s ease, background .18s ease;
+}
+.brief-wizard__start,
+.brief-actions__btn,
+.brief-success__reset{
+  background: #fff;
+  color: #000;
+}
+.brief-wizard__start:hover,
+.brief-success__reset:hover,
+.brief-actions__btn:hover{ transform: translateY(-1px); }
+.brief-wizard__work{
+  display: grid;
+  gap: 22px;
+  padding: clamp(24px, 4vw, 38px);
+}
+.brief-progress{
+  display: grid;
+  gap: 10px;
+}
+.brief-progress__meta{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.brief-progress__caption,
+.brief-progress__percent{
+  color: rgba(255,255,255,.72);
+  font-size: 13px;
+  font-weight: 700;
+}
+.brief-progress__bar{
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.09);
+  overflow: hidden;
+}
+.brief-progress__fill{
+  display: block;
+  width: 11%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #ffffff 0%, #a855f7 100%);
+  transition: width .26s ease;
+}
+.brief-card{
+  min-height: 470px;
+  border-radius: 28px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.04);
+  padding: clamp(22px, 3vw, 34px);
+}
+.brief-card__question{
+  font-family: var(--font-head);
+  font-size: clamp(28px, 3.2vw, 48px);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+.brief-card__hint{
+  margin-top: 14px;
+  max-width: 840px;
+  color: rgba(255,255,255,.68);
+  line-height: 1.75;
+  font-size: 15px;
+}
+.brief-card__body{
+  margin-top: 26px;
+  display: grid;
+  gap: 14px;
+}
+.brief-card__body textarea{
+  min-height: 160px;
+  resize: vertical;
+}
+.brief-stack{
+  display: grid;
+  gap: 12px;
+}
+.brief-option,
+.brief-check{
+  position: relative;
+}
+.brief-option input,
+.brief-check input{
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.brief-option span,
+.brief-check span{
+  display: flex;
+  align-items: center;
+  min-height: 60px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.05);
+  color: rgba(255,255,255,.9);
+  line-height: 1.5;
+  transition: transform .18s ease, border-color .18s ease, background .18s ease;
+}
+.brief-check span{ justify-content: space-between; gap: 14px; }
+.brief-check span::after{
+  content: "";
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,.24);
+  background: rgba(255,255,255,.02);
+}
+.brief-option input:checked + span,
+.brief-check input:checked + span{
+  background: rgba(255,255,255,.12);
+  border-color: rgba(255,255,255,.3);
+  transform: translateY(-1px);
+}
+.brief-check input:checked + span::after{
+  background: #fff;
+  border-color: #fff;
+  box-shadow: inset 0 0 0 4px #000;
+}
+.brief-inline{
+  display: grid;
+  gap: 12px;
+}
+.brief-inline--2{
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.brief-note{
+  color: rgba(255,255,255,.5);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.brief-error{
+  color: #ffb4b4;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.brief-actions{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.brief-actions__btn--ghost{
+  background: transparent;
+  color: #fff;
+}
+.brief-actions__btn[disabled]{
+  opacity: .32;
+  cursor: default;
+  transform: none !important;
+}
+.brief-actions__btn--submit{
+  margin-left: auto;
+}
+.brief-success{
+  justify-items: center;
+  text-align: center;
+}
+.brief-success__icon{
+  display: grid;
+  place-items: center;
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.08);
+  font-size: 34px;
+  font-weight: 800;
+}
+.brief-success__text{ max-width: 620px; }
+
+@media (max-width: 980px){
+  .brief-split__inner{ grid-template-columns: 1fr; }
+  .brief-lead,
+  .brief-wizard{ width: 100%; }
+  .brief-lead{ position: static; order: 2; }
+  .brief-wizard{ order: 1; }
+  .brief-mobile-submit:not([hidden]){ display: grid; }
+  .brief-wizard,
+  .brief-wizard__intro,
+  .brief-success{ min-height: 0; }
+  .brief-card{ min-height: 0; }
+}
+@media (max-width: 700px){
+  .brief-split{ padding: 88px 18px 88px; }
+  .brief-lead,
+  .brief-wizard{ border-radius: 24px; }
+  .brief-lead{ padding: 22px; }
+  .brief-wizard__intro,
+  .brief-success,
+  .brief-wizard__work,
+  .brief-card{ padding: 20px; }
+  .brief-inline--2{ grid-template-columns: 1fr; }
+  .brief-actions{ flex-wrap: wrap; }
+  .brief-actions__btn{ flex: 1 1 calc(50% - 6px); }
+  .brief-actions__btn--submit{ flex-basis: 100%; }
+  .brief-mobile-submit__btn{ width: 100%; }
+}
+@media (max-width: 480px){
+  .brief-card__question{ font-size: 28px; }
+  .brief-option span,
+  .brief-check span{ min-height: 56px; padding: 14px 16px; }
+  .brief-actions__btn,
+  .brief-wizard__start,
+  .brief-success__reset{ width: 100%; }
+  .brief-actions__btn{ flex-basis: 100%; }
+}
+
+
+/* ===== PATCH v16: mobile brief isolated + tariff prices below title ===== */
+.brief-split [hidden]{
+  display: none !important;
+}
+
+.tariffs .tariff-card__head{
+  display: grid;
+  justify-items: start;
+  align-content: start;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.tariffs .tariff-card__price{
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,.12);
+  background: rgba(0,0,0,.04);
+  white-space: nowrap;
+}
+
+.brief-mobile{
+  display: none;
+  border-radius: 24px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: linear-gradient(180deg, rgba(255,255,255,.07) 0%, rgba(255,255,255,.04) 100%);
+  padding: 22px;
+  margin-top: 18px;
+}
+
+.brief-mobile__eyebrow{
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.72);
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.brief-mobile__title{
+  margin: 16px 0 12px;
+  font-family: var(--font-head);
+  font-size: clamp(34px, 9vw, 52px);
+  line-height: .92;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+}
+
+.brief-mobile__text{
+  margin: 0 0 18px;
+  color: rgba(255,255,255,.72);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.brief-mobile__fields{
+  display: grid;
+  gap: 14px;
+}
+
+.brief-mobile__submit{
+  width: 100%;
+}
+
+.brief-lead--mobile{
+  display: none !important;
+}
+
+@media (max-width: 700px){
+  .brief-split .brief-lead{
+    display: none !important;
+  }
+
+  .brief-split .brief-mobile{
+    display: grid;
+  }
+
+  .brief-split .brief-actions__btn--submit[data-brief-submit]{
+    display: none !important;
+  }
+
+  .tariffs .tariff-card__head{
+    gap: 8px;
+  }
+
+  .tariffs .tariff-card__price{
+    font-size: 15px;
+    padding: 0 12px;
+  }
+}
+
+@media (min-width: 701px){
+  .brief-split .brief-mobile{
+    display: none !important;
+  }
+}
+
+
+/* v20: only section titles centered, nothing else touched */
+.services-title,
+.process-cards__title,
+.team__title,
+.faq__title,
+.tariffs__title{
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
