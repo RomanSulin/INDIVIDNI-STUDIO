@@ -12,7 +12,7 @@
 
   <link rel="stylesheet" href="../assets/css/landing_ref.css?v=21" />
   <link rel="stylesheet" href="../assets/css/services_fix.css?v=2" />
-  <link rel="stylesheet" href="../assets/css/service_photo_showcase.css?v=6" />
+  <link rel="stylesheet" href="../assets/css/service_photo_showcase.css?v=7" />
 </head>
 <body class="service-detail service-photo-page">
 
@@ -49,6 +49,7 @@
   <div class="photo-showcase__backdrop" aria-hidden="true"></div>
   <div class="photo-showcase__grain" aria-hidden="true"></div>
   <div class="photo-showcase__photos" data-photo-wall aria-hidden="true"></div>
+  <div class="photo-showcase__hover-layer" data-photo-hover-layer aria-hidden="true"></div>
 
   <section class="photo-showcase__card" aria-labelledby="photo-showcase-title">
     <div class="photo-showcase__eyebrow">photo service</div>
@@ -138,7 +139,7 @@
           </div>
         </div>
 
-        <div class="photo-brief-step" data-photo-step="2" data-step-title-text="Локация и бюджет">
+        <div class="photo-brief-step" data-photo-step="2" data-step-title-text="Локация съёмки">
           <div class="photo-field">
             <label class="photo-field__label">3. Где планируется съёмка?</label>
             <div class="photo-select" data-custom-select>
@@ -155,36 +156,18 @@
               </div>
             </div>
           </div>
-
-          <div class="photo-field">
-            <label class="photo-field__label">4. Какой ориентир по бюджету?</label>
-            <div class="photo-select" data-custom-select>
-              <input type="hidden" name="budget" />
-              <button class="photo-select__trigger" type="button" data-select-trigger>
-                <span data-select-value>Выберите диапазон</span>
-                <span class="photo-select__arrow"></span>
-              </button>
-              <div class="photo-select__menu" data-select-menu hidden>
-                <button type="button" data-select-option value="До 50 000 ₽">До 50 000 ₽</button>
-                <button type="button" data-select-option value="50 000–150 000 ₽">50 000–150 000 ₽</button>
-                <button type="button" data-select-option value="150 000–300 000 ₽">150 000–300 000 ₽</button>
-                <button type="button" data-select-option value="300 000 ₽ и выше">300 000 ₽ и выше</button>
-                <button type="button" data-select-option value="Нужна консультация">Нужна консультация</button>
-              </div>
-            </div>
-          </div>
         </div>
 
         <div class="photo-brief-step" data-photo-step="3" data-step-title-text="Задача съёмки">
           <div class="photo-field photo-field--full">
-            <label class="photo-field__label" for="photoTask">5. Что нужно снять и какой нужен результат? *</label>
+            <label class="photo-field__label" for="photoTask">4. Что нужно снять и какой нужен результат? *</label>
             <textarea id="photoTask" name="task" rows="4" placeholder="Например: портретная съёмка команды, 20–30 кадров для сайта и соцсетей, в тёмной кинематографичной стилистике." required></textarea>
           </div>
         </div>
 
         <div class="photo-brief-step" data-photo-step="4" data-step-title-text="Референсы">
           <div class="photo-field photo-field--full">
-            <label class="photo-field__label" for="photoRefs">6. Ссылки на референсы или комментарии</label>
+            <label class="photo-field__label" for="photoRefs">5. Ссылки на референсы или комментарии</label>
             <textarea id="photoRefs" name="references" rows="3" placeholder="Можно вставить ссылки на понравившиеся съёмки, Pinterest, Behance, примеры цвета или света."></textarea>
           </div>
         </div>
@@ -222,6 +205,6 @@
   </div>
 </div>
 
-<script src="../assets/js/service_photo_showcase.js?v=6"></script>
+<script src="../assets/js/service_photo_showcase.js?v=7"></script>
 </body>
 </html>
