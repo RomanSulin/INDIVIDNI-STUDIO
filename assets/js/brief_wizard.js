@@ -5,9 +5,6 @@
   const intro = form.querySelector('[data-brief-intro]');
   const work = form.querySelector('[data-brief-work]');
   const success = form.querySelector('[data-brief-success]');
-  const briefLead = form.querySelector('.brief-lead');
-  const mobileSubmitWrap = form.querySelector('[data-brief-mobile-submit]');
-  const mobileSubmitBtn = mobileSubmitWrap?.querySelector('button[type="submit"]') || null;
   const startBtn = form.querySelector('[data-brief-start]');
   const prevBtn = form.querySelector('[data-brief-prev]');
   const nextBtn = form.querySelector('[data-brief-next]');
@@ -21,7 +18,7 @@
   const bodyEl = form.querySelector('[data-brief-body]');
   const packageBadge = document.getElementById('briefPackageBadge');
   const packageValue = document.getElementById('briefPackageValue');
-  const mobileMq = window.matchMedia('(max-width: 700px)');
+  const panels = { intro, work, success };
 
   const TELEGRAM_BRIEF_WEBHOOK = window.INDIVIDNI_BRIEF_WEBHOOK || '';
 
@@ -356,16 +353,15 @@
     packageBadge.hidden = false;
   }
 
-  function syncResponsiveState() {
-    const isMobile = mobileMq.matches;
-    const onLastQuestion = !work.hidden && state.step === steps.length - 1;
-
-    if (briefLead) briefLead.hidden = isMobile ? !onLastQuestion : false;
-    if (mobileSubmitWrap) mobileSubmitWrap.hidden = !(isMobile && onLastQuestion);
-
-    if (submitBtn) {
-      submitBtn.hidden = isMobile || state.step !== steps.length - 1;
-    }
+  function setStage(stage) {
+    Object.entries(panels).forEach(([key, element]) => {
+      if (!element) return;
+      const isActive = key === stage;
+      element.hidden = !isActive;
+      element.style.display = isActive ? '' : 'none';
+      element.classList.toggle('is-active', isActive);
+      element.setAttribute('aria-hidden', String(!isActive));
+    });
   }
 
   function renderStep() {
@@ -382,8 +378,7 @@
 
     prevBtn.disabled = state.step === 0;
     nextBtn.hidden = state.step === steps.length - 1;
-    syncResponsiveState();
-    bodyEl.scrollTop = 0;
+    submitBtn.hidden = state.step !== steps.length - 1;
 
     const focusTarget = bodyEl.querySelector('textarea, input:not([type="radio"]):not([type="checkbox"]), [type="date"]');
     if (focusTarget) {
@@ -395,11 +390,8 @@
 
   function goToStep(index) {
     state.step = Math.max(0, Math.min(index, steps.length - 1));
-    intro.hidden = true;
-    success.hidden = true;
-    work.hidden = false;
+    setStage('work');
     renderStep();
-    syncResponsiveState();
   }
 
   function validateStep() {
@@ -414,8 +406,8 @@
     const name = getValue('client_name');
     const phone = getValue('client_phone');
     const clientType = getCheckedValue('client_type');
-    if (!name) return 'Укажите имя.';
-    if (!phone) return 'Укажите телефон.';
+    if (!name) return 'Укажите имя в левой части формы.';
+    if (!phone) return 'Укажите телефон в левой части формы.';
     if (!clientType) return 'Выберите: физ лицо или компания.';
     return '';
   }
@@ -465,10 +457,7 @@
   }
 
   function showSuccess() {
-    work.hidden = true;
-    intro.hidden = true;
-    success.hidden = false;
-    syncResponsiveState();
+    setStage('success');
     success.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
@@ -486,17 +475,8 @@
     state.q8 = { references: '' };
     state.q9 = { budget: '' };
     if (packageBadge) packageBadge.hidden = true;
-    intro.hidden = false;
-    work.hidden = true;
-    success.hidden = true;
-    syncResponsiveState();
+    setStage('intro');
     setError('');
-  }
-
-  if (mobileMq.addEventListener) {
-    mobileMq.addEventListener('change', syncResponsiveState);
-  } else if (mobileMq.addListener) {
-    mobileMq.addListener(syncResponsiveState);
   }
 
   startBtn.addEventListener('click', () => goToStep(0));
@@ -541,10 +521,6 @@
     const payload = buildPayload();
     submitBtn.disabled = true;
     submitBtn.textContent = 'Отправляем...';
-    if (mobileSubmitBtn) {
-      mobileSubmitBtn.disabled = true;
-      mobileSubmitBtn.textContent = 'Отправляем...';
-    }
 
     try {
       await sendPayload(payload);
@@ -555,10 +531,6 @@
     } finally {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Отправить заявку';
-      if (mobileSubmitBtn) {
-        mobileSubmitBtn.disabled = false;
-        mobileSubmitBtn.textContent = 'Отправить заявку';
-      }
     }
   });
 
@@ -568,7 +540,7 @@
     link.addEventListener('click', () => updatePackageBadge(link.dataset.briefPackage));
   });
 
-  syncResponsiveState();
+  setStage('intro');
 
   if (window.location.hash === '#brief-request') {
     const hashParams = new URLSearchParams(window.location.search);
