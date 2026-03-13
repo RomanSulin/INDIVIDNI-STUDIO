@@ -59,29 +59,29 @@
 }
 
 .photo-float{
-  --w: 240px;
-  --h: 320px;
+  --w: 320px;
   --x: 50%;
   --y: 50%;
   --r: 0deg;
+  --ar: 3 / 4;
   --delay: 0s;
   --drift-x: 0px;
   --drift-y: 0px;
   position: absolute;
   left: var(--x);
   top: var(--y);
-  width: min(var(--w), 26vw);
-  aspect-ratio: 4 / 5;
+  width: min(var(--w), 30vw);
+  aspect-ratio: var(--ar);
   transform: translate(-50%, -50%) rotate(var(--r));
-  border-radius: 28px;
+  border-radius: 30px;
   overflow: hidden;
   border: 1px solid rgba(255,255,255,.12);
   background:
     radial-gradient(circle at 30% 20%, rgba(255,255,255,.16), rgba(255,255,255,.04) 38%, rgba(10,10,10,.9) 100%),
     linear-gradient(160deg, rgba(28,28,28,.96), rgba(10,10,10,.96));
   box-shadow:
-    0 22px 60px rgba(0,0,0,.32),
-    0 4px 16px rgba(0,0,0,.24);
+    0 28px 70px rgba(0,0,0,.38),
+    0 6px 18px rgba(0,0,0,.24);
   opacity: .92;
   will-change: transform, filter;
   pointer-events: auto;
@@ -234,7 +234,7 @@
 
 @media (max-width: 1100px){
   .photo-float{
-    width: min(var(--w), 24vw);
+    width: min(var(--w), 28vw);
   }
 
   .photo-showcase__card{
@@ -256,6 +256,11 @@
 
   .photo-showcase__grain{
     opacity: .08;
+  }
+
+  .photo-float{
+    width: min(var(--w), 42vw);
+    border-radius: 24px;
   }
 
   .photo-float{
