@@ -5,14 +5,11 @@
   const intro = form.querySelector('[data-brief-intro]');
   const work = form.querySelector('[data-brief-work]');
   const success = form.querySelector('[data-brief-success]');
-  const mobileSubmitBtn = form.querySelector('[data-brief-submit-mobile]');
-  const mobileViewport = window.matchMedia('(max-width: 980px)');
-  const desktopLead = form.querySelector('[data-brief-lead-desktop]');
-  const mobileLead = form.querySelector('[data-brief-lead-mobile]');
   const startBtn = form.querySelector('[data-brief-start]');
   const prevBtn = form.querySelector('[data-brief-prev]');
   const nextBtn = form.querySelector('[data-brief-next]');
   const submitBtn = form.querySelector('[data-brief-submit]');
+  const mobileSubmitBtn = form.querySelector('[data-brief-mobile-contact] [data-brief-submit-mobile]');
   const resetBtn = form.querySelector('[data-brief-reset]');
   const stepLabel = form.querySelector('[data-brief-step-label]');
   const stepPercent = form.querySelector('[data-brief-step-percent]');
@@ -24,6 +21,13 @@
   const packageValue = document.getElementById('briefPackageValue');
   const packageBadgeMobile = document.getElementById('briefPackageBadgeMobile');
   const packageValueMobile = document.getElementById('briefPackageValueMobile');
+  const mobileContact = form.querySelector('[data-brief-mobile-contact]');
+  const wizardEl = form.querySelector('[data-brief-wizard]');
+  const cardEl = form.querySelector('.brief-card');
+  const mobileFlowQuery = window.matchMedia('(max-width: 700px)');
+
+  let isMeasuring = false;
+  let resizeTimer = null;
 
   const TELEGRAM_BRIEF_WEBHOOK = window.INDIVIDNI_BRIEF_WEBHOOK || '';
 
@@ -47,6 +51,56 @@
     individni: 'INDIVIDNI',
     tender: 'Тендер'
   };
+
+  function isMobileFlow() {
+    return mobileFlowQuery.matches;
+  }
+
+  function getLeadSelectors() {
+    return isMobileFlow()
+      ? { name: 'client_name_mobile', phone: 'client_phone_mobile', type: 'client_type_mobile' }
+      : { name: 'client_name', phone: 'client_phone', type: 'client_type' };
+  }
+
+  function getLeadFieldElements(mobile = isMobileFlow()) {
+    return mobile
+      ? {
+          name: form.querySelector('[name="client_name_mobile"]'),
+          phone: form.querySelector('[name="client_phone_mobile"]'),
+          type: form.querySelectorAll('[name="client_type_mobile"]')
+        }
+      : {
+          name: form.querySelector('[name="client_name"]'),
+          phone: form.querySelector('[name="client_phone"]'),
+          type: form.querySelectorAll('[name="client_type"]')
+        };
+  }
+
+  function syncLeadMirror(sourceMobile) {
+    const source = getLeadFieldElements(sourceMobile);
+    const target = getLeadFieldElements(!sourceMobile);
+    if (source.name && target.name) target.name.value = source.name.value;
+    if (source.phone && target.phone) target.phone.value = source.phone.value;
+    if (source.type.length && target.type.length) {
+      const checked = Array.from(source.type).find((item) => item.checked)?.value || '';
+      target.type.forEach((item) => { item.checked = item.value === checked; });
+      updateClientTypeVisuals();
+    }
+  }
+
+  function updateClientTypeVisuals() {
+    form.querySelectorAll('.brief-kind__option').forEach((option) => {
+      const input = option.querySelector('input');
+      option.classList.toggle('is-checked', !!input?.checked);
+    });
+  }
+
+  function updateMobileContactVisibility() {
+    if (!mobileContact) return;
+    const shouldShow = isMobileFlow() && state.step === steps.length - 1 && !work.hidden && success.hidden;
+    mobileContact.hidden = !shouldShow;
+    if (mobileSubmitBtn) mobileSubmitBtn.hidden = !shouldShow;
+  }
 
   const steps = [
     {
@@ -365,69 +419,11 @@
     }
   }
 
-  function isMobile() {
-    return mobileViewport.matches;
-  }
-
-  function getLeadPrefix() {
-    return isMobile() ? 'client_name_mobile' : 'client_name';
-  }
-
-  function getLeadFields() {
-    if (isMobile()) {
-      return {
-        name: getValue('client_name_mobile'),
-        phone: getValue('client_phone_mobile'),
-        clientType: getCheckedValue('client_type_mobile')
-      };
-    }
-    return {
-      name: getValue('client_name'),
-      phone: getValue('client_phone'),
-      clientType: getCheckedValue('client_type')
-    };
-  }
-
-  function syncKindVisuals(groupName) {
-    form.querySelectorAll(`input[name="${groupName}"]`).forEach((input) => {
-      const option = input.closest('.brief-kind__option');
-      if (option) option.classList.toggle('is-checked', input.checked);
-    });
-  }
-
-  function syncLeadMirror(sourceName, targetName) {
-    const source = form.querySelector(`[name="${sourceName}"]`);
-    const target = form.querySelector(`[name="${targetName}"]`);
-    if (!source || !target) return;
-    if (target.type === 'radio') return;
-    target.value = source.value;
-  }
-
-  function syncLeadState() {
-    if (desktopLead) desktopLead.hidden = isMobile();
-
-    if (!mobileLead) return;
-    if (!isMobile()) {
-      mobileLead.hidden = true;
-      return;
-    }
-
-    const showMobileLead = state.step === steps.length - 1 && !work.hidden && success.hidden;
-    mobileLead.hidden = !showMobileLead;
-  }
-
-  function showStage(stage) {
-    intro.hidden = stage !== 'intro';
-    work.hidden = stage !== 'work';
-    success.hidden = stage !== 'success';
-    syncLeadState();
-  }
-
   function renderStep() {
-
     if (state.step < 0 || state.step >= steps.length) return;
     const step = steps[state.step];
     const percent = Math.round(((state.step + 1) / steps.length) * 100);
+    const isLastStep = state.step === steps.length - 1;
 
     stepLabel.textContent = `Вопрос ${state.step + 1} из ${steps.length}`;
     stepPercent.textContent = `${percent}%`;
@@ -437,13 +433,12 @@
     step.render();
 
     prevBtn.disabled = state.step === 0;
-    nextBtn.hidden = state.step === steps.length - 1;
-    submitBtn.hidden = state.step !== steps.length - 1;
+    nextBtn.hidden = isLastStep;
+    submitBtn.hidden = !isLastStep || isMobileFlow();
+    updateMobileContactVisibility();
 
     const focusTarget = bodyEl.querySelector('textarea, input:not([type="radio"]):not([type="checkbox"]), [type="date"]');
-    syncLeadState();
-
-    if (focusTarget) {
+    if (!isMeasuring && focusTarget) {
       requestAnimationFrame(() => {
         try { focusTarget.focus({ preventScroll: true }); } catch (_) {}
       });
@@ -452,7 +447,10 @@
 
   function goToStep(index) {
     state.step = Math.max(0, Math.min(index, steps.length - 1));
-    showStage('work');
+    intro.hidden = true;
+    success.hidden = true;
+    work.hidden = false;
+    updateMobileContactVisibility();
     renderStep();
   }
 
@@ -464,20 +462,71 @@
     return !message;
   }
 
+  function syncDesktopHeights() {
+    if (!wizardEl || !cardEl) return;
+
+    if (window.innerWidth <= 980) {
+      wizardEl.style.removeProperty('--brief-stable-height');
+      wizardEl.style.removeProperty('--brief-card-height');
+      return;
+    }
+
+    const prevStep = state.step;
+    if (prevStep >= 0 && prevStep < steps.length) steps[prevStep].collect();
+    const prevIntroHidden = intro.hidden;
+    const prevWorkHidden = work.hidden;
+    const prevSuccessHidden = success.hidden;
+
+    let maxWorkHeight = 0;
+    let maxCardHeight = 0;
+
+    isMeasuring = true;
+    intro.hidden = true;
+    success.hidden = true;
+    work.hidden = false;
+
+    for (let index = 0; index < steps.length; index += 1) {
+      state.step = index;
+      renderStep();
+      maxWorkHeight = Math.max(maxWorkHeight, work.scrollHeight);
+      maxCardHeight = Math.max(maxCardHeight, cardEl.scrollHeight);
+    }
+
+    const stableHeight = Math.max(760, maxWorkHeight + 8);
+    const stableCardHeight = Math.max(520, maxCardHeight + 8);
+
+    wizardEl.style.setProperty('--brief-stable-height', `${stableHeight}px`);
+    wizardEl.style.setProperty('--brief-card-height', `${stableCardHeight}px`);
+
+    state.step = prevStep;
+    intro.hidden = prevIntroHidden;
+    work.hidden = prevWorkHidden;
+    success.hidden = prevSuccessHidden;
+    isMeasuring = false;
+
+    if (prevStep >= 0 && prevStep < steps.length && !prevWorkHidden) {
+      renderStep();
+    }
+  }
+
   function validateLeadFields() {
-    const lead = getLeadFields();
-    if (!lead.name) return isMobile() ? 'Укажите имя в нижнем мобильном блоке.' : 'Укажите имя в левой части формы.';
-    if (!lead.phone) return isMobile() ? 'Укажите телефон в нижнем мобильном блоке.' : 'Укажите телефон в левой части формы.';
-    if (!lead.clientType) return 'Выберите: физ лицо или компания.';
+    const fields = getLeadSelectors();
+    const name = getValue(fields.name);
+    const phone = getValue(fields.phone);
+    const clientType = getCheckedValue(fields.type);
+    if (!name) return isMobileFlow() ? 'Укажите имя в блоке заявки ниже.' : 'Укажите имя в левой части формы.';
+    if (!phone) return isMobileFlow() ? 'Укажите телефон в блоке заявки ниже.' : 'Укажите телефон в левой части формы.';
+    if (!clientType) return isMobileFlow() ? 'Выберите: физ лицо или компания в блоке заявки ниже.' : 'Выберите: физ лицо или компания.';
     return '';
   }
 
   function buildPayload() {
+    const fields = getLeadSelectors();
     return {
       contact: {
-        name: getLeadFields().name,
-        phone: getLeadFields().phone,
-        client_type: getLeadFields().clientType
+        name: getValue(fields.name),
+        phone: getValue(fields.phone),
+        client_type: getCheckedValue(fields.type)
       },
       selected_tariff: state.package ? (tariffMap[state.package] || state.package) : '',
       answers: {
@@ -517,7 +566,10 @@
   }
 
   function showSuccess() {
-    showStage('success');
+    work.hidden = true;
+    intro.hidden = true;
+    success.hidden = false;
+    updateMobileContactVisibility();
     success.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
@@ -536,13 +588,18 @@
     state.q9 = { budget: '' };
     if (packageBadge) packageBadge.hidden = true;
     if (packageBadgeMobile) packageBadgeMobile.hidden = true;
+    intro.hidden = false;
+    work.hidden = true;
+    success.hidden = true;
+    updateMobileContactVisibility();
+    updateClientTypeVisuals();
     setError('');
-    showStage('intro');
-    syncKindVisuals('client_type');
-    syncKindVisuals('client_type_mobile');
   }
 
-  startBtn.addEventListener('click', () => goToStep(0));
+  startBtn.addEventListener('click', () => {
+    syncDesktopHeights();
+    goToStep(0);
+  });
 
   nextBtn.addEventListener('click', () => {
     if (!validateStep()) return;
@@ -560,35 +617,17 @@
       steps[0].collect();
       renderStep();
     }
-
-    if (event.target.name === 'client_type') {
-      const checked = getCheckedValue('client_type');
-      if (checked) {
-        const mirror = form.querySelector(`[name="client_type_mobile"][value="${CSS.escape(checked)}"]`);
-        if (mirror) mirror.checked = true;
-      }
-      syncKindVisuals('client_type');
-      syncKindVisuals('client_type_mobile');
+    if (event.target.name === 'client_type' || event.target.name === 'client_type_mobile') {
+      syncLeadMirror(event.target.name.endsWith('_mobile'));
+      updateClientTypeVisuals();
     }
-
-    if (event.target.name === 'client_type_mobile') {
-      const checked = getCheckedValue('client_type_mobile');
-      if (checked) {
-        const mirror = form.querySelector(`[name="client_type"][value="${CSS.escape(checked)}"]`);
-        if (mirror) mirror.checked = true;
-      }
-      syncKindVisuals('client_type');
-      syncKindVisuals('client_type_mobile');
+    if (event.target.name === 'client_name' || event.target.name === 'client_phone') {
+      syncLeadMirror(false);
     }
-
+    if (event.target.name === 'client_name_mobile' || event.target.name === 'client_phone_mobile') {
+      syncLeadMirror(true);
+    }
     if (form.querySelector('[data-brief-error]')?.textContent) validateStep();
-  });
-
-  form.addEventListener('input', (event) => {
-    if (event.target.name === 'client_name') syncLeadMirror('client_name', 'client_name_mobile');
-    if (event.target.name === 'client_phone') syncLeadMirror('client_phone', 'client_phone_mobile');
-    if (event.target.name === 'client_name_mobile') syncLeadMirror('client_name_mobile', 'client_name');
-    if (event.target.name === 'client_phone_mobile') syncLeadMirror('client_phone_mobile', 'client_phone');
   });
 
   form.addEventListener('submit', async (event) => {
@@ -597,7 +636,7 @@
     const leadError = validateLeadFields();
     if (leadError) {
       setError(leadError);
-      const firstLeadField = form.querySelector(isMobile() ? '[name="client_name_mobile"]' : '[name="client_name"]');
+      const firstLeadField = form.querySelector(isMobileFlow() ? '[name="client_name_mobile"]' : '[name="client_name"]');
       if (firstLeadField) firstLeadField.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
@@ -633,19 +672,47 @@
     link.addEventListener('click', () => updatePackageBadge(link.dataset.briefPackage));
   });
 
-  if (typeof mobileViewport.addEventListener === 'function') {
-    mobileViewport.addEventListener('change', syncLeadState);
-  } else if (typeof mobileViewport.addListener === 'function') {
-    mobileViewport.addListener(syncLeadState);
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(() => {
+      syncDesktopHeights();
+      updateMobileContactVisibility();
+    }, 120);
+  });
+
+  if (typeof mobileFlowQuery.addEventListener === 'function') {
+    mobileFlowQuery.addEventListener('change', () => {
+      updateMobileContactVisibility();
+      updateClientTypeVisuals();
+      if (!work.hidden && state.step >= 0) renderStep();
+    });
+  } else if (typeof mobileFlowQuery.addListener === 'function') {
+    mobileFlowQuery.addListener(() => {
+      updateMobileContactVisibility();
+      updateClientTypeVisuals();
+      if (!work.hidden && state.step >= 0) renderStep();
+    });
   }
 
-  showStage('intro');
-  syncKindVisuals('client_type');
-  syncKindVisuals('client_type_mobile');
+  window.addEventListener('load', () => {
+    syncDesktopHeights();
+    updateMobileContactVisibility();
+  });
+
+  if (document.fonts?.ready) {
+    document.fonts.ready.then(() => {
+      syncDesktopHeights();
+      updateMobileContactVisibility();
+    }).catch(() => {});
+  }
 
   if (window.location.hash === '#brief-request') {
     const hashParams = new URLSearchParams(window.location.search);
     const type = hashParams.get('type');
     if (type) updatePackageBadge(type);
   }
+
+  updateClientTypeVisuals();
+  syncDesktopHeights();
+  updateMobileContactVisibility();
 })();
