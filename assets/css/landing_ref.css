@@ -2848,8 +2848,16 @@ body.modal-open{
   font-size: 18px;
 }
 .brief-wizard{
+  position: relative;
   background: linear-gradient(180deg, rgba(255,255,255,.04) 0%, rgba(255,255,255,.02) 100%);
   min-height: 680px;
+}
+[data-brief-intro][hidden],
+[data-brief-work][hidden],
+[data-brief-success][hidden],
+[data-brief-submit][hidden],
+#briefPackageBadge[hidden]{
+  display: none !important;
 }
 .brief-wizard__intro,
 .brief-success{
@@ -3092,4 +3100,30 @@ body.modal-open{
   .brief-wizard__start,
   .brief-success__reset{ width: 100%; }
   .brief-actions__btn{ flex-basis: 100%; }
+}
+
+/* ===== PATCH v10: center section titles ===== */
+.services-title,
+.process-cards__title,
+.team__title,
+.faq__title,
+.tariffs__title{
+  width: 100%;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  text-align: center !important;
+}
+
+.services-head,
+.process-cards__inner,
+.team__inner,
+.faq__inner{
+  text-align: center;
+}
+
+.tariffs__title,
+.tariffs__lead{
+  width: min(1120px, 100%);
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
