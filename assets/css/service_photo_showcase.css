@@ -71,16 +71,21 @@
 }
 
 
+.photo-showcase__photos{
+  mask-image: linear-gradient(180deg, transparent 0%, black 8%, black 92%, transparent 100%);
+}
+
+
 .photo-rail{
-  --rail-duration: 260s;
-  --rail-top: 10%;
+  --rail-duration: 190s;
+  --rail-top: 14%;
   position: absolute;
   top: var(--rail-top);
   left: 0;
   width: max-content;
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 18px;
   will-change: transform;
   animation: photoRailLeft var(--rail-duration) linear infinite;
 }
@@ -88,7 +93,7 @@
 .photo-rail__group{
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 18px;
   padding-right: 18px;
 }
 
@@ -97,7 +102,8 @@
   --card-shift-y: 0px;
   position: relative;
   flex: 0 0 auto;
-  width: var(--card-width, 280px);
+  height: var(--card-height, 250px);
+  width: auto;
   aspect-ratio: var(--card-ratio, 3 / 4);
   overflow: hidden;
   border-radius: 24px;
@@ -142,15 +148,10 @@
   opacity: .72;
 }
 
-.photo-card:hover,
-.photo-card:focus-within{
-  z-index: 2;
-}
-
 .photo-card:hover img,
 .photo-card:focus-within img{
   filter: grayscale(0) brightness(1) contrast(1.02);
-  transform: scale(1.03);
+  transform: scale(1.04);
 }
 
 .photo-card.is-overlay-source{
@@ -682,11 +683,11 @@
 
   .photo-rail,
   .photo-rail__group{
-    gap: 12px;
+    gap: 10px;
   }
 
   .photo-card{
-    width: min(var(--card-width, 158px), 39vw);
+    height: min(var(--card-height, 146px), 22vh);
     border-radius: 18px;
     opacity: .86;
   }
