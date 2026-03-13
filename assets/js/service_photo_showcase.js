@@ -17,9 +17,11 @@
   });
 
   const wall = document.querySelector('[data-photo-wall]');
+  const hoverLayer = document.querySelector('[data-photo-hover-layer]');
+  const showcase = document.querySelector('.photo-showcase');
   const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
 
-  const photoSources = Array.from({ length: 14 }, (_, index) => `../assets/services/photo-wall/${String(index + 1).padStart(2, '0')}.jpg`);
+  const photoSources = Array.from({ length: 20 }, (_, index) => `../assets/services/photo-wall/${String(index + 1).padStart(2, '0')}.jpg`);
 
   const fallbackSvg = (label, viewBox = '900 1200') => `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${viewBox}">
@@ -39,82 +41,153 @@
 
   const desktopRows = [
     {
-      top: '12%',
-      duration: '320s',
+      top: '10%',
+      duration: '214s',
       cards: [
-        { src: 0, width: '230px', ratio: '4 / 3' },
-        { src: 1, width: '205px', ratio: '3 / 4' },
-        { src: 2, width: '228px', ratio: '4 / 3' },
-        { src: 3, width: '208px', ratio: '3 / 4' },
-        { src: 4, width: '228px', ratio: '4 / 3' }
+        { src: 0, width: '198px', ratio: '3 / 4' },
+        { src: 1, width: '264px', ratio: '4 / 3' },
+        { src: 2, width: '198px', ratio: '3 / 4' },
+        { src: 3, width: '264px', ratio: '4 / 3' },
+        { src: 4, width: '198px', ratio: '3 / 4' }
       ]
     },
     {
-      top: '40%',
-      duration: '304s',
+      top: '31%',
+      duration: '208s',
       cards: [
-        { src: 5, width: '205px', ratio: '3 / 4' },
-        { src: 6, width: '228px', ratio: '4 / 3' },
-        { src: 7, width: '206px', ratio: '3 / 4' },
-        { src: 8, width: '230px', ratio: '4 / 3' },
-        { src: 9, width: '206px', ratio: '3 / 4' }
+        { src: 5, width: '264px', ratio: '4 / 3' },
+        { src: 6, width: '198px', ratio: '3 / 4' },
+        { src: 7, width: '264px', ratio: '4 / 3' },
+        { src: 8, width: '198px', ratio: '3 / 4' },
+        { src: 9, width: '264px', ratio: '4 / 3' }
       ]
     },
     {
-      top: '68%',
-      duration: '332s',
+      top: '53%',
+      duration: '216s',
       cards: [
-        { src: 10, width: '228px', ratio: '4 / 3' },
-        { src: 11, width: '205px', ratio: '3 / 4' },
-        { src: 12, width: '228px', ratio: '4 / 3' },
-        { src: 13, width: '205px', ratio: '3 / 4' },
-        { src: 2, width: '230px', ratio: '4 / 3' }
+        { src: 10, width: '198px', ratio: '3 / 4' },
+        { src: 11, width: '264px', ratio: '4 / 3' },
+        { src: 12, width: '198px', ratio: '3 / 4' },
+        { src: 13, width: '264px', ratio: '4 / 3' },
+        { src: 14, width: '198px', ratio: '3 / 4' }
+      ]
+    },
+    {
+      top: '74%',
+      duration: '210s',
+      cards: [
+        { src: 15, width: '264px', ratio: '4 / 3' },
+        { src: 16, width: '198px', ratio: '3 / 4' },
+        { src: 17, width: '264px', ratio: '4 / 3' },
+        { src: 18, width: '198px', ratio: '3 / 4' },
+        { src: 19, width: '264px', ratio: '4 / 3' }
       ]
     }
   ];
 
   const mobileRows = [
     {
-      top: '12%',
-      duration: '252s',
+      top: '11%',
+      duration: '188s',
       cards: [
-        { src: 0, width: '140px', ratio: '4 / 3' },
-        { src: 1, width: '128px', ratio: '3 / 4' },
-        { src: 2, width: '140px', ratio: '4 / 3' },
-        { src: 3, width: '128px', ratio: '3 / 4' }
+        { src: 0, width: '148px', ratio: '3 / 4' },
+        { src: 1, width: '198px', ratio: '4 / 3' },
+        { src: 2, width: '148px', ratio: '3 / 4' },
+        { src: 3, width: '198px', ratio: '4 / 3' },
+        { src: 4, width: '148px', ratio: '3 / 4' }
       ]
     },
     {
       top: '36%',
-      duration: '240s',
+      duration: '182s',
       cards: [
-        { src: 4, width: '128px', ratio: '3 / 4' },
-        { src: 5, width: '140px', ratio: '4 / 3' },
-        { src: 6, width: '128px', ratio: '3 / 4' },
-        { src: 7, width: '140px', ratio: '4 / 3' }
+        { src: 5, width: '198px', ratio: '4 / 3' },
+        { src: 6, width: '148px', ratio: '3 / 4' },
+        { src: 7, width: '198px', ratio: '4 / 3' },
+        { src: 8, width: '148px', ratio: '3 / 4' },
+        { src: 9, width: '198px', ratio: '4 / 3' }
       ]
     },
     {
-      top: '60%',
-      duration: '248s',
+      top: '61%',
+      duration: '186s',
       cards: [
-        { src: 8, width: '140px', ratio: '4 / 3' },
-        { src: 9, width: '128px', ratio: '3 / 4' },
-        { src: 10, width: '140px', ratio: '4 / 3' },
-        { src: 11, width: '128px', ratio: '3 / 4' }
+        { src: 10, width: '148px', ratio: '3 / 4' },
+        { src: 11, width: '198px', ratio: '4 / 3' },
+        { src: 12, width: '148px', ratio: '3 / 4' },
+        { src: 13, width: '198px', ratio: '4 / 3' },
+        { src: 14, width: '148px', ratio: '3 / 4' }
       ]
     },
     {
-      top: '82%',
-      duration: '244s',
+      top: '84%',
+      duration: '180s',
       cards: [
-        { src: 12, width: '128px', ratio: '3 / 4' },
-        { src: 13, width: '140px', ratio: '4 / 3' },
-        { src: 2, width: '128px', ratio: '3 / 4' },
-        { src: 4, width: '140px', ratio: '4 / 3' }
+        { src: 15, width: '198px', ratio: '4 / 3' },
+        { src: 16, width: '148px', ratio: '3 / 4' },
+        { src: 17, width: '198px', ratio: '4 / 3' },
+        { src: 18, width: '148px', ratio: '3 / 4' },
+        { src: 19, width: '198px', ratio: '4 / 3' }
       ]
     }
   ];
+
+  let hoverClone = null;
+  let hoverSource = null;
+  let hoverFrame = 0;
+
+  const clearHoverClone = () => {
+    if (hoverFrame) {
+      cancelAnimationFrame(hoverFrame);
+      hoverFrame = 0;
+    }
+    if (hoverSource) {
+      hoverSource.classList.remove('is-overlay-source');
+      hoverSource = null;
+    }
+    if (hoverClone) {
+      hoverClone.remove();
+      hoverClone = null;
+    }
+  };
+
+  const syncHoverClone = () => {
+    if (!hoverSource || !hoverClone || !showcase) return;
+
+    const sourceRect = hoverSource.getBoundingClientRect();
+    const showcaseRect = showcase.getBoundingClientRect();
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+    const cardCenterX = sourceRect.left + sourceRect.width / 2;
+    const cardCenterY = sourceRect.top + sourceRect.height / 2;
+    const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+    const shiftX = clamp((centerX - cardCenterX) * 0.06, -44, 44);
+    const shiftY = clamp((centerY - cardCenterY) * 0.03, -18, 18);
+
+    hoverClone.style.width = `${sourceRect.width}px`;
+    hoverClone.style.height = `${sourceRect.height}px`;
+    hoverClone.style.transform = `translate3d(${(sourceRect.left - showcaseRect.left + shiftX).toFixed(2)}px, ${(sourceRect.top - showcaseRect.top + shiftY).toFixed(2)}px, 0) scale(1.09)`;
+
+    hoverFrame = requestAnimationFrame(syncHoverClone);
+  };
+
+  const activateHoverClone = (card) => {
+    if (isCoarsePointer || !hoverLayer || !showcase) return;
+    if (hoverSource === card) return;
+
+    clearHoverClone();
+    hoverSource = card;
+    hoverSource.classList.add('is-overlay-source');
+
+    const clone = card.cloneNode(true);
+    clone.classList.add('photo-card--overlay');
+    clone.removeAttribute('tabindex');
+    clone.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
+    hoverClone = clone;
+    hoverLayer.appendChild(clone);
+    syncHoverClone();
+  };
 
   const createCard = (cfg, index) => {
     const card = document.createElement('figure');
@@ -134,40 +207,13 @@
     };
 
     if (!isCoarsePointer) {
-      const updateHoverShift = () => {
-        const rect = card.getBoundingClientRect();
-        const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2;
-        const cardCenterX = rect.left + rect.width / 2;
-        const cardCenterY = rect.top + rect.height / 2;
-        const shiftX = (centerX - cardCenterX) * 0.075;
-        const shiftY = (centerY - cardCenterY) * 0.04;
-        const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
-        card.style.setProperty('--card-shift-x', `${clamp(shiftX, -34, 34).toFixed(1)}px`);
-        card.style.setProperty('--card-shift-y', `${clamp(shiftY, -12, 12).toFixed(1)}px`);
-      };
-
-      card.addEventListener('mouseenter', () => {
-        wall?.classList.add('has-active-hover');
-        updateHoverShift();
-      });
-      card.addEventListener('mouseleave', () => {
-        card.style.setProperty('--card-shift-x', '0px');
-        card.style.setProperty('--card-shift-y', '0px');
-        window.setTimeout(() => {
-          if (!document.querySelector('.photo-card:hover')) {
-            wall?.classList.remove('has-active-hover');
-          }
-        }, 20);
-      });
-      card.addEventListener('focusin', () => {
-        wall?.classList.add('has-active-hover');
-        updateHoverShift();
-      });
+      card.addEventListener('mouseenter', () => activateHoverClone(card));
+      card.addEventListener('focusin', () => activateHoverClone(card));
+      card.addEventListener('mouseleave', () => clearHoverClone());
       card.addEventListener('focusout', () => {
-        card.style.setProperty('--card-shift-x', '0px');
-        card.style.setProperty('--card-shift-y', '0px');
-        wall?.classList.remove('has-active-hover');
+        window.setTimeout(() => {
+          if (!card.contains(document.activeElement)) clearHoverClone();
+        }, 10);
       });
     }
 
@@ -177,6 +223,7 @@
 
   const buildWall = () => {
     if (!wall) return;
+    clearHoverClone();
     const rows = window.innerWidth < 768 ? mobileRows : desktopRows;
     wall.innerHTML = '';
 
@@ -198,7 +245,6 @@
       wall.appendChild(rail);
     });
   };
-
   buildWall();
   let resizeTimer = null;
   window.addEventListener('resize', () => {
@@ -502,7 +548,6 @@
       shootFormat: String(formData.get('shootFormat') || '').trim(),
       shootDate: String(formData.get('shootDate') || '').trim(),
       locationType: String(formData.get('locationType') || '').trim(),
-      budget: String(formData.get('budget') || '').trim(),
       task: String(formData.get('task') || '').trim(),
       references: String(formData.get('references') || '').trim(),
       name: String(formData.get('name') || '').trim(),
