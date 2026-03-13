@@ -4,17 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Фотография любого формата — INDIVIDNI studio</title>
-  <meta name="description" content="Фотография любого формата: предметка, портрет, репортаж и контент для брендов. Съёмка и обработка." />
+  <meta name="description" content="Предметная съёмка, портреты, репортаж и контент для брендов. Страница с фото-коллажем и центральной карточкой услуги." />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="../assets/css/landing_ref.css?v=21" />
-  <link rel="stylesheet" href="../assets/css/service_detail.css?v=1" />
   <link rel="stylesheet" href="../assets/css/services_fix.css?v=2" />
+  <link rel="stylesheet" href="../assets/css/service_photo_showcase.css?v=1" />
 </head>
-<body class="service-detail">
+<body class="service-detail service-photo-page">
 
 <nav>
   <div class="nav-left">
@@ -29,7 +29,7 @@
     </div>
   </div>
   <div class="nav-right">
-    <span class="nav-tag">Photo & video</span>
+    <span class="nav-tag">Photo &amp; video</span>
     <a class="btn-dl" href="./index.html#contact">Обсудить</a>
     <button class="nav-toggle" type="button" aria-label="Открыть меню" data-nav-toggle>
       <span></span><span></span>
@@ -45,48 +45,34 @@
   </div>
 </nav>
 
-<section class="service-hero" id="top" aria-label="Фотография любого формата">
-  <video class="service-hero__video" autoplay muted loop playsinline preload="metadata" webkit-playsinline>
-    <source src="../assets/services/video/photo.mp4" type="video/mp4" />
-  </video>
+<main class="photo-showcase" id="top" aria-label="Фотография любого формата">
+  <div class="photo-showcase__backdrop" aria-hidden="true"></div>
+  <div class="photo-showcase__grain" aria-hidden="true"></div>
+  <div class="photo-showcase__photos" data-photo-wall aria-hidden="true"></div>
 
-  <div class="service-hero__shade" aria-hidden="true"></div>
+  <section class="photo-showcase__card" aria-labelledby="photo-showcase-title">
+    <div class="photo-showcase__eyebrow">photo service</div>
+    <a class="photo-showcase__back" href="./">← Все услуги</a>
+    <h1 class="photo-showcase__title" id="photo-showcase-title">Фотография любого формата</h1>
+    <p class="photo-showcase__desc">
+      Предметка, портреты, репортаж, кампейн-съёмки и контент для брендов. Соберём референсы,
+      продумаем свет и стиль, а затем подготовим фотографии под любые носители — от соцсетей до печати.
+    </p>
 
-  <div class="service-hero__content">
-    <a class="service-hero__back" href="./">← Все услуги</a>
-    <h1 class="service-hero__title">Фотография любого формата</h1>
-    <p class="service-hero__desc">Предметная съёмка, портреты, репортаж, контент для брендов и соцсетей. Поможем с референсами, светом и стилем, а затем сделаем аккуратную обработку и подготовим материалы под любые форматы.</p>
-    <div class="service-hero__actions">
-      <a class="service-hero__btn" href="./index.html#contact">Обсудить проект</a>
+    <ul class="photo-showcase__points" aria-label="Форматы съёмки">
+      <li>Портреты и editorial</li>
+      <li>Предметная съёмка</li>
+      <li>Контент для брендов</li>
+      <li>Репортаж и backstage</li>
+    </ul>
+
+    <div class="photo-showcase__actions">
+      <a class="photo-showcase__btn" href="./index.html#contact">Обсудить проект</a>
     </div>
-  </div>
-</section>
-
-<footer>
-  <div class="footer-top">
-    <div class="footer-brand">
-      <div class="brand-logo">INDIVIDNI</div>
-      <p>© <span id="year"></span> All Rights Reserved</p>
-    </div>
-
-    <div class="footer-col">
-      <h4>Menu</h4>
-      <a href="../#projects">Projects</a>
-      <a href="../brief.html">Brief</a>
-      <a href="./">Services</a>
-    </div>
-
-    <div class="footer-col">
-      <h4>Info</h4>
-      <a href="mailto:hello@individnistudio.ru">Email</a>
-      <a href="https://www.instagram.com/" target="_blank" rel="noreferrer">Instagram</a>
-      <a href="https://www.behance.net/" target="_blank" rel="noreferrer">Behance</a>
-    </div>
-  </div>
-
-  <div class="footer-bottom">INDIVIDNI Studio</div>
-</footer>
+  </section>
+</main>
 
 <script src="../assets/js/services_catalog.js?v=1"></script>
+<script src="../assets/js/service_photo_showcase.js?v=1"></script>
 </body>
 </html>
