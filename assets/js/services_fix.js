@@ -1,100 +1,86 @@
-/* Services fixes: safe overrides without touching TV/hero code */
+/* services_fix.js — quick request submit for /services/ */
+(() => {
+  const form = document.querySelector('[data-quick-request-form]');
+  if (!form) return;
 
-/* Make sure brand text is visible everywhere */
-nav .nav-brand{
-  display:inline-block !important;
-  visibility:visible !important;
-  opacity:1 !important;
-}
-nav .nav-by{
-  color:#000 !important; /* studio in menu should be black */
-}
+  const submitBtn = document.querySelector('[data-quick-submit]');
+  const statusEl = document.querySelector('[data-quick-status]');
+  const WEBHOOK = window.INDIVIDNI_BRIEF_WEBHOOK || '';
 
-/* CATALOG: center top texts only on catalog page */
-.services-page .services-hero__inner{
-  max-width: 980px;
-  margin: 0 auto;
-  text-align: center;
-}
+  const setStatus = (message = '', type = '') => {
+    if (!statusEl) return;
+    statusEl.textContent = message;
+    statusEl.classList.remove('is-error', 'is-success');
+    if (type) statusEl.classList.add(type);
+  };
 
-/* DETAIL: keep content left as originally */
-.service-detail .service-hero__content{
-  text-align: left;
-  align-items: flex-start;
-}
+  const buildPayload = () => ({
+    type: 'quick_request',
+    contact: {
+      name: (form.elements.name?.value || '').trim(),
+      phone: (form.elements.phone?.value || '').trim()
+    },
+    sent_at: new Date().toISOString(),
+    source: 'individnistudio.ru services quick request',
+    page: '/services/'
+  });
 
-/* DETAIL: remove title shadows/background (requested) */
-.service-detail .service-hero__title{
-  text-shadow: none !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  filter: none !important;
-}
+  const sendPayload = async (payload) => {
+    try {
+      localStorage.setItem('individni_last_quick_request', JSON.stringify(payload));
+    } catch (_) {}
 
-/* DETAIL: video always fits viewport height */
-.service-detail .service-hero{
-  position: relative;
-  min-height: 100svh;
-  height: 100svh;
-  overflow: hidden;
-}
-.service-detail .service-hero__video{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit: cover;
-}
-.service-detail .service-hero__content{
-  position: absolute;
-  left: clamp(16px, 4vw, 64px);
-  /* lift content so it never falls below fold */
-  /* lifted higher so text+button never go below fold */
-  bottom: max(120px, env(safe-area-inset-bottom));
-max-width: min(720px, calc(100% - 32px));
-  padding-bottom: 8px;
-  z-index: 3;
-}
-.service-detail .service-hero__actions{
-  margin-top: 14px;
-}
+    if (!WEBHOOK) {
+      console.info('Quick request payload prepared for Telegram bot:', payload);
+      return { ok: true, mode: 'local' };
+    }
 
-/* Prevent accidental clipping of button/text */
-.service-detail .service-hero__content > *{
-  max-width: 100%;
-}
+    const response = await fetch(WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
 
-/* DETAIL: mobile tweaks — lift content a bit more and remove extra shadows */
-@media (max-width: 768px){
-  .service-detail .service-hero__content{
-    left: 16px;
-    right: 16px;
-    max-width: none;
-    bottom: max(56px, env(safe-area-inset-bottom));
-  }
-  .service-detail .service-hero__desc,
-  .service-detail .service-hero__btn{
-    text-shadow: none !important;
-    box-shadow: none !important;
-    filter: none !important;
-  }
-}
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return { ok: true, mode: 'remote' };
+  };
 
-/* Catalog card media: show something even before first frame */
-.services-page .scard__media{
-  background: radial-gradient(1200px 700px at 30% 20%, rgba(255,255,255,0.10), rgba(255,255,255,0.03) 45%, rgba(0,0,0,0.0) 75%);
-}
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const name = (form.elements.name?.value || '').trim();
+    const phone = (form.elements.phone?.value || '').trim();
 
-/* CATALOG: mobile grid — 2 cards per row */
-@media (max-width: 768px){
-  .services-page .services-catalog__grid{
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 12px !important;
-  }
-  .services-page .scard__text{
-    padding: 10px 10px 12px;
-  }
-  .services-page .scard__desc{
-    display: none; /* keep it clean on mobile */
-  }
-}
+    if (!name) {
+      setStatus('Укажите имя.', 'is-error');
+      form.elements.name?.focus();
+      return;
+    }
+
+    if (!phone) {
+      setStatus('Укажите телефон.', 'is-error');
+      form.elements.phone?.focus();
+      return;
+    }
+
+    const payload = buildPayload();
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Отправляем...';
+    }
+    setStatus('');
+
+    try {
+      await sendPayload(payload);
+      form.reset();
+      setStatus('Спасибо! Быстрая заявка отправлена. Скоро с вами свяжется наш продюсер.', 'is-success');
+    } catch (error) {
+      console.error(error);
+      setStatus('Не удалось отправить заявку. Проверьте webhook для Telegram позже.', 'is-error');
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Отправить';
+      }
+    }
+  });
+})();
