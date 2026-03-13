@@ -16,7 +16,7 @@
   <link rel="preload" as="video" href="./assets/ui/Showreel_3.mp4" type="video/mp4" />
   
   <!-- Landing styles (ref-based) -->
-  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=32" />
+  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=17" />
 </head>
 <body>
 
@@ -503,7 +503,7 @@
 <!-- BRIEF SPLIT -->
 <section class="brief-split" id="brief-request" aria-label="Бриф на создание видеоролика">
   <form class="brief-split__inner" id="briefRequestForm" novalidate>
-    <aside class="brief-lead brief-lead--desktop" data-brief-lead-desktop>
+    <aside class="brief-lead" data-brief-lead>
       <div class="brief-lead__eyebrow">Заявка</div>
       <h2 class="brief-lead__title">ОСТАВИТЬ<br>ЗАЯВКУ</h2>
       <p class="brief-lead__text">Оставьте базовые контакты, а справа заполните короткий бриф. Так мы быстрее оценим стоимость видео и предложим понятный следующий шаг.</p>
@@ -568,6 +568,43 @@
           <button class="brief-actions__btn" type="button" data-brief-next>Далее</button>
           <button class="brief-actions__btn brief-actions__btn--submit" type="submit" data-brief-submit hidden>Отправить заявку</button>
         </div>
+
+        <div class="brief-mobile" data-brief-mobile-contact hidden>
+          <div class="brief-mobile__eyebrow">Заявка</div>
+          <h3 class="brief-mobile__title">ОСТАВИТЬ<br>ЗАЯВКУ</h3>
+          <p class="brief-mobile__text">Оставьте контакты после заполнения брифа, и мы быстро свяжемся с вами по проекту.</p>
+
+          <div class="brief-mobile__fields">
+            <label class="brief-field">
+              <span class="brief-field__label">Имя *</span>
+              <input class="brief-input" type="text" name="client_name_mobile" placeholder="Как к вам обращаться" autocomplete="name" />
+            </label>
+
+            <label class="brief-field">
+              <span class="brief-field__label">Телефон *</span>
+              <input class="brief-input" type="tel" name="client_phone_mobile" placeholder="+7 (___) ___-__-__" autocomplete="tel" />
+            </label>
+
+            <fieldset class="brief-kind brief-kind--mobile">
+              <legend class="brief-field__label">Кто вы? *</legend>
+              <label class="brief-kind__option">
+                <input type="radio" name="client_type_mobile" value="Физическое лицо" />
+                <span>Физ лицо</span>
+              </label>
+              <label class="brief-kind__option">
+                <input type="radio" name="client_type_mobile" value="Компания" />
+                <span>Компания</span>
+              </label>
+            </fieldset>
+
+            <div class="brief-package" id="briefPackageBadgeMobile" hidden>
+              <span class="brief-package__label">Выбранный тариф</span>
+              <strong class="brief-package__value" id="briefPackageValueMobile">—</strong>
+            </div>
+
+            <button class="brief-actions__btn brief-actions__btn--submit brief-mobile__submit" type="submit" data-brief-submit-mobile hidden>Отправить заявку</button>
+          </div>
+        </div>
       </div>
 
       <div class="brief-success" data-brief-success hidden>
@@ -577,43 +614,6 @@
         <button class="brief-success__reset" type="button" data-brief-reset>Заполнить ещё раз</button>
       </div>
     </div>
-
-    <aside class="brief-lead brief-lead--mobile" data-brief-lead-mobile hidden>
-      <div class="brief-lead__eyebrow">Заявка</div>
-      <h2 class="brief-lead__title">ОСТАВИТЬ<br>ЗАЯВКУ</h2>
-      <p class="brief-lead__text">Заполните контакты после последнего вопроса — и отправьте заявку.</p>
-
-      <div class="brief-lead__fields">
-        <label class="brief-field">
-          <span class="brief-field__label">Имя *</span>
-          <input class="brief-input" type="text" name="client_name_mobile" placeholder="Как к вам обращаться" autocomplete="name" />
-        </label>
-
-        <label class="brief-field">
-          <span class="brief-field__label">Телефон *</span>
-          <input class="brief-input" type="tel" name="client_phone_mobile" placeholder="+7 (___) ___-__-__" autocomplete="tel" />
-        </label>
-
-        <fieldset class="brief-kind">
-          <legend class="brief-field__label">Кто вы? *</legend>
-          <label class="brief-kind__option">
-            <input type="radio" name="client_type_mobile" value="Физическое лицо" />
-            <span>Физ лицо</span>
-          </label>
-          <label class="brief-kind__option">
-            <input type="radio" name="client_type_mobile" value="Компания" />
-            <span>Компания</span>
-          </label>
-        </fieldset>
-
-        <div class="brief-package" id="briefPackageBadgeMobile" hidden>
-          <span class="brief-package__label">Выбранный тариф</span>
-          <strong class="brief-package__value" id="briefPackageValueMobile">—</strong>
-        </div>
-
-        <button class="brief-actions__btn brief-actions__btn--submit brief-lead__mobile-submit" type="submit" data-brief-submit-mobile>Отправить заявку</button>
-      </div>
-    </aside>
   </form>
 </section>
 
@@ -1044,7 +1044,7 @@
 })();
 </script>
 
-<script src="./assets/js/brief_wizard.js?v=13"></script>
+<script src="./assets/js/brief_wizard.js?v=17"></script>
 
 </body>
 </html>
