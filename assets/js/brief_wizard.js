@@ -7,6 +7,8 @@
   const success = form.querySelector('[data-brief-success]');
   const mobileSubmitBtn = form.querySelector('[data-brief-submit-mobile]');
   const mobileViewport = window.matchMedia('(max-width: 980px)');
+  const desktopLead = form.querySelector('[data-brief-lead-desktop]');
+  const mobileLead = form.querySelector('[data-brief-lead-mobile]');
   const startBtn = form.querySelector('[data-brief-start]');
   const prevBtn = form.querySelector('[data-brief-prev]');
   const nextBtn = form.querySelector('[data-brief-next]');
@@ -20,6 +22,8 @@
   const bodyEl = form.querySelector('[data-brief-body]');
   const packageBadge = document.getElementById('briefPackageBadge');
   const packageValue = document.getElementById('briefPackageValue');
+  const packageBadgeMobile = document.getElementById('briefPackageBadgeMobile');
+  const packageValueMobile = document.getElementById('briefPackageValueMobile');
 
   const TELEGRAM_BRIEF_WEBHOOK = window.INDIVIDNI_BRIEF_WEBHOOK || '';
 
@@ -349,24 +353,78 @@
 
   function updatePackageBadge(value) {
     state.package = value || state.package;
-    if (!state.package || !packageBadge || !packageValue) return;
-    packageValue.textContent = tariffMap[state.package] || state.package;
-    packageBadge.hidden = false;
+    if (!state.package) return;
+    const label = tariffMap[state.package] || state.package;
+    if (packageBadge && packageValue) {
+      packageValue.textContent = label;
+      packageBadge.hidden = false;
+    }
+    if (packageBadgeMobile && packageValueMobile) {
+      packageValueMobile.textContent = label;
+      packageBadgeMobile.hidden = false;
+    }
   }
 
-  function syncMobileLeadState() {
-    if (!mobileViewport.matches) {
-      form.classList.remove('is-mobile-lead-hidden');
-      if (mobileSubmitBtn) mobileSubmitBtn.hidden = true;
+  function isMobile() {
+    return mobileViewport.matches;
+  }
+
+  function getLeadPrefix() {
+    return isMobile() ? 'client_name_mobile' : 'client_name';
+  }
+
+  function getLeadFields() {
+    if (isMobile()) {
+      return {
+        name: getValue('client_name_mobile'),
+        phone: getValue('client_phone_mobile'),
+        clientType: getCheckedValue('client_type_mobile')
+      };
+    }
+    return {
+      name: getValue('client_name'),
+      phone: getValue('client_phone'),
+      clientType: getCheckedValue('client_type')
+    };
+  }
+
+  function syncKindVisuals(groupName) {
+    form.querySelectorAll(`input[name="${groupName}"]`).forEach((input) => {
+      const option = input.closest('.brief-kind__option');
+      if (option) option.classList.toggle('is-checked', input.checked);
+    });
+  }
+
+  function syncLeadMirror(sourceName, targetName) {
+    const source = form.querySelector(`[name="${sourceName}"]`);
+    const target = form.querySelector(`[name="${targetName}"]`);
+    if (!source || !target) return;
+    if (target.type === 'radio') return;
+    target.value = source.value;
+  }
+
+  function syncLeadState() {
+    if (desktopLead) desktopLead.hidden = isMobile();
+
+    if (!mobileLead) return;
+    if (!isMobile()) {
+      mobileLead.hidden = true;
       return;
     }
 
-    const showLead = !success.hidden ? false : state.step === steps.length - 1;
-    form.classList.toggle('is-mobile-lead-hidden', !showLead);
-    if (mobileSubmitBtn) mobileSubmitBtn.hidden = !showLead;
+    const showMobileLead = state.step === steps.length - 1 && !work.hidden && success.hidden;
+    mobileLead.hidden = !showMobileLead;
+  }
+
+  function showStage(stage) {
+    intro.hidden = stage !== 'intro';
+    work.hidden = stage !== 'work';
+    success.hidden = stage !== 'success';
+    syncLeadState();
   }
 
   function renderStep() {
+
     if (state.step < 0 || state.step >= steps.length) return;
     const step = steps[state.step];
     const percent = Math.round(((state.step + 1) / steps.length) * 100);
@@ -383,7 +441,7 @@
     submitBtn.hidden = state.step !== steps.length - 1;
 
     const focusTarget = bodyEl.querySelector('textarea, input:not([type="radio"]):not([type="checkbox"]), [type="date"]');
-    syncMobileLeadState();
+    syncLeadState();
 
     if (focusTarget) {
       requestAnimationFrame(() => {
@@ -394,9 +452,7 @@
 
   function goToStep(index) {
     state.step = Math.max(0, Math.min(index, steps.length - 1));
-    intro.hidden = true;
-    success.hidden = true;
-    work.hidden = false;
+    showStage('work');
     renderStep();
   }
 
@@ -409,21 +465,19 @@
   }
 
   function validateLeadFields() {
-    const name = getValue('client_name');
-    const phone = getValue('client_phone');
-    const clientType = getCheckedValue('client_type');
-    if (!name) return 'Укажите имя в левой части формы.';
-    if (!phone) return 'Укажите телефон в левой части формы.';
-    if (!clientType) return 'Выберите: физ лицо или компания.';
+    const lead = getLeadFields();
+    if (!lead.name) return isMobile() ? 'Укажите имя в нижнем мобильном блоке.' : 'Укажите имя в левой части формы.';
+    if (!lead.phone) return isMobile() ? 'Укажите телефон в нижнем мобильном блоке.' : 'Укажите телефон в левой части формы.';
+    if (!lead.clientType) return 'Выберите: физ лицо или компания.';
     return '';
   }
 
   function buildPayload() {
     return {
       contact: {
-        name: getValue('client_name'),
-        phone: getValue('client_phone'),
-        client_type: getCheckedValue('client_type')
+        name: getLeadFields().name,
+        phone: getLeadFields().phone,
+        client_type: getLeadFields().clientType
       },
       selected_tariff: state.package ? (tariffMap[state.package] || state.package) : '',
       answers: {
@@ -463,10 +517,7 @@
   }
 
   function showSuccess() {
-    work.hidden = true;
-    intro.hidden = true;
-    success.hidden = false;
-    syncMobileLeadState();
+    showStage('success');
     success.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
@@ -484,11 +535,11 @@
     state.q8 = { references: '' };
     state.q9 = { budget: '' };
     if (packageBadge) packageBadge.hidden = true;
-    intro.hidden = false;
-    work.hidden = true;
-    success.hidden = true;
+    if (packageBadgeMobile) packageBadgeMobile.hidden = true;
     setError('');
-    syncMobileLeadState();
+    showStage('intro');
+    syncKindVisuals('client_type');
+    syncKindVisuals('client_type_mobile');
   }
 
   startBtn.addEventListener('click', () => goToStep(0));
@@ -509,13 +560,35 @@
       steps[0].collect();
       renderStep();
     }
+
     if (event.target.name === 'client_type') {
-      form.querySelectorAll('.brief-kind__option').forEach((option) => {
-        const input = option.querySelector('input');
-        option.classList.toggle('is-checked', !!input?.checked);
-      });
+      const checked = getCheckedValue('client_type');
+      if (checked) {
+        const mirror = form.querySelector(`[name="client_type_mobile"][value="${CSS.escape(checked)}"]`);
+        if (mirror) mirror.checked = true;
+      }
+      syncKindVisuals('client_type');
+      syncKindVisuals('client_type_mobile');
     }
+
+    if (event.target.name === 'client_type_mobile') {
+      const checked = getCheckedValue('client_type_mobile');
+      if (checked) {
+        const mirror = form.querySelector(`[name="client_type"][value="${CSS.escape(checked)}"]`);
+        if (mirror) mirror.checked = true;
+      }
+      syncKindVisuals('client_type');
+      syncKindVisuals('client_type_mobile');
+    }
+
     if (form.querySelector('[data-brief-error]')?.textContent) validateStep();
+  });
+
+  form.addEventListener('input', (event) => {
+    if (event.target.name === 'client_name') syncLeadMirror('client_name', 'client_name_mobile');
+    if (event.target.name === 'client_phone') syncLeadMirror('client_phone', 'client_phone_mobile');
+    if (event.target.name === 'client_name_mobile') syncLeadMirror('client_name_mobile', 'client_name');
+    if (event.target.name === 'client_phone_mobile') syncLeadMirror('client_phone_mobile', 'client_phone');
   });
 
   form.addEventListener('submit', async (event) => {
@@ -524,7 +597,7 @@
     const leadError = validateLeadFields();
     if (leadError) {
       setError(leadError);
-      const firstLeadField = form.querySelector('[name="client_name"]');
+      const firstLeadField = form.querySelector(isMobile() ? '[name="client_name_mobile"]' : '[name="client_name"]');
       if (firstLeadField) firstLeadField.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
@@ -561,12 +634,14 @@
   });
 
   if (typeof mobileViewport.addEventListener === 'function') {
-    mobileViewport.addEventListener('change', syncMobileLeadState);
+    mobileViewport.addEventListener('change', syncLeadState);
   } else if (typeof mobileViewport.addListener === 'function') {
-    mobileViewport.addListener(syncMobileLeadState);
+    mobileViewport.addListener(syncLeadState);
   }
 
-  syncMobileLeadState();
+  showStage('intro');
+  syncKindVisuals('client_type');
+  syncKindVisuals('client_type_mobile');
 
   if (window.location.hash === '#brief-request') {
     const hashParams = new URLSearchParams(window.location.search);
