@@ -3268,3 +3268,39 @@ body.modal-open{
   margin-left: auto !important;
   margin-right: auto !important;
 }
+
+
+/* ===== PATCH v21: hero mobile video autoplay + smaller INDIVIDNI ===== */
+.hero-bg-video{
+  pointer-events: none;
+}
+.hero-bg-video::-webkit-media-controls,
+.hero-bg-video::-webkit-media-controls-enclosure,
+.hero-bg-video::-webkit-media-controls-panel,
+.hero-bg-video::-webkit-media-controls-start-playback-button{
+  display: none !important;
+  -webkit-appearance: none;
+  opacity: 0 !important;
+}
+
+.hero-brand__big{
+  font-size: clamp(52px, 8.8vw, 122px);
+  max-width: calc(100vw - 72px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 900px){
+  .hero-brand__big{
+    font-size: clamp(42px, 10.8vw, 82px) !important;
+    max-width: calc(100vw - 48px) !important;
+  }
+}
+
+@media (max-width: 600px){
+  .hero-brand__big{
+    font-size: clamp(34px, 10.2vw, 56px) !important;
+    letter-spacing: 0 !important;
+    max-width: calc(100vw - 36px) !important;
+  }
+}
