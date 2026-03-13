@@ -5,6 +5,8 @@
   const intro = form.querySelector('[data-brief-intro]');
   const work = form.querySelector('[data-brief-work]');
   const success = form.querySelector('[data-brief-success]');
+  const mobileSubmitBtn = form.querySelector('[data-brief-submit-mobile]');
+  const mobileViewport = window.matchMedia('(max-width: 980px)');
   const startBtn = form.querySelector('[data-brief-start]');
   const prevBtn = form.querySelector('[data-brief-prev]');
   const nextBtn = form.querySelector('[data-brief-next]');
@@ -18,7 +20,6 @@
   const bodyEl = form.querySelector('[data-brief-body]');
   const packageBadge = document.getElementById('briefPackageBadge');
   const packageValue = document.getElementById('briefPackageValue');
-  const panels = { intro, work, success };
 
   const TELEGRAM_BRIEF_WEBHOOK = window.INDIVIDNI_BRIEF_WEBHOOK || '';
 
@@ -353,15 +354,16 @@
     packageBadge.hidden = false;
   }
 
-  function setStage(stage) {
-    Object.entries(panels).forEach(([key, element]) => {
-      if (!element) return;
-      const isActive = key === stage;
-      element.hidden = !isActive;
-      element.style.display = isActive ? '' : 'none';
-      element.classList.toggle('is-active', isActive);
-      element.setAttribute('aria-hidden', String(!isActive));
-    });
+  function syncMobileLeadState() {
+    if (!mobileViewport.matches) {
+      form.classList.remove('is-mobile-lead-hidden');
+      if (mobileSubmitBtn) mobileSubmitBtn.hidden = true;
+      return;
+    }
+
+    const showLead = !success.hidden ? false : state.step === steps.length - 1;
+    form.classList.toggle('is-mobile-lead-hidden', !showLead);
+    if (mobileSubmitBtn) mobileSubmitBtn.hidden = !showLead;
   }
 
   function renderStep() {
@@ -381,6 +383,8 @@
     submitBtn.hidden = state.step !== steps.length - 1;
 
     const focusTarget = bodyEl.querySelector('textarea, input:not([type="radio"]):not([type="checkbox"]), [type="date"]');
+    syncMobileLeadState();
+
     if (focusTarget) {
       requestAnimationFrame(() => {
         try { focusTarget.focus({ preventScroll: true }); } catch (_) {}
@@ -390,7 +394,9 @@
 
   function goToStep(index) {
     state.step = Math.max(0, Math.min(index, steps.length - 1));
-    setStage('work');
+    intro.hidden = true;
+    success.hidden = true;
+    work.hidden = false;
     renderStep();
   }
 
@@ -457,7 +463,10 @@
   }
 
   function showSuccess() {
-    setStage('success');
+    work.hidden = true;
+    intro.hidden = true;
+    success.hidden = false;
+    syncMobileLeadState();
     success.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
@@ -475,8 +484,11 @@
     state.q8 = { references: '' };
     state.q9 = { budget: '' };
     if (packageBadge) packageBadge.hidden = true;
-    setStage('intro');
+    intro.hidden = false;
+    work.hidden = true;
+    success.hidden = true;
     setError('');
+    syncMobileLeadState();
   }
 
   startBtn.addEventListener('click', () => goToStep(0));
@@ -521,6 +533,10 @@
     const payload = buildPayload();
     submitBtn.disabled = true;
     submitBtn.textContent = 'Отправляем...';
+    if (mobileSubmitBtn) {
+      mobileSubmitBtn.disabled = true;
+      mobileSubmitBtn.textContent = 'Отправляем...';
+    }
 
     try {
       await sendPayload(payload);
@@ -531,6 +547,10 @@
     } finally {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Отправить заявку';
+      if (mobileSubmitBtn) {
+        mobileSubmitBtn.disabled = false;
+        mobileSubmitBtn.textContent = 'Отправить заявку';
+      }
     }
   });
 
@@ -540,7 +560,13 @@
     link.addEventListener('click', () => updatePackageBadge(link.dataset.briefPackage));
   });
 
-  setStage('intro');
+  if (typeof mobileViewport.addEventListener === 'function') {
+    mobileViewport.addEventListener('change', syncMobileLeadState);
+  } else if (typeof mobileViewport.addListener === 'function') {
+    mobileViewport.addListener(syncMobileLeadState);
+  }
+
+  syncMobileLeadState();
 
   if (window.location.hash === '#brief-request') {
     const hashParams = new URLSearchParams(window.location.search);
