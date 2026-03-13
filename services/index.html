@@ -10,9 +10,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="../assets/css/landing_ref.css?v=29" />
+  <link rel="stylesheet" href="../assets/css/landing_ref.css?v=30" />
   <link rel="stylesheet" href="../assets/css/services_catalog.css?v=3" />
-  <link rel="stylesheet" href="../assets/css/services_fix.css?v=3" />
+  <link rel="stylesheet" href="../assets/css/services_fix.css?v=4" />
 </head>
 <body class="services-page">
 
@@ -268,24 +268,28 @@
   <section class="cta-contact" id="contact" aria-label="Оставьте заявку">
     <div class="cta-contact-inner">
       <div class="cta-copy">
+        <div class="cta-kicker">Быстрая заявка</div>
         <h2 class="cta-title">ОСТАВЬТЕ ЗАЯВКУ И УЗНАЙТЕ СТОИМОСТЬ ВАШЕГО РОЛИКА</h2>
         <p class="cta-desc">Напишите, что нужно снять — мы уточним детали и предложим план работ и бюджет.</p>
       </div>
 
-      <form class="cta-form" action="#" method="post">
+      <form class="cta-form cta-form--quick" id="servicesQuickRequestForm" action="#" method="post" novalidate data-quick-request-form>
         <label class="field">
           <span class="field-label">Имя</span>
-          <input type="text" name="name" placeholder="Ваше имя" autocomplete="name" />
+          <input type="text" name="name" placeholder="Ваше имя" autocomplete="name" required />
         </label>
         <label class="field">
           <span class="field-label">Телефон</span>
-          <input type="tel" name="phone" placeholder="+7 (___) ___‑__‑__" autocomplete="tel" />
+          <input type="tel" name="phone" placeholder="+7 (___) ___‑__‑__" autocomplete="tel" required />
         </label>
       </form>
 
       <div class="cta-actions">
-        <button class="cta-btn" type="button">Отправить</button>
-        <p class="cta-note">Нажимая кнопку «Отправить», Вы соглашаетесь с Политикой конфиденциальности.</p>
+        <button class="cta-btn" type="submit" form="servicesQuickRequestForm" data-quick-submit>Отправить</button>
+        <a class="cta-btn cta-btn--ghost" href="../#brief-request">Заполнить бриф</a>
+        <p class="cta-note cta-note--quick">Нужен быстрый ответ? Оставьте имя и телефон — это быстрая заявка. Для точной оценки задачи заполните бриф.</p>
+        <p class="cta-note">Нажимая кнопку «Отправить», Вы соглашаетесь с <a href="../privacy-policy/">Политикой конфиденциальности</a>.</p>
+        <p class="cta-status" data-quick-status aria-live="polite"></p>
       </div>
     </div>
   </section>
@@ -345,6 +349,6 @@
 </footer>
 
 <script src="../assets/js/services_catalog.js?v=1"></script>
-  <script src="../assets/js/services_fix.js?v=2"></script>
+  <script src="../assets/js/services_fix.js?v=4"></script>
 </body>
 </html>
