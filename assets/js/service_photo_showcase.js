@@ -1,132 +1,117 @@
 (() => {
+  const nav = document.querySelector('nav');
+  const navToggle = document.querySelector('[data-nav-toggle]');
+  const navDrawer = document.querySelector('[data-nav-drawer]');
+
+  const closeNav = () => nav?.classList.remove('is-open');
+  navToggle?.addEventListener('click', (event) => {
+    event.stopPropagation();
+    nav?.classList.toggle('is-open');
+  });
+  document.addEventListener('click', (event) => {
+    if (!event.target.closest('nav')) closeNav();
+  });
+  navDrawer?.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeNav));
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 768) closeNav();
+  });
+
   const wall = document.querySelector('[data-photo-wall]');
-  const root = document.querySelector('.photo-showcase');
+  const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
 
-  const fallbackSvg = (label, ratio = '900 1200') => {
-    const [vw, vh] = ratio.split(' ');
-    const svg = `
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${vw} ${vh}">
-        <defs>
-          <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
-            <stop offset="0%" stop-color="#2d2d31"/>
-            <stop offset="100%" stop-color="#0c0c0f"/>
-          </linearGradient>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#g)"/>
-        <circle cx="22%" cy="18%" r="16%" fill="rgba(255,255,255,.08)"/>
-        <circle cx="80%" cy="76%" r="22%" fill="rgba(255,255,255,.05)"/>
-        <text x="8%" y="88%" fill="rgba(255,255,255,.48)" font-size="72" font-family="Arial, Helvetica, sans-serif" letter-spacing="8">${label}</text>
-      </svg>`;
-    return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
-  };
+  const photoSources = Array.from({ length: 14 }, (_, index) => `../assets/services/photo-wall/${String(index + 1).padStart(2, '0')}.jpg`);
 
-  const photoSources = [
-    '../assets/services/photo-wall/01.jpg',
-    '../assets/services/photo-wall/02.jpg',
-    '../assets/services/photo-wall/03.jpg',
-    '../assets/services/photo-wall/04.jpg',
-    '../assets/services/photo-wall/05.jpg',
-    '../assets/services/photo-wall/06.jpg',
-    '../assets/services/photo-wall/07.jpg',
-    '../assets/services/photo-wall/08.jpg',
-    '../assets/services/photo-wall/09.jpg',
-    '../assets/services/photo-wall/10.jpg',
-    '../assets/services/photo-wall/11.jpg',
-    '../assets/services/photo-wall/12.jpg',
-    '../assets/services/photo-wall/13.jpg',
-    '../assets/services/photo-wall/14.jpg'
-  ];
+  const fallbackSvg = (label, viewBox = '900 1200') => `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${viewBox}">
+      <defs>
+        <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+          <stop offset="0%" stop-color="#222"/>
+          <stop offset="100%" stop-color="#0a0a0a"/>
+        </linearGradient>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#g)"/>
+      <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle"
+        fill="#fff" fill-opacity="0.72"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="54" letter-spacing="12">${label}</text>
+    </svg>
+  `)}`;
 
   const desktopRows = [
     {
-      top: '9%', duration: '238s', reverse: false,
+      top: '12%',
+      duration: '320s',
       cards: [
-        { src: 0, width: '300px', ratio: '4 / 3' },
-        { src: 1, width: '250px', ratio: '3 / 4' },
-        { src: 2, width: '288px', ratio: '4 / 3' },
-        { src: 3, width: '250px', ratio: '3 / 4' },
-        { src: 4, width: '296px', ratio: '4 / 3' },
-        { src: 5, width: '255px', ratio: '3 / 4' },
-        { src: 6, width: '282px', ratio: '4 / 3' }
+        { src: 0, width: '230px', ratio: '4 / 3' },
+        { src: 1, width: '205px', ratio: '3 / 4' },
+        { src: 2, width: '228px', ratio: '4 / 3' },
+        { src: 3, width: '208px', ratio: '3 / 4' },
+        { src: 4, width: '228px', ratio: '4 / 3' }
       ]
     },
     {
-      top: '28%', duration: '224s', reverse: true,
+      top: '40%',
+      duration: '304s',
       cards: [
-        { src: 7, width: '246px', ratio: '3 / 4' },
-        { src: 8, width: '284px', ratio: '4 / 3' },
-        { src: 9, width: '252px', ratio: '3 / 4' },
-        { src: 10, width: '298px', ratio: '4 / 3' },
-        { src: 11, width: '248px', ratio: '3 / 4' },
-        { src: 12, width: '288px', ratio: '4 / 3' },
-        { src: 13, width: '252px', ratio: '3 / 4' }
+        { src: 5, width: '205px', ratio: '3 / 4' },
+        { src: 6, width: '228px', ratio: '4 / 3' },
+        { src: 7, width: '206px', ratio: '3 / 4' },
+        { src: 8, width: '230px', ratio: '4 / 3' },
+        { src: 9, width: '206px', ratio: '3 / 4' }
       ]
     },
     {
-      top: '56%', duration: '246s', reverse: false,
+      top: '68%',
+      duration: '332s',
       cards: [
-        { src: 2, width: '258px', ratio: '3 / 4' },
-        { src: 4, width: '304px', ratio: '4 / 3' },
-        { src: 6, width: '248px', ratio: '3 / 4' },
-        { src: 8, width: '286px', ratio: '4 / 3' },
-        { src: 10, width: '256px', ratio: '3 / 4' },
-        { src: 12, width: '296px', ratio: '4 / 3' },
-        { src: 1, width: '250px', ratio: '3 / 4' }
-      ]
-    },
-    {
-      top: '79%', duration: '232s', reverse: true,
-      cards: [
-        { src: 5, width: '294px', ratio: '4 / 3' },
-        { src: 7, width: '246px', ratio: '3 / 4' },
-        { src: 9, width: '286px', ratio: '4 / 3' },
-        { src: 11, width: '250px', ratio: '3 / 4' },
-        { src: 13, width: '292px', ratio: '4 / 3' },
-        { src: 0, width: '252px', ratio: '3 / 4' },
-        { src: 3, width: '286px', ratio: '4 / 3' }
+        { src: 10, width: '228px', ratio: '4 / 3' },
+        { src: 11, width: '205px', ratio: '3 / 4' },
+        { src: 12, width: '228px', ratio: '4 / 3' },
+        { src: 13, width: '205px', ratio: '3 / 4' },
+        { src: 2, width: '230px', ratio: '4 / 3' }
       ]
     }
   ];
 
   const mobileRows = [
     {
-      top: '11%', duration: '172s', reverse: false,
+      top: '12%',
+      duration: '252s',
       cards: [
-        { src: 0, width: '160px', ratio: '4 / 3' },
-        { src: 1, width: '136px', ratio: '3 / 4' },
-        { src: 2, width: '154px', ratio: '4 / 3' },
-        { src: 3, width: '136px', ratio: '3 / 4' },
-        { src: 4, width: '156px', ratio: '4 / 3' }
+        { src: 0, width: '140px', ratio: '4 / 3' },
+        { src: 1, width: '128px', ratio: '3 / 4' },
+        { src: 2, width: '140px', ratio: '4 / 3' },
+        { src: 3, width: '128px', ratio: '3 / 4' }
       ]
     },
     {
-      top: '34%', duration: '166s', reverse: true,
+      top: '36%',
+      duration: '240s',
       cards: [
-        { src: 5, width: '136px', ratio: '3 / 4' },
-        { src: 6, width: '158px', ratio: '4 / 3' },
-        { src: 7, width: '136px', ratio: '3 / 4' },
-        { src: 8, width: '154px', ratio: '4 / 3' },
-        { src: 9, width: '136px', ratio: '3 / 4' }
+        { src: 4, width: '128px', ratio: '3 / 4' },
+        { src: 5, width: '140px', ratio: '4 / 3' },
+        { src: 6, width: '128px', ratio: '3 / 4' },
+        { src: 7, width: '140px', ratio: '4 / 3' }
       ]
     },
     {
-      top: '62%', duration: '176s', reverse: false,
+      top: '60%',
+      duration: '248s',
       cards: [
-        { src: 10, width: '156px', ratio: '4 / 3' },
-        { src: 11, width: '136px', ratio: '3 / 4' },
-        { src: 12, width: '154px', ratio: '4 / 3' },
-        { src: 13, width: '136px', ratio: '3 / 4' },
-        { src: 2, width: '156px', ratio: '4 / 3' }
+        { src: 8, width: '140px', ratio: '4 / 3' },
+        { src: 9, width: '128px', ratio: '3 / 4' },
+        { src: 10, width: '140px', ratio: '4 / 3' },
+        { src: 11, width: '128px', ratio: '3 / 4' }
       ]
     },
     {
-      top: '84%', duration: '168s', reverse: true,
+      top: '82%',
+      duration: '244s',
       cards: [
-        { src: 4, width: '136px', ratio: '3 / 4' },
-        { src: 6, width: '156px', ratio: '4 / 3' },
-        { src: 8, width: '136px', ratio: '3 / 4' },
-        { src: 10, width: '154px', ratio: '4 / 3' },
-        { src: 12, width: '136px', ratio: '3 / 4' }
+        { src: 12, width: '128px', ratio: '3 / 4' },
+        { src: 13, width: '140px', ratio: '4 / 3' },
+        { src: 2, width: '128px', ratio: '3 / 4' },
+        { src: 4, width: '140px', ratio: '4 / 3' }
       ]
     }
   ];
@@ -148,41 +133,43 @@
       img.src = fallbackSvg(`PHOTO ${String(index + 1).padStart(2, '0')}`, cfg.ratio.startsWith('4') ? '1200 900' : '900 1200');
     };
 
-    const updateHoverShift = () => {
-      const rect = card.getBoundingClientRect();
-      const centerX = window.innerWidth / 2;
-      const centerY = window.innerHeight / 2;
-      const cardCenterX = rect.left + rect.width / 2;
-      const cardCenterY = rect.top + rect.height / 2;
-      const shiftX = (centerX - cardCenterX) * 0.085;
-      const shiftY = (centerY - cardCenterY) * 0.04;
-      const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
-      card.style.setProperty('--card-shift-x', `${clamp(shiftX, -34, 34).toFixed(1)}px`);
-      card.style.setProperty('--card-shift-y', `${clamp(shiftY, -14, 14).toFixed(1)}px`);
-    };
+    if (!isCoarsePointer) {
+      const updateHoverShift = () => {
+        const rect = card.getBoundingClientRect();
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+        const cardCenterX = rect.left + rect.width / 2;
+        const cardCenterY = rect.top + rect.height / 2;
+        const shiftX = (centerX - cardCenterX) * 0.075;
+        const shiftY = (centerY - cardCenterY) * 0.04;
+        const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+        card.style.setProperty('--card-shift-x', `${clamp(shiftX, -34, 34).toFixed(1)}px`);
+        card.style.setProperty('--card-shift-y', `${clamp(shiftY, -12, 12).toFixed(1)}px`);
+      };
 
-    card.addEventListener('mouseenter', () => {
-      wall?.classList.add('has-active-hover');
-      updateHoverShift();
-    });
-    card.addEventListener('mouseleave', () => {
-      card.style.setProperty('--card-shift-x', '0px');
-      card.style.setProperty('--card-shift-y', '0px');
-      window.setTimeout(() => {
-        if (!document.querySelector('.photo-card:hover')) {
-          wall?.classList.remove('has-active-hover');
-        }
-      }, 20);
-    });
-    card.addEventListener('focusin', () => {
-      wall?.classList.add('has-active-hover');
-      updateHoverShift();
-    });
-    card.addEventListener('focusout', () => {
-      card.style.setProperty('--card-shift-x', '0px');
-      card.style.setProperty('--card-shift-y', '0px');
-      wall?.classList.remove('has-active-hover');
-    });
+      card.addEventListener('mouseenter', () => {
+        wall?.classList.add('has-active-hover');
+        updateHoverShift();
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.setProperty('--card-shift-x', '0px');
+        card.style.setProperty('--card-shift-y', '0px');
+        window.setTimeout(() => {
+          if (!document.querySelector('.photo-card:hover')) {
+            wall?.classList.remove('has-active-hover');
+          }
+        }, 20);
+      });
+      card.addEventListener('focusin', () => {
+        wall?.classList.add('has-active-hover');
+        updateHoverShift();
+      });
+      card.addEventListener('focusout', () => {
+        card.style.setProperty('--card-shift-x', '0px');
+        card.style.setProperty('--card-shift-y', '0px');
+        wall?.classList.remove('has-active-hover');
+      });
+    }
 
     card.appendChild(img);
     return card;
@@ -195,7 +182,7 @@
 
     rows.forEach((row, rowIndex) => {
       const rail = document.createElement('div');
-      rail.className = `photo-rail${row.reverse ? ' photo-rail--reverse' : ''}`;
+      rail.className = 'photo-rail';
       rail.style.setProperty('--rail-top', row.top);
       rail.style.setProperty('--rail-duration', row.duration);
 
@@ -216,25 +203,51 @@
   let resizeTimer = null;
   window.addEventListener('resize', () => {
     window.clearTimeout(resizeTimer);
-    resizeTimer = window.setTimeout(buildWall, 140);
+    resizeTimer = window.setTimeout(() => {
+      buildWall();
+      updateMobileSteps();
+    }, 140);
   });
 
   const modal = document.querySelector('[data-photo-brief]');
   const success = document.querySelector('[data-photo-brief-success]');
   const form = document.querySelector('[data-photo-brief-form]');
+  const formFoot = document.querySelector('[data-photo-brief-foot]');
   const openers = document.querySelectorAll('[data-photo-brief-open]');
   const closers = document.querySelectorAll('[data-photo-brief-close]');
+
+  const stepEls = [...document.querySelectorAll('[data-photo-step]')];
+  const mobileNavEls = [...document.querySelectorAll('[data-photo-mobile-nav]')];
+  const stepCurrent = document.querySelector('[data-step-current]');
+  const stepTotal = document.querySelector('[data-step-total]');
+  const stepTitle = document.querySelector('[data-step-title]');
+  const prevBtn = document.querySelector('[data-step-prev]');
+  const nextBtn = document.querySelector('[data-step-next]');
+  let activeStep = 0;
+
+  const isMobileSteps = () => window.innerWidth < 768;
+
+  const resetFormView = () => {
+    if (!form) return;
+    form.hidden = false;
+    if (success) success.hidden = true;
+    activeStep = 0;
+    updateMobileSteps();
+  };
 
   const openModal = () => {
     if (!modal) return;
     modal.hidden = false;
     document.documentElement.style.overflow = 'hidden';
+    resetFormView();
   };
 
   const closeModal = () => {
     if (!modal) return;
     modal.hidden = true;
     document.documentElement.style.overflow = '';
+    closeAllSelects();
+    closeAllDatePickers();
   };
 
   openers.forEach((btn) => btn.addEventListener('click', openModal));
@@ -245,8 +258,6 @@
   window.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && modal && !modal.hidden) {
       closeModal();
-      closeAllSelects();
-      closeAllDatePickers();
     }
   });
 
@@ -322,8 +333,8 @@
     const popover = picker.querySelector('[data-date-popover]');
     const monthNode = picker.querySelector('[data-date-month]');
     const grid = picker.querySelector('[data-date-grid]');
-    const prevBtn = picker.querySelector('[data-date-prev]');
-    const nextBtn = picker.querySelector('[data-date-next]');
+    const prevBtnDate = picker.querySelector('[data-date-prev]');
+    const nextBtnDate = picker.querySelector('[data-date-next]');
 
     let currentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
     let selectedDate = null;
@@ -396,12 +407,12 @@
       if (popover) popover.hidden = isOpen;
     });
 
-    prevBtn?.addEventListener('click', () => {
+    prevBtnDate?.addEventListener('click', () => {
       currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1);
       renderCalendar();
     });
 
-    nextBtn?.addEventListener('click', () => {
+    nextBtnDate?.addEventListener('click', () => {
       currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1);
       renderCalendar();
     });
@@ -419,8 +430,70 @@
     host.style.boxShadow = state ? '0 0 0 1px rgba(255,95,95,.45)' : '';
   };
 
+  const validateStep = (stepIndex) => {
+    if (!form) return true;
+    const activeStepEl = stepEls[stepIndex];
+    if (!activeStepEl) return true;
+    const stepRequiredFields = [...activeStepEl.querySelectorAll('input[required], textarea[required]')];
+    let hasError = false;
+    stepRequiredFields.forEach((field) => {
+      const isEmpty = !String(field.value || '').trim();
+      setFieldError(field, isEmpty);
+      if (isEmpty) hasError = true;
+    });
+    return !hasError;
+  };
+
+  const updateMobileSteps = () => {
+    const mobileMode = isMobileSteps();
+    mobileNavEls.forEach((el) => {
+      el.hidden = !mobileMode;
+    });
+
+    if (!mobileMode) {
+      stepEls.forEach((step) => step.classList.remove('is-active'));
+      formFoot?.classList.remove('is-active');
+      return;
+    }
+
+    stepEls.forEach((step, index) => {
+      step.classList.toggle('is-active', index === activeStep);
+    });
+
+    const activeEl = stepEls[activeStep];
+    if (stepCurrent) stepCurrent.textContent = String(activeStep + 1);
+    if (stepTotal) stepTotal.textContent = String(stepEls.length);
+    if (stepTitle) stepTitle.textContent = activeEl?.dataset.stepTitleText || '';
+    if (prevBtn) prevBtn.hidden = activeStep === 0;
+    if (nextBtn) nextBtn.hidden = activeStep === stepEls.length - 1;
+    if (formFoot) formFoot.classList.toggle('is-active', activeStep === stepEls.length - 1);
+
+    const dialog = document.querySelector('.photo-brief__dialog');
+    dialog?.scrollTo({ top: 0, behavior: 'auto' });
+  };
+
+  prevBtn?.addEventListener('click', () => {
+    if (activeStep > 0) {
+      activeStep -= 1;
+      updateMobileSteps();
+    }
+  });
+
+  nextBtn?.addEventListener('click', () => {
+    if (!validateStep(activeStep)) return;
+    if (activeStep < stepEls.length - 1) {
+      activeStep += 1;
+      updateMobileSteps();
+    }
+  });
+
+  updateMobileSteps();
+
   form?.addEventListener('submit', async (event) => {
     event.preventDefault();
+
+    if (isMobileSteps() && !validateStep(activeStep)) return;
+
     const formData = new FormData(form);
     const payload = {
       type: 'photo_brief',
@@ -446,12 +519,23 @@
 
     let hasError = false;
     requiredFields.forEach((field) => {
-      const isEmpty = !field?.value.trim();
+      const isEmpty = !String(field?.value || '').trim();
       setFieldError(field, isEmpty);
       if (isEmpty) hasError = true;
     });
 
-    if (hasError) return;
+    if (hasError) {
+      if (isMobileSteps()) {
+        const firstInvalidStep = stepEls.findIndex((step) =>
+          [...step.querySelectorAll('input[required], textarea[required]')].some((field) => !String(field.value || '').trim())
+        );
+        if (firstInvalidStep >= 0) {
+          activeStep = firstInvalidStep;
+          updateMobileSteps();
+        }
+      }
+      return;
+    }
 
     const submitBtn = form.querySelector('[type="submit"]');
     if (submitBtn) {
