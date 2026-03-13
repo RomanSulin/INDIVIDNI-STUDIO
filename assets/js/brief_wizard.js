@@ -10,6 +10,8 @@
   const nextBtn = form.querySelector('[data-brief-next]');
   const submitBtn = form.querySelector('[data-brief-submit]');
   const mobileSubmitBtn = form.querySelector('[data-brief-mobile-contact] [data-brief-submit-mobile]');
+  const privacyNote = form.querySelector('[data-brief-privacy]');
+  const mobilePrivacyNote = form.querySelector('[data-brief-privacy-mobile]');
   const resetBtn = form.querySelector('[data-brief-reset]');
   const stepLabel = form.querySelector('[data-brief-step-label]');
   const stepPercent = form.querySelector('[data-brief-step-percent]');
@@ -100,6 +102,7 @@
     const shouldShow = isMobileFlow() && state.step === steps.length - 1 && !work.hidden && success.hidden;
     mobileContact.hidden = !shouldShow;
     if (mobileSubmitBtn) mobileSubmitBtn.hidden = !shouldShow;
+    if (mobilePrivacyNote) mobilePrivacyNote.hidden = !shouldShow;
   }
 
   const steps = [
@@ -435,6 +438,7 @@
     prevBtn.disabled = state.step === 0;
     nextBtn.hidden = isLastStep;
     submitBtn.hidden = !isLastStep || isMobileFlow();
+    if (privacyNote) privacyNote.hidden = !isLastStep || isMobileFlow();
     updateMobileContactVisibility();
 
     const focusTarget = bodyEl.querySelector('textarea, input:not([type="radio"]):not([type="checkbox"]), [type="date"]');
