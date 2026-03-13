@@ -3304,3 +3304,27 @@ body.modal-open{
     max-width: calc(100vw - 36px) !important;
   }
 }
+
+
+/* --- brief privacy note --- */
+.brief-privacy{
+  margin: 10px 0 0;
+  font-size: 12px;
+  line-height: 1.55;
+  color: rgba(255,255,255,.58);
+}
+.brief-privacy a{
+  color: rgba(255,255,255,.92);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+.brief-privacy--mobile{
+  margin-top: 10px;
+}
+
+@media (max-width: 768px){
+  .brief-privacy{
+    font-size: 11px;
+    line-height: 1.5;
+  }
+}
