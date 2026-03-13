@@ -41,94 +41,82 @@
 
   const desktopRows = [
     {
-      top: '10%',
-      duration: '214s',
+      top: '14%',
+      duration: '182s',
       cards: [
-        { src: 0, width: '198px', ratio: '3 / 4' },
-        { src: 1, width: '264px', ratio: '4 / 3' },
-        { src: 2, width: '198px', ratio: '3 / 4' },
-        { src: 3, width: '264px', ratio: '4 / 3' },
-        { src: 4, width: '198px', ratio: '3 / 4' }
+        { src: 0, height: '252px', ratio: '3 / 4' },
+        { src: 1, height: '252px', ratio: '4 / 3' },
+        { src: 2, height: '252px', ratio: '3 / 4' },
+        { src: 3, height: '252px', ratio: '4 / 3' },
+        { src: 4, height: '252px', ratio: '3 / 4' },
+        { src: 5, height: '252px', ratio: '4 / 3' },
+        { src: 6, height: '252px', ratio: '3 / 4' }
       ]
     },
     {
-      top: '31%',
-      duration: '208s',
+      top: '41%',
+      duration: '176s',
       cards: [
-        { src: 5, width: '264px', ratio: '4 / 3' },
-        { src: 6, width: '198px', ratio: '3 / 4' },
-        { src: 7, width: '264px', ratio: '4 / 3' },
-        { src: 8, width: '198px', ratio: '3 / 4' },
-        { src: 9, width: '264px', ratio: '4 / 3' }
+        { src: 7, height: '252px', ratio: '4 / 3' },
+        { src: 8, height: '252px', ratio: '3 / 4' },
+        { src: 9, height: '252px', ratio: '4 / 3' },
+        { src: 10, height: '252px', ratio: '3 / 4' },
+        { src: 11, height: '252px', ratio: '4 / 3' },
+        { src: 12, height: '252px', ratio: '3 / 4' }
       ]
     },
     {
-      top: '53%',
-      duration: '216s',
+      top: '68%',
+      duration: '186s',
       cards: [
-        { src: 10, width: '198px', ratio: '3 / 4' },
-        { src: 11, width: '264px', ratio: '4 / 3' },
-        { src: 12, width: '198px', ratio: '3 / 4' },
-        { src: 13, width: '264px', ratio: '4 / 3' },
-        { src: 14, width: '198px', ratio: '3 / 4' }
-      ]
-    },
-    {
-      top: '74%',
-      duration: '210s',
-      cards: [
-        { src: 15, width: '264px', ratio: '4 / 3' },
-        { src: 16, width: '198px', ratio: '3 / 4' },
-        { src: 17, width: '264px', ratio: '4 / 3' },
-        { src: 18, width: '198px', ratio: '3 / 4' },
-        { src: 19, width: '264px', ratio: '4 / 3' }
+        { src: 13, height: '252px', ratio: '3 / 4' },
+        { src: 14, height: '252px', ratio: '4 / 3' },
+        { src: 15, height: '252px', ratio: '3 / 4' },
+        { src: 16, height: '252px', ratio: '4 / 3' },
+        { src: 17, height: '252px', ratio: '3 / 4' },
+        { src: 18, height: '252px', ratio: '4 / 3' },
+        { src: 19, height: '252px', ratio: '3 / 4' }
       ]
     }
   ];
 
   const mobileRows = [
     {
-      top: '11%',
-      duration: '188s',
+      top: '13%',
+      duration: '144s',
       cards: [
-        { src: 0, width: '148px', ratio: '3 / 4' },
-        { src: 1, width: '198px', ratio: '4 / 3' },
-        { src: 2, width: '148px', ratio: '3 / 4' },
-        { src: 3, width: '198px', ratio: '4 / 3' },
-        { src: 4, width: '148px', ratio: '3 / 4' }
+        { src: 0, height: '132px', ratio: '3 / 4' },
+        { src: 1, height: '132px', ratio: '4 / 3' },
+        { src: 2, height: '132px', ratio: '3 / 4' },
+        { src: 3, height: '132px', ratio: '4 / 3' },
+        { src: 4, height: '132px', ratio: '3 / 4' },
+        { src: 5, height: '132px', ratio: '4 / 3' },
+        { src: 6, height: '132px', ratio: '3 / 4' }
       ]
     },
     {
-      top: '36%',
-      duration: '182s',
+      top: '41%',
+      duration: '138s',
       cards: [
-        { src: 5, width: '198px', ratio: '4 / 3' },
-        { src: 6, width: '148px', ratio: '3 / 4' },
-        { src: 7, width: '198px', ratio: '4 / 3' },
-        { src: 8, width: '148px', ratio: '3 / 4' },
-        { src: 9, width: '198px', ratio: '4 / 3' }
+        { src: 7, height: '132px', ratio: '4 / 3' },
+        { src: 8, height: '132px', ratio: '3 / 4' },
+        { src: 9, height: '132px', ratio: '4 / 3' },
+        { src: 10, height: '132px', ratio: '3 / 4' },
+        { src: 11, height: '132px', ratio: '4 / 3' },
+        { src: 12, height: '132px', ratio: '3 / 4' }
       ]
     },
     {
-      top: '61%',
-      duration: '186s',
+      top: '69%',
+      duration: '146s',
       cards: [
-        { src: 10, width: '148px', ratio: '3 / 4' },
-        { src: 11, width: '198px', ratio: '4 / 3' },
-        { src: 12, width: '148px', ratio: '3 / 4' },
-        { src: 13, width: '198px', ratio: '4 / 3' },
-        { src: 14, width: '148px', ratio: '3 / 4' }
-      ]
-    },
-    {
-      top: '84%',
-      duration: '180s',
-      cards: [
-        { src: 15, width: '198px', ratio: '4 / 3' },
-        { src: 16, width: '148px', ratio: '3 / 4' },
-        { src: 17, width: '198px', ratio: '4 / 3' },
-        { src: 18, width: '148px', ratio: '3 / 4' },
-        { src: 19, width: '198px', ratio: '4 / 3' }
+        { src: 13, height: '132px', ratio: '3 / 4' },
+        { src: 14, height: '132px', ratio: '4 / 3' },
+        { src: 15, height: '132px', ratio: '3 / 4' },
+        { src: 16, height: '132px', ratio: '4 / 3' },
+        { src: 17, height: '132px', ratio: '3 / 4' },
+        { src: 18, height: '132px', ratio: '4 / 3' },
+        { src: 19, height: '132px', ratio: '3 / 4' }
       ]
     }
   ];
@@ -192,7 +180,7 @@
   const createCard = (cfg, index) => {
     const card = document.createElement('figure');
     card.className = 'photo-card';
-    card.style.setProperty('--card-width', cfg.width);
+    card.style.setProperty('--card-height', cfg.height);
     card.style.setProperty('--card-ratio', cfg.ratio);
 
     const img = document.createElement('img');
