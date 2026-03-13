@@ -35,31 +35,31 @@
   ];
 
   const desktopLayout = [
-    { x: '12%', y: '18%', w: '280px', r: '-8deg', dx: '10px', dy: '14px' },
-    { x: '27%', y: '12%', w: '230px', r: '6deg', dx: '-8px', dy: '10px' },
-    { x: '86%', y: '15%', w: '250px', r: '7deg', dx: '-10px', dy: '12px' },
-    { x: '73%', y: '10%', w: '220px', r: '-6deg', dx: '6px', dy: '10px' },
-    { x: '8%', y: '49%', w: '250px', r: '8deg', dx: '12px', dy: '-8px' },
-    { x: '24%', y: '71%', w: '250px', r: '-5deg', dx: '-10px', dy: '12px' },
-    { x: '14%', y: '84%', w: '220px', r: '7deg', dx: '10px', dy: '-8px' },
-    { x: '88%', y: '45%', w: '255px', r: '-7deg', dx: '-10px', dy: '10px' },
-    { x: '77%', y: '72%', w: '270px', r: '5deg', dx: '12px', dy: '-8px' },
-    { x: '91%', y: '84%', w: '220px', r: '-6deg', dx: '-8px', dy: '12px' },
-    { x: '37%', y: '84%', w: '210px', r: '4deg', dx: '8px', dy: '10px' },
-    { x: '62%', y: '86%', w: '210px', r: '-4deg', dx: '-8px', dy: '8px' }
+    { x: '10%', y: '16%', w: '360px', ar: '3 / 4', r: '-8deg', dx: '12px', dy: '14px' },
+    { x: '27%', y: '11%', w: '420px', ar: '4 / 3', r: '6deg', dx: '-10px', dy: '10px' },
+    { x: '88%', y: '15%', w: '350px', ar: '3 / 4', r: '7deg', dx: '-12px', dy: '14px' },
+    { x: '72%', y: '10%', w: '400px', ar: '4 / 3', r: '-6deg', dx: '8px', dy: '12px' },
+    { x: '7%', y: '47%', w: '340px', ar: '3 / 4', r: '8deg', dx: '14px', dy: '-8px' },
+    { x: '21%', y: '69%', w: '390px', ar: '4 / 3', r: '-5deg', dx: '-12px', dy: '12px' },
+    { x: '12%', y: '86%', w: '320px', ar: '3 / 4', r: '7deg', dx: '10px', dy: '-8px' },
+    { x: '92%', y: '42%', w: '350px', ar: '3 / 4', r: '-7deg', dx: '-12px', dy: '10px' },
+    { x: '80%', y: '68%', w: '420px', ar: '4 / 3', r: '5deg', dx: '12px', dy: '-8px' },
+    { x: '91%', y: '86%', w: '320px', ar: '3 / 4', r: '-6deg', dx: '-8px', dy: '12px' },
+    { x: '36%', y: '84%', w: '330px', ar: '3 / 4', r: '4deg', dx: '8px', dy: '10px' },
+    { x: '62%', y: '86%', w: '360px', ar: '4 / 3', r: '-4deg', dx: '-8px', dy: '8px' }
   ];
 
   const mobileLayout = [
-    { x: '14%', y: '20%', w: '150px', r: '-8deg', dx: '8px', dy: '10px' },
-    { x: '82%', y: '18%', w: '140px', r: '8deg', dx: '-8px', dy: '10px' },
-    { x: '9%', y: '38%', w: '136px', r: '7deg', dx: '8px', dy: '-6px' },
-    { x: '90%', y: '39%', w: '138px', r: '-8deg', dx: '-8px', dy: '10px' },
-    { x: '20%', y: '62%', w: '142px', r: '-6deg', dx: '8px', dy: '10px' },
-    { x: '79%', y: '62%', w: '142px', r: '7deg', dx: '-8px', dy: '-8px' },
-    { x: '12%', y: '82%', w: '136px', r: '8deg', dx: '8px', dy: '10px' },
-    { x: '88%', y: '82%', w: '136px', r: '-7deg', dx: '-8px', dy: '10px' },
-    { x: '34%', y: '12%', w: '124px', r: '-4deg', dx: '6px', dy: '8px' },
-    { x: '66%', y: '90%', w: '124px', r: '5deg', dx: '-6px', dy: '8px' }
+    { x: '12%', y: '18%', w: '180px', ar: '3 / 4', r: '-8deg', dx: '8px', dy: '10px' },
+    { x: '84%', y: '17%', w: '190px', ar: '4 / 3', r: '8deg', dx: '-8px', dy: '10px' },
+    { x: '8%', y: '36%', w: '172px', ar: '3 / 4', r: '7deg', dx: '8px', dy: '-6px' },
+    { x: '92%', y: '38%', w: '176px', ar: '3 / 4', r: '-8deg', dx: '-8px', dy: '10px' },
+    { x: '18%', y: '61%', w: '188px', ar: '4 / 3', r: '-6deg', dx: '8px', dy: '10px' },
+    { x: '81%', y: '61%', w: '188px', ar: '4 / 3', r: '7deg', dx: '-8px', dy: '-8px' },
+    { x: '11%', y: '82%', w: '170px', ar: '3 / 4', r: '8deg', dx: '8px', dy: '10px' },
+    { x: '89%', y: '82%', w: '170px', ar: '3 / 4', r: '-7deg', dx: '-8px', dy: '10px' },
+    { x: '35%', y: '11%', w: '168px', ar: '3 / 4', r: '-4deg', dx: '6px', dy: '8px' },
+    { x: '67%', y: '91%', w: '178px', ar: '4 / 3', r: '5deg', dx: '-6px', dy: '8px' }
   ];
 
   const build = () => {
@@ -72,6 +72,7 @@
       figure.style.setProperty('--x', cfg.x);
       figure.style.setProperty('--y', cfg.y);
       figure.style.setProperty('--w', cfg.w);
+      figure.style.setProperty('--ar', cfg.ar || '3 / 4');
       figure.style.setProperty('--r', cfg.r);
       figure.style.setProperty('--delay', `${(index % 6) * 0.55}s`);
       figure.style.setProperty('--drift-x', cfg.dx);
