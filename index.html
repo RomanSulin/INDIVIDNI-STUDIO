@@ -16,7 +16,7 @@
   <link rel="preload" as="video" href="./assets/ui/Showreel_3.mp4" type="video/mp4" />
   
   <!-- Landing styles (ref-based) -->
-  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=21" />
+  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=30" />
 </head>
 <body>
 
@@ -567,6 +567,7 @@
           <button class="brief-actions__btn brief-actions__btn--ghost" type="button" data-brief-prev disabled>Назад</button>
           <button class="brief-actions__btn" type="button" data-brief-next>Далее</button>
           <button class="brief-actions__btn brief-actions__btn--submit" type="submit" data-brief-submit hidden>Отправить заявку</button>
+          <p class="brief-privacy" data-brief-privacy hidden>Нажимая кнопку «Отправить», Вы соглашаетесь с <a href="./privacy-policy/">Политикой конфиденциальности</a>.</p>
         </div>
 
         <div class="brief-mobile" data-brief-mobile-contact hidden>
@@ -603,6 +604,7 @@
             </div>
 
             <button class="brief-actions__btn brief-actions__btn--submit brief-mobile__submit" type="submit" data-brief-submit-mobile hidden>Отправить заявку</button>
+            <p class="brief-privacy brief-privacy--mobile" data-brief-privacy-mobile hidden>Нажимая кнопку «Отправить», Вы соглашаетесь с <a href="./privacy-policy/">Политикой конфиденциальности</a>.</p>
           </div>
         </div>
       </div>
@@ -1081,7 +1083,7 @@
 })();
 </script>
 
-<script src="./assets/js/brief_wizard.js?v=17"></script>
+<script src="./assets/js/brief_wizard.js?v=18"></script>
 
 </body>
 </html>
