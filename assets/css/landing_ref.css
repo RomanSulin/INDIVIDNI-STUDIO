@@ -2760,6 +2760,10 @@ body.modal-open{
   display: grid;
   gap: 14px;
 }
+.brief-lead__mobile-note,
+.brief-lead__mobile-submit{
+  display: none;
+}
 .brief-field{
   display: grid;
   gap: 7px;
@@ -2848,16 +2852,8 @@ body.modal-open{
   font-size: 18px;
 }
 .brief-wizard{
-  position: relative;
   background: linear-gradient(180deg, rgba(255,255,255,.04) 0%, rgba(255,255,255,.02) 100%);
   min-height: 680px;
-}
-[data-brief-intro][hidden],
-[data-brief-work][hidden],
-[data-brief-success][hidden],
-[data-brief-submit][hidden],
-#briefPackageBadge[hidden]{
-  display: none !important;
 }
 .brief-wizard__intro,
 .brief-success{
@@ -3072,11 +3068,30 @@ body.modal-open{
 
 @media (max-width: 980px){
   .brief-split__inner{ grid-template-columns: 1fr; }
-  .brief-lead{ position: static; }
+  .brief-wizard{ order: 1; }
+  .brief-lead{
+    order: 2;
+    position: static;
+  }
+  .brief-split__inner.is-mobile-lead-hidden .brief-lead{ display: none; }
   .brief-wizard,
   .brief-wizard__intro,
   .brief-success{ min-height: 0; }
   .brief-card{ min-height: 0; }
+  .brief-actions__btn--submit{ display: none !important; }
+  .brief-lead__mobile-note{
+    display: block;
+    margin: 2px 0 0;
+    color: rgba(255,255,255,.6);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .brief-lead__mobile-submit{
+    display: inline-flex;
+    width: 100%;
+    justify-content: center;
+    margin-top: 2px;
+  }
 }
 @media (max-width: 700px){
   .brief-split{ padding: 88px 18px 88px; }
@@ -3100,30 +3115,4 @@ body.modal-open{
   .brief-wizard__start,
   .brief-success__reset{ width: 100%; }
   .brief-actions__btn{ flex-basis: 100%; }
-}
-
-/* ===== PATCH v10: center section titles ===== */
-.services-title,
-.process-cards__title,
-.team__title,
-.faq__title,
-.tariffs__title{
-  width: 100%;
-  margin-left: auto !important;
-  margin-right: auto !important;
-  text-align: center !important;
-}
-
-.services-head,
-.process-cards__inner,
-.team__inner,
-.faq__inner{
-  text-align: center;
-}
-
-.tariffs__title,
-.tariffs__lead{
-  width: min(1120px, 100%);
-  margin-left: auto !important;
-  margin-right: auto !important;
 }
