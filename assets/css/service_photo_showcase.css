@@ -35,7 +35,7 @@
 
 .photo-showcase__backdrop{
   background:
-    radial-gradient(72rem 42rem at 50% 50%, rgba(32,32,38,0.42), rgba(0,0,0,0) 58%),
+    radial-gradient(78rem 42rem at 50% 50%, rgba(32,32,38,0.42), rgba(0,0,0,0) 58%),
     radial-gradient(34rem 26rem at 20% 16%, rgba(74,74,84,0.24), rgba(0,0,0,0) 62%),
     radial-gradient(32rem 24rem at 82% 22%, rgba(54,54,58,0.22), rgba(0,0,0,0) 62%),
     linear-gradient(180deg, #030303 0%, #080808 100%);
@@ -59,21 +59,14 @@
 }
 
 .photo-float{
-  --w: 320px;
-  --x: 50%;
-  --y: 50%;
-  --r: 0deg;
-  --ar: 3 / 4;
-  --delay: 0s;
-  --drift-x: 0px;
-  --drift-y: 0px;
+  --w: 420px;
+  --h: 520px;
   position: absolute;
-  left: var(--x);
-  top: var(--y);
-  width: min(var(--w), 36vw);
-  aspect-ratio: var(--ar);
-  transform: translate(-50%, -50%) rotate(var(--r));
-  border-radius: 30px;
+  left: 0;
+  top: 0;
+  width: var(--w);
+  height: var(--h);
+  border-radius: 28px;
   overflow: hidden;
   border: 1px solid rgba(255,255,255,.12);
   background:
@@ -82,11 +75,10 @@
   box-shadow:
     0 28px 70px rgba(0,0,0,.38),
     0 6px 18px rgba(0,0,0,.24);
-  opacity: .92;
+  opacity: .88;
   will-change: transform, filter;
   pointer-events: auto;
-  animation: photoFloat 11s ease-in-out infinite;
-  animation-delay: var(--delay);
+  transition: box-shadow .35s ease, border-color .35s ease, opacity .35s ease;
 }
 
 .photo-float::before{
@@ -105,25 +97,24 @@
   object-fit: cover;
   filter: grayscale(1) brightness(.88) contrast(1.04);
   transform: scale(1.01);
-  transition:
-    transform .55s cubic-bezier(.2,.75,.2,1),
-    filter .4s ease,
-    opacity .35s ease;
+  transition: filter .45s ease, transform .45s cubic-bezier(.2,.75,.2,1), opacity .35s ease;
 }
 
 .photo-float.is-fallback img{
   opacity: .72;
 }
 
-.photo-float:hover,
-.photo-float:focus-within{
-  z-index: 6;
+.photo-float.is-active{
+  z-index: 18 !important;
+  opacity: 1;
+  border-color: rgba(255,255,255,.26);
+  box-shadow:
+    0 30px 90px rgba(0,0,0,.54),
+    0 18px 42px rgba(0,0,0,.28);
 }
 
-.photo-float:hover img,
-.photo-float:focus-within img{
+.photo-float.is-active img{
   filter: grayscale(0) brightness(1) contrast(1.02);
-  transform: scale(1.15);
 }
 
 .photo-showcase__card{
@@ -143,7 +134,8 @@
 }
 
 .photo-showcase__eyebrow,
-.photo-showcase__back{
+.photo-showcase__back,
+.photo-request__eyebrow{
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -166,7 +158,8 @@
   font-size: 12px;
 }
 
-.photo-showcase__title{
+.photo-showcase__title,
+.photo-request__title{
   margin: 18px 0 0;
   font-family: Syne, system-ui, sans-serif;
   font-size: clamp(34px, 5vw, 62px);
@@ -175,7 +168,17 @@
   max-width: 9ch;
 }
 
-.photo-showcase__desc{
+.photo-request__title{
+  max-width: 11ch;
+  font-size: clamp(30px, 4vw, 48px);
+}
+
+.photo-request__title--success{
+  max-width: none;
+}
+
+.photo-showcase__desc,
+.photo-request__text{
   margin: 16px 0 0;
   max-width: 44ch;
   color: rgba(255,255,255,.78);
@@ -205,7 +208,8 @@
   margin-top: 22px;
 }
 
-.photo-showcase__btn{
+.photo-showcase__btn,
+.photo-request__submit{
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -219,34 +223,206 @@
   font: 700 13px/1 Inter, system-ui, sans-serif;
   letter-spacing: .08em;
   text-transform: uppercase;
-  transition: transform .25s ease, box-shadow .25s ease;
+  transition: transform .25s ease, box-shadow .25s ease, background .25s ease, color .25s ease;
+  cursor: pointer;
 }
 
-.photo-showcase__btn:hover{
+.photo-showcase__btn:hover,
+.photo-request__submit:hover{
   transform: translateY(-1px);
   box-shadow: 0 12px 28px rgba(255,255,255,.14);
 }
 
-@keyframes photoFloat{
-  0%, 100% { transform: translate(-50%, -50%) rotate(var(--r)) translate3d(0, 0, 0); }
-  50% { transform: translate(-50%, -50%) rotate(var(--r)) translate3d(var(--drift-x), var(--drift-y), 0); }
+.photo-request__submit--ghost{
+  background: transparent;
+  color: #fff;
+}
+
+.photo-request[hidden]{
+  display: none !important;
+}
+
+.photo-request{
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+}
+
+.photo-request__overlay{
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.74);
+  backdrop-filter: blur(10px);
+}
+
+.photo-request__dialog{
+  position: absolute;
+  inset: 32px;
+  width: min(860px, calc(100vw - 32px));
+  max-height: calc(100svh - 64px);
+  margin: auto;
+  overflow: auto;
+  padding: 28px;
+  border-radius: 32px;
+  border: 1px solid rgba(255,255,255,.12);
+  background:
+    linear-gradient(180deg, rgba(20,20,22,.96), rgba(10,10,12,.94)),
+    rgba(8,8,10,.88);
+  box-shadow: 0 30px 100px rgba(0,0,0,.6);
+}
+
+.photo-request__dialog::-webkit-scrollbar{
+  width: 10px;
+}
+
+.photo-request__dialog::-webkit-scrollbar-thumb{
+  background: rgba(255,255,255,.12);
+  border-radius: 999px;
+}
+
+.photo-request__close{
+  position: sticky;
+  top: 0;
+  margin-left: auto;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.05);
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.photo-request__head{
+  margin-top: 8px;
+}
+
+.photo-request__form{
+  margin-top: 24px;
+}
+
+.photo-request__grid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.photo-request__field{
+  display: grid;
+  gap: 10px;
+}
+
+.photo-request__field span,
+.photo-request__field legend,
+.photo-request__contact-title{
+  color: rgba(255,255,255,.9);
+  font: 600 14px/1.35 Inter, system-ui, sans-serif;
+}
+
+.photo-request__field input,
+.photo-request__field select,
+.photo-request__field textarea{
+  width: 100%;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 18px;
+  background: rgba(255,255,255,.04);
+  color: #fff;
+  padding: 14px 16px;
+  font: 500 15px/1.4 Inter, system-ui, sans-serif;
+  outline: none;
+  resize: vertical;
+}
+
+.photo-request__field input::placeholder,
+.photo-request__field textarea::placeholder{
+  color: rgba(255,255,255,.42);
+}
+
+.photo-request__field input:focus,
+.photo-request__field select:focus,
+.photo-request__field textarea:focus{
+  border-color: rgba(255,255,255,.28);
+  background: rgba(255,255,255,.06);
+}
+
+.photo-request__field--checkboxes{
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.photo-request__field--checkboxes label{
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-height: 48px;
+  padding: 13px 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.1);
+  background: rgba(255,255,255,.04);
+}
+
+.photo-request__field--checkboxes input{
+  width: 18px;
+  height: 18px;
+  margin: 2px 0 0;
+  accent-color: #fff;
+}
+
+.photo-request__field--checkboxes span{
+  font-weight: 500;
+}
+
+.photo-request__field--full{
+  grid-column: 1 / -1;
+}
+
+.photo-request__contact{
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+
+.photo-request__contact-grid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.photo-request__actions{
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 24px;
+}
+
+.photo-request__success{
+  padding: 12px 0 8px;
+}
+
+@media (max-width: 1280px){
+  .photo-float{
+    border-radius: 24px;
+  }
 }
 
 @media (max-width: 1100px){
-  .photo-float{
-    width: min(var(--w), 34vw);
-  }
-
   .photo-showcase__card{
     width: min(500px, calc(100vw - 32px));
+  }
+
+  .photo-request__dialog{
+    width: min(760px, calc(100vw - 24px));
+    inset: 20px;
   }
 }
 
 @media (max-width: 767px){
-  .photo-float{
-    width: min(var(--w), 46vw);
-  }
-
   .service-photo-page nav{
     left: 14px;
     right: 14px;
@@ -263,12 +439,6 @@
   }
 
   .photo-float{
-    width: min(var(--w), 42vw);
-    border-radius: 24px;
-  }
-
-  .photo-float{
-    width: min(var(--w), 31vw);
     border-radius: 20px;
     opacity: .78;
   }
@@ -279,38 +449,36 @@
     border-radius: 26px;
   }
 
-  .photo-showcase__title{
+  .photo-showcase__title,
+  .photo-request__title{
     max-width: none;
     font-size: clamp(28px, 10vw, 40px);
   }
 
-  .photo-showcase__desc{
+  .photo-showcase__desc,
+  .photo-request__text{
     font-size: 14px;
   }
 
   .photo-showcase__points{
     grid-template-columns: 1fr;
-    gap: 8px;
   }
 
-  .photo-showcase__points li{
-    min-height: 44px;
-    padding: 10px 12px;
-    font-size: 12px;
-  }
-
-  .photo-showcase__btn{
+  .photo-showcase__btn,
+  .photo-request__submit{
     width: 100%;
   }
-}
 
-@media (prefers-reduced-motion: reduce){
-  .photo-float{
-    animation: none;
+  .photo-request__dialog{
+    inset: 12px;
+    width: auto;
+    max-height: calc(100svh - 24px);
+    padding: 18px;
+    border-radius: 24px;
   }
 
-  .photo-float img,
-  .photo-showcase__btn{
-    transition: none;
+  .photo-request__grid,
+  .photo-request__contact-grid{
+    grid-template-columns: 1fr;
   }
 }
