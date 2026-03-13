@@ -12,7 +12,7 @@
 
   <link rel="stylesheet" href="../assets/css/landing_ref.css?v=21" />
   <link rel="stylesheet" href="../assets/css/services_fix.css?v=2" />
-  <link rel="stylesheet" href="../assets/css/service_photo_showcase.css?v=5" />
+  <link rel="stylesheet" href="../assets/css/service_photo_showcase.css?v=6" />
 </head>
 <body class="service-detail service-photo-page">
 
@@ -86,105 +86,129 @@
     </div>
 
     <form class="photo-brief__form" data-photo-brief-form novalidate>
+      <div class="photo-brief__mobile-top" data-photo-mobile-nav hidden>
+        <div class="photo-brief__mobile-progress">
+          <span data-step-current>1</span>
+          <span>/</span>
+          <span data-step-total>5</span>
+        </div>
+        <div class="photo-brief__mobile-step-title" data-step-title>Формат и дата</div>
+      </div>
+
       <div class="photo-brief__grid">
-        <div class="photo-field photo-field--full">
-          <label class="photo-field__label">1. Какой формат съёмки нужен? *</label>
-          <div class="photo-select" data-custom-select>
-            <input type="hidden" name="shootFormat" required />
-            <button class="photo-select__trigger" type="button" data-select-trigger>
-              <span data-select-value>Выберите формат</span>
-              <span class="photo-select__arrow"></span>
-            </button>
-            <div class="photo-select__menu" data-select-menu hidden>
-              <button type="button" data-select-option value="Индивидуальная съёмка">Индивидуальная съёмка</button>
-              <button type="button" data-select-option value="Эвент / мероприятие">Эвент / мероприятие</button>
-              <button type="button" data-select-option value="Контент для бренда">Контент для бренда</button>
-              <button type="button" data-select-option value="Предметная съёмка">Предметная съёмка</button>
-              <button type="button" data-select-option value="Backstage / репортаж">Backstage / репортаж</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="photo-field">
-          <label class="photo-field__label">2. Когда нужна съёмка? *</label>
-          <div class="photo-date" data-date-picker>
-            <input type="hidden" name="shootDate" required />
-            <button class="photo-date__trigger" type="button" data-date-trigger>
-              <span data-date-value>Выберите дату</span>
-              <span class="photo-date__icon" aria-hidden="true"></span>
-            </button>
-            <div class="photo-date__popover" data-date-popover hidden>
-              <div class="photo-date__bar">
-                <button type="button" data-date-prev aria-label="Предыдущий месяц">‹</button>
-                <strong data-date-month></strong>
-                <button type="button" data-date-next aria-label="Следующий месяц">›</button>
+        <div class="photo-brief-step" data-photo-step="1" data-step-title-text="Формат и дата">
+          <div class="photo-field photo-field--full">
+            <label class="photo-field__label">1. Какой формат съёмки нужен? *</label>
+            <div class="photo-select" data-custom-select>
+              <input type="hidden" name="shootFormat" required />
+              <button class="photo-select__trigger" type="button" data-select-trigger>
+                <span data-select-value>Выберите формат</span>
+                <span class="photo-select__arrow"></span>
+              </button>
+              <div class="photo-select__menu" data-select-menu hidden>
+                <button type="button" data-select-option value="Индивидуальная съёмка">Индивидуальная съёмка</button>
+                <button type="button" data-select-option value="Эвент / мероприятие">Эвент / мероприятие</button>
+                <button type="button" data-select-option value="Контент для бренда">Контент для бренда</button>
+                <button type="button" data-select-option value="Предметная съёмка">Предметная съёмка</button>
+                <button type="button" data-select-option value="Backstage / репортаж">Backstage / репортаж</button>
               </div>
-              <div class="photo-date__weekdays">
-                <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span>
+            </div>
+          </div>
+
+          <div class="photo-field">
+            <label class="photo-field__label">2. Когда нужна съёмка? *</label>
+            <div class="photo-date" data-date-picker>
+              <input type="hidden" name="shootDate" required />
+              <button class="photo-date__trigger" type="button" data-date-trigger>
+                <span data-date-value>Выберите дату</span>
+                <span class="photo-date__icon" aria-hidden="true"></span>
+              </button>
+              <div class="photo-date__popover" data-date-popover hidden>
+                <div class="photo-date__bar">
+                  <button type="button" data-date-prev aria-label="Предыдущий месяц">‹</button>
+                  <strong data-date-month></strong>
+                  <button type="button" data-date-next aria-label="Следующий месяц">›</button>
+                </div>
+                <div class="photo-date__weekdays">
+                  <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span>
+                </div>
+                <div class="photo-date__grid" data-date-grid></div>
               </div>
-              <div class="photo-date__grid" data-date-grid></div>
             </div>
           </div>
         </div>
 
-        <div class="photo-field">
-          <label class="photo-field__label">3. Где планируется съёмка?</label>
-          <div class="photo-select" data-custom-select>
-            <input type="hidden" name="locationType" />
-            <button class="photo-select__trigger" type="button" data-select-trigger>
-              <span data-select-value>Выберите вариант</span>
-              <span class="photo-select__arrow"></span>
-            </button>
-            <div class="photo-select__menu" data-select-menu hidden>
-              <button type="button" data-select-option value="Студия">Студия</button>
-              <button type="button" data-select-option value="Локация клиента">Локация клиента</button>
-              <button type="button" data-select-option value="Улица / город">Улица / город</button>
-              <button type="button" data-select-option value="Пока не решили">Пока не решили</button>
+        <div class="photo-brief-step" data-photo-step="2" data-step-title-text="Локация и бюджет">
+          <div class="photo-field">
+            <label class="photo-field__label">3. Где планируется съёмка?</label>
+            <div class="photo-select" data-custom-select>
+              <input type="hidden" name="locationType" />
+              <button class="photo-select__trigger" type="button" data-select-trigger>
+                <span data-select-value>Выберите вариант</span>
+                <span class="photo-select__arrow"></span>
+              </button>
+              <div class="photo-select__menu" data-select-menu hidden>
+                <button type="button" data-select-option value="Студия">Студия</button>
+                <button type="button" data-select-option value="Локация клиента">Локация клиента</button>
+                <button type="button" data-select-option value="Улица / город">Улица / город</button>
+                <button type="button" data-select-option value="Пока не решили">Пока не решили</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="photo-field">
+            <label class="photo-field__label">4. Какой ориентир по бюджету?</label>
+            <div class="photo-select" data-custom-select>
+              <input type="hidden" name="budget" />
+              <button class="photo-select__trigger" type="button" data-select-trigger>
+                <span data-select-value>Выберите диапазон</span>
+                <span class="photo-select__arrow"></span>
+              </button>
+              <div class="photo-select__menu" data-select-menu hidden>
+                <button type="button" data-select-option value="До 50 000 ₽">До 50 000 ₽</button>
+                <button type="button" data-select-option value="50 000–150 000 ₽">50 000–150 000 ₽</button>
+                <button type="button" data-select-option value="150 000–300 000 ₽">150 000–300 000 ₽</button>
+                <button type="button" data-select-option value="300 000 ₽ и выше">300 000 ₽ и выше</button>
+                <button type="button" data-select-option value="Нужна консультация">Нужна консультация</button>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="photo-field">
-          <label class="photo-field__label">4. Какой ориентир по бюджету?</label>
-          <div class="photo-select" data-custom-select>
-            <input type="hidden" name="budget" />
-            <button class="photo-select__trigger" type="button" data-select-trigger>
-              <span data-select-value>Выберите диапазон</span>
-              <span class="photo-select__arrow"></span>
-            </button>
-            <div class="photo-select__menu" data-select-menu hidden>
-              <button type="button" data-select-option value="До 50 000 ₽">До 50 000 ₽</button>
-              <button type="button" data-select-option value="50 000–150 000 ₽">50 000–150 000 ₽</button>
-              <button type="button" data-select-option value="150 000–300 000 ₽">150 000–300 000 ₽</button>
-              <button type="button" data-select-option value="300 000 ₽ и выше">300 000 ₽ и выше</button>
-              <button type="button" data-select-option value="Нужна консультация">Нужна консультация</button>
-            </div>
+        <div class="photo-brief-step" data-photo-step="3" data-step-title-text="Задача съёмки">
+          <div class="photo-field photo-field--full">
+            <label class="photo-field__label" for="photoTask">5. Что нужно снять и какой нужен результат? *</label>
+            <textarea id="photoTask" name="task" rows="4" placeholder="Например: портретная съёмка команды, 20–30 кадров для сайта и соцсетей, в тёмной кинематографичной стилистике." required></textarea>
           </div>
         </div>
 
-        <div class="photo-field photo-field--full">
-          <label class="photo-field__label" for="photoTask">5. Что нужно снять и какой нужен результат? *</label>
-          <textarea id="photoTask" name="task" rows="4" placeholder="Например: портретная съёмка команды, 20–30 кадров для сайта и соцсетей, в тёмной кинематографичной стилистике." required></textarea>
+        <div class="photo-brief-step" data-photo-step="4" data-step-title-text="Референсы">
+          <div class="photo-field photo-field--full">
+            <label class="photo-field__label" for="photoRefs">6. Ссылки на референсы или комментарии</label>
+            <textarea id="photoRefs" name="references" rows="3" placeholder="Можно вставить ссылки на понравившиеся съёмки, Pinterest, Behance, примеры цвета или света."></textarea>
+          </div>
         </div>
 
-        <div class="photo-field photo-field--full">
-          <label class="photo-field__label" for="photoRefs">6. Ссылки на референсы или комментарии</label>
-          <textarea id="photoRefs" name="references" rows="3" placeholder="Можно вставить ссылки на понравившиеся съёмки, Pinterest, Behance, примеры цвета или света."></textarea>
-        </div>
+        <div class="photo-brief-step" data-photo-step="5" data-step-title-text="Контакты">
+          <div class="photo-field">
+            <label class="photo-field__label" for="photoName">Имя *</label>
+            <input id="photoName" name="name" type="text" placeholder="Ваше имя" required />
+          </div>
 
-        <div class="photo-field">
-          <label class="photo-field__label" for="photoName">Имя *</label>
-          <input id="photoName" name="name" type="text" placeholder="Ваше имя" required />
-        </div>
-
-        <div class="photo-field">
-          <label class="photo-field__label" for="photoPhone">Телефон *</label>
-          <input id="photoPhone" name="phone" type="tel" placeholder="+7 (___) ___-__-__" required />
+          <div class="photo-field">
+            <label class="photo-field__label" for="photoPhone">Телефон *</label>
+            <input id="photoPhone" name="phone" type="tel" placeholder="+7 (___) ___-__-__" required />
+          </div>
         </div>
       </div>
 
-      <div class="photo-brief__foot">
-        <p class="photo-brief__policy">Нажимая кнопку «Отправить», Вы соглашаетесь с Политикой конфиденциальности.</p>
+      <div class="photo-brief__mobile-actions" data-photo-mobile-nav hidden>
+        <button class="photo-brief__nav-btn photo-brief__nav-btn--ghost" type="button" data-step-prev hidden>Назад</button>
+        <button class="photo-brief__nav-btn" type="button" data-step-next>Далее</button>
+      </div>
+
+      <div class="photo-brief__foot" data-photo-brief-foot>
+        <p class="photo-brief__policy">Нажимая кнопку «Отправить», Вы соглашаетесь с <a href="../privacy-policy/">Политикой конфиденциальности</a>.</p>
         <button class="photo-brief__submit" type="submit">Отправить заявку</button>
       </div>
     </form>
@@ -198,7 +222,6 @@
   </div>
 </div>
 
-<script src="../assets/js/services_catalog.js?v=1"></script>
-<script src="../assets/js/service_photo_showcase.js?v=5"></script>
+<script src="../assets/js/service_photo_showcase.js?v=6"></script>
 </body>
 </html>
