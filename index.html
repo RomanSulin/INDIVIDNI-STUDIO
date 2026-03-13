@@ -16,7 +16,7 @@
   <link rel="preload" as="video" href="./assets/ui/Showreel_3.mp4" type="video/mp4" />
   
   <!-- Landing styles (ref-based) -->
-  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=20" />
+  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=21" />
 </head>
 <body>
 
@@ -61,7 +61,7 @@
 <!-- HERO -->
 <section class="hero" id="top">
     <!-- HERO background video (loop, muted) -->
-  <video class="hero-bg-video" id="heroBgVideo" autoplay muted loop playsinline preload="auto" webkit-playsinline aria-hidden="true">
+  <video class="hero-bg-video" id="heroBgVideo" autoplay muted loop playsinline preload="auto" webkit-playsinline disablepictureinpicture playsinline="" webkit-playsinline="" controlslist="nodownload noplaybackrate noremoteplayback nofullscreen" aria-hidden="true">
     <source src="./assets/ui/Showreel_3.mp4" type="video/mp4"/>
     <source src="./assets/ui/showreel_3.mp4" type="video/mp4"/>
   </video>
@@ -790,7 +790,7 @@
 <script src="./assets/js/landing_ref.js?v=15"></script>
 
 <script>
-/* HERO bg: cache first frame as CSS background to avoid blank */
+/* HERO bg: cache first frame as CSS background + force muted inline autoplay on mobile */
 (() => {
   const hero = document.querySelector(".hero");
   const v = document.getElementById("heroBgVideo");
@@ -803,13 +803,30 @@
 
   if (cached) hero.style.backgroundImage = `url(${cached})`;
 
+  const lockMobileAutoplay = () => {
+    v.muted = true;
+    v.defaultMuted = true;
+    v.playsInline = true;
+    v.setAttribute('muted', '');
+    v.setAttribute('playsinline', '');
+    v.setAttribute('webkit-playsinline', '');
+    v.removeAttribute('controls');
+  };
+
+  const tryPlay = () => {
+    lockMobileAutoplay();
+    const playPromise = v.play && v.play();
+    if (playPromise && typeof playPromise.catch === 'function') {
+      playPromise.catch(() => {});
+    }
+  };
+
   const capture = () => {
     try {
       const vw = v.videoWidth || 0;
       const vh = v.videoHeight || 0;
       if (!vw || !vh) return;
 
-      // downscale hard to keep work + localStorage small
       const targetW = Math.min(520, vw);
       const scale = targetW / vw;
       const targetH = Math.round(vh * scale);
@@ -823,18 +840,38 @@
       const dataUrl = c.toDataURL("image/jpeg", 0.62);
       hero.style.backgroundImage = `url(${dataUrl})`;
 
-      // avoid huge localStorage entries
       if (dataUrl.length < 420000) {
         try { localStorage.setItem(KEY, dataUrl); } catch (e) {}
       }
     } catch (e) {}
   };
 
-  // As soon as we have something to draw (usually first frame)
+  lockMobileAutoplay();
   v.addEventListener("loadeddata", () => {
     const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 60));
     idle(capture);
+    tryPlay();
   }, { once: true });
+
+  ["loadedmetadata", "canplay", "canplaythrough", "pageshow"].forEach((eventName) => {
+    v.addEventListener(eventName, tryPlay, { passive: true });
+    window.addEventListener(eventName, tryPlay, { passive: true });
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') tryPlay();
+  }, { passive: true });
+
+  const kick = () => {
+    tryPlay();
+    document.removeEventListener('touchstart', kick);
+    document.removeEventListener('pointerdown', kick);
+  };
+  document.addEventListener('touchstart', kick, { passive: true, once: true });
+  document.addEventListener('pointerdown', kick, { passive: true, once: true });
+
+  setTimeout(tryPlay, 120);
+  setTimeout(tryPlay, 900);
 })();
 </script>
 
