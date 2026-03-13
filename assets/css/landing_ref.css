@@ -3116,3 +3116,80 @@ body.modal-open{
   .brief-success__reset{ width: 100%; }
   .brief-actions__btn{ flex-basis: 100%; }
 }
+
+/* ===== PATCH v31: centered section headings + split brief desktop/mobile ===== */
+.services-head,
+.process-cards__inner,
+.team__inner,
+.faq__inner,
+.tariffs__inner{
+  width: min(1320px, 100%);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.services-title,
+.process-cards__title,
+.team__title,
+.faq__title,
+.tariffs__title{
+  width: 100%;
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+@media (max-width: 620px){
+  .process-cards__title,
+  .team__title,
+  .faq__title,
+  .services-title,
+  .tariffs__title{
+    text-align: center !important;
+  }
+}
+
+.brief-wizard [hidden],
+.brief-lead [hidden]{
+  display: none !important;
+}
+
+.brief-lead--mobile{
+  display: none;
+}
+
+
+@media (min-width: 981px){
+  .brief-card{
+    min-height: 540px;
+  }
+  .brief-lead--desktop{ display: block; }
+  .brief-lead--mobile{ display: none !important; }
+}
+
+@media (max-width: 980px){
+  .brief-split__inner{
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .brief-lead--desktop{
+    display: none !important;
+  }
+
+  .brief-lead--mobile{
+    display: block;
+    order: 2;
+    position: static;
+  }
+
+  .brief-wizard{
+    order: 1;
+  }
+
+  .brief-lead--mobile .brief-lead__mobile-submit{
+    display: inline-flex !important;
+    width: 100%;
+    justify-content: center;
+  }
+}
