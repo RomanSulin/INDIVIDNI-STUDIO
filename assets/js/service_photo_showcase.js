@@ -18,8 +18,6 @@
   });
 
   const wall = document.querySelector('[data-photo-wall]');
-  const hoverLayer = document.querySelector('[data-photo-hover-layer]');
-  const showcase = document.querySelector('.photo-showcase');
   const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
 
   const portrait = (index) => ({
@@ -35,18 +33,9 @@
   });
 
   const wallRows = [
-    {
-      duration: '82s',
-      cards: [portrait(1), landscape(1), portrait(2), landscape(2), portrait(3), landscape(3), portrait(4)]
-    },
-    {
-      duration: '88s',
-      cards: [portrait(5), landscape(4), portrait(6), landscape(5), portrait(7), landscape(6)]
-    },
-    {
-      duration: '94s',
-      cards: [portrait(8), landscape(7), portrait(9), landscape(8), portrait(10), landscape(9), landscape(10)]
-    }
+    [portrait(1), portrait(2), landscape(1), portrait(3), landscape(2), portrait(4), landscape(3)],
+    [landscape(4), portrait(5), portrait(6), landscape(5), portrait(7), landscape(6)],
+    [portrait(8), landscape(7), portrait(9), landscape(8), portrait(10), landscape(9), landscape(10)]
   ];
 
   const fallbackSvg = (label, viewBox = '900 1200') => `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
@@ -65,67 +54,14 @@
     </svg>
   `)}`;
 
-  let hoverClone = null;
-  let hoverSource = null;
-  let hoverFrame = 0;
-
-  const clearHoverClone = () => {
-    if (hoverFrame) {
-      cancelAnimationFrame(hoverFrame);
-      hoverFrame = 0;
-    }
-    if (hoverSource) {
-      hoverSource.classList.remove('is-overlay-source');
-      hoverSource = null;
-    }
-    if (hoverClone) {
-      hoverClone.remove();
-      hoverClone = null;
-    }
-  };
-
-  const syncHoverClone = () => {
-    if (!hoverSource || !hoverClone || !showcase) return;
-
-    const sourceRect = hoverSource.getBoundingClientRect();
-    const showcaseRect = showcase.getBoundingClientRect();
-    const centerX = window.innerWidth / 2;
-    const cardCenterX = sourceRect.left + sourceRect.width / 2;
-    const shiftX = Math.max(-14, Math.min(14, (centerX - cardCenterX) * 0.018));
-
-    hoverClone.style.width = `${sourceRect.width}px`;
-    hoverClone.style.height = `${sourceRect.height}px`;
-    hoverClone.style.transform = `translate3d(${(sourceRect.left - showcaseRect.left + shiftX).toFixed(2)}px, ${(sourceRect.top - showcaseRect.top).toFixed(2)}px, 0) scale(1.045)`;
-
-    hoverFrame = requestAnimationFrame(syncHoverClone);
-  };
-
-  const activateHoverClone = (card) => {
-    if (isCoarsePointer || !hoverLayer || !showcase) return;
-    if (hoverSource === card) return;
-
-    clearHoverClone();
-    hoverSource = card;
-    hoverSource.classList.add('is-overlay-source');
-
-    const clone = card.cloneNode(true);
-    clone.classList.add('photo-card--overlay');
-    clone.removeAttribute('tabindex');
-    clone.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
-    const img = clone.querySelector('img');
-    if (img) {
-      img.loading = 'eager';
-      img.decoding = 'async';
-    }
-    hoverClone = clone;
-    hoverLayer.appendChild(clone);
-    syncHoverClone();
-  };
-
   const createCard = (cfg, index) => {
     const card = document.createElement('figure');
     card.className = 'photo-card';
     card.style.setProperty('--card-ratio', cfg.ratio);
+
+    if (!isCoarsePointer) {
+      card.tabIndex = 0;
+    }
 
     const img = document.createElement('img');
     img.alt = `Фотография ${index + 1}`;
@@ -138,38 +74,26 @@
       img.src = fallbackSvg(cfg.label || `PHOTO ${String(index + 1).padStart(2, '0')}`, cfg.ratio.startsWith('4') ? '1200 900' : '900 1200');
     };
 
-    if (!isCoarsePointer) {
-      card.addEventListener('mouseenter', () => activateHoverClone(card));
-      card.addEventListener('focusin', () => activateHoverClone(card));
-      card.addEventListener('mouseleave', () => clearHoverClone());
-      card.addEventListener('focusout', () => {
-        window.setTimeout(() => {
-          if (!card.contains(document.activeElement)) clearHoverClone();
-        }, 10);
-      });
-    }
-
     card.appendChild(img);
     return card;
   };
 
   const buildWall = () => {
     if (!wall) return;
-    clearHoverClone();
     wall.innerHTML = '';
 
-    wallRows.forEach((row, rowIndex) => {
+    wallRows.forEach((cards, rowIndex) => {
       const rail = document.createElement('div');
       rail.className = 'photo-rail';
       rail.style.setProperty('--rail-index', rowIndex);
-      rail.style.setProperty('--rail-duration', row.duration);
+      rail.style.setProperty('--rail-duration', '92s');
 
       const groups = [];
       for (let copy = 0; copy < 3; copy += 1) {
         const group = document.createElement('div');
         group.className = 'photo-rail__group';
-        row.cards.forEach((cfg, index) => {
-          group.appendChild(createCard(cfg, rowIndex * 10 + index + copy * row.cards.length));
+        cards.forEach((cfg, index) => {
+          group.appendChild(createCard(cfg, rowIndex * 10 + index + copy * cards.length));
         });
         rail.appendChild(group);
         groups.push(group);
@@ -178,9 +102,8 @@
       wall.appendChild(rail);
 
       requestAnimationFrame(() => {
-        const firstGroup = groups[0];
-        if (firstGroup) {
-          rail.style.setProperty('--group-width', `${firstGroup.offsetWidth}px`);
+        if (groups[0]) {
+          rail.style.setProperty('--group-width', `${groups[0].offsetWidth}px`);
         }
       });
     });
