@@ -62,8 +62,9 @@
 }
 
 .photo-showcase__photos{
-  --wall-gap: clamp(14px, 0.95vw, 18px);
-  --wall-row-height: calc((100% - (var(--wall-gap) * 4)) / 3);
+  --wall-gap: clamp(12px, 0.78vw, 16px);
+  --wall-row-height: min(calc((100% - (var(--wall-gap) * 4)) / 3), 238px);
+  --wall-stack-height: calc((var(--wall-row-height) * 3) + (var(--wall-gap) * 2));
   z-index: 2;
   pointer-events: none;
   mask-image: linear-gradient(90deg, transparent 0%, black 4%, black 96%, transparent 100%);
@@ -79,7 +80,7 @@
   --rail-index: 0;
   --group-width: 1000px;
   position: absolute;
-  top: calc(var(--wall-gap) + ((var(--wall-row-height) + var(--wall-gap)) * var(--rail-index)));
+  top: calc(((100% - var(--wall-stack-height)) / 2) + ((var(--wall-row-height) + var(--wall-gap)) * var(--rail-index)));
   left: 0;
   width: max-content;
   display: flex;
