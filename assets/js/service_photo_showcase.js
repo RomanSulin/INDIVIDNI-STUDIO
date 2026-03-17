@@ -1,3 +1,4 @@
+
 (() => {
   const nav = document.querySelector('nav');
   const navToggle = document.querySelector('[data-nav-toggle]');
@@ -21,7 +22,32 @@
   const showcase = document.querySelector('.photo-showcase');
   const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
 
-  const photoSources = Array.from({ length: 20 }, (_, index) => `../assets/services/photo-wall/${String(index + 1).padStart(2, '0')}.jpg`);
+  const portrait = (index) => ({
+    src: `../assets/ui/service-fotografiya-lyubogo-formata/${index}_3-4.jpg`,
+    ratio: '3 / 4',
+    label: `${index}_3-4`
+  });
+
+  const landscape = (index) => ({
+    src: `../assets/ui/service-fotografiya-lyubogo-formata/${index}_4-3.jpg`,
+    ratio: '4 / 3',
+    label: `${index}_4-3`
+  });
+
+  const wallRows = [
+    {
+      duration: '106s',
+      cards: [portrait(1), landscape(1), portrait(2), landscape(2), portrait(3), landscape(3), portrait(4)]
+    },
+    {
+      duration: '112s',
+      cards: [landscape(4), portrait(5), landscape(5), portrait(6), landscape(6), portrait(7), landscape(7)]
+    },
+    {
+      duration: '118s',
+      cards: [portrait(8), landscape(8), portrait(9), landscape(9), portrait(10), landscape(10)]
+    }
+  ];
 
   const fallbackSvg = (label, viewBox = '900 1200') => `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${viewBox}">
@@ -35,91 +61,9 @@
       <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle"
         fill="#fff" fill-opacity="0.72"
         font-family="Arial, Helvetica, sans-serif"
-        font-size="54" letter-spacing="12">${label}</text>
+        font-size="54" letter-spacing="8">${label}</text>
     </svg>
   `)}`;
-
-  const desktopRows = [
-    {
-      top: '14%',
-      duration: '182s',
-      cards: [
-        { src: 0, height: '252px', ratio: '3 / 4' },
-        { src: 1, height: '252px', ratio: '4 / 3' },
-        { src: 2, height: '252px', ratio: '3 / 4' },
-        { src: 3, height: '252px', ratio: '4 / 3' },
-        { src: 4, height: '252px', ratio: '3 / 4' },
-        { src: 5, height: '252px', ratio: '4 / 3' },
-        { src: 6, height: '252px', ratio: '3 / 4' }
-      ]
-    },
-    {
-      top: '41%',
-      duration: '176s',
-      cards: [
-        { src: 7, height: '252px', ratio: '4 / 3' },
-        { src: 8, height: '252px', ratio: '3 / 4' },
-        { src: 9, height: '252px', ratio: '4 / 3' },
-        { src: 10, height: '252px', ratio: '3 / 4' },
-        { src: 11, height: '252px', ratio: '4 / 3' },
-        { src: 12, height: '252px', ratio: '3 / 4' }
-      ]
-    },
-    {
-      top: '68%',
-      duration: '186s',
-      cards: [
-        { src: 13, height: '252px', ratio: '3 / 4' },
-        { src: 14, height: '252px', ratio: '4 / 3' },
-        { src: 15, height: '252px', ratio: '3 / 4' },
-        { src: 16, height: '252px', ratio: '4 / 3' },
-        { src: 17, height: '252px', ratio: '3 / 4' },
-        { src: 18, height: '252px', ratio: '4 / 3' },
-        { src: 19, height: '252px', ratio: '3 / 4' }
-      ]
-    }
-  ];
-
-  const mobileRows = [
-    {
-      top: '13%',
-      duration: '144s',
-      cards: [
-        { src: 0, height: '132px', ratio: '3 / 4' },
-        { src: 1, height: '132px', ratio: '4 / 3' },
-        { src: 2, height: '132px', ratio: '3 / 4' },
-        { src: 3, height: '132px', ratio: '4 / 3' },
-        { src: 4, height: '132px', ratio: '3 / 4' },
-        { src: 5, height: '132px', ratio: '4 / 3' },
-        { src: 6, height: '132px', ratio: '3 / 4' }
-      ]
-    },
-    {
-      top: '41%',
-      duration: '138s',
-      cards: [
-        { src: 7, height: '132px', ratio: '4 / 3' },
-        { src: 8, height: '132px', ratio: '3 / 4' },
-        { src: 9, height: '132px', ratio: '4 / 3' },
-        { src: 10, height: '132px', ratio: '3 / 4' },
-        { src: 11, height: '132px', ratio: '4 / 3' },
-        { src: 12, height: '132px', ratio: '3 / 4' }
-      ]
-    },
-    {
-      top: '69%',
-      duration: '146s',
-      cards: [
-        { src: 13, height: '132px', ratio: '3 / 4' },
-        { src: 14, height: '132px', ratio: '4 / 3' },
-        { src: 15, height: '132px', ratio: '3 / 4' },
-        { src: 16, height: '132px', ratio: '4 / 3' },
-        { src: 17, height: '132px', ratio: '3 / 4' },
-        { src: 18, height: '132px', ratio: '4 / 3' },
-        { src: 19, height: '132px', ratio: '3 / 4' }
-      ]
-    }
-  ];
 
   let hoverClone = null;
   let hoverSource = null;
@@ -146,16 +90,12 @@
     const sourceRect = hoverSource.getBoundingClientRect();
     const showcaseRect = showcase.getBoundingClientRect();
     const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight / 2;
     const cardCenterX = sourceRect.left + sourceRect.width / 2;
-    const cardCenterY = sourceRect.top + sourceRect.height / 2;
-    const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
-    const shiftX = clamp((centerX - cardCenterX) * 0.06, -44, 44);
-    const shiftY = clamp((centerY - cardCenterY) * 0.03, -18, 18);
+    const shiftX = Math.max(-42, Math.min(42, (centerX - cardCenterX) * 0.05));
 
     hoverClone.style.width = `${sourceRect.width}px`;
     hoverClone.style.height = `${sourceRect.height}px`;
-    hoverClone.style.transform = `translate3d(${(sourceRect.left - showcaseRect.left + shiftX).toFixed(2)}px, ${(sourceRect.top - showcaseRect.top + shiftY).toFixed(2)}px, 0) scale(1.09)`;
+    hoverClone.style.transform = `translate3d(${(sourceRect.left - showcaseRect.left + shiftX).toFixed(2)}px, ${(sourceRect.top - showcaseRect.top).toFixed(2)}px, 0) scale(1.065)`;
 
     hoverFrame = requestAnimationFrame(syncHoverClone);
   };
@@ -180,18 +120,17 @@
   const createCard = (cfg, index) => {
     const card = document.createElement('figure');
     card.className = 'photo-card';
-    card.style.setProperty('--card-height', cfg.height);
     card.style.setProperty('--card-ratio', cfg.ratio);
 
     const img = document.createElement('img');
     img.alt = `Фотография ${index + 1}`;
     img.loading = 'eager';
     img.decoding = 'async';
-    img.src = photoSources[cfg.src % photoSources.length];
+    img.src = cfg.src;
     img.onerror = () => {
       card.classList.add('is-fallback');
       img.onerror = null;
-      img.src = fallbackSvg(`PHOTO ${String(index + 1).padStart(2, '0')}`, cfg.ratio.startsWith('4') ? '1200 900' : '900 1200');
+      img.src = fallbackSvg(cfg.label || `PHOTO ${String(index + 1).padStart(2, '0')}`, cfg.ratio.startsWith('4') ? '1200 900' : '900 1200');
     };
 
     if (!isCoarsePointer) {
@@ -212,28 +151,38 @@
   const buildWall = () => {
     if (!wall) return;
     clearHoverClone();
-    const rows = window.innerWidth < 768 ? mobileRows : desktopRows;
     wall.innerHTML = '';
 
-    rows.forEach((row, rowIndex) => {
+    wallRows.forEach((row, rowIndex) => {
       const rail = document.createElement('div');
       rail.className = 'photo-rail';
-      rail.style.setProperty('--rail-top', row.top);
+      rail.style.setProperty('--rail-index', rowIndex);
       rail.style.setProperty('--rail-duration', row.duration);
 
-      for (let copy = 0; copy < 2; copy += 1) {
+      const groups = [];
+      for (let copy = 0; copy < 3; copy += 1) {
         const group = document.createElement('div');
         group.className = 'photo-rail__group';
         row.cards.forEach((cfg, index) => {
           group.appendChild(createCard(cfg, rowIndex * 10 + index + copy * row.cards.length));
         });
         rail.appendChild(group);
+        groups.push(group);
       }
 
       wall.appendChild(rail);
+
+      requestAnimationFrame(() => {
+        const firstGroup = groups[0];
+        if (firstGroup) {
+          rail.style.setProperty('--group-width', `${firstGroup.offsetWidth}px`);
+        }
+      });
     });
   };
+
   buildWall();
+
   let resizeTimer = null;
   window.addEventListener('resize', () => {
     window.clearTimeout(resizeTimer);
