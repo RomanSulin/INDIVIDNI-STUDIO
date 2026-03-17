@@ -36,15 +36,15 @@
 
   const wallRows = [
     {
-      duration: '106s',
+      duration: '94s',
       cards: [portrait(1), landscape(1), portrait(2), landscape(2), portrait(3), landscape(3), portrait(4)]
     },
     {
-      duration: '112s',
+      duration: '98s',
       cards: [landscape(4), portrait(5), landscape(5), portrait(6), landscape(6), portrait(7), landscape(7)]
     },
     {
-      duration: '118s',
+      duration: '102s',
       cards: [portrait(8), landscape(8), portrait(9), landscape(9), portrait(10), landscape(10)]
     }
   ];
@@ -91,11 +91,11 @@
     const showcaseRect = showcase.getBoundingClientRect();
     const centerX = window.innerWidth / 2;
     const cardCenterX = sourceRect.left + sourceRect.width / 2;
-    const shiftX = Math.max(-42, Math.min(42, (centerX - cardCenterX) * 0.05));
+    const shiftX = Math.max(-24, Math.min(24, (centerX - cardCenterX) * 0.035));
 
     hoverClone.style.width = `${sourceRect.width}px`;
     hoverClone.style.height = `${sourceRect.height}px`;
-    hoverClone.style.transform = `translate3d(${(sourceRect.left - showcaseRect.left + shiftX).toFixed(2)}px, ${(sourceRect.top - showcaseRect.top).toFixed(2)}px, 0) scale(1.065)`;
+    hoverClone.style.transform = `translate3d(${(sourceRect.left - showcaseRect.left + shiftX).toFixed(2)}px, ${(sourceRect.top - showcaseRect.top).toFixed(2)}px, 0) scale(1.03)`;
 
     hoverFrame = requestAnimationFrame(syncHoverClone);
   };
