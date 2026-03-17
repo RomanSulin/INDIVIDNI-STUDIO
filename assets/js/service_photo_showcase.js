@@ -91,11 +91,11 @@
     const showcaseRect = showcase.getBoundingClientRect();
     const centerX = window.innerWidth / 2;
     const cardCenterX = sourceRect.left + sourceRect.width / 2;
-    const shiftX = Math.max(-16, Math.min(16, (centerX - cardCenterX) * 0.022));
+    const shiftX = Math.max(-14, Math.min(14, (centerX - cardCenterX) * 0.018));
 
     hoverClone.style.width = `${sourceRect.width}px`;
     hoverClone.style.height = `${sourceRect.height}px`;
-    hoverClone.style.transform = `translate3d(${(sourceRect.left - showcaseRect.left + shiftX).toFixed(2)}px, ${(sourceRect.top - showcaseRect.top).toFixed(2)}px, 0) scale(1.04)`;
+    hoverClone.style.transform = `translate3d(${(sourceRect.left - showcaseRect.left + shiftX).toFixed(2)}px, ${(sourceRect.top - showcaseRect.top).toFixed(2)}px, 0) scale(1.045)`;
 
     hoverFrame = requestAnimationFrame(syncHoverClone);
   };
@@ -112,6 +112,11 @@
     clone.classList.add('photo-card--overlay');
     clone.removeAttribute('tabindex');
     clone.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
+    const img = clone.querySelector('img');
+    if (img) {
+      img.loading = 'eager';
+      img.decoding = 'async';
+    }
     hoverClone = clone;
     hoverLayer.appendChild(clone);
     syncHoverClone();
