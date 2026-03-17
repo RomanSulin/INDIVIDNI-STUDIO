@@ -29,7 +29,7 @@
   overflow: hidden;
   display: grid;
   place-items: center;
-  padding: 0 24px;
+  padding: 0 18px;
   isolation: isolate;
 }
 
@@ -62,8 +62,8 @@
 }
 
 .photo-showcase__photos{
-  --wall-gap: clamp(12px, 0.78vw, 16px);
-  --wall-row-height: min(calc((100% - (var(--wall-gap) * 4)) / 3), 238px);
+  --wall-gap: clamp(12px, 0.78vw, 18px);
+  --wall-row-height: clamp(156px, calc((100% - (var(--wall-gap) * 4)) / 3), 198px);
   --wall-stack-height: calc((var(--wall-row-height) * 3) + (var(--wall-gap) * 2));
   z-index: 2;
   pointer-events: none;
@@ -76,7 +76,7 @@
 }
 
 .photo-rail{
-  --rail-duration: 108s;
+  --rail-duration: 96s;
   --rail-index: 0;
   --group-width: 1000px;
   position: absolute;
@@ -105,12 +105,12 @@
   width: auto;
   aspect-ratio: var(--card-ratio, 3 / 4);
   overflow: hidden;
-  border-radius: clamp(18px, 1.4vw, 24px);
+  border-radius: clamp(16px, 1.2vw, 22px);
   border: 1px solid rgba(255,255,255,.12);
   background: linear-gradient(160deg, rgba(20,20,20,.98), rgba(10,10,10,.98));
   box-shadow:
-    0 18px 48px rgba(0,0,0,.28),
-    0 6px 14px rgba(0,0,0,.18);
+    0 14px 34px rgba(0,0,0,.24),
+    0 4px 10px rgba(0,0,0,.16);
   opacity: .96;
   pointer-events: auto;
   transition: opacity .24s ease, filter .3s ease;
@@ -131,7 +131,7 @@
   display: block;
   object-fit: cover;
   filter: grayscale(1) brightness(.84) contrast(1.04);
-  transition: transform .34s cubic-bezier(.2,.75,.2,1), filter .3s ease;
+  transition: transform .3s cubic-bezier(.2,.75,.2,1), filter .28s ease;
 }
 
 .photo-card.is-fallback img{
@@ -141,7 +141,7 @@
 .photo-card:hover img,
 .photo-card:focus-within img{
   filter: grayscale(0) brightness(1) contrast(1.02);
-  transform: scale(1.055);
+  transform: scale(1.03);
 }
 
 .photo-card.is-overlay-source{
@@ -155,7 +155,7 @@
   left: 0;
   z-index: 40;
   overflow: hidden;
-  border-radius: clamp(18px, 1.4vw, 24px);
+  border-radius: clamp(16px, 1.2vw, 22px);
   border: 1px solid rgba(255,255,255,.14);
   background: linear-gradient(160deg, rgba(20,20,20,.98), rgba(10,10,10,.98));
   box-shadow:
