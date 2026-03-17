@@ -11,7 +11,7 @@
   left: auto;
   right: auto;
   z-index: 100;
-} 
+}
 
 .service-photo-page .nav-by{
   color: var(--muted) !important;
@@ -62,8 +62,8 @@
 }
 
 .photo-showcase__photos{
-  --wall-gap: clamp(12px, 0.78vw, 18px);
-  --wall-row-height: clamp(156px, calc((100% - (var(--wall-gap) * 4)) / 3), 198px);
+  --wall-gap: clamp(12px, 0.92vw, 18px);
+  --wall-row-height: min(clamp(148px, 16vw, 205px), calc((100% - (var(--wall-gap) * 4)) / 3));
   --wall-stack-height: calc((var(--wall-row-height) * 3) + (var(--wall-gap) * 2));
   z-index: 2;
   pointer-events: none;
@@ -80,7 +80,7 @@
   --rail-index: 0;
   --group-width: 1000px;
   position: absolute;
-  top: calc(((100% - var(--wall-stack-height)) / 2) + ((var(--wall-row-height) + var(--wall-gap)) * var(--rail-index)));
+  top: calc(max(var(--wall-gap), ((100% - var(--wall-stack-height)) / 2)) + ((var(--wall-row-height) + var(--wall-gap)) * var(--rail-index)));
   left: 0;
   width: max-content;
   display: flex;
@@ -131,7 +131,7 @@
   display: block;
   object-fit: cover;
   filter: grayscale(1) brightness(.84) contrast(1.04);
-  transition: transform .3s cubic-bezier(.2,.75,.2,1), filter .28s ease;
+  transition: transform .28s cubic-bezier(.2,.75,.2,1), filter .26s ease;
 }
 
 .photo-card.is-fallback img{
@@ -141,7 +141,7 @@
 .photo-card:hover img,
 .photo-card:focus-within img{
   filter: grayscale(0) brightness(1) contrast(1.02);
-  transform: scale(1.03);
+  transform: scale(1.02);
 }
 
 .photo-card.is-overlay-source{
@@ -674,8 +674,8 @@
   }
 
   .photo-showcase__photos{
-    --wall-gap: 10px;
-    --wall-row-height: calc((100% - (var(--wall-gap) * 4)) / 3);
+    --wall-gap: 8px;
+    --wall-row-height: min(clamp(84px, 22vw, 112px), calc((100% - (var(--wall-gap) * 4)) / 3));
     mask-image: linear-gradient(90deg, transparent 0%, black 3%, black 97%, transparent 100%);
   }
 
@@ -697,13 +697,12 @@
 
   .photo-showcase__photos{
     --wall-gap: 8px;
-    --wall-vspace: 8px;
-    --wall-card-height: calc((100% - (var(--wall-vspace) * 2) - (var(--wall-gap) * 2)) / 3);
+    --wall-row-height: min(clamp(84px, 22vw, 112px), calc((100% - (var(--wall-gap) * 4)) / 3));
   }
 
   .photo-card{
-    border-radius: 18px;
-    opacity: .88;
+    border-radius: 16px;
+    opacity: .9;
   }
 
   .photo-showcase__card{
