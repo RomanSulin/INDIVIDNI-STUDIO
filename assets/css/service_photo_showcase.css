@@ -1,3 +1,4 @@
+
 .service-photo-page{
   min-height: 100svh;
   background: #020202;
@@ -28,7 +29,7 @@
   overflow: hidden;
   display: grid;
   place-items: center;
-  padding: 56px 24px 32px;
+  padding: 0 24px;
   isolation: isolate;
 }
 
@@ -42,27 +43,30 @@
 
 .photo-showcase__backdrop{
   background:
-    radial-gradient(76rem 44rem at 50% 50%, rgba(32,32,38,0.38), rgba(0,0,0,0) 58%),
-    radial-gradient(34rem 26rem at 16% 14%, rgba(74,74,84,0.18), rgba(0,0,0,0) 62%),
-    radial-gradient(32rem 24rem at 84% 18%, rgba(54,54,58,0.16), rgba(0,0,0,0) 62%),
+    radial-gradient(82rem 46rem at 50% 50%, rgba(32,32,38,0.32), rgba(0,0,0,0) 58%),
+    radial-gradient(34rem 26rem at 14% 16%, rgba(74,74,84,0.16), rgba(0,0,0,0) 62%),
+    radial-gradient(32rem 24rem at 86% 18%, rgba(54,54,58,0.14), rgba(0,0,0,0) 62%),
     linear-gradient(180deg, #030303 0%, #080808 100%);
   z-index: 0;
 }
 
 .photo-showcase__grain{
   z-index: 1;
-  opacity: .08;
+  opacity: .06;
   background-image:
-    linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px);
   background-size: 22px 22px;
-  mask-image: radial-gradient(circle at center, black 50%, transparent 100%);
+  mask-image: radial-gradient(circle at center, black 54%, transparent 100%);
   pointer-events: none;
 }
 
 .photo-showcase__photos{
+  --wall-gap: clamp(14px, 0.95vw, 18px);
+  --wall-row-height: calc((100% - (var(--wall-gap) * 4)) / 3);
   z-index: 2;
   pointer-events: none;
+  mask-image: linear-gradient(90deg, transparent 0%, black 4%, black 96%, transparent 100%);
 }
 
 .photo-showcase__hover-layer{
@@ -70,22 +74,17 @@
   pointer-events: none;
 }
 
-
-.photo-showcase__photos{
-  mask-image: linear-gradient(180deg, transparent 0%, black 8%, black 92%, transparent 100%);
-}
-
-
 .photo-rail{
-  --rail-duration: 190s;
-  --rail-top: 14%;
+  --rail-duration: 108s;
+  --rail-index: 0;
+  --group-width: 1000px;
   position: absolute;
-  top: var(--rail-top);
+  top: calc(var(--wall-gap) + ((var(--wall-row-height) + var(--wall-gap)) * var(--rail-index)));
   left: 0;
   width: max-content;
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 0;
   will-change: transform;
   animation: photoRailLeft var(--rail-duration) linear infinite;
 }
@@ -93,34 +92,27 @@
 .photo-rail__group{
   display: flex;
   align-items: center;
-  gap: 18px;
-  padding-right: 18px;
+  gap: var(--wall-gap);
+  padding-right: var(--wall-gap);
 }
 
 .photo-card{
-  --card-shift-x: 0px;
-  --card-shift-y: 0px;
   position: relative;
+  z-index: 1;
   flex: 0 0 auto;
-  height: var(--card-height, 250px);
+  height: var(--wall-row-height);
   width: auto;
   aspect-ratio: var(--card-ratio, 3 / 4);
   overflow: hidden;
-  border-radius: 24px;
+  border-radius: clamp(18px, 1.4vw, 24px);
   border: 1px solid rgba(255,255,255,.12);
-  background:
-    radial-gradient(circle at 30% 20%, rgba(255,255,255,.15), rgba(255,255,255,.04) 38%, rgba(10,10,10,.9) 100%),
-    linear-gradient(160deg, rgba(28,28,28,.96), rgba(10,10,10,.96));
+  background: linear-gradient(160deg, rgba(20,20,20,.98), rgba(10,10,10,.98));
   box-shadow:
-    0 20px 60px rgba(0,0,0,.34),
-    0 4px 14px rgba(0,0,0,.24);
-  opacity: .92;
+    0 18px 48px rgba(0,0,0,.28),
+    0 6px 14px rgba(0,0,0,.18);
+  opacity: .96;
   pointer-events: auto;
-  transform: translate3d(0,0,0) scale(1);
-  transform-origin: center center;
-  transition:
-    opacity .24s ease,
-    filter .35s ease;
+  transition: opacity .24s ease, filter .3s ease;
 }
 
 .photo-card::before{
@@ -128,7 +120,7 @@
   position: absolute;
   inset: 0;
   z-index: 2;
-  background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0) 26%, rgba(0,0,0,.08) 100%);
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,0) 24%, rgba(0,0,0,.06) 100%);
   pointer-events: none;
 }
 
@@ -137,11 +129,8 @@
   height: 100%;
   display: block;
   object-fit: cover;
-  filter: grayscale(1) brightness(.88) contrast(1.04);
-  transition:
-    transform .42s cubic-bezier(.2,.75,.2,1),
-    filter .35s ease,
-    opacity .35s ease;
+  filter: grayscale(1) brightness(.84) contrast(1.04);
+  transition: transform .34s cubic-bezier(.2,.75,.2,1), filter .3s ease;
 }
 
 .photo-card.is-fallback img{
@@ -151,27 +140,27 @@
 .photo-card:hover img,
 .photo-card:focus-within img{
   filter: grayscale(0) brightness(1) contrast(1.02);
-  transform: scale(1.04);
+  transform: scale(1.055);
 }
 
 .photo-card.is-overlay-source{
   opacity: 0;
+  visibility: hidden;
 }
 
 .photo-card--overlay{
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 40;
   overflow: hidden;
-  border-radius: 24px;
-  border: 1px solid rgba(255,255,255,.12);
-  background:
-    radial-gradient(circle at 30% 20%, rgba(255,255,255,.15), rgba(255,255,255,.04) 38%, rgba(10,10,10,.9) 100%),
-    linear-gradient(160deg, rgba(28,28,28,.96), rgba(10,10,10,.96));
+  border-radius: clamp(18px, 1.4vw, 24px);
+  border: 1px solid rgba(255,255,255,.14);
+  background: linear-gradient(160deg, rgba(20,20,20,.98), rgba(10,10,10,.98));
   box-shadow:
-    0 34px 92px rgba(0,0,0,.56),
-    0 10px 22px rgba(0,0,0,.34);
-  will-change: transform,width,height;
+    0 34px 94px rgba(0,0,0,.56),
+    0 12px 24px rgba(0,0,0,.28);
+  will-change: transform, width, height;
 }
 
 .photo-card--overlay img{
@@ -179,7 +168,7 @@
   height: 100%;
   display: block;
   object-fit: cover;
-  filter: grayscale(0) brightness(1) contrast(1.03);
+  filter: grayscale(0) brightness(1.01) contrast(1.02);
 }
 
 .photo-card--overlay::before{
@@ -187,8 +176,13 @@
   position: absolute;
   inset: 0;
   z-index: 2;
-  background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0) 26%, rgba(0,0,0,.08) 100%);
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,0) 24%, rgba(0,0,0,.06) 100%);
   pointer-events: none;
+}
+
+@keyframes photoRailLeft{
+  from{ transform: translate3d(0, 0, 0); }
+  to{ transform: translate3d(calc(-1 * var(--group-width)), 0, 0); }
 }
 
 .photo-showcase__card{
@@ -671,6 +665,25 @@
   }
 }
 
+
+@media (max-width: 767px){
+  .service-photo-page .photo-showcase{
+    min-height: calc(100svh - 64px);
+    padding: 0 14px;
+  }
+
+  .photo-showcase__photos{
+    --wall-gap: 10px;
+    --wall-row-height: calc((100% - (var(--wall-gap) * 4)) / 3);
+    mask-image: linear-gradient(90deg, transparent 0%, black 3%, black 97%, transparent 100%);
+  }
+
+  .photo-card,
+  .photo-card--overlay{
+    border-radius: 14px;
+  }
+}
+
 @media (max-width: 767px){
   .service-photo-page .photo-showcase{
     min-height: calc(100svh - 68px);
@@ -681,15 +694,15 @@
     opacity: .07;
   }
 
-  .photo-rail,
-  .photo-rail__group{
-    gap: 10px;
+  .photo-showcase__photos{
+    --wall-gap: 8px;
+    --wall-vspace: 8px;
+    --wall-card-height: calc((100% - (var(--wall-vspace) * 2) - (var(--wall-gap) * 2)) / 3);
   }
 
   .photo-card{
-    height: min(var(--card-height, 146px), 22vh);
     border-radius: 18px;
-    opacity: .86;
+    opacity: .88;
   }
 
   .photo-showcase__card{
@@ -789,17 +802,9 @@
     transition: none;
   }
 
-  .photo-card:hover,
-  .photo-card:focus-within{
-    transform: translate3d(0,0,0) scale(1);
-    box-shadow:
-      0 20px 60px rgba(0,0,0,.34),
-      0 4px 14px rgba(0,0,0,.24);
-  }
-
   .photo-card:hover img,
   .photo-card:focus-within img{
-    filter: grayscale(1) brightness(.88) contrast(1.04);
+    filter: grayscale(1) brightness(.84) contrast(1.06);
     transform: none;
   }
 }
