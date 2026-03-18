@@ -2559,11 +2559,12 @@ body.modal-open{
 .tariff-card__name{
   margin:0;
   color: #0b0b0b;
-  font-family: var(--font-head);
-  font-weight: 900;
+  font-family: var(--font-body);
+  font-weight: 800;
   letter-spacing: .02em;
   font-size: 20px;
   line-height: 1;
+  text-transform: uppercase;
 }
 .tariff-card__price{
   font-weight: 800;
