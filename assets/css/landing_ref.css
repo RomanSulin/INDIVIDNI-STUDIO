@@ -425,13 +425,20 @@ nav.is-open .nav-drawer{ display:grid; }
 
 
 .proj-title{
-  font-family: var(--font-head);
-  font-weight: 900;
+  font-family: var(--font-body);
+  font-weight: 800;
   font-size: 14px;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
 }
-.proj-sub{ font-size: 11px; opacity: .8; margin-top: 2px; }
+
+.proj-sub{
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  opacity: .8;
+  margin-top: 2px;
+}
 
 /* "See more" button */
 .split-more{
