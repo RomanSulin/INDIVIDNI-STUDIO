@@ -133,18 +133,20 @@
     }
 
     .policy-nav a{
-      color:var(--policy-muted);
+      display:block;
+      color:var(--policy-text);
       text-decoration:none;
-      padding:10px 12px;
+      padding:12px 14px;
       border-radius:14px;
-      transition:background .2s ease, color .2s ease, transform .2s ease;
-      border:1px solid transparent;
+      transition:background .2s ease, color .2s ease, transform .2s ease, border-color .2s ease;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.03);
     }
 
     .policy-nav a:hover{
       color:var(--policy-text);
-      background:rgba(255,255,255,.05);
-      border-color:var(--policy-stroke);
+      background:rgba(255,255,255,.08);
+      border-color:rgba(255,255,255,.14);
       transform:translateX(2px);
     }
 
@@ -316,7 +318,7 @@
 </header>
 
 <div class="policy-warning">
-  <h2>Оператор персональных данных</h2>
+  <h2>Реквизиты</h2>
   <p><strong>Оператор:</strong> ИП Сулина Инна Викторовна<br>
   <strong>ОГРНИП:</strong> 322344300077855<br>
   <strong>ИНН:</strong> 342101596820<br>
@@ -446,14 +448,6 @@
   </article>
 </main>
 
-<section class="policy-links" aria-label="Связанные действия">
-  <h2>Что ещё стоит сделать</h2>
-  <ul>
-    <li>Добавить ссылку на эту страницу в футер сайта и рядом с кнопками отправки форм.</li>
-    <li>Сделать чекбокс согласия на обработку персональных данных у форм, если его ещё нет.</li>
-    <li>Проверить, чтобы формы сайта отправляли только действительно необходимые данные.</li>
-  </ul>
-</section>
 
 <footer>
   <div class="footer-top">
