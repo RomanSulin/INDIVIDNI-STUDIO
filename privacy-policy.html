@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Политика обработки персональных данных — INDIVIDNI studio</title>
+  <meta name="description" content="Политика обработки персональных данных сайта individnistudio.ru." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=30" />
+
+  <style>
+    :root{
+      --policy-bg:#060606;
+      --policy-surface:rgba(255,255,255,.05);
+      --policy-stroke:rgba(255,255,255,.1);
+      --policy-text:rgba(255,255,255,.92);
+      --policy-muted:rgba(255,255,255,.66);
+      --policy-accent:#d4ff3f;
+    }
+
+    html{scroll-behavior:smooth;}
+    body.policy-page{
+      margin:0;
+      background:radial-gradient(circle at top, rgba(212,255,63,.08), transparent 26%), var(--policy-bg);
+      color:var(--policy-text);
+      font-family:"Inter",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      min-height:100vh;
+    }
+
+    .policy-hero{
+      padding:140px 24px 36px;
+    }
+
+    .policy-hero__inner,
+    .policy-content,
+    .policy-note,
+    .policy-links{
+      width:min(1100px, calc(100% - 48px));
+      margin:0 auto;
+    }
+
+    .policy-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 16px;
+      border:1px solid var(--policy-stroke);
+      border-radius:999px;
+      background:rgba(255,255,255,.04);
+      color:var(--policy-muted);
+      font-size:12px;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+
+    .policy-title{
+      margin:18px 0 16px;
+      font-family:"Syne", sans-serif;
+      font-size:clamp(34px, 6vw, 72px);
+      line-height:.96;
+      letter-spacing:-.04em;
+      text-transform:uppercase;
+      max-width:960px;
+    }
+
+    .policy-lead{
+      max-width:760px;
+      margin:0;
+      color:var(--policy-muted);
+      font-size:clamp(16px, 2vw, 19px);
+      line-height:1.65;
+    }
+
+    .policy-meta{
+      margin-top:24px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+    }
+
+    .policy-meta__item{
+      padding:12px 16px;
+      border-radius:18px;
+      background:var(--policy-surface);
+      border:1px solid var(--policy-stroke);
+      color:var(--policy-muted);
+      font-size:14px;
+    }
+
+    .policy-content{
+      display:grid;
+      grid-template-columns:minmax(0, 280px) minmax(0, 1fr);
+      gap:28px;
+      align-items:start;
+      padding:12px 0 80px;
+    }
+
+    .policy-aside,
+    .policy-article,
+    .policy-warning,
+    .policy-links{
+      border:1px solid var(--policy-stroke);
+      background:var(--policy-surface);
+      backdrop-filter:blur(16px);
+      -webkit-backdrop-filter:blur(16px);
+      border-radius:28px;
+    }
+
+    .policy-aside{
+      position:sticky;
+      top:108px;
+      padding:22px;
+    }
+
+    .policy-aside h2,
+    .policy-article h2,
+    .policy-warning h2,
+    .policy-links h2{
+      margin:0 0 16px;
+      font-family:"Syne", sans-serif;
+      font-size:22px;
+      line-height:1.05;
+      letter-spacing:-.03em;
+      text-transform:uppercase;
+    }
+
+    .policy-nav{
+      display:grid;
+      gap:10px;
+    }
+
+    .policy-nav a{
+      color:var(--policy-muted);
+      text-decoration:none;
+      padding:10px 12px;
+      border-radius:14px;
+      transition:background .2s ease, color .2s ease, transform .2s ease;
+      border:1px solid transparent;
+    }
+
+    .policy-nav a:hover{
+      color:var(--policy-text);
+      background:rgba(255,255,255,.05);
+      border-color:var(--policy-stroke);
+      transform:translateX(2px);
+    }
+
+    .policy-article{
+      padding:30px;
+    }
+
+    .policy-section + .policy-section{
+      margin-top:36px;
+      padding-top:36px;
+      border-top:1px solid rgba(255,255,255,.08);
+    }
+
+    .policy-section h3{
+      margin:0 0 14px;
+      font-family:"Syne", sans-serif;
+      font-size:28px;
+      line-height:1.05;
+      letter-spacing:-.03em;
+      text-transform:uppercase;
+    }
+
+    .policy-section p,
+    .policy-section li{
+      color:var(--policy-muted);
+      font-size:16px;
+      line-height:1.75;
+    }
+
+    .policy-section p strong,
+    .policy-section li strong{
+      color:var(--policy-text);
+      font-weight:700;
+    }
+
+    .policy-section ul,
+    .policy-section ol{
+      margin:16px 0 0;
+      padding-left:22px;
+    }
+
+    .policy-section li + li{margin-top:10px;}
+
+    .policy-grid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:16px;
+      margin-top:16px;
+    }
+
+    .policy-card{
+      padding:18px 18px 20px;
+      border-radius:20px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.03);
+    }
+
+    .policy-card h4{
+      margin:0 0 10px;
+      font-size:16px;
+      line-height:1.4;
+      color:var(--policy-text);
+    }
+
+    .policy-card p{
+      margin:0;
+      font-size:15px;
+    }
+
+    .policy-warning,
+    .policy-links{
+      width:min(1100px, calc(100% - 48px));
+      margin:0 auto 28px;
+      padding:24px;
+    }
+
+    .policy-warning p,
+    .policy-links p,
+    .policy-links li,
+    .policy-links a{
+      color:var(--policy-muted);
+      line-height:1.7;
+    }
+
+    .policy-warning strong,
+    .policy-links strong,
+    .policy-links a:hover{color:var(--policy-text);}
+
+    .policy-links ul{
+      margin:0;
+      padding-left:20px;
+    }
+
+    .policy-links a{
+      text-decoration:none;
+      border-bottom:1px solid rgba(255,255,255,.2);
+    }
+
+    @media (max-width: 980px){
+      .policy-content{
+        grid-template-columns:1fr;
+      }
+      .policy-aside{
+        position:static;
+      }
+      .policy-grid{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width: 640px){
+      .policy-hero{padding:120px 16px 24px;}
+      .policy-hero__inner,
+      .policy-content,
+      .policy-warning,
+      .policy-links{width:min(100% - 32px, 1100px);}
+      .policy-article,
+      .policy-aside,
+      .policy-warning,
+      .policy-links{border-radius:22px;}
+      .policy-article{padding:22px;}
+      .policy-section h3{font-size:24px;}
+    }
+  </style>
+</head>
+<body class="policy-page">
+
+<nav>
+  <div class="nav-left">
+    <a class="nav-brand" href="./#top">INDIVIDNI</a>
+    <span class="nav-by">studio</span>
+    <div class="nav-links" aria-label="Меню">
+      <a href="./#projects">Проекты</a>
+      <a href="./services/">Услуги</a>
+      <a href="./#process">Этапы</a>
+      <a href="./brief.html">Бриф</a>
+      <a href="./#contact">Контакты</a>
+    </div>
+  </div>
+  <div class="nav-right">
+    <span class="nav-tag">Privacy policy</span>
+    <a class="btn-dl" href="mailto:pictures@individnistudio.ru">Написать</a>
+    <button class="nav-toggle" type="button" aria-label="Открыть меню" data-nav-toggle>
+      <span></span><span></span>
+    </button>
+  </div>
+
+  <div class="nav-drawer" data-nav-drawer>
+    <a href="./#projects">Проекты</a>
+    <a href="./services/">Услуги</a>
+    <a href="./#process">Этапы</a>
+    <a href="./brief.html">Бриф</a>
+    <a href="./#contact">Контакты</a>
+  </div>
+</nav>
+
+<header class="policy-hero" id="top">
+  <div class="policy-hero__inner">
+    <span class="policy-badge">INDIVIDNI studio · персональные данные</span>
+    <h1 class="policy-title">Политика обработки персональных данных</h1>
+    <p class="policy-lead">Настоящая Политика определяет порядок обработки персональных данных пользователей сайта <strong>individnistudio.ru</strong>, а также меры по обеспечению безопасности таких данных. Используя сайт, отправляя сообщение через формы, электронную почту или иными способами передавая свои данные, пользователь подтверждает, что ознакомился с настоящей Политикой и согласен с её условиями.</p>
+    <div class="policy-meta">
+      <div class="policy-meta__item">Сайт: individnistudio.ru</div>
+      <div class="policy-meta__item">Email: pictures@individnistudio.ru</div>
+      <div class="policy-meta__item">Телефон: +7 (960) 880-00-60</div>
+      <div class="policy-meta__item">Редакция от 23.03.2026</div>
+    </div>
+  </div>
+</header>
+
+<div class="policy-warning">
+  <h2>Оператор персональных данных</h2>
+  <p><strong>Оператор:</strong> ИП Сулина Инна Викторовна<br>
+  <strong>ОГРНИП:</strong> 322344300077855<br>
+  <strong>ИНН:</strong> 342101596820<br>
+  <strong>Сайт:</strong> individnistudio.ru<br>
+  <strong>Email:</strong> pictures@individnistudio.ru<br>
+  <strong>Телефон:</strong> +7 (960) 880-00-60</p>
+</div>
+
+<main class="policy-content">
+  <aside class="policy-aside" aria-label="Навигация по странице">
+    <h2>Разделы</h2>
+    <nav class="policy-nav">
+      <a href="#general">1. Общие положения</a>
+      <a href="#data">2. Какие данные обрабатываются</a>
+      <a href="#purposes">3. Цели обработки</a>
+      <a href="#grounds">4. Правовые основания</a>
+      <a href="#actions">5. Порядок и действия с данными</a>
+      <a href="#rights">6. Права пользователя</a>
+      <a href="#security">7. Защита и хранение</a>
+      <a href="#contacts">8. Контакты и изменения</a>
+    </nav>
+  </aside>
+
+  <article class="policy-article">
+    <section class="policy-section" id="general">
+      <h3>1. Общие положения</h3>
+      <p>1.1. Настоящая Политика составлена в соответствии с требованиями Федерального закона от 27.07.2006 № 152-ФЗ «О персональных данных» и применяется ко всей информации, которую <strong>ИП Сулина Инна Викторовна</strong> (далее — Оператор) может получить о пользователях сайта <strong>individnistudio.ru</strong>.</p>
+      <p>1.2. Оператор считает соблюдение прав и свобод человека и гражданина при обработке персональных данных своим обязательным условием работы, включая защиту права на неприкосновенность частной жизни и сохранение конфиденциальности персональных данных.</p>
+      <p>1.3. Оператор публикует настоящую Политику в открытом доступе и обеспечивает возможность ознакомления с ней до отправки пользователем своих данных через сайт.</p>
+      <p>1.4. Пользователь, заполняя формы на сайте, направляя письмо на электронную почту или иным образом передавая сведения, подтверждает, что предоставленные им данные относятся к нему лично либо передаются им на законном основании.</p>
+    </section>
+
+    <section class="policy-section" id="data">
+      <h3>2. Какие данные обрабатываются</h3>
+      <p>2.1. Оператор может обрабатывать следующие персональные данные пользователя:</p>
+      <ul>
+        <li>фамилия, имя, отчество — если пользователь указывает эти сведения самостоятельно;</li>
+        <li>номер телефона;</li>
+        <li>адрес электронной почты;</li>
+        <li>название компании, должность, ссылки на проекты и иные сведения, которые пользователь добровольно указывает в заявке, брифе или переписке;</li>
+        <li>содержание сообщения, запроса или брифа, относящееся к обсуждению проекта;</li>
+        <li>технические данные, автоматически передаваемые устройством пользователя при посещении сайта, включая IP-адрес, сведения о браузере, дату и время доступа, данные файлов cookie, необходимые для корректной работы сайта.</li>
+      </ul>
+      <p>2.2. Оператор не обрабатывает специальные категории персональных данных, касающиеся расовой или национальной принадлежности, политических взглядов, религиозных убеждений, состояния здоровья или интимной жизни пользователя, если такие сведения не были намеренно и по собственной инициативе предоставлены самим пользователем.</p>
+      <p>2.3. Оператор не проверяет достоверность предоставляемых пользователем данных, однако исходит из того, что пользователь предоставляет актуальные и достоверные сведения.</p>
+    </section>
+
+    <section class="policy-section" id="purposes">
+      <h3>3. Цели обработки персональных данных</h3>
+      <div class="policy-grid">
+        <div class="policy-card">
+          <h4>Обработка обращений и заявок</h4>
+          <p>Связь с пользователем, ответ на запрос, обсуждение проекта, уточнение деталей съёмки, производства, постпродакшна и сопутствующих услуг.</p>
+        </div>
+        <div class="policy-card">
+          <h4>Подготовка и исполнение договорённостей</h4>
+          <p>Подготовка коммерческих предложений, согласование условий сотрудничества, заключение, исполнение и сопровождение гражданско-правовых договоров.</p>
+        </div>
+        <div class="policy-card">
+          <h4>Ведение деловой переписки</h4>
+          <p>Направление писем, документов, уточнений по проекту, организационных сообщений и иной информации, напрямую связанной с запросом пользователя.</p>
+        </div>
+        <div class="policy-card">
+          <h4>Работа сайта</h4>
+          <p>Обеспечение стабильной работы сайта, повышение его безопасности, анализ технических ошибок и защита от недобросовестных действий.</p>
+        </div>
+      </div>
+      <p>3.1. Оператор не использует персональные данные для целей, несовместимых с целями их сбора.</p>
+      <p>3.2. Маркетинговые и информационные рассылки могут направляться только при наличии отдельного волеизъявления пользователя либо в рамках уже начатой деловой коммуникации по его запросу.</p>
+    </section>
+
+    <section class="policy-section" id="grounds">
+      <h3>4. Правовые основания обработки</h3>
+      <p>4.1. Правовыми основаниями обработки персональных данных являются:</p>
+      <ul>
+        <li>согласие пользователя на обработку персональных данных;</li>
+        <li>необходимость обработки для заключения и исполнения договора, стороной которого является пользователь либо в пользу которого такой договор заключается;</li>
+        <li>исполнение обязанностей, предусмотренных законодательством Российской Федерации;</li>
+        <li>законные интересы Оператора, если при этом не нарушаются права и свободы пользователя.</li>
+      </ul>
+      <p>4.2. Согласие пользователя считается предоставленным в момент отправки любой формы на сайте, направления письма на адрес <strong>pictures@individnistudio.ru</strong> или передачи данных иным способом по инициативе пользователя.</p>
+    </section>
+
+    <section class="policy-section" id="actions">
+      <h3>5. Порядок и действия с персональными данными</h3>
+      <p>5.1. Оператор вправе осуществлять с персональными данными следующие действия: сбор, запись, систематизацию, накопление, хранение, уточнение (обновление, изменение), использование, извлечение, обезличивание, блокирование, удаление и уничтожение.</p>
+      <p>5.2. Обработка осуществляется как с использованием средств автоматизации, так и без их использования.</p>
+      <p>5.3. Персональные данные не передаются третьим лицам, за исключением следующих случаев:</p>
+      <ul>
+        <li>пользователь дал явное согласие на такую передачу;</li>
+        <li>передача необходима для исполнения договора или оказания услуги пользователю;</li>
+        <li>передача требуется в силу закона, запроса суда, правоохранительных органов или иных уполномоченных органов.</li>
+      </ul>
+      <p>5.4. В случае использования сторонних сервисов для размещения сайта, обработки писем, хостинга, аналитики или коммуникации Оператор принимает разумные меры для выбора добросовестных контрагентов и обеспечивает конфиденциальность передаваемых данных в объёме, необходимом для исполнения соответствующей функции.</p>
+      <p>5.5. Персональные данные обрабатываются до достижения цели обработки, отзыва согласия пользователем, либо в течение срока, необходимого для соблюдения обязательств и требований законодательства.</p>
+    </section>
+
+    <section class="policy-section" id="rights">
+      <h3>6. Права пользователя</h3>
+      <p>6.1. Пользователь имеет право:</p>
+      <ul>
+        <li>получить информацию о факте обработки его персональных данных;</li>
+        <li>уточнить, обновить или дополнить свои персональные данные;</li>
+        <li>отозвать согласие на обработку персональных данных;</li>
+        <li>требовать блокирования или уничтожения персональных данных, если они являются неполными, устаревшими, неточными, получены незаконно или не нужны для заявленной цели обработки;</li>
+        <li>обжаловать действия или бездействие Оператора в уполномоченный орган по защите прав субъектов персональных данных или в судебном порядке.</li>
+      </ul>
+      <p>6.2. Для реализации своих прав пользователь может направить обращение на адрес электронной почты <strong>pictures@individnistudio.ru</strong> с темой письма «Персональные данные» или «Отзыв согласия на обработку персональных данных».</p>
+      <p>6.3. Оператор вправе запросить уточняющую информацию, позволяющую идентифицировать заявителя и корректно исполнить его обращение.</p>
+    </section>
+
+    <section class="policy-section" id="security">
+      <h3>7. Защита и хранение персональных данных</h3>
+      <p>7.1. Оператор принимает необходимые правовые, организационные и технические меры для защиты персональных данных от неправомерного или случайного доступа, уничтожения, изменения, блокирования, копирования, распространения и иных неправомерных действий.</p>
+      <p>7.2. Доступ к персональным данным предоставляется только тем лицам, которым он необходим для обработки обращений пользователя и выполнения обязательств Оператора.</p>
+      <p>7.3. Персональные данные хранятся не дольше, чем этого требуют цели обработки, если иной срок не предусмотрен законом или заключённым с пользователем договором.</p>
+      <p>7.4. По достижении целей обработки либо при поступлении законного требования о прекращении обработки персональные данные подлежат удалению или обезличиванию, если их дальнейшее хранение не требуется по закону.</p>
+    </section>
+
+    <section class="policy-section" id="contacts">
+      <h3>8. Контакты и изменения Политики</h3>
+      <p>8.1. По всем вопросам, связанным с обработкой персональных данных, пользователь может обратиться к Оператору по адресу электронной почты <strong>pictures@individnistudio.ru</strong> или по телефону <strong>+7 (960) 880-00-60</strong>.</p>
+      <p>8.2. Оператор вправе вносить изменения в настоящую Политику. Новая редакция вступает в силу с момента её размещения на сайте, если иное не предусмотрено новой редакцией.</p>
+      <p>8.3. Реквизиты Оператора: ИП Сулина Инна Викторовна, ОГРНИП 322344300077855, ИНН 342101596820.</p>
+      <p>8.4. Актуальная версия Политики подлежит размещению в сети Интернет по адресу страницы, на которой опубликован настоящий документ.</p>
+    </section>
+  </article>
+</main>
+
+<section class="policy-links" aria-label="Связанные действия">
+  <h2>Что ещё стоит сделать</h2>
+  <ul>
+    <li>Добавить ссылку на эту страницу в футер сайта и рядом с кнопками отправки форм.</li>
+    <li>Сделать чекбокс согласия на обработку персональных данных у форм, если его ещё нет.</li>
+    <li>Проверить, чтобы формы сайта отправляли только действительно необходимые данные.</li>
+  </ul>
+</section>
+
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="brand-logo">INDIVIDNI</div>
+      <p>© <span id="year"></span> All Rights Reserved</p>
+    </div>
+
+    <div class="footer-col">
+      <h4>Menu</h4>
+      <a href="./#projects">Projects</a>
+      <a href="./brief.html">Brief</a>
+      <a href="./services/">Services</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>Info</h4>
+      <a href="mailto:pictures@individnistudio.ru">Email</a>
+      <a href="https://www.instagram.com/" target="_blank" rel="noreferrer">Instagram</a>
+      <a href="https://www.behance.net/" target="_blank" rel="noreferrer">Behance</a>
+    </div>
+  </div>
+
+  <div class="footer-bottom">INDIVIDNI Studio</div>
+</footer>
+
+<script>
+  (() => {
+    const toggle = document.querySelector('[data-nav-toggle]');
+    const drawer = document.querySelector('[data-nav-drawer]');
+    if (toggle && drawer) {
+      toggle.addEventListener('click', () => {
+        const open = drawer.classList.toggle('is-open');
+        toggle.setAttribute('aria-expanded', String(open));
+      });
+      drawer.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => drawer.classList.remove('is-open'));
+      });
+    }
+    const year = document.getElementById('year');
+    if (year) year.textContent = String(new Date().getFullYear());
+  })();
+</script>
+
+</body>
+</html>
