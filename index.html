@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  <meta name="mailru-domain" content="Q866GAD9fTz2uBLu" />
   <meta charset="UTF-8" /> 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>INDIVIDNI — studio</title>
@@ -15,14 +16,14 @@
   <link rel="preload" as="video" href="./assets/ui/Showreel_3.mp4" type="video/mp4" />
   
   <!-- Landing styles (ref-based) -->
-  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=18" />
+  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=30" />
 </head>
 <body>
 
 <!-- TOP BANNER -->
 <div class="pro-banner" id="proBanner">
   <span>Открыт набор на проекты • 2026 • Moscow</span>
-  <a class="pill" href="./brief.html">Заполнить бриф</a>
+  <a class="pill" href="#brief-request">Заполнить бриф</a>
   <button class="close-btn" type="button" data-close-banner>×</button>
 </div>
 
@@ -35,7 +36,7 @@
       <a href="#projects">Проекты</a>
       <a href="#services">Услуги</a>
       <a href="#process">Этапы</a>
-      <a href="./brief.html">Бриф</a>
+      <a href="#brief-request">Бриф</a>
       <a href="#contact">Контакты</a>
     </div>
   </div>
@@ -52,7 +53,7 @@
     <a href="#projects">Проекты</a>
     <a href="#services">Услуги</a>
     <a href="#process">Этапы</a>
-    <a href="./brief.html">Бриф</a>
+    <a href="#brief-request">Бриф</a>
     <a href="#contact">Контакты</a>
   </div>
 </nav>
@@ -60,7 +61,7 @@
 <!-- HERO -->
 <section class="hero" id="top">
     <!-- HERO background video (loop, muted) -->
-  <video class="hero-bg-video" id="heroBgVideo" autoplay muted loop playsinline preload="auto" webkit-playsinline aria-hidden="true">
+  <video class="hero-bg-video" id="heroBgVideo" autoplay muted loop playsinline preload="auto" webkit-playsinline disablepictureinpicture playsinline="" webkit-playsinline="" controlslist="nodownload noplaybackrate noremoteplayback nofullscreen" aria-hidden="true">
     <source src="./assets/ui/Showreel_3.mp4" type="video/mp4"/>
     <source src="./assets/ui/showreel_3.mp4" type="video/mp4"/>
   </video>
@@ -98,36 +99,36 @@
       <div class="split-right-wrap" aria-label="Сетка проектов">
         <div class="split-right-grid">
 
-          <!-- Using old project links & photos as placeholders -->
+          <!-- Project cards -->
           <a class="proj-item" href="./project_gac/" data-color="#005BFF">
-            <div class="proj-thumb"><img src="./assets/project/1/2.jpg" alt="GAC case" onerror="this.onerror=null;this.src='./assets/img/ph_16x9.png';" /></div>
-            <div class="proj-info">
-              <div class="proj-title">GAC case</div>
-              <div class="proj-sub">case • 2025</div>
-            </div>
-          </a>
-
-          <a class="proj-item" href="./project_tenderness/" data-color="#FF00C8">
-            <div class="proj-thumb"><img src="./assets/project/2/1.jpg" alt="Tenderness music" onerror="this.onerror=null;this.src='./assets/img/ph_16x9.png';" /></div>
-            <div class="proj-info">
-              <div class="proj-title">TENDERNESS</div>
-              <div class="proj-sub">music • 2025</div>
-            </div>
-          </a>
-
-          <a class="proj-item" href="./project_gac/" data-color="#FF003D">
-            <div class="proj-thumb"><img src="./assets/project/1/3.jpg" alt="GAC frame" onerror="this.onerror=null;this.src='./assets/img/ph_16x9.png';" /></div>
+            <div class="proj-thumb"><img src="./assets/project/1/2.jpg" alt="GAC GH4" onerror="this.onerror=null;this.src='./assets/img/ph_16x9.png';" /></div>
             <div class="proj-info">
               <div class="proj-title">GAC GH4</div>
               <div class="proj-sub">studio • 2025</div>
             </div>
           </a>
 
-          <a class="proj-item" href="./project_tenderness/" data-color="#00FF4F">
-            <div class="proj-thumb"><img src="./assets/project/2/2.jpg" alt="Tenderness frame" onerror="this.onerror=null;this.src='./assets/img/ph_16x9.png';" /></div>
+          <a class="proj-item" href="./project_tenderness/" data-color="#FF00C8">
+            <div class="proj-thumb"><img src="./assets/project/2/1.jpg" alt="Клип Нежность" onerror="this.onerror=null;this.src='./assets/img/ph_16x9.png';" /></div>
             <div class="proj-info">
-              <div class="proj-title">Tenderness</div>
-              <div class="proj-sub">clip • 2025</div>
+              <div class="proj-title">КЛИП НЕЖНОСТЬ</div>
+              <div class="proj-sub">music video • 2025</div>
+            </div>
+          </a>
+
+          <a class="proj-item" href="./project_vk_stadium/" data-color="#FF003D">
+            <div class="proj-thumb"><img src="./assets/project/3/1.jpg" alt="Концерт в VK Stadium" onerror="this.onerror=null;this.src='./assets/img/ph_16x9.png';" /></div>
+            <div class="proj-info">
+              <div class="proj-title">ЗОЖ в VK Stadium</div>
+              <div class="proj-sub">concert • 2025</div>
+            </div>
+          </a>
+
+          <a class="proj-item" href="./project_foton_tunland/" data-color="#00FF4F">
+            <div class="proj-thumb"><img src="./assets/project/5/1.jpg" alt="Автовебинар Foton Tunland" onerror="this.onerror=null;this.src='./assets/project/3/1.jpeg';" /></div>
+            <div class="proj-info">
+              <div class="proj-title">FOTON TUNLAND</div>
+              <div class="proj-sub">auto webinar • 2026</div>
             </div>
           </a>
 
@@ -170,7 +171,7 @@
         </video>
         <div class="svc-overlay">
           <div class="svc-name">Видео для бизнеса</div>
-          <div class="svc-text">Рекламные, имиджевые и презентационные видео для брендов, компаний и продуктов.</div>
+          <div class="svc-text">Рекламные, имиджевые и презентационные ролики для брендов и компаний.</div>
         </div>
       </div>
     </a>
@@ -182,7 +183,7 @@
         </video>
         <div class="svc-overlay">
           <div class="svc-name">Подкасты и интервью</div>
-          <div class="svc-text">Студийная и выездная съёмка, чистый звук, 2–3 камеры, монтаж и оформление.</div>
+          <div class="svc-text">Студийная и выездная съёмка интервью, подкастов и экспертного контента.</div>
         </div>
       </div>
     </a>
@@ -194,7 +195,7 @@
         </video>
         <div class="svc-overlay">
           <div class="svc-name">Съёмка мероприятий</div>
-          <div class="svc-text">Эвенты, конференции, aftermovie и highlight‑ролики с быстрым монтажом.</div>
+          <div class="svc-text">Эвенты, концерты, форумы и aftermovie с живой репортажной подачей.</div>
         </div>
       </div>
     </a>
@@ -206,7 +207,7 @@
         </video>
         <div class="svc-overlay">
           <div class="svc-name">Reels / Shorts</div>
-          <div class="svc-text">Вертикальные ролики под охваты: съёмка, монтаж, титры и серийный контент.</div>
+          <div class="svc-text">Короткие вертикальные видео для соцсетей, продвижения и регулярного контента.</div>
         </div>
       </div>
     </a>
@@ -218,7 +219,7 @@
         </video>
         <div class="svc-overlay">
           <div class="svc-name">Фото любой сложности</div>
-          <div class="svc-text">Предметка, портреты, репортаж, кампейны и контент для брендов.</div>
+          <div class="svc-text">Фото‑съёмка, студийные кадры и контент для кампаний.</div>
         </div>
       </div>
     </a>
@@ -318,32 +319,6 @@
 
 
 
-
-<!-- CONTACT / CTA (lead form) -->
-<section class="cta-contact" id="contact" aria-label="Обсудить проект">
-  <div class="cta-contact-inner">
-    <div class="cta-copy">
-      <h2 class="cta-title">ОБСУДИТЬ ПРОЕКТ?</h2>
-      <p class="cta-desc">Оставьте заявку — наш продюсер свяжется с вами, уточнит детали и предложит следующий шаг.</p>
-    </div>
-
-    <form class="cta-form" action="#" method="post">
-      <label class="field">
-        <span class="field-label">Имя</span>
-        <input type="text" name="name" placeholder="Ваше имя" autocomplete="name" />
-      </label>
-      <label class="field">
-        <span class="field-label">Телефон</span>
-        <input type="tel" name="phone" placeholder="+7 (___) ___‑__‑__" autocomplete="tel" />
-      </label>
-    </form>
-
-    <div class="cta-actions">
-      <button class="cta-btn" type="button">Отправить</button>
-      <p class="cta-note">Нажимая кнопку «Отправить», Вы соглашаетесь с Политикой конфиденциальности.</p>
-    </div>
-  </div>
-</section>
 
 <!-- PROCESS — airy cards -->
 <section class="process-cards" id="process" aria-label="Этапы создания видеоролика">
@@ -448,6 +423,201 @@
   </div>
 </section>
 
+<!-- TARIFFS -->
+<section class="tariffs" id="tariffs" aria-label="Тарифы">
+  <div class="tariffs__inner">
+    <h2 class="tariffs__title">ТАРИФЫ</h2>
+    <p class="tariffs__lead">
+      Все проекты — индивидуальны. Наша команда создает уникальные видео для каждого заказчика. Точная цена рассчитывается на основании брифа и технического задания. Стоимость зависит от формата видео, его длительности, съемочной локации, необходимости в разработке сценария, выезде в другой город, кастинге моделей и т. д.
+    </p>
+
+    <div class="tariffs__grid" role="list">
+      <article class="tariff-card tariff-card--lite" role="listitem">
+        <div class="tariff-card__head">
+          <h3 class="tariff-card__name">Lite</h3>
+          <div class="tariff-card__price">15–50&nbsp;тыс. ₽</div>
+        </div>
+        <p class="tariff-card__desc">
+          Небольшая съёмка или монтаж: Reels, короткие ролики, быстрое обновление контента.
+        </p>
+        <ul class="tariff-card__bullets">
+          <li>Короткий формат / один съёмочный день</li>
+          <li>Монтаж, цвет, звук, субтитры</li>
+          <li>Сроки — быстро</li>
+        </ul>
+        <a class="tariff-card__btn" href="#brief-request" data-brief-package="lite">Заполнить бриф</a>
+      </article>
+
+      <article class="tariff-card tariff-card--std" role="listitem">
+        <div class="tariff-card__head">
+          <h3 class="tariff-card__name">Standart</h3>
+          <div class="tariff-card__price">50–500&nbsp;тыс. ₽</div>
+        </div>
+        <p class="tariff-card__desc">
+          Съёмка + монтаж: подкасты, интервью, репортажи, небольшие трансляции.
+        </p>
+        <ul class="tariff-card__bullets">
+          <li>Съёмочная группа + свет</li>
+          <li>Монтаж, графика, упаковка</li>
+          <li>1–2 формата под площадки</li>
+        </ul>
+        <a class="tariff-card__btn" href="#brief-request" data-brief-package="standart">Заполнить бриф</a>
+      </article>
+
+      <article class="tariff-card tariff-card--brand" role="listitem">
+        <div class="tariff-card__head">
+          <h3 class="tariff-card__name">INDIVIDNI</h3>
+          <div class="tariff-card__price">500&nbsp;тыс. ₽+</div>
+        </div>
+        <p class="tariff-card__desc">
+          Большие проекты: реклама, документальные фильмы, шоу, крупные трансляции.
+        </p>
+        <ul class="tariff-card__bullets">
+          <li>Креатив / сценарий / режиссура</li>
+          <li>Кастинг, локации, продакшн</li>
+          <li>Пост‑продакшн “под ключ”</li>
+        </ul>
+        <a class="tariff-card__btn" href="#brief-request" data-brief-package="individni">Заполнить бриф</a>
+      </article>
+
+      <article class="tariff-card tariff-card--tender" role="listitem">
+        <div class="tariff-card__head">
+          <h3 class="tariff-card__name">Тендер</h3>
+          <div class="tariff-card__price">Запрос КП</div>
+        </div>
+        <p class="tariff-card__desc">
+          Пришлите требования и сроки — подготовим КП, смету и план производства.
+        </p>
+        <ul class="tariff-card__bullets">
+          <li>Документы / NDA (при необходимости)</li>
+          <li>Смета и календарный план</li>
+          <li>Команда под задачу</li>
+        </ul>
+        <a class="tariff-card__btn tariff-card__btn--ghost" href="#brief-request" data-brief-package="tender">Позвать на тендер</a>
+      </article>
+    </div>
+  </div>
+
+</section>
+
+<!-- BRIEF SPLIT -->
+<section class="brief-split" id="brief-request" aria-label="Бриф на создание видеоролика">
+  <form class="brief-split__inner" id="briefRequestForm" novalidate>
+    <aside class="brief-lead" data-brief-lead>
+      <div class="brief-lead__eyebrow">Заявка</div>
+      <h2 class="brief-lead__title">ОСТАВИТЬ<br>ЗАЯВКУ</h2>
+      <p class="brief-lead__text">Оставьте базовые контакты, а справа заполните короткий бриф. Так мы быстрее оценим стоимость видео и предложим понятный следующий шаг.</p>
+
+      <div class="brief-lead__fields">
+        <label class="brief-field">
+          <span class="brief-field__label">Имя *</span>
+          <input class="brief-input" type="text" name="client_name" placeholder="Как к вам обращаться" autocomplete="name" required />
+        </label>
+
+        <label class="brief-field">
+          <span class="brief-field__label">Телефон *</span>
+          <input class="brief-input" type="tel" name="client_phone" placeholder="+7 (___) ___-__-__" autocomplete="tel" required />
+        </label>
+
+        <fieldset class="brief-kind">
+          <legend class="brief-field__label">Кто вы? *</legend>
+          <label class="brief-kind__option">
+            <input type="radio" name="client_type" value="Физическое лицо" required />
+            <span>Физ лицо</span>
+          </label>
+          <label class="brief-kind__option">
+            <input type="radio" name="client_type" value="Компания" />
+            <span>Компания</span>
+          </label>
+        </fieldset>
+
+        <div class="brief-package" id="briefPackageBadge" hidden>
+          <span class="brief-package__label">Выбранный тариф</span>
+          <strong class="brief-package__value" id="briefPackageValue">—</strong>
+        </div>
+      </div>
+    </aside>
+
+    <div class="brief-wizard" data-brief-wizard>
+      <div class="brief-wizard__intro" data-brief-intro>
+        <div class="brief-wizard__eyebrow">Бриф на создание видеоролика</div>
+        <h3 class="brief-wizard__title">Мы подготовили для вас несколько вопросов</h3>
+        <p class="brief-wizard__text">Они помогут точнее оценить стоимость видео и ускорят дальнейшую реализацию проекта. Заполнение займёт несколько минут.</p>
+        <button class="brief-wizard__start" type="button" data-brief-start>Далее</button>
+      </div>
+
+      <div class="brief-wizard__work" data-brief-work hidden>
+        <div class="brief-progress">
+          <div class="brief-progress__meta">
+            <span class="brief-progress__caption" data-brief-step-label>Вопрос 1 из 9</span>
+            <span class="brief-progress__percent" data-brief-step-percent>11%</span>
+          </div>
+          <div class="brief-progress__bar">
+            <span class="brief-progress__fill" data-brief-progress-fill></span>
+          </div>
+        </div>
+
+        <div class="brief-card">
+          <div class="brief-card__question" data-brief-question></div>
+          <div class="brief-card__hint" data-brief-hint></div>
+          <div class="brief-card__body" data-brief-body></div>
+        </div>
+
+        <div class="brief-actions">
+          <button class="brief-actions__btn brief-actions__btn--ghost" type="button" data-brief-prev disabled>Назад</button>
+          <button class="brief-actions__btn" type="button" data-brief-next>Далее</button>
+          <button class="brief-actions__btn brief-actions__btn--submit" type="submit" data-brief-submit hidden>Отправить заявку</button>
+          <p class="brief-privacy" data-brief-privacy hidden>Нажимая кнопку «Отправить», Вы соглашаетесь с <a href="./privacy-policy/">Политикой конфиденциальности</a>.</p>
+        </div>
+
+        <div class="brief-mobile" data-brief-mobile-contact hidden>
+          <div class="brief-mobile__eyebrow">Заявка</div>
+          <h3 class="brief-mobile__title">ОСТАВИТЬ<br>ЗАЯВКУ</h3>
+          <p class="brief-mobile__text">Оставьте контакты после заполнения брифа, и мы быстро свяжемся с вами по проекту.</p>
+
+          <div class="brief-mobile__fields">
+            <label class="brief-field">
+              <span class="brief-field__label">Имя *</span>
+              <input class="brief-input" type="text" name="client_name_mobile" placeholder="Как к вам обращаться" autocomplete="name" />
+            </label>
+
+            <label class="brief-field">
+              <span class="brief-field__label">Телефон *</span>
+              <input class="brief-input" type="tel" name="client_phone_mobile" placeholder="+7 (___) ___-__-__" autocomplete="tel" />
+            </label>
+
+            <fieldset class="brief-kind brief-kind--mobile">
+              <legend class="brief-field__label">Кто вы? *</legend>
+              <label class="brief-kind__option">
+                <input type="radio" name="client_type_mobile" value="Физическое лицо" />
+                <span>Физ лицо</span>
+              </label>
+              <label class="brief-kind__option">
+                <input type="radio" name="client_type_mobile" value="Компания" />
+                <span>Компания</span>
+              </label>
+            </fieldset>
+
+            <div class="brief-package" id="briefPackageBadgeMobile" hidden>
+              <span class="brief-package__label">Выбранный тариф</span>
+              <strong class="brief-package__value" id="briefPackageValueMobile">—</strong>
+            </div>
+
+            <button class="brief-actions__btn brief-actions__btn--submit brief-mobile__submit" type="submit" data-brief-submit-mobile hidden>Отправить заявку</button>
+            <p class="brief-privacy brief-privacy--mobile" data-brief-privacy-mobile hidden>Нажимая кнопку «Отправить», Вы соглашаетесь с <a href="./privacy-policy/">Политикой конфиденциальности</a>.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="brief-success" data-brief-success hidden>
+        <div class="brief-success__icon">✓</div>
+        <h3 class="brief-success__title">Спасибо за обращение</h3>
+        <p class="brief-success__text">Скоро с вами свяжется наш продюсер, уточнит детали и предложит следующий шаг по проекту.</p>
+        <button class="brief-success__reset" type="button" data-brief-reset>Заполнить ещё раз</button>
+      </div>
+    </div>
+  </form>
+</section>
 
 <!-- FOOTER -->
 <footer>
@@ -460,7 +630,7 @@
     <div class="footer-col">
       <h4>Menu</h4>
       <a href="#projects">Projects</a>
-      <a href="#download">Brief</a>
+      <a href="#brief-request">Бриф</a>
       <a href="#top">Top</a>
     </div>
 
@@ -622,7 +792,7 @@
 <script src="./assets/js/landing_ref.js?v=15"></script>
 
 <script>
-/* HERO bg: cache first frame as CSS background to avoid blank */
+/* HERO bg: cache first frame as CSS background + force muted inline autoplay on mobile */
 (() => {
   const hero = document.querySelector(".hero");
   const v = document.getElementById("heroBgVideo");
@@ -635,13 +805,30 @@
 
   if (cached) hero.style.backgroundImage = `url(${cached})`;
 
+  const lockMobileAutoplay = () => {
+    v.muted = true;
+    v.defaultMuted = true;
+    v.playsInline = true;
+    v.setAttribute('muted', '');
+    v.setAttribute('playsinline', '');
+    v.setAttribute('webkit-playsinline', '');
+    v.removeAttribute('controls');
+  };
+
+  const tryPlay = () => {
+    lockMobileAutoplay();
+    const playPromise = v.play && v.play();
+    if (playPromise && typeof playPromise.catch === 'function') {
+      playPromise.catch(() => {});
+    }
+  };
+
   const capture = () => {
     try {
       const vw = v.videoWidth || 0;
       const vh = v.videoHeight || 0;
       if (!vw || !vh) return;
 
-      // downscale hard to keep work + localStorage small
       const targetW = Math.min(520, vw);
       const scale = targetW / vw;
       const targetH = Math.round(vh * scale);
@@ -655,18 +842,38 @@
       const dataUrl = c.toDataURL("image/jpeg", 0.62);
       hero.style.backgroundImage = `url(${dataUrl})`;
 
-      // avoid huge localStorage entries
       if (dataUrl.length < 420000) {
         try { localStorage.setItem(KEY, dataUrl); } catch (e) {}
       }
     } catch (e) {}
   };
 
-  // As soon as we have something to draw (usually first frame)
+  lockMobileAutoplay();
   v.addEventListener("loadeddata", () => {
     const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 60));
     idle(capture);
+    tryPlay();
   }, { once: true });
+
+  ["loadedmetadata", "canplay", "canplaythrough", "pageshow"].forEach((eventName) => {
+    v.addEventListener(eventName, tryPlay, { passive: true });
+    window.addEventListener(eventName, tryPlay, { passive: true });
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') tryPlay();
+  }, { passive: true });
+
+  const kick = () => {
+    tryPlay();
+    document.removeEventListener('touchstart', kick);
+    document.removeEventListener('pointerdown', kick);
+  };
+  document.addEventListener('touchstart', kick, { passive: true, once: true });
+  document.addEventListener('pointerdown', kick, { passive: true, once: true });
+
+  setTimeout(tryPlay, 120);
+  setTimeout(tryPlay, 900);
 })();
 </script>
 
@@ -875,6 +1082,9 @@
   sync();
 })();
 </script>
+
+<script src="./assets/js/webhook-config.js"></script>
+<script src="./assets/js/brief_wizard.js?v=18"></script>
 
 </body>
 </html>
