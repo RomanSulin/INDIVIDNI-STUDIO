@@ -667,9 +667,11 @@ nav.is-open .nav-drawer{ display:grid; }
 }
 
 .svc-name{
-  font-family: var(--font-head);
-  font-weight: 900;
-  letter-spacing: -0.02em;
+  /* Syne looks different for Latin/Cyrillic here because Cyrillic falls back to another font.
+     Use Inter for service card titles so Russian and English look uniform. */
+  font-family: var(--font-body);
+  font-weight: 800;
+  letter-spacing: -0.01em;
   font-size: 18px;
   line-height: 1.05;
 }
@@ -712,8 +714,9 @@ nav.is-open .nav-drawer{ display:grid; }
   padding: 18px;
 }
 .svc-card:hover .svc-name{
-  font-weight: 900;
-  letter-spacing: -0.03em;
+  font-family: var(--font-body);
+  font-weight: 800;
+  letter-spacing: -0.015em;
   font-size: clamp(22px, 2.1vw, 30px);
 }
 .svc-card:hover .svc-text{ visibility: visible; opacity: .95; transform: translateY(0); }
