@@ -2646,6 +2646,11 @@ body.modal-open{
   color: #0b0b0b;
   border-color: rgba(0,0,0,.18);
 }
+.tariff-card__btn--ghost:hover{
+  background: #0b0b0b;
+  color: #fff;
+  border-color: #0b0b0b;
+}
 
 .tariff-card--lite{ --accent: #34d399; }    /* green */
 .tariff-card--std{ --accent: #a855f7; }     /* violet */
