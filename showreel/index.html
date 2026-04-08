@@ -22,6 +22,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/landing_ref.css?v=21" />
+  <link rel="stylesheet" href="/css/service_detail.css?v=1" />
+  <link rel="stylesheet" href="/css/services_fix.css?v=2" />
 
   <style>
     :root{
@@ -53,9 +55,53 @@
       top:0;
       left:0;
       right:0;
-      z-index:40;
-      background:linear-gradient(180deg, rgba(0,0,0,.74) 0%, rgba(0,0,0,.44) 70%, rgba(0,0,0,0) 100%);
+      z-index:100;
+      background:linear-gradient(180deg, rgba(0,0,0,.74) 0%, rgba(0,0,0,.44) 72%, rgba(0,0,0,0) 100%);
+      border-bottom:none;
       backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
+    }
+
+    .showreel-page nav .nav-brand,
+    .showreel-page nav .nav-links a,
+    .showreel-page nav .nav-by,
+    .showreel-page nav .nav-tag{
+      color:#fff !important;
+    }
+
+    .showreel-page nav .nav-links a{
+      opacity:.74;
+    }
+
+    .showreel-page nav .nav-links a:hover{
+      opacity:1;
+    }
+
+    .showreel-page nav .nav-tag{
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.1);
+    }
+
+    .showreel-page .btn-dl{
+      background:rgba(255,255,255,.1);
+      border:1px solid rgba(255,255,255,.14);
+      color:#fff;
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+    }
+
+    .showreel-page .btn-dl:hover{
+      background:rgba(255,255,255,.16);
+      transform:translateY(-1px);
+    }
+
+    .showreel-page .nav-toggle{
+      border-color:rgba(255,255,255,.14);
+      background:rgba(255,255,255,.06);
+    }
+
+    .showreel-page .nav-toggle span{
+      background:rgba(255,255,255,.88);
     }
 
     .showreel-stage{
@@ -133,6 +179,7 @@
       cursor:pointer;
       transition:transform .18s ease, background .18s ease, border-color .18s ease;
       backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
       padding:0;
       box-shadow:var(--showreel-shadow);
     }
@@ -167,6 +214,7 @@
       font-size:14px;
       line-height:1.55;
       backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
       pointer-events:auto;
     }
 
@@ -178,13 +226,14 @@
     .showreel-modal{
       position:fixed;
       inset:0;
-      z-index:90;
+      z-index:120;
       display:none;
       align-items:center;
       justify-content:center;
       padding:20px;
       background:rgba(0,0,0,.92);
       backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
     }
 
     .showreel-modal.is-open{
@@ -226,6 +275,7 @@
       justify-content:center;
       cursor:pointer;
       backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
       transition:transform .18s ease, background .18s ease, border-color .18s ease;
       padding:0;
     }
@@ -257,6 +307,12 @@
       .showreel-embed iframe{
         min-width:177.78dvh;
         min-height:100dvh;
+      }
+    }
+
+    @media (max-width: 980px){
+      .showreel-page nav .nav-drawer{
+        background:rgba(0,0,0,.92) !important;
       }
     }
 
@@ -321,8 +377,8 @@
 
       .showreel-hero::before{
         background:
-          linear-gradient(180deg, rgba(0,0,0,.42) 0%, rgba(0,0,0,.08) 24%, rgba(0,0,0,0) 42%),
-          linear-gradient(180deg, rgba(0,0,0,0) 58%, rgba(0,0,0,.14) 74%, rgba(0,0,0,.5) 100%);
+          linear-gradient(180deg, rgba(0,0,0,.34) 0%, rgba(0,0,0,.08) 24%, rgba(0,0,0,0) 40%),
+          linear-gradient(180deg, rgba(0,0,0,0) 62%, rgba(0,0,0,.12) 76%, rgba(0,0,0,.42) 100%);
       }
     }
 
@@ -345,12 +401,12 @@
         <a href="/services/">Услуги</a>
         <a href="/#process">Этапы</a>
         <a href="/brief.html">Бриф</a>
-        <a href="/#contact">Контакты</a>
+        <a href="/services/#contact">Контакты</a>
       </div>
     </div>
     <div class="nav-right">
       <span class="nav-tag">Video production</span>
-      <a class="btn-dl" href="/#contact">Обсудить</a>
+      <a class="btn-dl" href="/services/#contact">Обсудить</a>
       <button aria-label="Открыть меню" class="nav-toggle" data-nav-toggle type="button">
         <span></span><span></span>
       </button>
@@ -360,7 +416,7 @@
       <a href="/services/">Услуги</a>
       <a href="/#process">Этапы</a>
       <a href="/brief.html">Бриф</a>
-      <a href="/#contact">Контакты</a>
+      <a href="/services/#contact">Контакты</a>
     </div>
   </nav>
 
