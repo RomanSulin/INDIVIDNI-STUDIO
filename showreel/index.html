@@ -20,16 +20,17 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/css/landing_ref.css?v=21" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="../assets/css/landing_ref.css?v=21" rel="stylesheet" />
+  <link href="../assets/css/service_detail.css?v=1" rel="stylesheet" />
+  <link href="../assets/css/services_fix.css?v=2" rel="stylesheet" />
 
   <style>
     :root{
       --showreel-safe-bottom:max(16px, env(safe-area-inset-bottom));
-      --showreel-header-h:84px;
       --showreel-line:rgba(255,255,255,.14);
       --showreel-line-strong:rgba(255,255,255,.24);
-      --showreel-ui-bg:rgba(8,8,8,.46);
+      --showreel-ui-bg:rgba(8,8,8,.44);
       --showreel-ui-bg-hover:rgba(12,12,12,.64);
       --showreel-shadow:0 18px 44px rgba(0,0,0,.28);
     }
@@ -39,40 +40,30 @@
     }
 
     body.showreel-page{
-      min-height:100vh;
-      margin:0;
-      color:#fff;
-      font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
       background:#000;
+      color:#fff;
       overflow-x:hidden;
     }
 
     .showreel-page nav{
       position:fixed;
-      top:0;
-      left:0;
-      right:0;
+      inset:0 0 auto 0;
       z-index:40;
-      background:linear-gradient(180deg, rgba(0,0,0,.74) 0%, rgba(0,0,0,.44) 70%, rgba(0,0,0,0) 100%);
+      background:linear-gradient(180deg, rgba(0,0,0,.72) 0%, rgba(0,0,0,.42) 68%, rgba(0,0,0,0) 100%);
       backdrop-filter:blur(12px);
     }
 
-    .showreel-stage{
+    .showreel-page .service-hero.showreel-hero{
       position:relative;
       min-height:100svh;
-      background:#000;
-    }
-
-    .showreel-hero{
-      position:relative;
-      min-height:100svh;
-      overflow:hidden;
+      padding:0;
       isolation:isolate;
       background:#000;
+      overflow:hidden;
     }
 
-    .showreel-embed,
-    .showreel-embed iframe{
+    .showreel-player,
+    .showreel-player iframe{
       position:absolute;
       inset:0;
       width:100%;
@@ -82,18 +73,17 @@
       background:#000;
     }
 
-    .showreel-hero::before{
-      content:'';
+    .showreel-page .service-hero__shade.showreel-hero__shade{
       position:absolute;
       inset:0;
-      pointer-events:none;
       z-index:1;
       background:
-        linear-gradient(180deg, rgba(0,0,0,.58) 0%, rgba(0,0,0,.16) 18%, rgba(0,0,0,0) 34%),
-        linear-gradient(180deg, rgba(0,0,0,0) 62%, rgba(0,0,0,.22) 74%, rgba(0,0,0,.76) 100%);
+        linear-gradient(180deg, rgba(0,0,0,.56) 0%, rgba(0,0,0,.18) 18%, rgba(0,0,0,0) 34%),
+        linear-gradient(180deg, rgba(0,0,0,0) 60%, rgba(0,0,0,.18) 72%, rgba(0,0,0,.74) 100%);
+      pointer-events:none;
     }
 
-    .showreel-overlay{
+    .showreel-ui{
       position:absolute;
       inset:0;
       z-index:3;
@@ -156,6 +146,7 @@
       font-size:14px;
       line-height:1.55;
       backdrop-filter:blur(12px);
+      pointer-events:auto;
     }
 
     .showreel-fallback a{
@@ -248,11 +239,7 @@
       border-top:1px solid rgba(255,255,255,.08);
     }
 
-    @media (max-width: 900px){
-      :root{
-        --showreel-header-h:74px;
-      }
-
+    @media (max-width:900px){
       .showreel-controls{
         right:12px;
         bottom:12px;
@@ -287,7 +274,7 @@
       }
     }
 
-    @media (max-width: 560px){
+    @media (max-width:560px){
       .showreel-controls{
         flex-direction:column;
       }
@@ -300,294 +287,296 @@
     }
   </style>
 </head>
-<body class="showreel-page">
-  <nav>
-    <div class="nav-left">
-      <a class="nav-brand" href="/">INDIVIDNI</a>
-      <span class="nav-by">studio</span>
-      <div class="nav-links" aria-label="Меню">
-        <a href="/#projects">Проекты</a>
-        <a href="/services/">Услуги</a>
-        <a href="/#process">Этапы</a>
-        <a href="/brief.html">Бриф</a>
-        <a href="/#contact">Контакты</a>
+<body class="service-detail showreel-page">
+<nav>
+  <div class="nav-left">
+    <a class="nav-brand" href="../">INDIVIDNI</a>
+    <span class="nav-by">studio</span>
+    <div class="nav-links" aria-label="Меню">
+      <a href="../#projects">Проекты</a>
+      <a href="../services/">Услуги</a>
+      <a href="../#process">Этапы</a>
+      <a href="../brief.html">Бриф</a>
+      <a href="../#contact">Контакты</a>
+    </div>
+  </div>
+  <div class="nav-right">
+    <span class="nav-tag">Video production</span>
+    <a class="btn-dl" href="../services/index.html#contact">Обсудить</a>
+    <button aria-label="Открыть меню" class="nav-toggle" data-nav-toggle type="button">
+      <span></span><span></span>
+    </button>
+  </div>
+  <div class="nav-drawer" data-nav-drawer>
+    <a href="../#projects">Проекты</a>
+    <a href="../services/">Услуги</a>
+    <a href="../#process">Этапы</a>
+    <a href="../brief.html">Бриф</a>
+    <a href="../#contact">Контакты</a>
+  </div>
+</nav>
+
+<main>
+  <section aria-label="Шоурил" class="service-hero showreel-hero" id="top">
+    <div class="showreel-player" id="showreelEmbed"></div>
+    <div aria-hidden="true" class="service-hero__shade showreel-hero__shade"></div>
+
+    <div class="showreel-ui">
+      <div class="showreel-controls">
+        <button class="showreel-control" type="button" id="soundToggle" aria-pressed="false" aria-label="Включить звук">
+          <svg id="soundIconOn" viewBox="0 0 24 24" aria-hidden="true" fill="none">
+            <path d="M11 5 6.7 8.5H3.9A1.9 1.9 0 0 0 2 10.4v3.2a1.9 1.9 0 0 0 1.9 1.9h2.8L11 19V5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
+            <path d="M15.5 9.2a4.2 4.2 0 0 1 0 5.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+            <path d="M18.6 6.8a7.6 7.6 0 0 1 0 10.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+          </svg>
+          <svg id="soundIconOff" viewBox="0 0 24 24" aria-hidden="true" fill="none" style="display:none;">
+            <path d="M11 5 6.7 8.5H3.9A1.9 1.9 0 0 0 2 10.4v3.2a1.9 1.9 0 0 0 1.9 1.9h2.8L11 19V5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
+            <path d="M20 4 14 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+            <path d="M14 4 20 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+          </svg>
+          <span class="sr-only" id="soundToggleText">Включить звук</span>
+        </button>
+
+        <button class="showreel-control" type="button" id="expandToggle" aria-label="Открыть в плеере">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none">
+            <path d="M8 3H3v5M16 3h5v5M8 21H3v-5M21 21h-5v-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="showreel-fallback" id="showreelFallback">
+        Vimeo player не загрузился. Проверь, что для видео разрешено встраивание, и открой его напрямую:
+        <a id="showreelFallbackLink" href="#" target="_blank" rel="noopener noreferrer">открыть Vimeo</a>
       </div>
     </div>
-    <div class="nav-right">
-      <span class="nav-tag">Video production</span>
-      <a class="btn-dl" href="/#contact">Обсудить</a>
-      <button aria-label="Открыть меню" class="nav-toggle" data-nav-toggle type="button">
-        <span></span><span></span>
-      </button>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="brand-logo">INDIVIDNI</div>
+      <p style="line-height:1.7; max-width:340px; opacity:.7;">
+        ИП Сулина Инна Викторовна<br />
+        ОГРНИП: 322344300077855<br />
+        ИНН: 342101596820
+      </p>
+      <p style="margin-top:14px; opacity:.7;">© 2026, INDIVIDNI Studio</p>
     </div>
-    <div class="nav-drawer" data-nav-drawer>
-      <a href="/#projects">Проекты</a>
-      <a href="/services/">Услуги</a>
-      <a href="/#process">Этапы</a>
-      <a href="/brief.html">Бриф</a>
-      <a href="/#contact">Контакты</a>
-    </div>
-  </nav>
 
-  <main class="showreel-stage">
-    <section class="showreel-hero" id="showreelFrame" aria-label="Шоурил INDIVIDNI studio">
-      <div class="showreel-embed" id="showreelEmbed"></div>
+    <div class="footer-col">
+      <h4>Контакты</h4>
+      <a href="mailto:pictures@individnistudio.ru">pictures@individnistudio.ru</a>
+      <a href="tel:+79608800060">+7 (960) 880-00-60</a>
+      <a href="https://individnistudio.ru" target="_blank" rel="noreferrer">individnistudio.ru</a>
 
-      <div class="showreel-overlay">
-        <div class="showreel-controls">
-          <button class="showreel-control" type="button" id="soundToggle" aria-pressed="false" aria-label="Включить звук">
-            <svg id="soundIconOn" viewBox="0 0 24 24" aria-hidden="true" fill="none">
-              <path d="M11 5 6.7 8.5H3.9A1.9 1.9 0 0 0 2 10.4v3.2a1.9 1.9 0 0 0 1.9 1.9h2.8L11 19V5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
-              <path d="M15.5 9.2a4.2 4.2 0 0 1 0 5.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
-              <path d="M18.6 6.8a7.6 7.6 0 0 1 0 10.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
-            </svg>
-            <svg id="soundIconOff" viewBox="0 0 24 24" aria-hidden="true" fill="none" style="display:none;">
-              <path d="M11 5 6.7 8.5H3.9A1.9 1.9 0 0 0 2 10.4v3.2a1.9 1.9 0 0 0 1.9 1.9h2.8L11 19V5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
-              <path d="M20 4 14 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
-              <path d="M14 4 20 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
-            </svg>
-            <span class="sr-only" id="soundToggleText">Включить звук</span>
-          </button>
+      <div style="display:flex; align-items:center; gap:12px; margin-top:14px; opacity:.8;">
+        <a href="#" aria-label="Telegram" title="Telegram" style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; color:inherit;">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+            <path d="M21.2 4.8 18 19.1c-.2 1-1 1.2-1.8.8l-4.2-3.1-2 2c-.2.2-.4.4-.9.4l.3-4.5 8.2-7.4c.4-.4-.1-.6-.6-.3l-10.2 6.4-4.4-1.4c-1-.3-1-.9.2-1.4L19.4 4c.8-.3 2 .2 1.8.8Z" fill="currentColor"></path>
+          </svg>
+        </a>
 
-          <button class="showreel-control" type="button" id="expandToggle" aria-label="Открыть в плеере">
-            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none">
-              <path d="M8 3H3v5M16 3h5v5M8 21H3v-5M21 21h-5v-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-            </svg>
-          </button>
-        </div>
+        <a href="#" aria-label="VK" title="VK" style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; color:inherit;">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+            <path d="M4 7.3c.1-.4.5-.6.9-.6h2.3c.4 0 .8.3 1 .7.5 1.3 1.7 4.2 2.6 5.2.7.8 1 .7 1.2.2.2-.5.2-1.4.2-2.1V8.1c0-.8.6-1.4 1.4-1.4h1.7c.8 0 1.4.6 1.4 1.4v1c0 .9 0 1.7.5 1.8.5.1 1.7-1.8 2.6-3.6.2-.4.6-.6 1-.6h2.6c.7 0 1.2.8.9 1.4-.8 1.8-2.1 4-3.7 5.8-.3.3-.3.8 0 1.1 1.1 1.1 2.5 2.7 3.5 4.1.5.7 0 1.7-.8 1.7h-2.3c-.4 0-.7-.2-1-.5-.8-1-2.4-2.8-3.3-2.6-.7.1-.7 1-.7 1.7v.3c0 .6-.4 1.1-1 1.1h-1.4c-1.8 0-4-1.1-5.9-3.3C5.4 15 4.3 11.2 4 8.2c0-.3 0-.6 0-.9Z" fill="currentColor"></path>
+          </svg>
+        </a>
 
-        <div class="showreel-fallback" id="showreelFallback">
-          Vimeo player не загрузился. Проверь, что для видео разрешено встраивание, и открой его напрямую:
-          <a id="showreelFallbackLink" href="#" target="_blank" rel="noopener noreferrer">открыть Vimeo</a>
-        </div>
+        <a href="#" aria-label="Instagram" title="Instagram" style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; color:inherit;">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+            <rect x="3.5" y="3.5" width="17" height="17" rx="5" stroke="currentColor" stroke-width="2"></rect>
+            <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"></circle>
+            <circle cx="17.3" cy="6.7" r="1.1" fill="currentColor"></circle>
+          </svg>
+        </a>
       </div>
-    </section>
-  </main>
+    </div>
 
-  <div class="showreel-modal" id="showreelModal" aria-hidden="true">
-    <div class="showreel-modal__dialog" role="dialog" aria-modal="true" aria-label="Плеер шоурила">
-      <button class="showreel-modal__close" type="button" id="showreelModalClose" aria-label="Закрыть плеер">
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M6 6 18 18M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
-        </svg>
-      </button>
-      <div class="showreel-modal__embed" id="showreelModalEmbed"></div>
+    <div class="footer-col">
+      <h4>Меню</h4>
+      <a href="../#projects">Проекты</a>
+      <a href="../#services">Услуги</a>
+      <a href="../#process">Этапы</a>
+      <a href="../brief.html">Бриф</a>
+      <a href="../">Главная</a>
     </div>
   </div>
 
-  <footer>
-    <div class="footer-top">
-      <div class="footer-brand">
-        <div class="brand-logo">INDIVIDNI</div>
-        <p style="line-height:1.7; max-width:340px; opacity:.7;">
-          ИП Сулина Инна Викторовна<br />
-          ОГРНИП: 322344300077855<br />
-          ИНН: 342101596820
-        </p>
-        <p style="margin-top:14px; opacity:.7;">© 2026, INDIVIDNI Studio</p>
-      </div>
+  <div class="footer-bottom" style="display:flex; gap:16px; flex-wrap:wrap; justify-content:space-between; align-items:center;">
+    <a href="../privacy-policy.html" style="color:inherit; text-decoration:none;">Privacy Policy</a>
+    <span>Made by <a href="https://individnistudio.ru" target="_blank" rel="noreferrer" style="color:inherit; text-decoration:none;">individnistudio</a></span>
+  </div>
+</footer>
 
-      <div class="footer-col">
-        <h4>Контакты</h4>
-        <a href="mailto:pictures@individnistudio.ru">pictures@individnistudio.ru</a>
-        <a href="tel:+79608800060">+7 (960) 880-00-60</a>
-        <a href="https://individnistudio.ru" target="_blank" rel="noreferrer">individnistudio.ru</a>
+<div class="showreel-modal" id="showreelModal" aria-hidden="true">
+  <div class="showreel-modal__dialog" role="dialog" aria-modal="true" aria-label="Плеер шоурила">
+    <button class="showreel-modal__close" type="button" id="showreelModalClose" aria-label="Закрыть плеер">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M6 6 18 18M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+      </svg>
+    </button>
+    <div class="showreel-modal__embed" id="showreelModalEmbed"></div>
+  </div>
+</div>
 
-        <div style="display:flex; align-items:center; gap:12px; margin-top:14px; opacity:.8;">
-          <a href="#" aria-label="Telegram" title="Telegram" style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; color:inherit;">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
-              <path d="M21.2 4.8 18 19.1c-.2 1-1 1.2-1.8.8l-4.2-3.1-2 2c-.2.2-.4.4-.9.4l.3-4.5 8.2-7.4c.4-.4-.1-.6-.6-.3l-10.2 6.4-4.4-1.4c-1-.3-1-.9.2-1.4L19.4 4c.8-.3 2 .2 1.8.8Z" fill="currentColor"></path>
-            </svg>
-          </a>
+<script src="https://player.vimeo.com/api/player.js"></script>
+<script src="../assets/js/services_catalog.js?v=1"></script>
+<script>
+  (() => {
+    const VIMEO_VIDEO_ID = '1181165336';
+    const VIMEO_HASH = '';
 
-          <a href="#" aria-label="VK" title="VK" style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; color:inherit;">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
-              <path d="M4 7.3c.1-.4.5-.6.9-.6h2.3c.4 0 .8.3 1 .7.5 1.3 1.7 4.2 2.6 5.2.7.8 1 .7 1.2.2.2-.5.2-1.4.2-2.1V8.1c0-.8.6-1.4 1.4-1.4h1.7c.8 0 1.4.6 1.4 1.4v1c0 .9 0 1.7.5 1.8.5.1 1.7-1.8 2.6-3.6.2-.4.6-.6 1-.6h2.6c.7 0 1.2.8.9 1.4-.8 1.8-2.1 4-3.7 5.8-.3.3-.3.8 0 1.1 1.1 1.1 2.5 2.7 3.5 4.1.5.7 0 1.7-.8 1.7h-2.3c-.4 0-.7-.2-1-.5-.8-1-2.4-2.8-3.3-2.6-.7.1-.7 1-.7 1.7v.3c0 .6-.4 1.1-1 1.1h-1.4c-1.8 0-4-1.1-5.9-3.3C5.4 15 4.3 11.2 4 8.2c0-.3 0-.6 0-.9Z" fill="currentColor"></path>
-            </svg>
-          </a>
+    const embedRoot = document.getElementById('showreelEmbed');
+    const modalEmbedRoot = document.getElementById('showreelModalEmbed');
+    const fallback = document.getElementById('showreelFallback');
+    const fallbackLink = document.getElementById('showreelFallbackLink');
+    const soundToggle = document.getElementById('soundToggle');
+    const soundToggleText = document.getElementById('soundToggleText');
+    const soundIconOn = document.getElementById('soundIconOn');
+    const soundIconOff = document.getElementById('soundIconOff');
+    const expandToggle = document.getElementById('expandToggle');
+    const modal = document.getElementById('showreelModal');
+    const modalClose = document.getElementById('showreelModalClose');
 
-          <a href="#" aria-label="Instagram" title="Instagram" style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; color:inherit;">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
-              <rect x="3.5" y="3.5" width="17" height="17" rx="5" stroke="currentColor" stroke-width="2"></rect>
-              <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"></circle>
-              <circle cx="17.3" cy="6.7" r="1.1" fill="currentColor"></circle>
-            </svg>
-          </a>
-        </div>
-      </div>
-
-      <div class="footer-col">
-        <h4>Меню</h4>
-        <a href="/#projects">Проекты</a>
-        <a href="/#services">Услуги</a>
-        <a href="/#process">Этапы</a>
-        <a href="/brief.html">Бриф</a>
-        <a href="/">Главная</a>
-      </div>
-    </div>
-
-    <div class="footer-bottom" style="display:flex; gap:16px; flex-wrap:wrap; justify-content:space-between; align-items:center;">
-      <a href="/privacy-policy.html" style="color:inherit; text-decoration:none;">Privacy Policy</a>
-      <span>Made by <a href="https://individnistudio.ru" target="_blank" rel="noreferrer" style="color:inherit; text-decoration:none;">individnistudio</a></span>
-    </div>
-  </footer>
-
-  <script src="https://player.vimeo.com/api/player.js"></script>
-  <script src="/js/services_catalog.js?v=1"></script>
-  <script>
-    (() => {
-      const VIMEO_VIDEO_ID = '1181165336';
-      const VIMEO_HASH = '';
-
-      const embedRoot = document.getElementById('showreelEmbed');
-      const modalEmbedRoot = document.getElementById('showreelModalEmbed');
-      const frame = document.getElementById('showreelFrame');
-      const fallback = document.getElementById('showreelFallback');
-      const fallbackLink = document.getElementById('showreelFallbackLink');
-      const soundToggle = document.getElementById('soundToggle');
-      const soundToggleText = document.getElementById('soundToggleText');
-      const soundIconOn = document.getElementById('soundIconOn');
-      const soundIconOff = document.getElementById('soundIconOff');
-      const expandToggle = document.getElementById('expandToggle');
-      const modal = document.getElementById('showreelModal');
-      const modalClose = document.getElementById('showreelModalClose');
-
-      if (!embedRoot || !window.Vimeo || !VIMEO_VIDEO_ID || VIMEO_VIDEO_ID === 'REPLACE_WITH_VIMEO_VIDEO_ID') {
+    if (!embedRoot || !window.Vimeo || !VIMEO_VIDEO_ID) {
+      if (fallback) {
         fallback.style.display = 'block';
-        fallback.textContent = 'Укажи ID Vimeo-видео в /showreel/index.html';
-        return;
+        fallback.textContent = 'Проверь Vimeo ID в /showreel/index.html';
+      }
+      return;
+    }
+
+    const baseParams = new URLSearchParams({
+      autoplay: '1',
+      muted: '1',
+      loop: '1',
+      autopause: '0',
+      controls: '0',
+      title: '0',
+      byline: '0',
+      portrait: '0',
+      dnt: '1',
+      playsinline: '1',
+      quality: 'auto'
+    });
+
+    const modalParams = new URLSearchParams({
+      autoplay: '1',
+      muted: '0',
+      loop: '0',
+      autopause: '1',
+      controls: '1',
+      title: '0',
+      byline: '0',
+      portrait: '0',
+      dnt: '1',
+      playsinline: '1',
+      quality: 'auto'
+    });
+
+    const inlineSrc = VIMEO_HASH
+      ? `https://player.vimeo.com/video/${VIMEO_VIDEO_ID}?h=${encodeURIComponent(VIMEO_HASH)}&${baseParams.toString()}`
+      : `https://player.vimeo.com/video/${VIMEO_VIDEO_ID}?${baseParams.toString()}`;
+
+    const modalSrc = VIMEO_HASH
+      ? `https://player.vimeo.com/video/${VIMEO_VIDEO_ID}?h=${encodeURIComponent(VIMEO_HASH)}&${modalParams.toString()}`
+      : `https://player.vimeo.com/video/${VIMEO_VIDEO_ID}?${modalParams.toString()}`;
+
+    fallbackLink.href = `https://vimeo.com/${VIMEO_VIDEO_ID}`;
+
+    const iframe = document.createElement('iframe');
+    iframe.src = inlineSrc;
+    iframe.title = 'INDIVIDNI studio showreel';
+    iframe.allow = 'autoplay; fullscreen; picture-in-picture; encrypted-media';
+    iframe.setAttribute('allowfullscreen', '');
+    iframe.loading = 'eager';
+    iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+    embedRoot.appendChild(iframe);
+
+    const player = new Vimeo.Player(iframe);
+    let isMuted = true;
+    let modalPlayer = null;
+
+    const updateSoundUi = () => {
+      soundToggle.setAttribute('aria-pressed', String(!isMuted));
+      soundToggle.setAttribute('aria-label', isMuted ? 'Включить звук' : 'Выключить звук');
+      soundToggleText.textContent = isMuted ? 'Включить звук' : 'Выключить звук';
+      soundIconOn.style.display = isMuted ? 'none' : '';
+      soundIconOff.style.display = isMuted ? '' : 'none';
+    };
+
+    const openModal = async () => {
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+
+      if (!modalEmbedRoot.querySelector('iframe')) {
+        const modalIframe = document.createElement('iframe');
+        modalIframe.src = modalSrc;
+        modalIframe.title = 'INDIVIDNI studio showreel player';
+        modalIframe.allow = 'autoplay; fullscreen; picture-in-picture; encrypted-media';
+        modalIframe.setAttribute('allowfullscreen', '');
+        modalIframe.loading = 'eager';
+        modalIframe.referrerPolicy = 'strict-origin-when-cross-origin';
+        modalEmbedRoot.appendChild(modalIframe);
+        modalPlayer = new Vimeo.Player(modalIframe);
       }
 
-      const baseParams = new URLSearchParams({
-        autoplay: '1',
-        muted: '1',
-        loop: '1',
-        autopause: '0',
-        controls: '0',
-        title: '0',
-        byline: '0',
-        portrait: '0',
-        dnt: '1',
-        playsinline: '1',
-        quality: 'auto'
-      });
+      try { await player.pause(); } catch (_) {}
+    };
 
-      const modalParams = new URLSearchParams({
-        autoplay: '1',
-        muted: '0',
-        loop: '0',
-        autopause: '1',
-        controls: '1',
-        title: '0',
-        byline: '0',
-        portrait: '0',
-        dnt: '1',
-        playsinline: '1',
-        quality: 'auto'
-      });
+    const closeModal = async () => {
+      modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
 
-      const inlineSrc = VIMEO_HASH
-        ? `https://player.vimeo.com/video/${VIMEO_VIDEO_ID}?h=${encodeURIComponent(VIMEO_HASH)}&${baseParams.toString()}`
-        : `https://player.vimeo.com/video/${VIMEO_VIDEO_ID}?${baseParams.toString()}`;
+      if (modalPlayer) {
+        try { await modalPlayer.pause(); } catch (_) {}
+      }
 
-      const modalSrc = VIMEO_HASH
-        ? `https://player.vimeo.com/video/${VIMEO_VIDEO_ID}?h=${encodeURIComponent(VIMEO_HASH)}&${modalParams.toString()}`
-        : `https://player.vimeo.com/video/${VIMEO_VIDEO_ID}?${modalParams.toString()}`;
+      try {
+        await player.play();
+        await player.setMuted(isMuted);
+        await player.setVolume(isMuted ? 0 : 1);
+      } catch (_) {}
+    };
 
-      fallbackLink.href = `https://vimeo.com/${VIMEO_VIDEO_ID}`;
+    player.ready().then(async () => {
+      fallback.style.display = 'none';
+      try { await player.setMuted(true); } catch (_) {}
+      try { await player.setVolume(0); } catch (_) {}
+      updateSoundUi();
+    }).catch(() => {
+      fallback.style.display = 'block';
+    });
 
-      const iframe = document.createElement('iframe');
-      iframe.src = inlineSrc;
-      iframe.title = 'INDIVIDNI studio showreel';
-      iframe.allow = 'autoplay; fullscreen; picture-in-picture; encrypted-media';
-      iframe.setAttribute('allowfullscreen', '');
-      iframe.loading = 'eager';
-      iframe.referrerPolicy = 'strict-origin-when-cross-origin';
-      embedRoot.appendChild(iframe);
-
-      const player = new Vimeo.Player(iframe);
-      let isMuted = true;
-      let modalPlayer = null;
-
-      const updateSoundUi = () => {
-        soundToggle.setAttribute('aria-pressed', String(!isMuted));
-        soundToggle.setAttribute('aria-label', isMuted ? 'Включить звук' : 'Выключить звук');
-        soundToggleText.textContent = isMuted ? 'Включить звук' : 'Выключить звук';
-        soundIconOn.style.display = isMuted ? 'none' : '';
-        soundIconOff.style.display = isMuted ? '' : 'none';
-      };
-
-      const openModal = async () => {
-        modal.classList.add('is-open');
-        modal.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
-
-        if (!modalEmbedRoot.querySelector('iframe')) {
-          const modalIframe = document.createElement('iframe');
-          modalIframe.src = modalSrc;
-          modalIframe.title = 'INDIVIDNI studio showreel player';
-          modalIframe.allow = 'autoplay; fullscreen; picture-in-picture; encrypted-media';
-          modalIframe.setAttribute('allowfullscreen', '');
-          modalIframe.loading = 'eager';
-          modalIframe.referrerPolicy = 'strict-origin-when-cross-origin';
-          modalEmbedRoot.appendChild(modalIframe);
-          modalPlayer = new Vimeo.Player(modalIframe);
-        }
-
-        try { await player.pause(); } catch (_) {}
-      };
-
-      const closeModal = async () => {
-        modal.classList.remove('is-open');
-        modal.setAttribute('aria-hidden', 'true');
-        document.body.style.overflow = '';
-
-        if (modalPlayer) {
-          try { await modalPlayer.pause(); } catch (_) {}
-        }
-
-        try {
-          await player.play();
-          await player.setMuted(isMuted);
-          await player.setVolume(isMuted ? 0 : 1);
-        } catch (_) {}
-      };
-
-      player.ready().then(async () => {
-        fallback.style.display = 'none';
-        try { await player.setMuted(true); } catch (_) {}
-        try { await player.setVolume(0); } catch (_) {}
+    soundToggle.addEventListener('click', async () => {
+      try {
+        isMuted = !isMuted;
+        await player.play();
+        await player.setMuted(isMuted);
+        await player.setVolume(isMuted ? 0 : 1);
         updateSoundUi();
-      }).catch(() => {
-        fallback.style.display = 'block';
-      });
+      } catch (_) {
+        isMuted = true;
+        updateSoundUi();
+      }
+    });
 
-      soundToggle.addEventListener('click', async () => {
-        try {
-          isMuted = !isMuted;
-          await player.play();
-          await player.setMuted(isMuted);
-          await player.setVolume(isMuted ? 0 : 1);
-          updateSoundUi();
-        } catch (_) {
-          isMuted = true;
-          updateSoundUi();
-        }
-      });
+    expandToggle.addEventListener('click', openModal);
+    modalClose.addEventListener('click', closeModal);
 
-      expandToggle.addEventListener('click', openModal);
-      modalClose.addEventListener('click', closeModal);
+    modal.addEventListener('click', (event) => {
+      if (event.target === modal) closeModal();
+    });
 
-      modal.addEventListener('click', (event) => {
-        if (event.target === modal) closeModal();
-      });
-
-      document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && modal.classList.contains('is-open')) {
-          closeModal();
-        }
-      });
-    })();
-  </script>
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && modal.classList.contains('is-open')) {
+        closeModal();
+      }
+    });
+  })();
+</script>
 </body>
 </html>
