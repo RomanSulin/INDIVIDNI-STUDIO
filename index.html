@@ -16,7 +16,7 @@
   <link rel="preload" as="video" href="./assets/ui/Showreel_3.mp4" type="video/mp4" />
   
   <!-- Landing styles (ref-based) -->
-  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=30" />
+  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=31" />
 </head>
 <body>
 
@@ -80,11 +80,15 @@
 </section>
 
 <!-- PROJECTS — full-width split (no slider) -->
-<section class="split-projects" id="projects" aria-label="Проекты">
+<section class="split-projects" id="projects" aria-label="Шоурил и проекты INDIVIDNI">
   <div class="split-projects__inner">
     <div class="split-left">
-      <h2 class="split-title">НАШИ ПРОЕКТЫ</h2>
-<p class="split-text">Короткая витрина проектов. Наведи на кейс справа — и фон станет ярким цветом. Фото позже заменим на реальные.</p>
+      <div class="split-showreel-head">
+        <div class="split-title split-title--showreel">SHOWREEL</div>
+        <button class="showreel-cta" type="button" aria-label="Открыть шоурил INDIVIDNI" aria-haspopup="dialog" aria-controls="showreelModal" data-open-showreel>
+          <span class="showreel-cta__label">PLAY</span>
+        </button>
+      </div>
 <!-- TV moved сюда из HERO (структура не менялась) -->
       <div class="hero-tv-stage" data-tv-hero aria-label="3D TV hero" role="button" tabindex="0" aria-haspopup="dialog" aria-controls="showreelModal" data-open-showreel>
             <canvas id="tvHeroCanvas"></canvas>
@@ -97,6 +101,10 @@
 
     <div class="split-right" data-project-chooser>
       <div class="split-right-wrap" aria-label="Сетка проектов">
+        <div class="split-projects-copy">
+          <h2 class="split-title split-title--projects">НАШИ ПРОЕКТЫ</h2>
+          <p class="split-text split-text--projects">Короткая витрина проектов. Наведи на кейс справа — и фон станет ярким цветом. Фото позже заменим на реальные.</p>
+        </div>
         <div class="split-right-grid">
 
           <!-- Project cards -->
@@ -700,6 +708,15 @@
         </svg>
       </button>
 
+      <button class="sr-full" type="button" aria-label="Развернуть шоурил на весь экран" data-sr-full>
+        <svg class="sr-ico sr-ico--full" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 3H4a1 1 0 0 0-1 1v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M16 3h4a1 1 0 0 1 1 1v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M8 21H4a1 1 0 0 1-1-1v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M16 21h4a1 1 0 0 0 1-1v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+
       <button class="sr-sound" type="button" aria-label="Звук" data-sr-sound>
         <svg class="sr-ico" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M11 5 6.8 8.4H4a2 2 0 0 0-2 2v3.2a2 2 0 0 0 2 2h2.8L11 19V5Zm7.4 7a4.6 4.6 0 0 1-2.3 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -996,15 +1013,15 @@
 (() => {
   const modal = document.getElementById('showreelModal');
   const dialog = modal?.querySelector('.showreel-dialog');
-  const tvStage = document.querySelector('[data-open-showreel]');
+  const openers = document.querySelectorAll('[data-open-showreel]');
   const v = document.getElementById('showreelVideo');
   const wrap = modal?.querySelector('[data-sr-wrap]');
   const btnPlay = modal?.querySelector('[data-sr-play]');
   const btnSound = modal?.querySelector('[data-sr-sound]');
+  const btnFull = modal?.querySelector('[data-sr-full]');
   const closers = modal?.querySelectorAll('[data-sr-close]') || [];
-  const tvVideo = document.getElementById('tvHeroVideo');
 
-  if (!modal || !dialog || !tvStage || !v || !btnPlay || !btnSound || !wrap) return;
+  if (!modal || !dialog || !openers.length || !v || !btnPlay || !btnSound || !wrap) return;
 
   const primeShowreel = () => {
     if (v.dataset.primed) return;
@@ -1047,6 +1064,7 @@
     // resume videos that were playing
     const resume = () => {
       document.querySelectorAll('video[data-paused-by-modal="1"]').forEach((vv) => {
+        vv.removeAttribute('data-pausedByModal');
         vv.removeAttribute('data-paused-by-modal');
         try { vv.play && vv.play().catch(() => {}); } catch (_) {}
       });
@@ -1075,16 +1093,35 @@
     btnSound.classList.toggle('is-on', !v.muted);
   };
 
+  const openFullscreen = async () => {
+    primeShowreel();
+    try {
+      if (typeof v.webkitEnterFullscreen === 'function') {
+        v.webkitEnterFullscreen();
+        return;
+      }
+      if (v.requestFullscreen) {
+        await v.requestFullscreen();
+        return;
+      }
+      if (dialog.requestFullscreen) {
+        await dialog.requestFullscreen();
+      }
+    } catch (_) {}
+  };
+
   // open
-  tvStage.addEventListener('click', (e) => {
-    e.preventDefault();
-    open();
-  });
-  tvStage.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
+  openers.forEach((opener) => {
+    opener.addEventListener('click', (e) => {
       e.preventDefault();
       open();
-    }
+    });
+    opener.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        open();
+      }
+    });
   });
 
   // close
@@ -1099,7 +1136,8 @@
     togglePlay();
   });
   wrap.addEventListener('click', (e) => {
-    if (e.target === btnSound || e.target.closest('[data-sr-close]')) return;
+    if (e.target === btnSound || e.target === btnFull || e.target.closest('[data-sr-close]')) return;
+    if (e.target.closest('[data-sr-sound]') || e.target.closest('[data-sr-full]')) return;
     if (wrap.classList.contains('is-playing')) togglePlay();
   });
 
@@ -1111,6 +1149,13 @@
     primeShowreel();
     toggleSound();
   });
+
+  if (btnFull) {
+    btnFull.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      await openFullscreen();
+    });
+  }
 
   // if video ends — show play again
   v.addEventListener('ended', () => {
