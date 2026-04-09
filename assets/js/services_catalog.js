@@ -1,4 +1,4 @@
-/* services_catalog.js — nav toggle + year + hover video play */
+/* services_catalog.js — nav toggle + service videos */
 (() => {
   // year
   const y = document.getElementById('year');
@@ -18,98 +18,129 @@
     sync();
   }
 
-  // video hover on cards (desktop). On touch: keep paused.
   const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const canHover = window.matchMedia && window.matchMedia('(hover: hover)').matches;
+  const mobileMq = window.matchMedia ? window.matchMedia('(max-width: 768px)') : { matches: false };
 
-  const prime = (v) => {
-    if (!v || v.dataset.primed) return;
-    v.dataset.primed = '1';
-    v.querySelectorAll('source').forEach((s) => {
-      if (!s.getAttribute('src') && s.dataset.src) s.setAttribute('src', s.dataset.src);
+  const getResponsiveSrc = (source) => {
+    const desktop = source.dataset.srcDesktop || source.dataset.src || source.getAttribute('src') || '';
+    const mobile = source.dataset.srcMobile || desktop;
+    return mobileMq.matches ? (mobile || desktop) : (desktop || mobile);
+  };
+
+  const applyResponsiveSources = (video) => {
+    if (!video) return false;
+    let changed = false;
+
+    video.querySelectorAll('source').forEach((source) => {
+      const nextSrc = getResponsiveSrc(source);
+      if (!nextSrc) return;
+
+      if (source.dataset.src !== nextSrc) {
+        source.dataset.src = nextSrc;
+      }
+
+      if (source.getAttribute('src') !== nextSrc) {
+        source.setAttribute('src', nextSrc);
+        changed = true;
+      }
     });
-    try { v.load(); } catch (_) {}
+
+    return changed;
+  };
+
+  const prime = (video, force = false) => {
+    if (!video) return;
+    const changed = applyResponsiveSources(video);
+    if (video.dataset.primed && !force && !changed) return;
+    video.dataset.primed = '1';
+    try { video.load(); } catch (_) {}
+  };
+
+  const safePlay = (video) => {
+    if (!video || prefersReduced) return;
+    prime(video);
+    const p = video.play && video.play();
+    if (p && p.catch) p.catch(() => {});
   };
 
   // Catalog cards
+  const warmFirstFrame = (video) => {
+    if (!video || video.dataset.warmed) return;
+    video.dataset.warmed = '1';
+    video.preload = 'metadata';
+    prime(video);
 
-  const warmFirstFrame = (v) => {
-    if (!v || v.dataset.warmed) return;
-    v.dataset.warmed = '1';
-    // ensure sources are present and fetch only metadata
-    v.preload = 'metadata';
-    prime(v);
+    const tryRemovePoster = () => { try { video.removeAttribute('poster'); } catch (_) {} };
 
-    // remove placeholder poster after we have a decoded frame
-    const tryRemovePoster = () => { try { v.removeAttribute('poster'); } catch (_) {} };
-
-    // Seek a tiny bit to force decode in Safari/iOS
     const onMeta = () => {
       try {
-        const t = Math.min(0.05, (isFinite(v.duration) && v.duration > 0) ? v.duration * 0.01 : 0.05);
-        v.currentTime = t;
+        const t = Math.min(0.05, (isFinite(video.duration) && video.duration > 0) ? video.duration * 0.01 : 0.05);
+        video.currentTime = t;
       } catch (_) {}
     };
 
     const onSeeked = () => {
-      try { v.pause(); } catch (_) {}
+      try { video.pause(); } catch (_) {}
       tryRemovePoster();
     };
 
-    v.addEventListener('loadedmetadata', onMeta, { once: true });
-    v.addEventListener('seeked', onSeeked, { once: true });
+    video.addEventListener('loadedmetadata', onMeta, { once: true });
+    video.addEventListener('seeked', onSeeked, { once: true });
 
-    try { v.load(); } catch (_) {}
+    try { video.load(); } catch (_) {}
   };
 
-  // Warm posters ASAP (but keep it light): only when cards enter viewport
   const io = ('IntersectionObserver' in window) ? new IntersectionObserver((entries) => {
-    entries.forEach((e) => {
-      if (!e.isIntersecting) return;
-      const v = e.target.querySelector && e.target.querySelector('video');
-      if (v) warmFirstFrame(v);
-      io.unobserve(e.target);
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      const video = entry.target.querySelector && entry.target.querySelector('video');
+      if (video) warmFirstFrame(video);
+      io.unobserve(entry.target);
     });
   }, { rootMargin: '300px 0px' }) : null;
 
   const cards = Array.from(document.querySelectorAll('.scard'));
   cards.forEach((card) => {
-    const v = card.querySelector('video');
-    if (!v) return;
+    const video = card.querySelector('video');
+    if (!video) return;
 
-    // Make sure the card is never blank on refresh: load the first frame
-    if (io) { io.observe(card); } else { warmFirstFrame(v); }
+    if (io) { io.observe(card); } else { warmFirstFrame(video); }
 
     const play = () => {
-      if (prefersReduced) return;
-      prime(v);
-      const p = v.play && v.play();
-      if (p && p.catch) p.catch(() => {});
+      safePlay(video);
     };
 
     const stop = () => {
-      try { v.pause(); } catch (_) {}
+      try { video.pause(); } catch (_) {}
     };
 
-    // Default state: stopped
     stop();
 
     if (canHover) {
       card.addEventListener('pointerenter', play);
-      card.addEventListener('pointerleave', () => { stop(); try { v.currentTime = 0; } catch (_) {} });
+      card.addEventListener('pointerleave', () => { stop(); try { video.currentTime = 0; } catch (_) {} });
       card.addEventListener('focusin', play);
-      card.addEventListener('focusout', () => { stop(); try { v.currentTime = 0; } catch (_) {} });
+      card.addEventListener('focusout', () => { stop(); try { video.currentTime = 0; } catch (_) {} });
     }
   });
 
-  // Detail page: keep hero playing, but pause on background tab
+  // Additional service cards on the catalog page
+  const extraVideos = Array.from(document.querySelectorAll('.svc-video'));
+  extraVideos.forEach((video) => {
+    prime(video);
+    safePlay(video);
+  });
+
+  // Detail page hero video
   const heroV = document.querySelector('.service-hero__video');
   if (heroV) {
+    prime(heroV);
+
     const ensure = () => {
-      if (prefersReduced) return;
-      const p = heroV.play && heroV.play();
-      if (p && p.catch) p.catch(() => {});
+      safePlay(heroV);
     };
+
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         try { heroV.pause(); } catch (_) {}
@@ -117,6 +148,29 @@
         ensure();
       }
     });
+
     ensure();
+  }
+
+  const handleBreakpointChange = () => {
+    document.querySelectorAll('video').forEach((video) => {
+      const hasResponsiveSource = video.querySelector('source[data-src-desktop], source[data-src-mobile]');
+      if (!hasResponsiveSource) return;
+
+      try { video.pause(); } catch (_) {}
+      video.removeAttribute('data-primed');
+      video.removeAttribute('data-warmed');
+      prime(video, true);
+
+      if (video.matches('.service-hero__video, .svc-video')) {
+        safePlay(video);
+      }
+    });
+  };
+
+  if (mobileMq && typeof mobileMq.addEventListener === 'function') {
+    mobileMq.addEventListener('change', handleBreakpointChange);
+  } else if (mobileMq && typeof mobileMq.addListener === 'function') {
+    mobileMq.addListener(handleBreakpointChange);
   }
 })();
