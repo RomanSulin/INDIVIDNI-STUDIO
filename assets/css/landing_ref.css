@@ -3355,6 +3355,12 @@ body.modal-open{
 }
 
 
+@media (min-width: 769px){
+  .split-title--showreel{
+    transform: translateY(-18px);
+  }
+}
+
 /* ===== PATCH v31 (projects/showreel split desktop+mobile) ===== */
 .split-showreel-head{
   width: 100%;
