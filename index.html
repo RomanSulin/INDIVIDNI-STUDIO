@@ -16,7 +16,7 @@
   <link rel="preload" as="video" href="./assets/ui/Showreel_3.mp4" type="video/mp4" />
   
   <!-- Landing styles (ref-based) -->
-  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=31" />
+  <link rel="stylesheet" href="./assets/css/landing_ref.css?v=30" />
 </head>
 <body>
 
@@ -80,30 +80,29 @@
 </section>
 
 <!-- PROJECTS — full-width split (no slider) -->
-<section class="split-projects" id="projects" aria-label="Шоурил и проекты INDIVIDNI">
+<section class="split-projects" id="projects" aria-label="Showreel и проекты INDIVIDNI Studio">
   <div class="split-projects__inner">
-    <div class="split-left">
-      <div class="split-showreel-head">
-        <div class="split-title split-title--showreel">SHOWREEL</div>
-        <button class="showreel-cta" type="button" aria-label="Открыть шоурил INDIVIDNI" aria-haspopup="dialog" aria-controls="showreelModal" data-open-showreel>
-          <span class="showreel-cta__label">PLAY</span>
-        </button>
-      </div>
-<!-- TV moved сюда из HERO (структура не менялась) -->
-      <div class="hero-tv-stage" data-tv-hero aria-label="3D TV hero" role="button" tabindex="0" aria-haspopup="dialog" aria-controls="showreelModal" data-open-showreel>
+    <div class="split-left" aria-labelledby="showreelTitle">
+      <h2 class="split-title split-title--showreel" id="showreelTitle">SHOWREEL</h2>
+      <p class="split-text split-text--showreel">Шоурил INDIVIDNI Studio — быстрый вход в наш ритм, визуальный стиль и подачу. Нажмите на телевизор, чтобы открыть видео.</p>
+      <!-- TV moved сюда из HERO (структура не менялась) -->
+      <div class="hero-tv-stage" data-tv-hero aria-label="Открыть шоурил INDIVIDNI Studio" role="button" tabindex="0" aria-haspopup="dialog" aria-controls="showreelModal" data-open-showreel>
             <canvas id="tvHeroCanvas"></canvas>
             <video class="tvfly__hiddenVideo lazy-video" id="tvHeroVideo" loop muted playsinline preload="none" webkit-playsinline data-play-on-view>
               <source data-src="./assets/ui/showreel_2.mp4" type="video/mp4"/>
             </video>
+            <div class="tv-mobile-play" aria-hidden="true">
+              <span class="tv-mobile-play__icon">▶</span>
+              <span class="tv-mobile-play__text">PLAY SHOWREEL</span>
+            </div>
           </div>
 
     </div>
 
-    <div class="split-right" data-project-chooser>
-      <div class="split-right-wrap" aria-label="Сетка проектов">
-        <div class="split-projects-copy">
-          <h2 class="split-title split-title--projects">НАШИ ПРОЕКТЫ</h2>
-          <p class="split-text split-text--projects">Короткая витрина проектов. Наведи на кейс справа — и фон станет ярким цветом. Фото позже заменим на реальные.</p>
+    <div class="split-right" data-project-chooser aria-labelledby="projectsGridTitle">
+      <div class="split-right-wrap" aria-label="Сетка проектов INDIVIDNI Studio">
+        <div class="split-right-head">
+          <h2 class="split-title split-title--projects" id="projectsGridTitle">НАШИ ПРОЕКТЫ</h2>
         </div>
         <div class="split-right-grid">
 
@@ -708,19 +707,16 @@
         </svg>
       </button>
 
-      <button class="sr-full" type="button" aria-label="Развернуть шоурил на весь экран" data-sr-full>
-        <svg class="sr-ico sr-ico--full" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M8 3H4a1 1 0 0 0-1 1v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          <path d="M16 3h4a1 1 0 0 1 1 1v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          <path d="M8 21H4a1 1 0 0 1-1-1v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          <path d="M16 21h4a1 1 0 0 0 1-1v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </button>
-
       <button class="sr-sound" type="button" aria-label="Звук" data-sr-sound>
         <svg class="sr-ico" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M11 5 6.8 8.4H4a2 2 0 0 0-2 2v3.2a2 2 0 0 0 2 2h2.8L11 19V5Zm7.4 7a4.6 4.6 0 0 1-2.3 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
           <path d="M20.5 7.5a9 9 0 0 1 0 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      <button class="sr-fullscreen" type="button" aria-label="На весь экран" data-sr-fullscreen>
+        <svg class="sr-ico" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 3H4v4M16 3h4v4M21 16v4h-4M3 16v4h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
 
@@ -1009,19 +1005,19 @@
 </script>
 
 <script>
-/* Showreel modal: click on TV opens pop-up with showreel.mp4 (sound toggle + zoom anim) */
+/* Showreel modal: click on TV opens pop-up with showreel.mp4 (sound, fullscreen, mobile-safe controls) */
 (() => {
   const modal = document.getElementById('showreelModal');
   const dialog = modal?.querySelector('.showreel-dialog');
-  const openers = document.querySelectorAll('[data-open-showreel]');
+  const tvStage = document.querySelector('[data-open-showreel]');
   const v = document.getElementById('showreelVideo');
   const wrap = modal?.querySelector('[data-sr-wrap]');
   const btnPlay = modal?.querySelector('[data-sr-play]');
   const btnSound = modal?.querySelector('[data-sr-sound]');
-  const btnFull = modal?.querySelector('[data-sr-full]');
+  const btnFullscreen = modal?.querySelector('[data-sr-fullscreen]');
   const closers = modal?.querySelectorAll('[data-sr-close]') || [];
 
-  if (!modal || !dialog || !openers.length || !v || !btnPlay || !btnSound || !wrap) return;
+  if (!modal || !dialog || !tvStage || !v || !btnPlay || !btnSound || !wrap) return;
 
   const primeShowreel = () => {
     if (v.dataset.primed) return;
@@ -1032,13 +1028,17 @@
     try { v.load(); } catch (_) {}
   };
 
+  const syncFullscreenState = () => {
+    const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    if (btnFullscreen) btnFullscreen.classList.toggle('is-on', isFs);
+  };
+
   const open = () => {
     window.__INDIVIDNI_MODAL_OPEN = true;
     document.body.classList.add('modal-open');
     modal.classList.add('is-open');
     modal.setAttribute('aria-hidden', 'false');
 
-    // pause videos behind (including TV video), but remember what was playing
     document.querySelectorAll('video[data-play-on-view]').forEach((vv) => {
       try {
         if (!vv.paused) vv.dataset.pausedByModal = '1';
@@ -1049,19 +1049,26 @@
     setTimeout(() => { try { dialog.focus(); } catch (_) {} }, 50);
   };
 
-  const close = () => {
+  const close = async () => {
     modal.classList.remove('is-open');
     modal.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('modal-open');
     window.__INDIVIDNI_MODAL_OPEN = false;
 
-    // stop modal video
+    try {
+      if (document.fullscreenElement && document.exitFullscreen) {
+        await document.exitFullscreen();
+      } else if (document.webkitFullscreenElement && document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
+    } catch (_) {}
+
     try { v.pause(); } catch (_) {}
     v.currentTime = 0;
     btnPlay.classList.remove('is-hidden');
     wrap.classList.remove('is-playing');
+    syncFullscreenState();
 
-    // resume videos that were playing
     const resume = () => {
       document.querySelectorAll('video[data-paused-by-modal="1"]').forEach((vv) => {
         vv.removeAttribute('data-pausedByModal');
@@ -1077,7 +1084,9 @@
     if (v.paused) {
       btnPlay.classList.add('is-hidden');
       wrap.classList.add('is-playing');
-      try { await v.play(); } catch (_) {
+      try {
+        await v.play();
+      } catch (_) {
         btnPlay.classList.remove('is-hidden');
         wrap.classList.remove('is-playing');
       }
@@ -1093,55 +1102,50 @@
     btnSound.classList.toggle('is-on', !v.muted);
   };
 
-  const openFullscreen = async () => {
+  const toggleFullscreen = async () => {
     primeShowreel();
     try {
-      if (typeof v.webkitEnterFullscreen === 'function') {
-        v.webkitEnterFullscreen();
-        return;
-      }
-      if (v.requestFullscreen) {
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        if (document.exitFullscreen) await document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+      } else if (v.requestFullscreen) {
         await v.requestFullscreen();
-        return;
-      }
-      if (dialog.requestFullscreen) {
+      } else if (dialog.requestFullscreen) {
         await dialog.requestFullscreen();
+      } else if (v.webkitEnterFullscreen) {
+        v.webkitEnterFullscreen();
       }
     } catch (_) {}
+    syncFullscreenState();
   };
 
-  // open
-  openers.forEach((opener) => {
-    opener.addEventListener('click', (e) => {
-      e.preventDefault();
-      open();
-    });
-    opener.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        open();
-      }
-    });
+  tvStage.addEventListener('click', (e) => {
+    e.preventDefault();
+    open();
   });
 
-  // close
+  tvStage.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      open();
+    }
+  });
+
   closers.forEach((c) => c.addEventListener('click', close));
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && modal.classList.contains('is-open')) close();
   });
 
-  // play / stop
   btnPlay.addEventListener('click', (e) => {
     e.stopPropagation();
     togglePlay();
   });
+
   wrap.addEventListener('click', (e) => {
-    if (e.target === btnSound || e.target === btnFull || e.target.closest('[data-sr-close]')) return;
-    if (e.target.closest('[data-sr-sound]') || e.target.closest('[data-sr-full]')) return;
+    if (e.target === btnSound || e.target === btnFullscreen || e.target.closest('[data-sr-close]')) return;
     if (wrap.classList.contains('is-playing')) togglePlay();
   });
 
-  // sound
   v.muted = true;
   btnSound.classList.remove('is-on');
   btnSound.addEventListener('click', (e) => {
@@ -1150,14 +1154,17 @@
     toggleSound();
   });
 
-  if (btnFull) {
-    btnFull.addEventListener('click', async (e) => {
+  if (btnFullscreen) {
+    btnFullscreen.addEventListener('click', (e) => {
       e.stopPropagation();
-      await openFullscreen();
+      toggleFullscreen();
     });
   }
 
-  // if video ends — show play again
+  ['fullscreenchange', 'webkitfullscreenchange'].forEach((eventName) => {
+    document.addEventListener(eventName, syncFullscreenState);
+  });
+
   v.addEventListener('ended', () => {
     btnPlay.classList.remove('is-hidden');
     wrap.classList.remove('is-playing');
@@ -1165,6 +1172,88 @@
 })();
 </script>
 
+
+<script>
+/* Mobile showreel TV: subtle gyroscope-like tilt only on phones */
+(() => {
+  const stage = document.querySelector('.split-left .hero-tv-stage[data-open-showreel]');
+  const mql = window.matchMedia('(max-width: 980px)');
+  if (!stage) return;
+
+  let enabled = false;
+  let raf = 0;
+  let currentX = 0;
+  let currentY = 0;
+  let targetX = 0;
+  let targetY = 0;
+
+  const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+
+  const render = () => {
+    currentX += (targetX - currentX) * 0.08;
+    currentY += (targetY - currentY) * 0.08;
+    stage.style.setProperty('--tv-mobile-tilt-x', `${currentX.toFixed(2)}deg`);
+    stage.style.setProperty('--tv-mobile-tilt-y', `${currentY.toFixed(2)}deg`);
+    raf = requestAnimationFrame(render);
+  };
+
+  const onOrientation = (event) => {
+    if (!mql.matches) return;
+    const beta = clamp(event.beta || 0, -18, 18);
+    const gamma = clamp(event.gamma || 0, -22, 22);
+    targetX = beta * -0.18;
+    targetY = gamma * 0.28;
+    if (!raf) raf = requestAnimationFrame(render);
+  };
+
+  const reset = () => {
+    targetX = 0;
+    targetY = 0;
+    currentX = 0;
+    currentY = 0;
+    stage.style.setProperty('--tv-mobile-tilt-x', '0deg');
+    stage.style.setProperty('--tv-mobile-tilt-y', '0deg');
+    if (raf) {
+      cancelAnimationFrame(raf);
+      raf = 0;
+    }
+  };
+
+  const enable = async () => {
+    if (!mql.matches || enabled || typeof window === 'undefined' || typeof DeviceOrientationEvent === 'undefined') return;
+
+    try {
+      if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        const response = await DeviceOrientationEvent.requestPermission();
+        if (response !== 'granted') return;
+      }
+      window.addEventListener('deviceorientation', onOrientation, { passive: true });
+      enabled = true;
+      stage.classList.add('is-gyro-ready');
+    } catch (_) {}
+  };
+
+  if (mql.matches && typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission !== 'function') {
+    enable();
+  }
+
+  stage.addEventListener('pointerdown', () => {
+    if (mql.matches) enable();
+  }, { passive: true, once: true });
+
+  const onMediaChange = (event) => {
+    if (!event.matches) {
+      window.removeEventListener('deviceorientation', onOrientation);
+      enabled = false;
+      stage.classList.remove('is-gyro-ready');
+      reset();
+    }
+  };
+
+  if (typeof mql.addEventListener === 'function') mql.addEventListener('change', onMediaChange);
+  else if (typeof mql.addListener === 'function') mql.addListener(onMediaChange);
+})();
+</script>
 
 <script>
 /* Mobile menu toggle */
