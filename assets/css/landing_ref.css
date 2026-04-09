@@ -3405,13 +3405,16 @@ body.modal-open{
     overflow: hidden;
     align-items: center;
     padding-top: 28px !important;
+    padding-right: 0 !important;
     padding-bottom: 22px !important;
+    padding-left: 0 !important;
   }
 
   .split-title--showreel{
     transform: none !important;
     text-align: center !important;
     margin: 0 auto;
+    padding-inline: 16px;
   }
 
   .split-left .split-text{
@@ -3422,7 +3425,7 @@ body.modal-open{
     display: block !important;
     width: min(200vw, 760px) !important;
     max-width: none !important;
-    margin: 16px 0 0 !important;
+    margin: 16px auto 0 !important;
     position: relative;
     left: 50%;
     transform: translateX(-50%) !important;
