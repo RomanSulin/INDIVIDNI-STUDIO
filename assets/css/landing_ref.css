@@ -3398,9 +3398,12 @@ body.modal-open{
 
   .split-left .hero-tv-stage{
     display: block !important;
-    width: min(96vw, 540px) !important;
-    max-width: 100% !important;
-    margin: 10px auto 0 !important;
+    width: min(180vw, 920px) !important;
+    max-width: none !important;
+    margin: 10px 0 0 !important;
+    position: relative !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
   }
 
   .split-right{
