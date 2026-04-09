@@ -83,7 +83,7 @@
 <section class="split-projects" id="projects" aria-label="Проекты">
   <div class="split-projects__inner">
     <div class="split-left">
-      <h2 class="split-title">НАШИ ПРОЕКТЫ</h2>
+      <h2 class="split-title split-title--showreel">SHOWREEL</h2>
 <p class="split-text">Короткая витрина проектов. Наведи на кейс справа — и фон станет ярким цветом. Фото позже заменим на реальные.</p>
 <!-- TV moved сюда из HERO (структура не менялась) -->
       <div class="hero-tv-stage" data-tv-hero aria-label="3D TV hero" role="button" tabindex="0" aria-haspopup="dialog" aria-controls="showreelModal" data-open-showreel>
@@ -97,6 +97,7 @@
 
     <div class="split-right" data-project-chooser>
       <div class="split-right-wrap" aria-label="Сетка проектов">
+        <h2 class="split-right-title">НАШИ ПРОЕКТЫ</h2>
         <div class="split-right-grid">
 
           <!-- Project cards -->
@@ -707,6 +708,15 @@
         </svg>
       </button>
 
+      <button class="sr-full" type="button" aria-label="На весь экран" data-sr-full>
+        <svg class="sr-ico" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 3H4a1 1 0 0 0-1 1v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M16 3h4a1 1 0 0 1 1 1v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M21 16v4a1 1 0 0 1-1 1h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3 16v4a1 1 0 0 0 1 1h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
       <div class="sr-hoverHint" aria-hidden="true">Нажмите, чтобы остановить</div>
     </div>
   </div>
@@ -964,6 +974,7 @@
   const wrap = modal?.querySelector('[data-sr-wrap]');
   const btnPlay = modal?.querySelector('[data-sr-play]');
   const btnSound = modal?.querySelector('[data-sr-sound]');
+  const btnFull = modal?.querySelector('[data-sr-full]');
   const closers = modal?.querySelectorAll('[data-sr-close]') || [];
   const tvVideo = document.getElementById('tvHeroVideo');
 
@@ -1044,6 +1055,20 @@
     btnSound.classList.toggle('is-on', !v.muted);
   };
 
+  const toggleFullscreen = async () => {
+    const target = dialog;
+    try {
+      if (!document.fullscreenElement) {
+        if (target.requestFullscreen) await target.requestFullscreen();
+        else if (target.webkitRequestFullscreen) target.webkitRequestFullscreen();
+      } else if (document.exitFullscreen) {
+        await document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
+    } catch (_) {}
+  };
+
   // open
   tvStage.addEventListener('click', (e) => {
     e.preventDefault();
@@ -1082,6 +1107,14 @@
     primeShowreel();
     toggleSound();
   });
+
+  if (btnFull) {
+    btnFull.addEventListener('click', (e) => {
+      e.stopPropagation();
+      primeShowreel();
+      toggleFullscreen();
+    });
+  }
 
   // if video ends — show play again
   v.addEventListener('ended', () => {
