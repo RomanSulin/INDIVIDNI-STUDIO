@@ -3494,3 +3494,14 @@ body.modal-open{
     height: 42px;
   }
 }
+
+
+/* mobile showreel player: hide extra action buttons only */
+@media (max-width: 600px){
+  .sr-play,
+  .sr-sound,
+  .sr-full,
+  .sr-hoverHint{
+    display: none !important;
+  }
+}
