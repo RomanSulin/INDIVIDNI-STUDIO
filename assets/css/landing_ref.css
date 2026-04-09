@@ -1081,9 +1081,18 @@ nav.is-open .nav-drawer{ display:grid; }
 
 /* ── FOOTER ── */
 footer{
-  background: var(--dark);
+  background:#000 !important;
   color:#fff;
   padding: 50px 40px 30px;
+}
+
+footer a[href^="tel"],
+footer a[x-apple-data-detectors],
+footer a[x-apple-data-detectors="true"],
+footer a[href^="mailto"]{
+  color:inherit !important;
+  -webkit-text-fill-color: currentColor !important;
+  text-decoration:none !important;
 }
 .footer-top{
   display:flex;
