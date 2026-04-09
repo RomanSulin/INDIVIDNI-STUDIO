@@ -84,9 +84,9 @@
   <div class="split-projects__inner">
     <div class="split-left">
       <h2 class="split-title split-title--showreel">SHOWREEL</h2>
-<p class="split-text">Короткая витрина проектов. Наведи на кейс справа — и фон станет ярким цветом. Фото позже заменим на реальные.</p>
+      <p class="split-text split-text--showreel">Нажмите на телевизор, чтобы открыть шоурил.</p>
 <!-- TV moved сюда из HERO (структура не менялась) -->
-      <div class="hero-tv-stage" data-tv-hero aria-label="3D TV hero" role="button" tabindex="0" aria-haspopup="dialog" aria-controls="showreelModal" data-open-showreel>
+      <div class="hero-tv-stage" data-tv-hero aria-label="Открыть шоурил" role="button" tabindex="0" aria-haspopup="dialog" aria-controls="showreelModal" data-open-showreel>
             <canvas id="tvHeroCanvas"></canvas>
             <video class="tvfly__hiddenVideo lazy-video" id="tvHeroVideo" loop muted playsinline preload="none" webkit-playsinline data-play-on-view>
               <source data-src="./assets/ui/showreel_2.mp4" type="video/mp4"/>
@@ -97,7 +97,7 @@
 
     <div class="split-right" data-project-chooser>
       <div class="split-right-wrap" aria-label="Сетка проектов">
-        <h2 class="split-right-title">НАШИ ПРОЕКТЫ</h2>
+        <h2 class="split-title split-title--projects">НАШИ ПРОЕКТЫ</h2>
         <div class="split-right-grid">
 
           <!-- Project cards -->
@@ -168,7 +168,7 @@
     <a class="svc-card svc-card--blue" role="listitem" href="./services/business.html">
       <div class="svc-media">
         <video class="svc-video lazy-video" muted loop playsinline preload="none" data-play-on-view>
-          <source data-src="./assets/services/card/vertical/business_vertical.mp4" type="video/mp4" />
+          <source data-src="./assets/services/card/vertical_3x4/business_vertical_3x4.mp4" data-src-desktop="./assets/services/card/vertical_3x4/business_vertical_3x4.mp4" data-src-mobile="./assets/services/card/business.mp4?v=1" type="video/mp4" />
         </video>
         <div class="svc-overlay">
           <div class="svc-name">Видео для бизнеса</div>
@@ -180,7 +180,7 @@
     <a class="svc-card svc-card--red" role="listitem" href="./services/podcasts.html">
       <div class="svc-media">
         <video class="svc-video lazy-video" muted loop playsinline preload="none" data-play-on-view>
-          <source data-src="./assets/services/card/vertical/podcast_vertical.mp4" type="video/mp4" />
+          <source data-src="./assets/services/card/vertical_3x4/podcast_vertical_3x4.mp4" data-src-desktop="./assets/services/card/vertical_3x4/podcast_vertical_3x4.mp4" data-src-mobile="./assets/services/card/podcast.mp4" type="video/mp4" />
         </video>
         <div class="svc-overlay">
           <div class="svc-name">Подкасты и интервью</div>
@@ -192,7 +192,7 @@
     <a class="svc-card svc-card--green" role="listitem" href="./services/event.html">
       <div class="svc-media">
         <video class="svc-video lazy-video" muted loop playsinline preload="none" data-play-on-view>
-          <source data-src="./assets/services/card/vertical/EVENT_vertical.mp4" type="video/mp4" />
+          <source data-src="./assets/services/card/vertical_3x4/event_vertical_3x4.mp4" data-src-desktop="./assets/services/card/vertical_3x4/event_vertical_3x4.mp4" data-src-mobile="./assets/services/card/event.mp4" type="video/mp4" />
         </video>
         <div class="svc-overlay">
           <div class="svc-name">Съёмка мероприятий</div>
@@ -204,7 +204,7 @@
     <a class="svc-card svc-card--yellow" role="listitem" href="./services/reels.html">
       <div class="svc-media">
         <video class="svc-video lazy-video" muted loop playsinline preload="none" data-play-on-view>
-          <source data-src="./assets/services/video/photo.mp4" type="video/mp4" />
+          <source data-src="./assets/services/video/photo.mp4" type="video/mp4" data-src-desktop="./assets/services/video/photo.mp4" data-src-mobile="./assets/services/video/photo.mp4" />
         </video>
         <div class="svc-overlay">
           <div class="svc-name">Reels / Shorts</div>
@@ -216,7 +216,7 @@
     <a class="svc-card svc-card--pink" role="listitem" href="./services/photo.html">
       <div class="svc-media">
         <video class="svc-video lazy-video" muted loop playsinline preload="none" data-play-on-view>
-          <source data-src="./assets/services/video/AI.mp4" type="video/mp4" />
+          <source data-src="./assets/services/video/photo.mp4" type="video/mp4" data-src-desktop="./assets/services/video/photo.mp4" data-src-mobile="./assets/services/video/photo.mp4" />
         </video>
         <div class="svc-overlay">
           <div class="svc-name">Фото любой сложности</div>
@@ -691,7 +691,7 @@
     </button>
 
     <div class="sr-wrap" data-sr-wrap>
-      <video class="sr-video" id="showreelVideo" playsinline preload="none" webkit-playsinline disablepictureinpicture controlslist="nodownload noplaybackrate noremoteplayback nofullscreen" x-webkit-airplay="deny">
+      <video class="sr-video" id="showreelVideo" playsinline preload="none" webkit-playsinline>
         <source data-src="./assets/ui/showreel.mp4" type="video/mp4" />
       </video>
 
@@ -708,12 +708,9 @@
         </svg>
       </button>
 
-      <button class="sr-full" type="button" aria-label="На весь экран" data-sr-full>
+      <button class="sr-full" type="button" aria-label="Полный экран" data-sr-full>
         <svg class="sr-ico" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M8 3H4a1 1 0 0 0-1 1v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M16 3h4a1 1 0 0 1 1 1v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M21 16v4a1 1 0 0 1-1 1h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M3 16v4a1 1 0 0 0 1 1h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M8 4H4v4M16 4h4v4M8 20H4v-4M20 20h-4v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
 
@@ -918,6 +915,43 @@
 </script>
 
 <script>
+/* Homepage services: on mobile swap vertical card videos to horizontal ones, desktop stays untouched */
+(() => {
+  const mql = window.matchMedia('(max-width: 520px)');
+  const sources = Array.from(document.querySelectorAll('.services-grid .svc-video source[data-src-mobile]'));
+  if (!sources.length) return;
+
+  const applyServicesVideoSources = () => {
+    const useMobile = mql.matches;
+
+    sources.forEach((source) => {
+      const video = source.parentElement;
+      const nextSrc = useMobile
+        ? source.dataset.srcMobile
+        : (source.dataset.srcDesktop || source.dataset.src);
+
+      if (!nextSrc || source.dataset.src === nextSrc) return;
+
+      source.dataset.src = nextSrc;
+
+      if (video.dataset.primed) {
+        source.setAttribute('src', nextSrc);
+        try { video.load(); } catch (_) {}
+      }
+    });
+  };
+
+  applyServicesVideoSources();
+
+  if (typeof mql.addEventListener === 'function') {
+    mql.addEventListener('change', applyServicesVideoSources);
+  } else if (typeof mql.addListener === 'function') {
+    mql.addListener(applyServicesVideoSources);
+  }
+})();
+</script>
+
+<script>
 /* Lazy-load + play videos only when section is in view (saves CPU on first load) */
 (() => {
   const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -969,8 +1003,7 @@
 (() => {
   const modal = document.getElementById('showreelModal');
   const dialog = modal?.querySelector('.showreel-dialog');
-  const tvStages = Array.from(document.querySelectorAll('[data-open-showreel]'));
-  const isMobileShowreel = () => window.matchMedia('(max-width: 600px)').matches;
+  const tvStage = document.querySelector('[data-open-showreel]');
   const v = document.getElementById('showreelVideo');
   const wrap = modal?.querySelector('[data-sr-wrap]');
   const btnPlay = modal?.querySelector('[data-sr-play]');
@@ -979,36 +1012,34 @@
   const closers = modal?.querySelectorAll('[data-sr-close]') || [];
   const tvVideo = document.getElementById('tvHeroVideo');
 
-  if (!modal || !dialog || !tvStages.length || !v || !btnPlay || !btnSound || !wrap) return;
+  if (!modal || !dialog || !tvStage || !v || !btnPlay || !btnSound || !btnFull || !wrap) return;
 
   const primeShowreel = () => {
     if (v.dataset.primed) return;
     v.dataset.primed = '1';
-    v.controls = false;
-    v.removeAttribute('controls');
-    v.setAttribute('playsinline', '');
-    v.setAttribute('webkit-playsinline', '');
-    v.setAttribute('disablepictureinpicture', '');
-    v.setAttribute('controlslist', 'nodownload noplaybackrate noremoteplayback nofullscreen');
     v.querySelectorAll('source').forEach((s) => {
       if (!s.getAttribute('src') && s.dataset.src) s.setAttribute('src', s.dataset.src);
     });
     try { v.load(); } catch (_) {}
   };
 
-  const startPlayback = async () => {
-    primeShowreel();
-    btnPlay.classList.add('is-hidden');
-    wrap.classList.add('is-playing');
-    try {
-      await v.play();
-    } catch (_) {
-      btnPlay.classList.remove('is-hidden');
-      wrap.classList.remove('is-playing');
+  const isMobileShowreel = () => window.matchMedia('(max-width: 767px)').matches;
+
+  const syncShowreelMode = () => {
+    const mobile = isMobileShowreel();
+    wrap.classList.toggle('is-mobile-player', mobile);
+    v.controls = mobile;
+    if (mobile) {
+      v.setAttribute('controls', '');
+      v.setAttribute('playsinline', '');
+      v.setAttribute('webkit-playsinline', '');
+    } else {
+      v.removeAttribute('controls');
     }
   };
 
-  const open = ({ autoplay = false } = {}) => {
+  const open = async () => {
+    syncShowreelMode();
     window.__INDIVIDNI_MODAL_OPEN = true;
     document.body.classList.add('modal-open');
     modal.classList.add('is-open');
@@ -1022,8 +1053,16 @@
       } catch (_) {}
     });
 
-    if (autoplay) {
-      requestAnimationFrame(() => { startPlayback(); });
+    if (isMobileShowreel()) {
+      primeShowreel();
+      v.muted = true;
+      btnSound.classList.remove('is-on');
+      btnPlay.classList.add('is-hidden');
+      wrap.classList.add('is-playing');
+      try { await v.play(); } catch (_) {
+        btnPlay.classList.remove('is-hidden');
+        wrap.classList.remove('is-playing');
+      }
     }
 
     setTimeout(() => { try { dialog.focus(); } catch (_) {} }, 50);
@@ -1038,8 +1077,11 @@
     // stop modal video
     try { v.pause(); } catch (_) {}
     v.currentTime = 0;
+    v.controls = false;
+    v.removeAttribute('controls');
     btnPlay.classList.remove('is-hidden');
     wrap.classList.remove('is-playing');
+    wrap.classList.remove('is-mobile-player');
 
     // resume videos that were playing
     const resume = () => {
@@ -1052,8 +1094,14 @@
   };
 
   const togglePlay = async () => {
+    primeShowreel();
     if (v.paused) {
-      await startPlayback();
+      btnPlay.classList.add('is-hidden');
+      wrap.classList.add('is-playing');
+      try { await v.play(); } catch (_) {
+        btnPlay.classList.remove('is-hidden');
+        wrap.classList.remove('is-playing');
+      }
     } else {
       try { v.pause(); } catch (_) {}
       btnPlay.classList.remove('is-hidden');
@@ -1066,34 +1114,32 @@
     btnSound.classList.toggle('is-on', !v.muted);
   };
 
-  const toggleFullscreen = async () => {
-    const target = dialog;
+  const requestFullscreen = async () => {
     try {
-      if (!document.fullscreenElement) {
-        if (target.requestFullscreen) await target.requestFullscreen();
-        else if (target.webkitRequestFullscreen) target.webkitRequestFullscreen();
-      } else if (document.exitFullscreen) {
-        await document.exitFullscreen();
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
+      if (typeof v.webkitEnterFullscreen === 'function') {
+        v.webkitEnterFullscreen();
+        return;
+      }
+      if (v.requestFullscreen) {
+        await v.requestFullscreen();
+        return;
+      }
+      if (dialog.requestFullscreen) {
+        await dialog.requestFullscreen();
       }
     } catch (_) {}
   };
 
   // open
-  const handleOpenShowreel = (e) => {
+  tvStage.addEventListener('click', (e) => {
     e.preventDefault();
-    open({ autoplay: isMobileShowreel() });
-  };
-
-  tvStages.forEach((tvStage) => {
-    tvStage.addEventListener('click', handleOpenShowreel);
-    tvStage.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        open({ autoplay: isMobileShowreel() });
-      }
-    });
+    open();
+  });
+  tvStage.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      open();
+    }
   });
 
   // close
@@ -1113,8 +1159,6 @@
   });
 
   // sound
-  v.controls = false;
-  v.removeAttribute('controls');
   v.muted = true;
   btnSound.classList.remove('is-on');
   btnSound.addEventListener('click', (e) => {
@@ -1122,14 +1166,15 @@
     primeShowreel();
     toggleSound();
   });
+  btnFull.addEventListener('click', (e) => {
+    e.stopPropagation();
+    primeShowreel();
+    requestFullscreen();
+  });
 
-  if (btnFull) {
-    btnFull.addEventListener('click', (e) => {
-      e.stopPropagation();
-      primeShowreel();
-      toggleFullscreen();
-    });
-  }
+  // keep modal mode in sync on resize/orientation change
+  window.addEventListener('resize', syncShowreelMode, { passive: true });
+  window.addEventListener('orientationchange', syncShowreelMode, { passive: true });
 
   // if video ends — show play again
   v.addEventListener('ended', () => {
