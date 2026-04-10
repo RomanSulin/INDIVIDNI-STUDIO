@@ -3,7 +3,17 @@ window.__ANALYTICS__ = {
   ga4MeasurementId: "G-XXXXXXXXXX",
 
   // Яндекс.Метрика (числовой ID счетчика, пример: 12345678)
-  yandexMetrikaId: "00000000",
+  yandexMetrikaId: "108486659",
+  yandexMetrikaOptions: {
+    ssr: true,
+    webvisor: true,
+    clickmap: true,
+    ecommerce: "dataLayer",
+    referrer: document.referrer,
+    url: location.href,
+    accurateTrackBounce: true,
+    trackLinks: true
+  },
 
   // Опционально: Google Tag Manager (пример: GTM-ABC1234)
   gtmId: "",

@@ -95,12 +95,23 @@
       a.parentNode.insertBefore(k, a);
     })(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
 
-    window.ym(id, "init", {
+    var defaultOptions = {
+      ssr: true,
+      webvisor: true,
       clickmap: true,
-      trackLinks: true,
+      ecommerce: "dataLayer",
+      referrer: document.referrer,
+      url: location.href,
       accurateTrackBounce: true,
-      webvisor: true
-    });
+      trackLinks: true
+    };
+    var mergedOptions = Object.assign(
+      {},
+      defaultOptions,
+      config.yandexMetrikaOptions || {}
+    );
+
+    window.ym(id, "init", mergedOptions);
 
     log("[analytics] Yandex Metrika enabled:", id);
   }
