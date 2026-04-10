@@ -1425,10 +1425,9 @@ footer a[href^="mailto"]{
 }
 
 /* fan layout (deck in a hand) */
-.team__grid .tcard:nth-child(1){ --x: 54px; --r: -12deg; z-index: 1; }
-.team__grid .tcard:nth-child(2){ --x: 18px; --r: -4deg; z-index: 2; }
-.team__grid .tcard:nth-child(3){ --x: -18px; --r: 4deg; z-index: 3; }
-.team__grid .tcard:nth-child(4){ --x: -54px; --r: 12deg; z-index: 4; }
+.team__grid .tcard:nth-child(1){ --x: 42px; --r: -10deg; z-index: 1; }
+.team__grid .tcard:nth-child(2){ --x: 0px; --r: 0deg; z-index: 3; }
+.team__grid .tcard:nth-child(3){ --x: -42px; --r: 10deg; z-index: 2; }
 
 /* keep hover bringing the card forward */
 .team__grid .tcard:hover,
@@ -3504,4 +3503,55 @@ body.modal-open{
   .sr-hoverHint{
     display: none !important;
   }
+}
+
+/* TEAM mobile: keep the desktop fan feeling, but static and with 3 cards */
+@media (max-width: 980px){
+  .team__grid{
+    display: flex !important;
+    justify-content: center !important;
+    align-items: flex-end !important;
+    gap: 0 !important;
+    height: clamp(300px, 46vw, 390px) !important;
+    margin-top: 36px !important;
+    overflow: visible !important;
+  }
+
+  .team__grid .tcard{
+    width: clamp(150px, 21vw, 220px) !important;
+    padding: 12px !important;
+    transform: translateX(var(--x)) rotate(var(--r)) !important;
+    transition: none !important;
+  }
+
+  .team__grid .tcard:hover,
+  .team__grid .tcard:focus-within{
+    transform: translateX(var(--x)) rotate(var(--r)) !important;
+    box-shadow: 0 28px 90px rgba(0,0,0,.28) !important;
+  }
+
+  .team__grid .tcard:nth-child(1){ --x: 34px; --r: -9deg; z-index: 1; }
+  .team__grid .tcard:nth-child(2){ --x: 0px; --r: 0deg; z-index: 3; }
+  .team__grid .tcard:nth-child(3){ --x: -34px; --r: 9deg; z-index: 2; }
+}
+
+@media (max-width: 600px){
+  .team__grid{
+    height: clamp(250px, 72vw, 320px) !important;
+    margin-top: 30px !important;
+  }
+
+  .team__grid .tcard{
+    width: clamp(106px, 31vw, 150px) !important;
+    padding: 9px !important;
+    border-radius: 20px !important;
+  }
+
+  .team__grid .tcard:nth-child(1){ --x: 30px; --r: -8deg; }
+  .team__grid .tcard:nth-child(2){ --x: 0px; --r: 0deg; }
+  .team__grid .tcard:nth-child(3){ --x: -30px; --r: 8deg; }
+
+  .tcard__photo{ border-radius: 14px; }
+  .tcard__name{ margin-top: 10px; font-size: 14px; }
+  .tcard__role{ font-size: 12px; }
 }
