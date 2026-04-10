@@ -13,7 +13,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Wet+Paint&display=swap" rel="stylesheet">
 
   <!-- Preload critical above-the-fold assets (SVG wordmark + hero bg) -->
-  <link rel="preload" as="video" href="./assets/ui/Showreel_3.mp4" type="video/mp4" />
+  <link rel="preload" as="video" href="./assets/ui/Showreel_3.mp4" type="video/mp4" media="(min-width: 769px)" />
+  <link rel="preload" as="video" href="./assets/ui/Showreel_9x16.mp4" type="video/mp4" media="(max-width: 768px)" />
   
   <!-- Landing styles (ref-based) -->
   <link rel="stylesheet" href="./assets/css/landing_ref.css?v=30" />
@@ -62,8 +63,9 @@
 <section class="hero" id="top">
     <!-- HERO background video (loop, muted) -->
   <video class="hero-bg-video" id="heroBgVideo" autoplay muted loop playsinline preload="auto" webkit-playsinline disablepictureinpicture playsinline="" webkit-playsinline="" controlslist="nodownload noplaybackrate noremoteplayback nofullscreen" aria-hidden="true">
+    <source src="./assets/ui/Showreel_3.mp4" type="video/mp4" media="(min-width: 769px)"/>
+    <source src="./assets/ui/Showreel_9x16.mp4" type="video/mp4" media="(max-width: 768px)"/>
     <source src="./assets/ui/Showreel_3.mp4" type="video/mp4"/>
-    <source src="./assets/ui/showreel_3.mp4" type="video/mp4"/>
   </video>
   <div class="hero-bg-overlay" aria-hidden="true"></div>
 
@@ -834,7 +836,9 @@
   const v = document.getElementById("heroBgVideo");
   if (!hero || !v) return;
 
-  const KEY = "individni_hero_bg_poster_v1";
+  const KEY = window.matchMedia("(max-width: 768px)").matches
+    ? "individni_hero_bg_poster_mobile_v1"
+    : "individni_hero_bg_poster_desktop_v1";
   const cached = (() => {
     try { return localStorage.getItem(KEY); } catch (e) { return null; }
   })();
