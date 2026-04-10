@@ -242,6 +242,9 @@ body.on-dark .proj-brief{ border: 0; }
 .proj-end{
   width: 100%;
   height: 100%;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
   border-radius: 0;
   background: #0b0b0f;
   color: rgba(255,255,255,0.92);
@@ -251,13 +254,13 @@ body.on-dark .proj-brief{ border: 0; }
   gap: 14px;
 }
 .proj-end__preview{
-  width: 100%;
-  aspect-ratio: 16 / 9;
+  position: absolute;
+  inset: 0;
   display: block;
   overflow: hidden;
-  border-radius: 24px;
-  border: 1px solid rgba(255,255,255,0.08);
-  background: rgba(255,255,255,0.04);
+  border-radius: inherit;
+  background: #0b0b0f;
+  z-index: 0;
 }
 .proj-end__preview img{
   width: 100%;
@@ -266,16 +269,37 @@ body.on-dark .proj-brief{ border: 0; }
   display: block;
   transition: transform .28s ease;
 }
+.proj-end__preview::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0.24) 32%, rgba(0,0,0,0.55) 68%, rgba(0,0,0,0.86) 100%);
+}
 .proj-end__preview:hover img,
 .proj-end__preview:focus-visible img{
   transform: scale(1.03);
 }
+.proj-end__kicker,
 .proj-end__title{
+  position: relative;
+  z-index: 1;
   margin: 0;
+}
+.proj-end__kicker{
+  color: rgba(255,255,255,0.78);
+  text-shadow: 0 8px 24px rgba(0,0,0,0.32);
+}
+.proj-end__title{
   font-size: clamp(26px, 2.4vw, 44px);
   line-height: .92;
   letter-spacing: -.04em;
   text-transform: uppercase;
+  text-shadow: 0 14px 36px rgba(0,0,0,0.42);
+}
+.proj-end__actions{
+  position: relative;
+  z-index: 1;
 }
 .proj-end__actions a{
   height: 46px;
@@ -475,10 +499,6 @@ body.on-dark .proj-brief{
   /* отступы для вставленного фото в интро */
   .proj-intro__left .media-169{
     margin: 16px 0 14px;
-  }
-
-  .proj-end__preview{
-    border-radius: 18px;
   }
 
   /* второй блок текста под фото */
