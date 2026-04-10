@@ -1,140 +1,174 @@
 (() => {
-  // Ensure white theme CSS applies even if HTML lost the class
-  document.body.classList.add("project-page");
-  const track = document.getElementById("projTrack");
-  const endSlide = document.querySelector(".proj-slide--end");
-  const v = document.querySelector("video[data-autoplay]");
-  const isMobile = window.matchMedia("(max-width: 900px)").matches;
+  const MOBILE_QUERY = "(max-width: 900px)";
 
-  function updateDarkMode(){ /* disabled: keep project pages white */ }
+  function isMobileViewport() {
+    return window.matchMedia(MOBILE_QUERY).matches;
+  }
 
-  function initVideo(){
-    if (!v) return;
-    v.muted = true;
-    v.playsInline = true;
-    v.autoplay = true;
-    v.loop = true;
+  function ensureProjectClass() {
+    if (document.body) {
+      document.body.classList.add("project-page");
+    }
+  }
 
-    const tryPlay = () => v.play().catch(() => {
-  // Ensure white theme CSS applies even if HTML lost the class
-  document.body.classList.add("project-page");});
-    v.addEventListener("canplay", tryPlay, { once: true });
+  function updateDarkMode() {
+    /* disabled: keep project pages white */
+  }
+
+  function initVideo() {
+    const video = document.querySelector("video[data-autoplay]");
+    if (!video) return;
+
+    video.muted = true;
+    video.playsInline = true;
+    video.autoplay = true;
+    video.loop = true;
+
+    const tryPlay = () => {
+      video.play().catch(() => {});
+    };
+
+    if (video.readyState >= 2) {
+      tryPlay();
+      return;
+    }
+
+    video.addEventListener("canplay", tryPlay, { once: true });
     tryPlay();
   }
 
-  function initScroll(){
+  function initScroll() {
+    const track = document.getElementById("projTrack");
     if (!track) return;
 
-    window.addEventListener("wheel", (e) => {
-      if (isMobile) return;
-      if (e.ctrlKey) return;
-      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-        track.scrollLeft += e.deltaY;
-        e.preventDefault();
-        updateDarkMode();
-      }
-    }, { passive: false });
+    window.addEventListener(
+      "wheel",
+      (event) => {
+        if (isMobileViewport()) return;
+        if (event.ctrlKey) return;
+        if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
 
-    let down = false, startX = 0, startLeft = 0;
-    track.addEventListener("pointerdown", (e) => {
-      if (isMobile) return;
-      down = true;
-      startX = e.clientX;
+        track.scrollLeft += event.deltaY;
+        event.preventDefault();
+        updateDarkMode();
+      },
+      { passive: false }
+    );
+
+    let isPointerDown = false;
+    let startX = 0;
+    let startLeft = 0;
+
+    track.addEventListener("pointerdown", (event) => {
+      if (isMobileViewport()) return;
+
+      isPointerDown = true;
+      startX = event.clientX;
       startLeft = track.scrollLeft;
-      track.setPointerCapture(e.pointerId);
+      track.setPointerCapture(event.pointerId);
     });
-    track.addEventListener("pointermove", (e) => {
-      if (isMobile) return;
-      if (!down) return;
-      track.scrollLeft = startLeft - (e.clientX - startX);
+
+    track.addEventListener("pointermove", (event) => {
+      if (isMobileViewport() || !isPointerDown) return;
+
+      track.scrollLeft = startLeft - (event.clientX - startX);
       updateDarkMode();
     });
-    track.addEventListener("pointerup", () => down = false);
-    track.addEventListener("pointercancel", () => down = false);
+
+    track.addEventListener("pointerup", () => {
+      isPointerDown = false;
+    });
+
+    track.addEventListener("pointercancel", () => {
+      isPointerDown = false;
+    });
 
     track.addEventListener("scroll", updateDarkMode, { passive: true });
     window.addEventListener("resize", updateDarkMode, { passive: true });
     updateDarkMode();
   }
 
-  window.addEventListener("load", () => {
+  function moveBriefButtonToBody() {
+    if (isMobileViewport()) return;
+
+    const briefButton = document.querySelector(".proj-brief");
+    if (!briefButton || briefButton.dataset.movedToBody === "1") return;
+
+    document.body.appendChild(briefButton);
+    briefButton.dataset.movedToBody = "1";
+
+    Object.assign(briefButton.style, {
+      position: "fixed",
+      top: "18px",
+      right: "28px",
+      zIndex: "2147483647",
+    });
+  }
+
+  function findFirstPhotoSlide(introSlide) {
+    let current = introSlide ? introSlide.nextElementSibling : null;
+
+    while (current) {
+      const isMediaSlide = current.matches(".proj-slide.proj-media");
+      const hasAutoplayVideo = Boolean(current.querySelector("video[data-autoplay]"));
+
+      if (isMediaSlide && !hasAutoplayVideo) {
+        return current;
+      }
+
+      current = current.nextElementSibling;
+    }
+
+    return null;
+  }
+
+  function applyMobileIntroLayout() {
+    if (!isMobileViewport()) return;
+
+    const introSlide = document.querySelector(".proj-slide.proj-intro");
+    const introLeft = introSlide?.querySelector(".proj-intro__left");
+    if (!introLeft || introLeft.dataset.mobileLayoutApplied === "1") return;
+
+    const firstText = introLeft.querySelector(".proj-text");
+    const meta = introLeft.querySelector(".proj-meta");
+    const cta = introLeft.querySelector(".proj-cta");
+    const videoSlide =
+      document.querySelector('.proj-slide.proj-media[aria-label="Video"]') ||
+      document.querySelector("video[data-autoplay]")?.closest(".proj-slide");
+    const photoSlide = findFirstPhotoSlide(introSlide);
+
+    const videoMedia = videoSlide?.querySelector(".media-169");
+    const photoMedia = photoSlide?.querySelector(".media-169");
+
+    if (!firstText || !meta || !cta || !videoMedia || !photoMedia) return;
+
+    introLeft.dataset.mobileLayoutApplied = "1";
+
+    firstText.insertAdjacentElement("afterend", videoMedia);
+
+    const secondBlock = document.createElement("div");
+    secondBlock.className = "proj-second";
+    videoMedia.insertAdjacentElement("afterend", secondBlock);
+
+    secondBlock.appendChild(meta);
+    secondBlock.appendChild(cta);
+    secondBlock.insertAdjacentElement("afterend", photoMedia);
+
+    videoSlide?.remove();
+    photoSlide?.remove();
+  }
+
+  function initProjectPage() {
+    ensureProjectClass();
+    applyMobileIntroLayout();
+    moveBriefButtonToBody();
     initScroll();
     initVideo();
-  });
+  }
 
-  // --- FORCE: move "К БРИФУ" button to <body> so it can't be hidden by end panel ---
-window.addEventListener("load", () => {
-  if (window.matchMedia("(max-width: 900px)").matches) return;
-  const brief = document.querySelector(".proj-brief");
-  if (!brief) return;
-
-  // move to body (break out of any transformed stacking contexts)
-  document.body.appendChild(brief);
-
-  // hard-fix layering + position
-  Object.assign(brief.style, {
-    position: "fixed",
-    top: "18px",
-    right: "28px",
-    zIndex: "2147483647"
-  });
-});
-  
- // ===== Mobile-only: Intro layout (text1 -> video -> text2 -> photo) ==============================================================================================================
-function applyMobileIntroLayout() {
-  if (!window.matchMedia("(max-width: 900px)").matches) return;
-
-  const introLeft = document.querySelector(".proj-slide.proj-intro .proj-intro__left");
-  if (!introLeft) return;
-
-  // чтобы не применялось повторно при перезагрузках/горячих обновлениях
-  if (introLeft.dataset.mobileLayoutApplied === "1") return;
-  introLeft.dataset.mobileLayoutApplied = "1";
-
-  const firstText = introLeft.querySelector(".proj-text");
-  if (!firstText) return;
-
-  // "второй текст" = meta + cta (как мы делали)
-  const meta = introLeft.querySelector(".proj-meta");
-  const cta  = introLeft.querySelector(".proj-cta");
-
-  // ВИДЕО-слайд (берём media-169)
-  const videoSlide =
-    document.querySelector('.proj-slide.proj-media[aria-label="Video"]') ||
-    document.querySelector("video[data-autoplay]")?.closest(".proj-slide");
-
-  const videoMedia = videoSlide?.querySelector(".media-169");
-  if (!videoMedia) return;
-
-  // ФОТО-слайд (первое фото /2.jpg/)
-  const photoSlide =
-    document.querySelector('.proj-slide.proj-media[aria-label="Photo 02"]') ||
-    document.querySelector('img[src*="/assets/project/1/2.jpg"]')?.closest(".proj-slide");
-
-  const photoMedia = photoSlide?.querySelector(".media-169");
-  if (!photoMedia) return;
-
-  // 1) после первого текста вставляем видео
-  firstText.insertAdjacentElement("afterend", videoMedia);
-
-  // 2) ниже видео вставляем второй текст (meta + cta)
-  const second = document.createElement("div");
-  second.className = "proj-second";
-  videoMedia.insertAdjacentElement("afterend", second);
-
-  if (meta) second.appendChild(meta);
-  if (cta)  second.appendChild(cta);
-
-  // 3) после второго текста вставляем фото
-  second.insertAdjacentElement("afterend", photoMedia);
-
-  // убираем пустые слайды, чтобы не было дублей
-  if (videoSlide) videoSlide.remove();
-  if (photoSlide) photoSlide.remove();
-}
-
-window.addEventListener("load", applyMobileIntroLayout);
-
-
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initProjectPage, { once: true });
+  } else {
+    initProjectPage();
+  }
 })();
-
